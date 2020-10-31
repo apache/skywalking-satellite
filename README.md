@@ -1,15 +1,18 @@
-Apache SkyWalking Sidecar
+Apache SkyWalking Satellite
 ==========
 
 <img src="http://skywalking.apache.org/assets/logo.svg" alt="Sky Walking logo" height="90px" align="right" />
 
-**SkyWalking Satellite**: a Sidecar for the Apache SkyWalking under cloud native scenario.
-
-**SkyWalking**: an APM(application performance monitor) system, especially designed for
-microservices, cloud native and container-based (Docker, Kubernetes, Mesos) architectures.
+**SkyWalking Satellite**: A lightweight collector/sidecar could be deployed closing to the target monitored system, to collect metrics, traces, and logs. Also, it provides advanced features, such as, local cache, format transform, sampling.
 
 [![GitHub stars](https://img.shields.io/github/stars/apache/skywalking.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/skywalking)
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=for-the-badge&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
+
+# Quick Start
+
+# Documentation
+
+# Download
 
 # Contact Us
 * Mail list: **dev@skywalking.apache.org**. Mail to `dev-subscribe@skywalking.apache.org`, follow the reply to subscribe the mail list.
