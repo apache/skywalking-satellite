@@ -20,7 +20,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - main
     paths:
       - '!**.md'
 
@@ -30,4 +30,13 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v2
+
+      - name: Check License
+        run: make license
+
+      - name: Get dependencies
+        run: make deps
+
+      - name: Lint
+        run: make lint
 
