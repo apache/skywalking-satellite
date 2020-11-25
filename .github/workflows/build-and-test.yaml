@@ -21,15 +21,21 @@ on:
   push:
     branches:
       - main
-    paths:
-      - '!**.md'
 
 jobs:
   build:
     runs-on: ubuntu-18.04
     timeout-minutes: 90
     steps:
-      - uses: actions/checkout@v2
+      - name: Set up Go 1.14
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.14
+
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+        with:
+          submodules: true
 
       - name: Check License
         run: make license
@@ -39,4 +45,3 @@ jobs:
 
       - name: Lint
         run: make lint
-

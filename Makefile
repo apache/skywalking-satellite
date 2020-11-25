@@ -19,8 +19,8 @@ VERSION ?= latest
 OUT_DIR = bin
 BINARY = skywalking-sidecar
 
-RELEASE_BIN = skywalking-sidecar-$(VERSION)-bin
-RELEASE_SRC = skywalking-sidecar-$(VERSION)-src
+RELEASE_BIN = skywalking-satellite-$(VERSION)-bin
+RELEASE_SRC = skywalking-satellite-$(VERSION)-src
 
 OS = $(shell uname)
 
@@ -46,7 +46,7 @@ all: clean license deps lint test build
 
 tools:
 	$(GO_PACKR) -v || $(GO_GET) -u github.com/gobuffalo/packr/v2/...
-	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.21.0
+	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.33.0
 	$(GO_LICENSER) -version || GO111MODULE=off $(GO_GET) -u github.com/elastic/go-licenser
 
 deps: tools
@@ -70,4 +70,3 @@ verify: clean license lint test
 .PHONY: clean
 clean: tools
 	-rm -rf coverage.txt
-
