@@ -17,6 +17,10 @@
 
 package main
 
+import "github.com/apache/skywalking-satellite/pkg/logger"
+
 func main() {
+	logger.Init()
+	logger.Log.Info("sfdsf")
 	print("OK")
 }

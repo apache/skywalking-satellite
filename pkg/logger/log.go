@@ -26,34 +26,64 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-// Global logger config.
+// Default logger config.
 const (
-	logPattern  = "%time [%level][%field] - %msg"
-	timePattern = "2006-01-02 15:04:05.001"
+	defaultLogPattern  = "%time [%level][%field] - %msg"
+	defaultTimePattern = "2006-01-02 15:04:05.001"
 )
 
 type formatter struct {
+	logPattern  string
+	timePattern string
 }
+
+// Option is a function to set formatter config.
+type Option func(f *formatter)
 
 // Log is the global logger.
 var Log *logrus.Logger
 var once sync.Once
 
-func Init() {
+// The Log init method, keep Log as a singleton.
+func Init(opts ...Option) {
 	once.Do(func() {
 		if Log == nil {
 			Log = logrus.New()
 		}
 		Log.SetOutput(os.Stdout)
 		Log.SetLevel(logrus.InfoLevel)
-		Log.SetFormatter(&formatter{})
+		f := &formatter{}
+		for _, opt := range opts {
+			opt(f)
+		}
+		if f.logPattern == "" {
+			f.logPattern = defaultLogPattern
+		}
+		if f.timePattern == "" {
+			f.timePattern = defaultTimePattern
+		}
+		Log.SetFormatter(f)
 	})
+}
+
+// Set the log pattern in formatter.
+func SetLogPattern(logPattern string) Option {
+	return func(f *formatter) {
+		f.logPattern = logPattern
+	}
+}
+
+// Set the time pattern in formatter.
+func SetTimePattern(timePattern string) Option {
+	return func(f *formatter) {
+		f.timePattern = timePattern
+	}
 }
 
 // Format supports unified log output format that has %time, %level, %field and %msg.
 func (f *formatter) Format(entry *logrus.Entry) ([]byte, error) {
-	output := logPattern
-	output = strings.Replace(output, "%time", entry.Time.Format(timePattern), 1)
+	output := f.logPattern
+	output = strings.Replace(output, "%time", entry.Time.Format(f.timePattern), 1)
 	output = strings.Replace(output, "%level", entry.Level.String(), 1)
 	output = strings.Replace(output, "%field", buildFields(entry), 1)
 	output = strings.Replace(output, "%msg", entry.Message, 1)

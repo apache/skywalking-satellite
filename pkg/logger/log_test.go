@@ -26,7 +26,7 @@ import (
 )
 
 func TestFormatter_Format(t *testing.T) {
-	Init()
+	Init(SetLogPattern("[%time][%level][%field] - %msg"), SetTimePattern("2006-01-02 15:04:05,001"))
 	type args struct {
 		entry *logrus.Entry
 	}
@@ -37,8 +37,8 @@ func TestFormatter_Format(t *testing.T) {
 		want []byte
 	}{
 		{
-			name: "logWithEmptyFileds",
-			want: []byte("2020-12-12 12:12:12.012 [trace][] - entry1"),
+			name: "logWithEmptyFields",
+			want: []byte("[2020-12-12 12:12:12,012][trace][] - entry1"),
 			args: args{
 				entry: func() *logrus.Entry {
 					entry := Log.WithTime(time.Date(2020, 12, 12, 12, 12, 12, 12, time.Local).Local())
@@ -49,8 +49,8 @@ func TestFormatter_Format(t *testing.T) {
 			},
 		},
 		{
-			name: "logWithFileds",
-			want: []byte("2020-12-12 12:12:12.012 [warning][a=b] - entry2"),
+			name: "logWithFields",
+			want: []byte("[2020-12-12 12:12:12,012][warning][a=b] - entry2"),
 			args: args{
 				entry: func() *logrus.Entry {
 					entry := Log.WithField("a", "b").WithTime(time.Date(2020, 12, 12, 12, 12, 12, 12, time.Local).Local())
@@ -64,7 +64,7 @@ func TestFormatter_Format(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			f := &formatter{}
+			f := Log.Formatter
 			got, _ := f.Format(tt.args.entry)
 			if !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("Format() got = %s, want %s", got, tt.want)
