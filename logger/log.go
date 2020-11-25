@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"sync"
 
 	"github.com/sirupsen/logrus"
 )
@@ -36,14 +37,17 @@ type formatter struct {
 
 // Log is the global logger.
 var Log *logrus.Logger
+var once sync.Once
 
-func init() {
-	if Log == nil {
-		Log = logrus.New()
-	}
-	Log.SetOutput(os.Stdout)
-	Log.SetLevel(logrus.InfoLevel)
-	Log.SetFormatter(&formatter{})
+func Init() {
+	once.Do(func() {
+		if Log == nil {
+			Log = logrus.New()
+		}
+		Log.SetOutput(os.Stdout)
+		Log.SetLevel(logrus.InfoLevel)
+		Log.SetFormatter(&formatter{})
+	})
 }
 
 // Format supports unified log output format that has %time, %level, %field and %msg.
