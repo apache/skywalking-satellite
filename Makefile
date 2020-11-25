@@ -17,7 +17,7 @@
 
 VERSION ?= latest
 OUT_DIR = bin
-BINARY = skywalking-sidecar
+BINARY = skywalking-satellite
 
 RELEASE_BIN = skywalking-satellite-$(VERSION)-bin
 RELEASE_SRC = skywalking-satellite-$(VERSION)-src
