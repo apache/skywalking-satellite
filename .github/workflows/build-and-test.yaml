@@ -31,6 +31,11 @@ jobs:
         go-version: [1.14, 1.15]
       fail-fast: false
     steps:
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v1
+        with:
+          go-version: ${{ matrix.go-version }}
+
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
         with:
