@@ -19,6 +19,49 @@ package api
 
 import "io"
 
+// The following comments is to illustrate the relationship between different plugin interface in api package.
+//
+//
+//                                                 Processors
+//                                   -----------------------------------------
+//  ---------        ---------        -----------                 -----------
+// | Gatherer | ==> |  Queue   | ==> | Processor | ==>  ...  ==> | Processor |
+// | (Parser) |     | Mem/File |      -----------                 -----------
+//  ----------       ---------            ||                          ||
+//                                        \/	                      \/
+//                                    ---------------------------------------
+//                                   |             OutputEventContext        |
+//                                    ---------------------------------------
+//                                                                    ||
+//                                                                    \/
+//                                    -------------------       -------------
+//                                   | BatchOutputEvents | <== | BatchBuffer |
+//                                    -------------------       -------------
+//                                             ||
+//                                             \/
+//                                    -------------------
+//                                   |     Forwarder     | ==> Kakfa/OAP
+//                                    -------------------
+// 1. The Gatherer plugin would fetch or receive the input data.
+// 2. The Parser plugin would parse the input data to InputEvent.
+//    If the event needs output, please tag it by the IsOutput
+//    method.
+// 3. The Queue plugin would store the InputEvent. But different
+//    Queue would use different ways to store data, such as store
+//    bytes by serialization or keep original.
+// 4. The Processor plugin would pull the event from the Queue and
+//    process the event to create a new event. Next, the event is
+//    passed to the next processor to do the same things until the
+//    whole processors are performed. Similar to above, if any
+//    events need output, please mark. The events would be stored
+//    in the OutputEventContext. When the processing is finished,
+//    the OutputEventContext would be passed to the BatchBuffer.
+// 5. When BatchBuffer is full, the OutputEventContexts would be
+//    partitioned by event name and convert to BatchOutputEvents.
+// 6. The Follower would be ordered to send each partition in
+//    BatchOutputEvents in different ways, such as different gRPC
+//    endpoints.
+
 // ComponentPlugin is an interface to initialize the specific plugin.
 type ComponentPlugin interface {
 	io.Closer
