@@ -23,9 +23,13 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/api"
 )
 
+// StructuredInputEventToBytesFunc serialize event to bytes.
 type StructuredInputEventToBytesFunc func(event *StructuredInputEvent) []byte
+
+// BytesToStructuredInputEventFunc deserialize bytes to event.
 type BytesToStructuredInputEventFunc func(bytes []byte) *StructuredInputEvent
 
+// StructuredEvent works when the data is a struct type.
 type StructuredEvent struct {
 	name      string
 	timestamp time.Time
@@ -34,6 +38,7 @@ type StructuredEvent struct {
 	output    bool
 }
 
+// StructuredEvent works when the data is a struct type in the gatherer.
 type StructuredInputEvent struct {
 	StructuredEvent
 	etb StructuredInputEventToBytesFunc

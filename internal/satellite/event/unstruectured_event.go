@@ -23,9 +23,13 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/api"
 )
 
+// UnstructuredInputEventToBytesFunc serialize event to bytes.
 type UnstructuredInputEventToBytesFunc func(event *UnstructuredInputEvent) []byte
+
+// BytesToStructuredInputEventFunc deserialize bytes to event.
 type BytesToUnstructuredInputEventFunc func(bytes []byte) *UnstructuredInputEvent
 
+// UnstructuredEvent works when the data is a map type.
 type UnstructuredEvent struct {
 	name      string
 	timestamp time.Time
@@ -34,6 +38,7 @@ type UnstructuredEvent struct {
 	output    bool
 }
 
+// UnstructuredInputEvent works when the data is a map type in the gatherer.
 type UnstructuredInputEvent struct {
 	UnstructuredEvent
 	etb UnstructuredInputEventToBytesFunc
