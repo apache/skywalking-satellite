@@ -18,8 +18,9 @@
 package event
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/api"
 	"time"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/api"
 )
 
 type StructuredInputEventToBytesFunc func(event *StructuredInputEvent) []byte

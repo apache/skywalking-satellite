@@ -19,6 +19,7 @@ package registry
 
 import (
 	"fmt"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/api"
 	"github.com/apache/skywalking-satellite/internal/pkg/logger"
 )

@@ -18,8 +18,9 @@
 package event
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/api"
 	"time"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/api"
 )
 
 type UnstructuredInputEventToBytesFunc func(event *UnstructuredInputEvent) []byte
@@ -39,23 +40,23 @@ type UnstructuredInputEvent struct {
 	bte BytesToUnstructuredInputEventFunc
 }
 
-func (s *UnstructuredInputEvent) Name() string {
+func (s *UnstructuredEvent) Name() string {
 	return s.name
 }
 
-func (s *UnstructuredInputEvent) Meta() map[string]string {
+func (s *UnstructuredEvent) Meta() map[string]string {
 	return s.meta
 }
 
-func (s *UnstructuredInputEvent) Data() interface{} {
+func (s *UnstructuredEvent) Data() interface{} {
 	return &s.data
 }
 
-func (s *UnstructuredInputEvent) Time() time.Time {
+func (s *UnstructuredEvent) Time() time.Time {
 	return s.timestamp
 }
 
-func (s *UnstructuredInputEvent) IsOutput() bool {
+func (s *UnstructuredEvent) IsOutput() bool {
 	return s.output
 }
 
