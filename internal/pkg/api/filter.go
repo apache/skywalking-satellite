@@ -17,8 +17,8 @@
 
 package api
 
-// Processor is a plugin interface, that defines new pipeline processors.
-type Processor interface {
+// Filter is a plugin interface, that defines new pipeline filters.
+type Filter interface {
 	ComponentPlugin
 
 	// Process produces a new event by processing incoming event.

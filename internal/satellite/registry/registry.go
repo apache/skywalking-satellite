@@ -28,7 +28,7 @@ import (
 type registry struct {
 	gathererCreatorRegistry  map[string]GathererCreator
 	queueCreatorRegistry     map[string]QueueCreator
-	processorCreatorRegistry map[string]ProcessorCreator
+	filterCreatorRegistry    map[string]FilterCreator
 	forwarderCreatorRegistry map[string]ForwarderCreator
 	parserCreatorRegistry    map[string]ParserCreator
 }
@@ -39,8 +39,8 @@ type GathererCreator func(config map[string]interface{}) (api.Gatherer, error)
 // QueueCreator creates a Queue according to the config.
 type QueueCreator func(config map[string]interface{}) (api.Queue, error)
 
-// ProcessorCreator creates a Processor according to the config.
-type ProcessorCreator func(config map[string]interface{}) (api.Processor, error)
+// FilterCreator creates a Filter according to the config.
+type FilterCreator func(config map[string]interface{}) (api.Filter, error)
 
 // ForwarderCreator creates a forwarder according to the config.
 type ForwarderCreator func(config map[string]interface{}) (api.Forwarder, error)
@@ -61,9 +61,9 @@ func RegisterQueue(queueType string, creator QueueCreator) {
 	reg.queueCreatorRegistry[queueType] = creator
 }
 
-// RegisterProcessor registers the processorType as ProcessorCreator.
-func RegisterProcessor(processorType string, creator ProcessorCreator) {
-	reg.processorCreatorRegistry[processorType] = creator
+// RegisterFilter registers the filterType as FilterCreator.
+func RegisterFilter(filterType string, creator FilterCreator) {
+	reg.filterCreatorRegistry[filterType] = creator
 }
 
 // RegisterForwarder registers the forwarderType as forwarderCreator.
@@ -95,16 +95,16 @@ func CreateQueue(queueType string, config map[string]interface{}) (api.Queue, er
 	return nil, fmt.Errorf("unsupported queue type: %v", queueType)
 }
 
-// CreateProcessor creates a Processor according to the processorType.
-func CreateProcessor(processorType string, config map[string]interface{}) (api.Processor, error) {
-	if c, ok := reg.processorCreatorRegistry[processorType]; ok {
-		processor, err := c(config)
+// CreateFilter creates a Filter according to the filterType.
+func CreateFilter(filterType string, config map[string]interface{}) (api.Filter, error) {
+	if c, ok := reg.filterCreatorRegistry[filterType]; ok {
+		filter, err := c(config)
 		if err != nil {
-			return nil, fmt.Errorf("create processor failed: %v", err)
+			return nil, fmt.Errorf("create filter failed: %v", err)
 		}
-		return processor, nil
+		return filter, nil
 	}
-	return nil, fmt.Errorf("unsupported processor type: %v", processorType)
+	return nil, fmt.Errorf("unsupported filter type: %v", filterType)
 }
 
 // CreateForwarder creates a forwarder according to the forwarderType.
@@ -136,7 +136,7 @@ func init() {
 		reg = &registry{}
 		reg.gathererCreatorRegistry = make(map[string]GathererCreator)
 		reg.queueCreatorRegistry = make(map[string]QueueCreator)
-		reg.processorCreatorRegistry = make(map[string]ProcessorCreator)
+		reg.filterCreatorRegistry = make(map[string]FilterCreator)
 		reg.forwarderCreatorRegistry = make(map[string]ForwarderCreator)
 		reg.parserCreatorRegistry = make(map[string]ParserCreator)
 	}
