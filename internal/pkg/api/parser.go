@@ -17,7 +17,7 @@
 
 package api
 
-// Parser is a plugin interface, that defines new Parsers for Gatherer plugin.
+// Parser is a plugin interface, that defines new Parsers for Collector plugin.
 type Parser interface {
 
 	// ParseBytes parse the byte buffer into events.

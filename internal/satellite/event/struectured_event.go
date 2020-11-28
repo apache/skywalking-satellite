@@ -38,7 +38,7 @@ type StructuredEvent struct {
 	output    bool
 }
 
-// StructuredEvent works when the data is a struct type in the gatherer.
+// StructuredEvent works when the data is a struct type in the collector.
 type StructuredInputEvent struct {
 	StructuredEvent
 	etb StructuredInputEventToBytesFunc

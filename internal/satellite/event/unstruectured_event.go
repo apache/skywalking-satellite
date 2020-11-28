@@ -38,7 +38,7 @@ type UnstructuredEvent struct {
 	output    bool
 }
 
-// UnstructuredInputEvent works when the data is a map type in the gatherer.
+// UnstructuredInputEvent works when the data is a map type in the collector.
 type UnstructuredInputEvent struct {
 	UnstructuredEvent
 	etb UnstructuredInputEventToBytesFunc

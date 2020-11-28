@@ -40,7 +40,7 @@ type Event interface {
 	IsOutput() bool
 }
 
-// InputEvent is used in Gatherer to bridge Queue.
+// InputEvent is used in Collector to bridge Queue.
 type InputEvent interface {
 	Event
 

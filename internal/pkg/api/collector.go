@@ -17,10 +17,10 @@
 
 package api
 
-// Gatherer is a plugin interface, that defines new gatherers.
-type Gatherer interface {
+// Collector is a plugin interface, that defines new collectors.
+type Collector interface {
 	ComponentPlugin
 
-	// Gather gathers the data from the input.
-	Gather() (*InputEvent, error)
+	// Collect collects the data from the input.
+	Collect() (*InputEvent, error)
 }

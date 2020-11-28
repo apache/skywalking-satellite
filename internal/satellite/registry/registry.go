@@ -26,15 +26,15 @@ import (
 
 // The creator reg.
 type registry struct {
-	gathererCreatorRegistry  map[string]GathererCreator
+	collectorCreatorRegistry map[string]CollectorCreator
 	queueCreatorRegistry     map[string]QueueCreator
 	filterCreatorRegistry    map[string]FilterCreator
 	forwarderCreatorRegistry map[string]ForwarderCreator
 	parserCreatorRegistry    map[string]ParserCreator
 }
 
-// GathererCreator creates a Gather according to the config.
-type GathererCreator func(config map[string]interface{}) (api.Gatherer, error)
+// CollectorCreator creates a Collect according to the config.
+type CollectorCreator func(config map[string]interface{}) (api.Collector, error)
 
 // QueueCreator creates a Queue according to the config.
 type QueueCreator func(config map[string]interface{}) (api.Queue, error)
@@ -50,10 +50,10 @@ type ParserCreator func(config map[string]interface{}) (api.Parser, error)
 
 var reg *registry
 
-// RegisterGatherer registers the gatherType as GathererCreator.
-func RegisterGatherer(gathererType string, creator GathererCreator) {
-	logger.Log.Info(gathererType)
-	reg.gathererCreatorRegistry[gathererType] = creator
+// RegisterCollector registers the gatherType as CollectorCreator.
+func RegisterCollector(collectorType string, creator CollectorCreator) {
+	logger.Log.Info(collectorType)
+	reg.collectorCreatorRegistry[collectorType] = creator
 }
 
 // RegisterQueue registers the queueType as QueueCreator.
@@ -71,16 +71,16 @@ func RegisterForwarder(forwarderType string, creator ForwarderCreator) {
 	reg.forwarderCreatorRegistry[forwarderType] = creator
 }
 
-// CreateGatherer creates a Gatherer according to the gathererType.
-func CreateGatherer(gathererType string, config map[string]interface{}) (api.Gatherer, error) {
-	if c, ok := reg.gathererCreatorRegistry[gathererType]; ok {
-		gatherer, err := c(config)
+// CreateCollector creates a Collector according to the collectorType.
+func CreateCollector(collectorType string, config map[string]interface{}) (api.Collector, error) {
+	if c, ok := reg.collectorCreatorRegistry[collectorType]; ok {
+		collector, err := c(config)
 		if err != nil {
-			return nil, fmt.Errorf("create gatherer failed: %v", err)
+			return nil, fmt.Errorf("create collector failed: %v", err)
 		}
-		return gatherer, nil
+		return collector, nil
 	}
-	return nil, fmt.Errorf("unsupported gatherer type: %v", gathererType)
+	return nil, fmt.Errorf("unsupported collector type: %v", collectorType)
 }
 
 // CreateQueue creates a Queue according to the queueType.
@@ -134,7 +134,7 @@ func CreateParser(parserType string, config map[string]interface{}) (api.Parser,
 func init() {
 	if reg == nil {
 		reg = &registry{}
-		reg.gathererCreatorRegistry = make(map[string]GathererCreator)
+		reg.collectorCreatorRegistry = make(map[string]CollectorCreator)
 		reg.queueCreatorRegistry = make(map[string]QueueCreator)
 		reg.filterCreatorRegistry = make(map[string]FilterCreator)
 		reg.forwarderCreatorRegistry = make(map[string]ForwarderCreator)

@@ -22,27 +22,34 @@ import "io"
 // The following comments is to illustrate the relationship between different plugin interface in api package.
 //
 //
-//                                                 Processor
-//                                   -----------------------------------------
-//  ---------        ---------        -----------                 -----------
-// | Gatherer | ==> |  Queue   | ==> |  Filter   | ==>  ...  ==> |  Filter   |
-// | (Parser) |     | Mem/File |      -----------                 -----------
-//  ----------       ---------            ||                          ||
-//                                        \/	                      \/
-//                                    ---------------------------------------
-//                                   |             OutputEventContext        |
-//                                    ---------------------------------------
-//                                                                    ||
-//                                                                    \/
-//                                    -------------------       -------------
-//                                   | BatchOutputEvents | <== | BatchBuffer |
-//                                    -------------------       -------------
-//                                             ||
-//                                             \/
-//                                    -------------------
-//                                   |     Forwarder     | ==> Kakfa/OAP
-//                                    -------------------
-// 1. The Gatherer plugin would fetch or receive the input data.
+//                   Gatherer                                Processor
+//       -------------------------------      -------------------------------------------
+//      | | -----------        --------- |   |  -----------                 -----------  |
+//      | | Collector | ==> |  Queue   | |==>| |  Filter   | ==>  ...  ==> |  Filter   | |
+//      | | (Parser)  |     | Mem/File | |   |  -----------                 -----------  |
+//      |  -----------       ---------   |   |      ||                          ||       |
+//       --------------------------------    |      \/	                        \/       |
+//                                           |  ---------------------------------------  |
+//                                           | |             OutputEventContext        | |
+//                                           |  ---------------------------------------  |
+//                                            -------------------------------------------
+//                             									   ||
+//                                                                 \/
+//                                            -------------------------------------------
+//                                           |                                   ||      |
+//                                           |                                   \/      |
+//                                           |  -------------------       -------------  |
+//                                           | | BatchOutputEvents | <== | BatchBuffer | |
+//                                           |  -------------------       -------------  |
+//                                   Sender  |             ||                            | ==> Kafka/OAP
+//                                           |             \/                            |
+//                                           |  -------------------                      |
+//                                           | |     Forwarder     |                     |
+//                                           |  -------------------                      |
+//                                           |                                           |
+//                                            -------------------------------------------
+//
+// 1. The Collector plugin would fetch or receive the input data.
 // 2. The Parser plugin would parse the input data to InputEvent.
 //    If the event needs output, please tag it by the IsOutput
 //    method.
@@ -56,8 +63,9 @@ import "io"
 //    events need output, please mark. The events would be stored
 //    in the OutputEventContext. When the processing is finished,
 //    the OutputEventContext would be passed to the BatchBuffer.
-// 5. When BatchBuffer is full, the OutputEventContexts would be
-//    partitioned by event name and convert to BatchOutputEvents.
+// 5. When BatchBuffer reaches its maximum capacity, the
+//    OutputEventContexts would be partitioned by event name and
+//    convert to BatchOutputEvents.
 // 6. The Follower would be ordered to send each partition in
 //    BatchOutputEvents in different ways, such as different gRPC
 //    endpoints.
