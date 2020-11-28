@@ -77,6 +77,6 @@ type ComponentPlugin interface {
 	// Init initialize the specific plugin and would return error when the configuration is error.
 	Init() error
 
-	// Run triggers the specific plugin to work.
+	// Run triggers the specific plugin to work, such as build connection.
 	Run()
 }
