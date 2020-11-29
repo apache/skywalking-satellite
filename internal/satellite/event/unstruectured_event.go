@@ -35,7 +35,7 @@ type UnstructuredEvent struct {
 	timestamp time.Time
 	meta      map[string]string
 	data      map[string]interface{}
-	output    bool
+	eventType api.EventType
 }
 
 // UnstructuredInputEvent works when the data is a map type in the collector.
@@ -62,7 +62,7 @@ func (s *UnstructuredEvent) Time() time.Time {
 }
 
 func (s *UnstructuredEvent) Type() api.EventType {
-	return s.Type()
+	return s.eventType
 }
 
 func (s *UnstructuredInputEvent) ToBytes() []byte {

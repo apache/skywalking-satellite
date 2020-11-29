@@ -35,7 +35,7 @@ type StructuredEvent struct {
 	timestamp time.Time
 	meta      map[string]string
 	data      interface{}
-	output    bool
+	eventType api.EventType
 }
 
 // StructuredEvent works when the data is a struct type in the collector.
@@ -62,7 +62,7 @@ func (s *StructuredEvent) Time() time.Time {
 }
 
 func (s *StructuredEvent) Type() api.EventType {
-	return s.Type()
+	return s.eventType
 }
 
 func (s *StructuredInputEvent) ToBytes() []byte {
