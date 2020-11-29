@@ -66,11 +66,13 @@ import "io"
 //    to the next filter to do the same things until the whole filters are performed. The events
 //    labeled with RemoteEvent type would be stored in the OutputEventContext. When the processing
 //    finished, the OutputEventContext. After processing, the events in OutputEventContext would
-//    be partitioned by the event type and sent to the different BatchBuffers, such as Segment
+//    be partitioned by EventType and sent to the different BatchBuffers, such as Segment
 //    BatchBuffer, Jvm BatchBuffer, and Meter BatchBuffer.
-// 5. When the timer is triggered or the capacity limit is reached, the OutputEventContexts would
+// 5. The Dispatcher would dispatch the buffers to different forwarders by a mapping from EventType
+//    to Forwarder.
+// 6. When the timer is triggered or the capacity limit is reached, the OutputEventContexts would
 //    be converted to BatchEvents and sent to Forwarder.
-// 6. The Follower would send BatchEvents and ack Queue when successful process this batch
+// 7. The Follower would send BatchEvents and ack Queue when successful process this batch
 //    events.
 // ============================================================================================
 //
