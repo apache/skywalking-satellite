@@ -23,7 +23,10 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/api"
 )
 
-// The creator reg.
+// The creator registry.
+// All plugins is wrote in ./plugins dir. The plugin type would be as the next level dirs,
+// such as collector, client, or queue. And the 3rd level is the plugin name, that is also
+// used as key in pluginRegistry.
 type pluginRegistry struct {
 	collectorCreatorRegistry map[string]CollectorCreator
 	queueCreatorRegistry     map[string]QueueCreator
