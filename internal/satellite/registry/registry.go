@@ -34,7 +34,7 @@ type pluginRegistry struct {
 }
 
 // ClientCreator creates a Client according to the config.
-type ClientCreator func(config map[string]interface{}) (api.Collector, error)
+type ClientCreator func(config map[string]interface{}) (api.Client, error)
 
 // CollectorCreator creates a Collector according to the config.
 type CollectorCreator func(config map[string]interface{}) (api.Collector, error)
@@ -55,31 +55,31 @@ var reg *pluginRegistry
 
 // RegisterClient registers the clientType as ClientCreator.
 func RegisterClient(clientType string, creator ClientCreator) {
-	fmt.Printf("register client creator success : %s", clientType)
+	fmt.Printf("Create %s client creator register successfully", clientType)
 	reg.clientCreatorRegistry[clientType] = creator
 }
 
 // RegisterCollector registers the collectorType as CollectorCreator.
 func RegisterCollector(collectorType string, creator CollectorCreator) {
-	fmt.Printf("register collector creator success : %s", collectorType)
+	fmt.Printf("Create %s collector creator register successfully", collectorType)
 	reg.collectorCreatorRegistry[collectorType] = creator
 }
 
 // RegisterQueue registers the queueType as QueueCreator.
 func RegisterQueue(queueType string, creator QueueCreator) {
-	fmt.Printf("register queue creator success : %s", queueType)
+	fmt.Printf("Create %s queue creator register successfully", queueType)
 	reg.queueCreatorRegistry[queueType] = creator
 }
 
 // RegisterFilter registers the filterType as FilterCreator.
 func RegisterFilter(filterType string, creator FilterCreator) {
-	fmt.Printf("register filter creator success : %s", filterType)
+	fmt.Printf("Create %s filter creator register successfully", filterType)
 	reg.filterCreatorRegistry[filterType] = creator
 }
 
 // RegisterForwarder registers the forwarderType as forwarderCreator.
 func RegisterForwarder(forwarderType string, creator ForwarderCreator) {
-	fmt.Printf("register forward creator success : %s", forwarderType)
+	fmt.Printf("Create %s forward creator register successfully", forwarderType)
 	reg.forwarderCreatorRegistry[forwarderType] = creator
 }
 

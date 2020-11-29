@@ -58,18 +58,18 @@ import "io"
 // 1. The Collector plugin would fetch or receive the input data.
 // 2. The Parser plugin would parse the input data to SerializationEvent that is supported
 //    to be stored in Queue.
-// 3. The Queue plugin stores the SerializationEvent. However, the serialization depends on
+// 3. The Queue plugin stores the SerializationEvent. However, whether serializing depends on
 //    the Queue implements. For example, the serialization is unnecessary when using a Memory
-//    Queue.
-// 4. The Filter plugin would pull an event from the Queue and process the event to create
-//    a new event. Next, the event is passed to the next filter to do the same things until
-//    the whole filters are performed. The events labeled with RemoteEvent type would be
-//    stored in the OutputEventContext. When the processing finished,
-//    the OutputEventContext. After processing, the events in OutputEventContext would be
-//    partitioned by the event type and sent to the different BatchBuffers, such as Segment
+//    Queue. Once an event is pulled by the consumer of Queue, the event will be processed by
+//    the filters in Processor.
+// 4. The Filter plugin would process the event to create a new event. Next, the event is passed
+//    to the next filter to do the same things until the whole filters are performed. The events
+//    labeled with RemoteEvent type would be stored in the OutputEventContext. When the processing
+//    finished, the OutputEventContext. After processing, the events in OutputEventContext would
+//    be partitioned by the event type and sent to the different BatchBuffers, such as Segment
 //    BatchBuffer, Jvm BatchBuffer, and Meter BatchBuffer.
-// 5. When each BatchBuffer reaches its maximum capacity, the OutputEventContexts would be
-//    converted to BatchEvents and sent to Forwarder.
+// 5. When the timer is triggered or the capacity limit is reached, the OutputEventContexts would
+//    be converted to BatchEvents and sent to Forwarder.
 // 6. The Follower would send BatchEvents and ack Queue when successful process this batch
 //    events.
 // ============================================================================================
