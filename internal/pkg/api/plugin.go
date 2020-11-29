@@ -19,64 +19,77 @@ package api
 
 import "io"
 
-// The following comments is to illustrate the relationship between different plugin interface in api package.
+// The following graph illustrates the relationship between different plugin interface in api package.
 //
 //
 //                   Gatherer                                Processor
 //       -------------------------------      -------------------------------------------
-//      | | -----------        --------- |   |  -----------                 -----------  |
+//      |  -----------       ---------   |   |  -----------                 -----------  |
 //      | | Collector | ==> |  Queue   | |==>| |  Filter   | ==>  ...  ==> |  Filter   | |
 //      | | (Parser)  |     | Mem/File | |   |  -----------                 -----------  |
-//      |  -----------       ---------   |   |      ||                          ||       |
+//      |  -----------       ----------  |   |      ||                          ||       |
 //       --------------------------------    |      \/	                        \/       |
 //                                           |  ---------------------------------------  |
 //                                           | |             OutputEventContext        | |
 //                                           |  ---------------------------------------  |
 //                                            -------------------------------------------
-//                             									   ||
-//                                                                 \/
-//                                            -------------------------------------------
-//                                           |                                   ||      |
-//                                           |                                   \/      |
-//                                           |  -------------------       -------------  |
-//                                           | | BatchOutputEvents | <== | BatchBuffer | |
-//                                           |  -------------------       -------------  |
-//                                   Sender  |             ||                            | ==> Kafka/OAP
-//                                           |             \/                            |
-//                                           |  -------------------                      |
-//                                           | |     Forwarder     |                     |
-//                                           |  -------------------                      |
-//                                           |                                           |
-//                                            -------------------------------------------
+//                             				   ||
+//                                             \/
+//                                            ---                   SegmentSender
+//                                           |   |      -----------------------------------
+//                                           |   |     |  -------------       -----------  |
+//                                           | D |     | | BatchBuffer | ==> | Forwarder | |
+//                                           | i |     |  -------------       -----------  |
+//                                           | s |      -----------------------------------
+//                                           | p |
+//                                           | a | ==>                .......                 ===> Kafka/OAP
+//                                           | t |
+//                                           | c |                  MeterSender
+//                                           | h |      -----------------------------------
+//                                           | e |     |  -------------       -----------  |
+//                                           | r |     | | BatchBuffer | ==> | Forwarder | |
+//                                           |   |     |  -------------       -----------  |
+//                                           |   |      -----------------------------------
+//                                            ---      _____________________________________
+//                                                             shared gRPC/Kafka clients
+//
+//
 //
 // 1. The Collector plugin would fetch or receive the input data.
-// 2. The Parser plugin would parse the input data to InputEvent.
-//    If the event needs output, please tag it by the IsOutput
-//    method.
-// 3. The Queue plugin would store the InputEvent. But different
-//    Queue would use different ways to store data, such as store
-//    bytes by serialization or keep original.
-// 4. The Filter plugin would pull the event from the Queue and
-//    process the event to create a new event. Next, the event is
-//    passed to the next filter to do the same things until the
-//    whole processor are performed. Similar to above, if any
-//    events need output, please mark. The events would be stored
-//    in the OutputEventContext. When the processing is finished,
-//    the OutputEventContext would be passed to the BatchBuffer.
-// 5. When BatchBuffer reaches its maximum capacity, the
-//    OutputEventContexts would be partitioned by event name and
-//    convert to BatchOutputEvents.
-// 6. The Follower would be ordered to send each partition in
-//    BatchOutputEvents in different ways, such as different gRPC
-//    endpoints.
+// 2. The Parser plugin would parse the input data to SerializationEvent that is supported
+//    to be stored in Queue.
+// 3. The Queue plugin stores the SerializationEvent. However, the serialization depends on
+//    the Queue implements. For example, the serialization is unnecessary when using a Memory
+//    Queue.
+// 4. The Filter plugin would pull an event from the Queue and process the event to create
+//    a new event. Next, the event is passed to the next filter to do the same things until
+//    the whole filters are performed. The events labeled with RemoteEvent type would be
+//    stored in the OutputEventContext. When the processing finished,
+//    the OutputEventContext. After processing, the events in OutputEventContext would be
+//    partitioned by the event type and sent to the different BatchBuffers, such as Segment
+//    BatchBuffer, Jvm BatchBuffer, and Meter BatchBuffer.
+// 5. When each BatchBuffer reaches its maximum capacity, the OutputEventContexts would be
+//    converted to BatchEvents and sent to Forwarder.
+// 6. The Follower would send BatchEvents and ack Queue when successful process this batch
+//    events.
 
-// ComponentPlugin is an interface to initialize the specific plugin.
-type ComponentPlugin interface {
-	io.Closer
+//
+// =======================================================================================================
+// There are four stages in the lifecycle of Satellite plugins, which are the initial phase,
+// preparing phase, running phase, and closing phase. In the running phase, each plugin has
+// its own interface definition. However, the other three phases have to be defined uniformly.
 
+// Initializer is used in initial phase to initialize the every plugins,
+type Initializer interface {
 	// Init initialize the specific plugin and would return error when the configuration is error.
 	Init() error
-
-	// Run triggers the specific plugin to work, such as build connection.
-	Run()
 }
+
+// Preparer is used in preparing phase to launch plugins, such as build connection.
+type Preparer interface {
+	// Prepare triggers the specific plugin to work, such as build connection.
+	Prepare()
+}
+
+// Closer is used in closing phase to close plugins, such as close connection.
+type Closer io.Closer

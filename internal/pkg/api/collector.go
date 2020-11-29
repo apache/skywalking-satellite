@@ -17,10 +17,23 @@
 
 package api
 
+//   Init()     Initial stage: Init plugin by config
+//    ||
+//    \/
+//   Prepare()   Preparing stage: Prepare the collector, such as build connection with SkyWalking javaagent.
+//    ||
+//    \/
+//   Next()     Running stage: When Collector collect a data, the data would be fetched by the upstream
+//    ||                       component through this method.
+//    \/
+//   Close()    Closing stage: Close the Collector, such as close connection with SkyWalking javaagent.
+
 // Collector is a plugin interface, that defines new collectors.
 type Collector interface {
-	ComponentPlugin
+	Initializer
+	Preparer
+	Closer
 
-	// Collect collects the data from the input.
-	Collect() (*InputEvent, error)
+	// Next return the data from the input.
+	Next() (*SerializationEvent, error)
 }

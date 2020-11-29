@@ -17,10 +17,23 @@
 
 package api
 
+//   Init()     Initiating stage: Init plugin by config
+//    ||
+//    \/
+//   Prepare()   Preparing stage: Prepare the Forwarder, such as get remote client.
+//    ||
+//    \/
+//   Forward()  Running stage: Forward the batch events
+//    ||
+//    \/
+//   Close()    Closing stage: Close the Collector, such as close connection with SkyWalking javaagent.
+
 // Forwarder is a plugin interface, that defines new forwarders.
 type Forwarder interface {
-	ComponentPlugin
+	Initializer
+	Preparer
+	Closer
 
-	// Output the batch events to the external output services, such as Kafka MQ and SkyWalking OAP cluster.
-	Output(batch BatchOutputEvents)
+	// Forward the batch events to the external services, such as Kafka MQ and SkyWalking OAP cluster.
+	Forward(batch BatchEvents)
 }

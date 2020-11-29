@@ -19,7 +19,8 @@ package api
 
 // Queue is a plugin interface, that defines new queues.
 type Queue interface {
-	ComponentPlugin
+	Initializer
+	Closer
 
 	// Publisher get the only publisher for the current queue.
 	Publisher() QueuePublisher
@@ -30,16 +31,16 @@ type Queue interface {
 
 // QueuePublisher is a plugin interface, that defines new queue publishers.
 type QueuePublisher interface {
-	ComponentPlugin
+	Initializer
 
 	// Enqueue push a inputEvent into the queue.
-	Enqueue(event *InputEvent) error
+	Enqueue(event *SerializationEvent) error
 }
 
 // QueueConsumer is a plugin interface, that defines new queue consumers.
 type QueueConsumer interface {
-	ComponentPlugin
+	Initializer
 
 	// Dequeue pop an event form the Queue. When the queue is empty, the method would be blocked.
-	Dequeue() (*InputEvent, error)
+	Dequeue() (*SerializationEvent, error)
 }

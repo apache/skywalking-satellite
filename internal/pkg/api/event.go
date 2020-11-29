@@ -22,6 +22,17 @@ import (
 	"time"
 )
 
+// The event type.
+const (
+	_ EventType = iota
+	// LocalEvent is used to store intermediate state to keep the filters going, such as used in Sampling Filter.
+	LocalEvent
+	// RemoteEvent is used to be forwarded by Forwarder.
+	RemoteEvent
+)
+
+type EventType int32
+
 // Event that implement this interface would be allowed to transmit in the Satellite.
 type Event interface {
 	// Name is a identify to distinguish different events.
@@ -36,25 +47,25 @@ type Event interface {
 	// Time returns the event time.
 	Time() time.Time
 
-	// IsOutput indicates that the event can exist in the output context when the return value is true.
-	IsOutput() bool
+	// Type returns the event type.
+	Type() EventType
 }
 
-// InputEvent is used in Collector to bridge Queue.
-type InputEvent interface {
+// SerializationEvent is used in Collector to bridge Queue.
+type SerializationEvent interface {
 	Event
 
 	// ToBytes serialize the event to a byte array.
 	ToBytes() []byte
 
 	// FromBytes deserialize the byte array to an event.
-	FromBytes(bytes []byte) InputEvent
+	FromBytes(bytes []byte) SerializationEvent
 }
 
-// BatchOutputEvents is batch events to output.
-type BatchOutputEvents struct {
-	// BatchEvents grouped by event name.
-	BatchEvents map[string][]Event
+// BatchEvents is used by Forwarder to forward.
+type BatchEvents struct {
+	// Events stores a batch event generating when BatchBuffer reaches its capacity.
+	Events []Event
 
 	// The start offset of the batch.
 	StartOffset int64
@@ -68,9 +79,9 @@ type OutputEventContext struct {
 	context map[string]Event
 }
 
-// Put puts the incoming event into the context when the event allows to output.
+// Put puts the incoming event into the context when the event is a remote event.
 func (c *OutputEventContext) Put(event Event) {
-	if event.IsOutput() {
+	if event.Type() == RemoteEvent {
 		c.context[event.Name()] = event
 	}
 }

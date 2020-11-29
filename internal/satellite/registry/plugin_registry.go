@@ -25,7 +25,7 @@ import (
 )
 
 // The creator reg.
-type registry struct {
+type pluginRegistry struct {
 	collectorCreatorRegistry map[string]CollectorCreator
 	queueCreatorRegistry     map[string]QueueCreator
 	filterCreatorRegistry    map[string]FilterCreator
@@ -33,7 +33,7 @@ type registry struct {
 	parserCreatorRegistry    map[string]ParserCreator
 }
 
-// CollectorCreator creates a Collect according to the config.
+// CollectorCreator creates a Next according to the config.
 type CollectorCreator func(config map[string]interface{}) (api.Collector, error)
 
 // QueueCreator creates a Queue according to the config.
@@ -48,7 +48,7 @@ type ForwarderCreator func(config map[string]interface{}) (api.Forwarder, error)
 // ParserCreator creates a parser according to the config.
 type ParserCreator func(config map[string]interface{}) (api.Parser, error)
 
-var reg *registry
+var reg *pluginRegistry
 
 // RegisterCollector registers the gatherType as CollectorCreator.
 func RegisterCollector(collectorType string, creator CollectorCreator) {
@@ -133,7 +133,7 @@ func CreateParser(parserType string, config map[string]interface{}) (api.Parser,
 
 func init() {
 	if reg == nil {
-		reg = &registry{}
+		reg = &pluginRegistry{}
 		reg.collectorCreatorRegistry = make(map[string]CollectorCreator)
 		reg.queueCreatorRegistry = make(map[string]QueueCreator)
 		reg.filterCreatorRegistry = make(map[string]FilterCreator)

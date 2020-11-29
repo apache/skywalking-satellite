@@ -17,12 +17,16 @@
 
 package api
 
+//
+// Collector ==> RawData ==> Parser ==> SerializationEvent
+//
 // Parser is a plugin interface, that defines new Parsers for Collector plugin.
 type Parser interface {
+	Initializer
 
 	// ParseBytes parse the byte buffer into events.
-	ParseBytes(bytes []byte) ([]InputEvent, error)
+	ParseBytes(bytes []byte) ([]SerializationEvent, error)
 
 	// ParseStr parse the string into events.
-	ParseStr(str string) ([]InputEvent, error)
+	ParseStr(str string) ([]SerializationEvent, error)
 }

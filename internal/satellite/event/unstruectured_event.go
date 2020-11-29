@@ -61,14 +61,14 @@ func (s *UnstructuredEvent) Time() time.Time {
 	return s.timestamp
 }
 
-func (s *UnstructuredEvent) IsOutput() bool {
-	return s.output
+func (s *UnstructuredEvent) Type() api.EventType {
+	return s.Type()
 }
 
 func (s *UnstructuredInputEvent) ToBytes() []byte {
 	return s.etb(s)
 }
 
-func (s *UnstructuredInputEvent) FromBytes(bytes []byte) api.InputEvent {
+func (s *UnstructuredInputEvent) FromBytes(bytes []byte) api.SerializationEvent {
 	return s.bte(bytes)
 }

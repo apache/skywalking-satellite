@@ -17,9 +17,15 @@
 
 package api
 
+//   Init()        Initiating stage: Init plugin by config
+//    ||
+//    \/
+//   Process()     Running stage:    Process the input event to convert to new event. During the processing,
+//                                   the method should also tag event type to mark the event category.
+
 // Filter is a plugin interface, that defines new pipeline filters.
 type Filter interface {
-	ComponentPlugin
+	Initializer
 
 	// Process produces a new event by processing incoming event.
 	Process(in Event) Event
