@@ -36,6 +36,7 @@ type UnstructuredEvent struct {
 	meta      map[string]string
 	data      map[string]interface{}
 	eventType api.EventType
+	remote    bool
 }
 
 // UnstructuredInputEvent works when the data is a map type in the collector.
@@ -63,6 +64,10 @@ func (s *UnstructuredEvent) Time() time.Time {
 
 func (s *UnstructuredEvent) Type() api.EventType {
 	return s.eventType
+}
+
+func (s *UnstructuredEvent) Remote() bool {
+	return s.remote
 }
 
 func (s *UnstructuredInputEvent) ToBytes() []byte {

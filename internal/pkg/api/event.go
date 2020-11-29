@@ -24,11 +24,14 @@ import (
 
 // The event type.
 const (
+	// Mapping to the type supported by SkyWalking OAP.
 	_ EventType = iota
-	// LocalEvent is used to store intermediate state to keep the filters going, such as used in Sampling Filter.
-	LocalEvent
-	// RemoteEvent is used to be forwarded by Forwarder.
-	RemoteEvent
+	MetricsEvent
+	ProflingEvent
+	SegmentEvent
+	ManagementEvent
+	MeterEvent
+	LogEvent
 )
 
 type EventType int32
@@ -49,6 +52,9 @@ type Event interface {
 
 	// Type returns the event type.
 	Type() EventType
+
+	// Remote means is a output event when returns true.
+	Remote() bool
 }
 
 // SerializationEvent is used in Collector to bridge Queue.
@@ -81,7 +87,7 @@ type OutputEventContext struct {
 
 // Put puts the incoming event into the context when the event is a remote event.
 func (c *OutputEventContext) Put(event Event) {
-	if event.Type() == RemoteEvent {
+	if event.Remote() {
 		c.context[event.Name()] = event
 	}
 }

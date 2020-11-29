@@ -34,25 +34,25 @@ import "io"
 //                                           |  ---------------------------------------  |
 //                                            -------------------------------------------
 //                             				   ||
-//                                             \/
-//                                            ---                   SegmentSender
-//                                           |   |      -----------------------------------
-//                                           |   |     |  -------------       -----------  |
-//                                           | D |     | | BatchBuffer | ==> | Forwarder | |
-//                                           | i |     |  -------------       -----------  |
-//                                           | s |      -----------------------------------
-//                                           | p |
-//                                           | a | ==>                .......                 ===> Kafka/OAP
-//                                           | t |
-//                                           | c |                  MeterSender
-//                                           | h |      -----------------------------------
-//                                           | e |     |  -------------       -----------  |
-//                                           | r |     | | BatchBuffer | ==> | Forwarder | |
-//                                           |   |     |  -------------       -----------  |
-//                                           |   |      -----------------------------------
-//                                            ---      _____________________________________
-//                                                             shared gRPC/Kafka clients
-//
+//                                             ||        --------------------------------
+//                                             ||     ->|         Sharing Client        |
+//                                             ||    |   --------------------------------
+//                                             ||    |
+//                                             \/    |            SegmentSender
+//                                            ---    |  ---------------------------------
+//                                           |   |   | |  -----------       -----------  |
+//                                           | D |   |-| |BatchBuffer| ==> | Forwarder | |
+//                                           | i |   | |  -----------       -----------  |
+//                                           | s |   |  ---------------------------------
+//                                           | p |   |
+//                                           | a |=> |              .......                 ===> Kafka/OAP
+//                                           | t |   |
+//                                           | c |   |             MeterSender
+//                                           | h |   | -----------------------------------
+//                                           | e |   -|  -------------       -----------  |
+//                                           | r |    | | BatchBuffer | ==> | Forwarder | |
+//                                           |   |    |  -------------       -----------  |
+//                                            ---      -----------------------------------
 //
 //
 // 1. The Collector plugin would fetch or receive the input data.
@@ -72,9 +72,8 @@ import "io"
 //    converted to BatchEvents and sent to Forwarder.
 // 6. The Follower would send BatchEvents and ack Queue when successful process this batch
 //    events.
-
+// ============================================================================================
 //
-// =======================================================================================================
 // There are four stages in the lifecycle of Satellite plugins, which are the initial phase,
 // preparing phase, running phase, and closing phase. In the running phase, each plugin has
 // its own interface definition. However, the other three phases have to be defined uniformly.
