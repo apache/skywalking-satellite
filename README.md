@@ -12,6 +12,7 @@ Apache SkyWalking Satellite
 
 # Documentation
 - [The first design of Satellite 0.1.0](https://skywalking.apache.org/blog/2020-11-25-skywalking-satellite-0.1.0-design/)
+- [The project structure](./docs/project_structue.md)
 
 # Download
 
