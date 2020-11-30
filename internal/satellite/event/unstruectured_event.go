@@ -74,6 +74,6 @@ func (s *UnstructuredInputEvent) ToBytes() []byte {
 	return s.etb(s)
 }
 
-func (s *UnstructuredInputEvent) FromBytes(bytes []byte) api.SerializationEvent {
+func (s *UnstructuredInputEvent) FromBytes(bytes []byte) api.SerializableEvent {
 	return s.bte(bytes)
 }

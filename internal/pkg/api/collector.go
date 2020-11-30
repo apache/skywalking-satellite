@@ -35,5 +35,5 @@ type Collector interface {
 	Closer
 
 	// Next return the data from the input.
-	Next() (*SerializationEvent, error)
+	Next() (*SerializableEvent, error)
 }

@@ -36,4 +36,7 @@ type Forwarder interface {
 
 	// Forward the batch events to the external services, such as Kafka MQ and SkyWalking OAP cluster.
 	Forward(batch BatchEvents)
+
+	// ForwardType returns the supporting event type that could be forwarded.
+	ForwardType()
 }

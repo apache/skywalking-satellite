@@ -56,9 +56,9 @@ import "io"
 //
 //
 // 1. The Collector plugin would fetch or receive the input data.
-// 2. The Parser plugin would parse the input data to SerializationEvent that is supported
+// 2. The Parser plugin would parse the input data to SerializableEvent that is supported
 //    to be stored in Queue.
-// 3. The Queue plugin stores the SerializationEvent. However, whether serializing depends on
+// 3. The Queue plugin stores the SerializableEvent. However, whether serializing depends on
 //    the Queue implements. For example, the serialization is unnecessary when using a Memory
 //    Queue. Once an event is pulled by the consumer of Queue, the event will be processed by
 //    the filters in Processor.

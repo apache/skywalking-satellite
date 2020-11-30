@@ -27,7 +27,7 @@ const (
 	// Mapping to the type supported by SkyWalking OAP.
 	_ EventType = iota
 	MetricsEvent
-	ProflingEvent
+	ProfilingEvent
 	SegmentEvent
 	ManagementEvent
 	MeterEvent
@@ -38,34 +38,34 @@ type EventType int32
 
 // Event that implement this interface would be allowed to transmit in the Satellite.
 type Event interface {
-	// Name is a identify to distinguish different events.
+	// Name returns the event name.
 	Name() string
 
 	// Meta is a pair of key and value to record meta data, such as labels.
 	Meta() map[string]string
 
-	// Data returns the wrappered data.
+	// Data returns the wrapped data.
 	Data() interface{}
 
 	// Time returns the event time.
 	Time() time.Time
 
-	// Type returns the event type.
+	// Type is a identifier to distinguish different events.
 	Type() EventType
 
 	// Remote means is a output event when returns true.
 	Remote() bool
 }
 
-// SerializationEvent is used in Collector to bridge Queue.
-type SerializationEvent interface {
+// SerializableEvent is used in Collector to bridge Queue.
+type SerializableEvent interface {
 	Event
 
 	// ToBytes serialize the event to a byte array.
 	ToBytes() []byte
 
 	// FromBytes deserialize the byte array to an event.
-	FromBytes(bytes []byte) SerializationEvent
+	FromBytes(bytes []byte) SerializableEvent
 }
 
 // BatchEvents is used by Forwarder to forward.

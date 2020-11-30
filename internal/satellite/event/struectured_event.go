@@ -74,6 +74,6 @@ func (s *StructuredInputEvent) ToBytes() []byte {
 	return s.etb(s)
 }
 
-func (s *StructuredInputEvent) FromBytes(bytes []byte) api.SerializationEvent {
+func (s *StructuredInputEvent) FromBytes(bytes []byte) api.SerializableEvent {
 	return s.bte(bytes)
 }
