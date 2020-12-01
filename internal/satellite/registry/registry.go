@@ -28,13 +28,17 @@ import (
 // such as collector, client, or queue. And the 3rd level is the plugin name, that is also
 // used as key in pluginRegistry.
 type pluginRegistry struct {
-	collectorCreatorRegistry map[string]CollectorCreator
-	queueCreatorRegistry     map[string]QueueCreator
-	filterCreatorRegistry    map[string]FilterCreator
-	forwarderCreatorRegistry map[string]ForwarderCreator
-	parserCreatorRegistry    map[string]ParserCreator
-	clientCreatorRegistry    map[string]ClientCreator
+	collectorCreatorRegistry  map[string]CollectorCreator
+	queueCreatorRegistry      map[string]QueueCreator
+	filterCreatorRegistry     map[string]FilterCreator
+	forwarderCreatorRegistry  map[string]ForwarderCreator
+	parserCreatorRegistry     map[string]ParserCreator
+	clientCreatorRegistry     map[string]ClientCreator
+	fallbackerCreatorRegistry map[string]FallbackerCreator
 }
+
+// FallbackerCreator creates a Fallbacker according to the config.
+type FallbackerCreator func(config map[string]interface{}) (api.Fallbacker, error)
 
 // ClientCreator creates a Client according to the config.
 type ClientCreator func(config map[string]interface{}) (api.Client, error)
@@ -55,6 +59,12 @@ type ForwarderCreator func(config map[string]interface{}) (api.Forwarder, error)
 type ParserCreator func(config map[string]interface{}) (api.Parser, error)
 
 var reg *pluginRegistry
+
+// RegisterFallbacker registers the fallbackerType as RegisterFallbacker.
+func RegisterFallbacker(fallbackerType string, creator FallbackerCreator) {
+	fmt.Printf("Create %s fallbacker creator register successfully", fallbackerType)
+	reg.fallbackerCreatorRegistry[fallbackerType] = creator
+}
 
 // RegisterClient registers the clientType as ClientCreator.
 func RegisterClient(clientType string, creator ClientCreator) {
@@ -158,6 +168,18 @@ func CreateParser(parserType string, config map[string]interface{}) (api.Parser,
 	return nil, fmt.Errorf("unsupported parser type: %v", parserType)
 }
 
+// CreateFallbacker creates a fallbacker according to the fallbackerType.
+func CreateFallbacker(fallbackerType string, config map[string]interface{}) (api.Fallbacker, error) {
+	if c, ok := reg.fallbackerCreatorRegistry[fallbackerType]; ok {
+		fallbacker, err := c(config)
+		if err != nil {
+			return nil, fmt.Errorf("create fallbacker failed: %v", err)
+		}
+		return fallbacker, nil
+	}
+	return nil, fmt.Errorf("unsupported fallbacker type: %v", fallbackerType)
+}
+
 func init() {
 	if reg == nil {
 		reg = &pluginRegistry{}
@@ -167,5 +189,6 @@ func init() {
 		reg.forwarderCreatorRegistry = make(map[string]ForwarderCreator)
 		reg.parserCreatorRegistry = make(map[string]ParserCreator)
 		reg.clientCreatorRegistry = make(map[string]ClientCreator)
+		reg.fallbackerCreatorRegistry = make(map[string]FallbackerCreator)
 	}
 }

@@ -17,30 +17,10 @@
 
 package api
 
-// Queue is a plugin interface, that defines new queues.
-type Queue interface {
-	Initializer
-	Closer
-
-	// Publisher get the only publisher for the current queue.
-	Publisher() QueuePublisher
-
-	// Consumer get the only consumer for the current queue.
-	Consumer() QueueConsumer
-}
-
-// QueuePublisher is a plugin interface, that defines new queue publishers.
-type QueuePublisher interface {
+// Fallbacker is a plugin interface, that defines some fallback strategies.
+type Fallbacker interface {
 	Initializer
 
-	// Enqueue push a inputEvent into the queue.
-	Enqueue(event *SerializableEvent) error
-}
-
-// QueueConsumer is a plugin interface, that defines new queue consumers.
-type QueueConsumer interface {
-	Initializer
-
-	// Dequeue pop an event form the Queue. When the queue is empty, the method would be blocked.
-	Dequeue() (event *SerializableEvent, offset int64, err error)
+	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
+	FallBack(batch BatchEvents) Fallbacker
 }

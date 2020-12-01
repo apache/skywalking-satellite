@@ -66,7 +66,7 @@ func (s *StructuredEvent) Type() api.EventType {
 	return s.eventType
 }
 
-func (s *StructuredEvent) Remote() bool {
+func (s *StructuredEvent) IsRemote() bool {
 	return s.remote
 }
 

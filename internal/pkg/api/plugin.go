@@ -32,27 +32,24 @@ import "io"
 //                                           |  ---------------------------------------  |
 //                                           | |             OutputEventContext        | |
 //                                           |  ---------------------------------------  |
-//                                            -------------------------------------------
-//                             				   ||
-//                                             ||        --------------------------------
-//                                             ||     ->|         Sharing Client        |
-//                                             ||    |   --------------------------------
-//                                             ||    |
-//                                             \/    |            SegmentSender
-//                                            ---    |  ---------------------------------
-//                                           |   |   | |  -----------       -----------  |
-//                                           | D |   |-| |BatchBuffer| ==> | Forwarder | |
-//                                           | i |   | |  -----------       -----------  |
-//                                           | s |   |  ---------------------------------
-//                                           | p |   |
-//                                           | a |=> |              .......                 ===> Kafka/OAP
-//                                           | t |   |
-//                                           | c |   |             MeterSender
-//                                           | h |   | -----------------------------------
-//                                           | e |   -|  -------------       -----------  |
-//                                           | r |    | | BatchBuffer | ==> | Forwarder | |
-//                                           |   |    |  -------------       -----------  |
-//                                            ---      -----------------------------------
+//                                            -------------------------------------------      -----------------
+//                                             ||                                       ----->| Sharing Client  |
+//                                             \/              Sender                  |       -----------------
+//                                             ----------------------------------------|-
+//                                            |  ---       ---                         | |
+//                                            | | B |     | D |     -----------------  | |
+//                                            | | A |     | I |    |Segment Forwarder|-| |
+//                                            | | T |     | S |    |    (Fallbacker) | | |
+//                                            | | C |     | P |     -----------------  | |
+//                                            | | H |  => | A |                        | | ===> Kakfa/OAP
+//                                            | | B |     | T | =>        ......       | |
+//                                            | | U |     | C |                        | |
+//                                            | | F |     | H |     -----------------  | |
+//                                            | | F |     | E |    | Meter  Forwarder|-| |
+//                                            | | E |     | R |    |     (Fallbacker | | |
+//                                            | | R |     |   |     -----------------  | |
+//                                            |  ---       ---                         | |
+//                                             ----------------------------------------
 //
 //
 // 1. The Collector plugin would fetch or receive the input data.
@@ -63,17 +60,18 @@ import "io"
 //    Queue. Once an event is pulled by the consumer of Queue, the event will be processed by
 //    the filters in Processor.
 // 4. The Filter plugin would process the event to create a new event. Next, the event is passed
-//    to the next filter to do the same things until the whole filters are performed. The events
-//    labeled with RemoteEvent type would be stored in the OutputEventContext. When the processing
-//    finished, the OutputEventContext. After processing, the events in OutputEventContext would
-//    be partitioned by EventType and sent to the different BatchBuffers, such as Segment
-//    BatchBuffer, Jvm BatchBuffer, and Meter BatchBuffer.
-// 5. The Dispatcher would dispatch the buffers to different forwarders by a mapping from EventType
-//    to Forwarder.
-// 6. When the timer is triggered or the capacity limit is reached, the OutputEventContexts would
-//    be converted to BatchEvents and sent to Forwarder.
-// 7. The Follower would send BatchEvents and ack Queue when successful process this batch
-//    events.
+//    to the next filter to do the same things until the whole filters are performed. All created
+//    events would be stored in the OutputEventContext. However, only the events labeled with
+//    RemoteEvent type would be forwarded by Forwarder.
+// 5. After processing, the events in OutputEventContext would be stored in the BatchBuffer. When
+//    the timer is triggered or the capacity limit is reached, the events in BatchBuffer would be
+//    partitioned by EventType and sent to the different Forwarders, such as Segment Forwarder and
+//    Meter Forwarder.
+// 6. The Follower in different Senders would share with the remote client to avoid make duplicate
+//    connections and have the same Fallbacker(FallBack strategy) to process data. When all
+//    forwarders send success or process success in Fallbacker, the dispatcher would also ack the
+//    batch is a success.
+
 // ============================================================================================
 //
 // There are four stages in the lifecycle of Satellite plugins, which are the initial phase,

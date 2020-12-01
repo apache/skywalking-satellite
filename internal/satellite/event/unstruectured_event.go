@@ -66,7 +66,7 @@ func (s *UnstructuredEvent) Type() api.EventType {
 	return s.eventType
 }
 
-func (s *UnstructuredEvent) Remote() bool {
+func (s *UnstructuredEvent) IsRemote() bool {
 	return s.remote
 }
 

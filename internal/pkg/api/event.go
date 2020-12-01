@@ -50,11 +50,11 @@ type Event interface {
 	// Time returns the event time.
 	Time() time.Time
 
-	// Type is a identifier to distinguish different events.
+	// Type is to distinguish different events.
 	Type() EventType
 
-	// Remote means is a output event when returns true.
-	Remote() bool
+	// IsRemote means is a output event when returns true.
+	IsRemote() bool
 }
 
 // SerializableEvent is used in Collector to bridge Queue.
@@ -69,25 +69,17 @@ type SerializableEvent interface {
 }
 
 // BatchEvents is used by Forwarder to forward.
-type BatchEvents struct {
-	// Events stores a batch event generating when BatchBuffer reaches its capacity.
-	Events []Event
-
-	// The start offset of the batch.
-	StartOffset int64
-
-	// The end offset of the batch.
-	EndOffset int64
-}
+type BatchEvents []Event
 
 // OutputEventContext is a container to store the output context.
 type OutputEventContext struct {
 	context map[string]Event
+	Offset  int64
 }
 
 // Put puts the incoming event into the context when the event is a remote event.
 func (c *OutputEventContext) Put(event Event) {
-	if event.Remote() {
+	if event.IsRemote() {
 		c.context[event.Name()] = event
 	}
 }
