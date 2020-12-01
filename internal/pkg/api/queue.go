@@ -31,16 +31,12 @@ type Queue interface {
 
 // QueuePublisher is a plugin interface, that defines new queue publishers.
 type QueuePublisher interface {
-	Initializer
-
 	// Enqueue push a inputEvent into the queue.
 	Enqueue(event *SerializableEvent) error
 }
 
 // QueueConsumer is a plugin interface, that defines new queue consumers.
 type QueueConsumer interface {
-	Initializer
-
 	// Dequeue pop an event form the Queue. When the queue is empty, the method would be blocked.
 	Dequeue() (event *SerializableEvent, offset int64, err error)
 }

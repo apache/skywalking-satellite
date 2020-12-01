@@ -38,5 +38,5 @@ type Forwarder interface {
 	Forward(batch BatchEvents)
 
 	// ForwardType returns the supporting event type that could be forwarded.
-	ForwardType()
+	ForwardType() EventType
 }
