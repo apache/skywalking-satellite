@@ -66,28 +66,29 @@ func init() {
 // RegisterPlugin registers the pluginType as plugin.
 func RegisterPlugin(pluginType string, plugin interface{}) {
 	t := reflect.TypeOf(plugin)
-	if t.Implements(collectorType) {
+	switch {
+	case t.Implements(collectorType):
 		fmt.Printf("register %s collector successfully ", t.String())
 		reg.collectorRegistry[pluginType] = plugin.(api.Collector)
-	} else if t.Implements(queueType) {
+	case t.Implements(queueType):
 		fmt.Printf("register %s queue successfully ", t.String())
 		reg.queueRegistry[pluginType] = plugin.(api.Queue)
-	} else if t.Implements(filterType) {
+	case t.Implements(filterType):
 		fmt.Printf("register %s filter successfully ", t.String())
 		reg.filterRegistry[pluginType] = plugin.(api.Filter)
-	} else if t.Implements(forwardType) {
+	case t.Implements(forwardType):
 		fmt.Printf("register %s forwarder successfully ", t.String())
 		reg.forwarderRegistry[pluginType] = plugin.(api.Forwarder)
-	} else if t.Implements(parserType) {
+	case t.Implements(parserType):
 		fmt.Printf("register %s parser successfully ", t.String())
 		reg.parserRegistry[pluginType] = plugin.(api.Parser)
-	} else if t.Implements(clientType) {
+	case t.Implements(clientType):
 		fmt.Printf("register %s client successfully ", t.String())
 		reg.clientRegistry[pluginType] = plugin.(api.Client)
-	} else if t.Implements(fallbackerType) {
+	case t.Implements(fallbackerType):
 		fmt.Printf("register %s fallbacker successfully ", t.String())
 		reg.fallbackerRegistry[pluginType] = plugin.(api.Fallbacker)
-	} else {
+	default:
 		fmt.Printf("this type is not supported to register : %s", t.String())
 	}
 }
