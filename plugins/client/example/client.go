@@ -15,28 +15,53 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package example
 
-//   Init()     Initiating stage: Init plugin by config
-//    ||
-//    \/
-//   Prepare()   Preparing stage: Prepare the Forwarder, such as get remote client.
-//    ||
-//    \/
-//   Forward()  Running stage: Forward the batch events
-//    ||
-//    \/
-//   Close()    Closing stage: Close the Collector, such as close connection with SkyWalking javaagent.
+type demoClient struct {
+	a string
+}
+type demoClient2 struct {
+	a string
+}
+type demoClient3 struct {
+	a string
+}
 
-// Forwarder is a plugin interface, that defines new forwarders.
-type Forwarder interface {
-	Initializer
-	Preparer
-	Closer
+func (d demoClient) Description() string {
+	panic("implement me")
+}
 
-	// Forward the batch events to the external services, such as Kafka MQ and SkyWalking OAP cluster.
-	Forward(batch BatchEvents)
+func (d demoClient) InitPlugin(config map[string]interface{}) {
 
-	// ForwardType returns the supporting event type that could be forwarded.
-	ForwardType() EventType
+}
+
+func (d demoClient) Prepare() {
+	panic("implement me")
+}
+
+func (d demoClient) GetConnectedClient() interface{} {
+	panic("implement me")
+}
+
+func (d demoClient) Close() {
+	panic("implement me")
+}
+
+func (d *demoClient2) Description() string {
+	panic("implement me")
+}
+
+func (d *demoClient2) InitPlugin(config map[string]interface{}) {
+}
+
+func (d *demoClient2) Prepare() {
+	panic("implement me")
+}
+
+func (d *demoClient2) GetConnectedClient() interface{} {
+	panic("implement me")
+}
+
+func (d *demoClient2) Close() {
+	panic("implement me")
 }

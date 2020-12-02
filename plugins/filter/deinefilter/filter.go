@@ -15,7 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package deinefilter
+
+import (
+	"reflect"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+)
 
 //   Init()        Initiating stage: Init plugin by config
 //    ||
@@ -25,8 +32,19 @@ package api
 
 // Filter is a plugin interface, that defines new pipeline filters.
 type Filter interface {
-	Initializer
+	plugin.Plugin
 
 	// Process produces a new event by processing incoming event.
-	Process(in Event) Event
+	Process(in event.Event) event.Event
+}
+
+var FilterCategory = reflect.TypeOf((*Filter)(nil)).Elem()
+
+// Get filter plugin.
+func GetFilter(pluginName string, config map[string]interface{}) Filter {
+	return plugin.Get(FilterCategory, pluginName, config).(Filter)
+}
+
+func init() {
+	plugin.AddPluginCategory(FilterCategory)
 }

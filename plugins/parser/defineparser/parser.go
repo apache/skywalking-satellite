@@ -15,18 +15,35 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package defineparser
+
+import (
+	"reflect"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+)
 
 //
 // Collector ==> RawData ==> Parser ==> SerializableEvent
 //
 // Parser is a plugin interface, that defines new Parsers for Collector plugin.
 type Parser interface {
-	Initializer
+	plugin.Plugin
 
 	// ParseBytes parse the byte buffer into events.
-	ParseBytes(bytes []byte) ([]SerializableEvent, error)
+	ParseBytes(bytes []byte) ([]event.SerializableEvent, error)
 
 	// ParseStr parse the string into events.
-	ParseStr(str string) ([]SerializableEvent, error)
+	ParseStr(str string) ([]event.SerializableEvent, error)
+}
+
+var ParserCategory = reflect.TypeOf((*Parser)(nil)).Elem()
+
+func GetParser(pluginName string, config map[string]interface{}) Parser {
+	return plugin.Get(ParserCategory, pluginName, config).(Parser)
+}
+
+func init() {
+	plugin.AddPluginCategory(ParserCategory)
 }

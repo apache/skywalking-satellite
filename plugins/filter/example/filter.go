@@ -15,25 +15,40 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package example
 
-//   Init()     Initial stage: Init plugin by config
-//    ||
-//    \/
-//   Prepare()   Preparing stage: Prepare the collector, such as build connection with SkyWalking javaagent.
-//    ||
-//    \/
-//   Next()     Running stage: When Collector collect a data, the data would be fetched by the upstream
-//    ||                       component through this method.
-//    \/
-//   Close()    Closing stage: Close the Collector, such as close connection with SkyWalking javaagent.
+import "github.com/apache/skywalking-satellite/internal/pkg/event"
 
-// Collector is a plugin interface, that defines new collectors.
-type Collector interface {
-	Initializer
-	Preparer
-	Closer
+type demoFilter struct {
+	a string
+}
 
-	// Next return the data from the input.
-	Next() (SerializableEvent, error)
+type demoFilter2 struct {
+	a string
+}
+
+type demoFilter3 struct {
+	a string
+}
+
+func (d *demoFilter) Description() string {
+	panic("implement me")
+}
+
+func (d *demoFilter) InitPlugin(config map[string]interface{}) {
+}
+
+func (d *demoFilter) Process(in event.Event) event.Event {
+	panic("implement me")
+}
+
+func (d demoFilter2) Description() string {
+	panic("implement me")
+}
+
+func (d demoFilter2) InitPlugin(config map[string]interface{}) {
+}
+
+func (d demoFilter2) Process(in event.Event) event.Event {
+	panic("implement me")
 }

@@ -15,12 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package definefallbacker
+
+import (
+	"reflect"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+)
 
 // Fallbacker is a plugin interface, that defines some fallback strategies.
 type Fallbacker interface {
-	Initializer
+	plugin.Plugin
 
 	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch BatchEvents) Fallbacker
+	FallBack(batch event.BatchEvents) Fallbacker
+}
+
+var FallbackerCategory = reflect.TypeOf((*Fallbacker)(nil)).Elem()
+
+// Get Fallbacker plugin.
+func GetFallbacker(pluginName string, config map[string]interface{}) Fallbacker {
+	return plugin.Get(FallbackerCategory, pluginName, config).(Fallbacker)
+}
+
+func init() {
+	plugin.AddPluginCategory(FallbackerCategory)
 }

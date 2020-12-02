@@ -20,7 +20,7 @@ package event
 import (
 	"time"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/api"
+	"github.com/apache/skywalking-satellite/internal/pkg/event"
 )
 
 // Event defines the common fields.
@@ -28,15 +28,15 @@ type Event struct {
 	name      string
 	timestamp time.Time
 	meta      map[string]string
-	eventType api.EventType
+	eventType event.Type
 	remote    bool
 }
 
 // ETBFunc serialize event to bytes.
-type ETBFunc func(event api.SerializableEvent) []byte
+type ETBFunc func(event event.SerializableEvent) []byte
 
 // BToFunc deserialize bytes to event.
-type BToFunc func(bytes []byte) api.SerializableEvent
+type BToFunc func(bytes []byte) event.SerializableEvent
 
 // StructuredEvent works when the data is a struct type.
 type StructuredEvent struct {
@@ -76,7 +76,7 @@ func (s *Event) Time() time.Time {
 	return s.timestamp
 }
 
-func (s *Event) Type() api.EventType {
+func (s *Event) Type() event.Type {
 	return s.eventType
 }
 
@@ -96,7 +96,7 @@ func (s *StructuredSerializableEvent) ToBytes() []byte {
 	return s.etb(s)
 }
 
-func (s *StructuredSerializableEvent) FromBytes(bytes []byte) api.SerializableEvent {
+func (s *StructuredSerializableEvent) FromBytes(bytes []byte) event.SerializableEvent {
 	return s.bte(bytes)
 }
 
@@ -104,6 +104,6 @@ func (u *UnstructuredSerializableEvent) ToBytes() []byte {
 	return u.etb(u)
 }
 
-func (u *UnstructuredSerializableEvent) FromBytes(bytes []byte) api.SerializableEvent {
+func (u *UnstructuredSerializableEvent) FromBytes(bytes []byte) event.SerializableEvent {
 	return u.bte(bytes)
 }

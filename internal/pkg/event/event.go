@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package event
 
 import (
 	"fmt"
@@ -25,7 +25,7 @@ import (
 // The event type.
 const (
 	// Mapping to the type supported by SkyWalking OAP.
-	_ EventType = iota
+	_ Type = iota
 	MetricsEvent
 	ProfilingEvent
 	SegmentEvent
@@ -34,7 +34,7 @@ const (
 	LogEvent
 )
 
-type EventType int32
+type Type int32
 
 // Event that implement this interface would be allowed to transmit in the Satellite.
 type Event interface {
@@ -51,7 +51,7 @@ type Event interface {
 	Time() time.Time
 
 	// Type is to distinguish different events.
-	Type() EventType
+	Type() Type
 
 	// IsRemote means is a output event when returns true.
 	IsRemote() bool

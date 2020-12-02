@@ -15,14 +15,48 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package example
 
-// Client is a plugin interface, that defines new clients, such as gRPC client and Kafka client.
-type Client interface {
-	Initializer
-	Preparer
-	Closer
+import "github.com/apache/skywalking-satellite/internal/pkg/event"
 
-	// GetConnection returns the connected client to publish events.
-	GetConnectedClient() interface{}
+type demoForwarder struct {
+	a string
+}
+
+type demoForwarder2 struct {
+	a string
+}
+
+type demoForwarder3 struct {
+	a string
+}
+
+func (d *demoForwarder) Description() string {
+	panic("implement me")
+}
+
+func (d *demoForwarder) InitPlugin(config map[string]interface{}) {
+}
+
+func (d *demoForwarder) Forward(batch event.BatchEvents) {
+	panic("implement me")
+}
+
+func (d demoForwarder2) Description() string {
+	panic("implement me")
+}
+
+func (d demoForwarder2) InitPlugin(config map[string]interface{}) {
+}
+
+func (d demoForwarder2) Forward(batch event.BatchEvents) {
+	panic("implement me")
+}
+
+func (d demoForwarder2) ForwardType() event.Type {
+	panic("implement me")
+}
+
+func (d *demoForwarder) ForwardType() event.Type {
+	panic("implement me")
 }

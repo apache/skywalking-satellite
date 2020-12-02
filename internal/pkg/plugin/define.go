@@ -15,9 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
-
-import "io"
+package plugin
 
 // The following graph illustrates the relationship between different plugin interface in api package.
 //
@@ -78,19 +76,9 @@ import "io"
 // preparing phase, running phase, and closing phase. In the running phase, each plugin has
 // its own interface definition. However, the other three phases have to be defined uniformly.
 
-// NOTICE: Each plugin should have a unique method to distinguish from other plugins.
-
-// Initializer is used in initial phase to initialize the every plugins.
-type Initializer interface {
-	// Init initialize the specific plugin and would return error when the configuration is error.
-	InitPlugin(config map[string]interface{}) error
+type Plugin interface {
+	// Description returns the description of the specific plugin.
+	Description() string
+	// Init initialize the specific plugin.
+	InitPlugin(config map[string]interface{})
 }
-
-// Preparer is used in preparing phase to launch plugins, such as build connection.
-type Preparer interface {
-	// Prepare triggers the specific plugin to work, such as build connection.
-	Prepare()
-}
-
-// Closer is used in closing phase to close plugins, such as close connection.
-type Closer io.Closer
