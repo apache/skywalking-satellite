@@ -81,7 +81,7 @@ import "io"
 // Initializer is used in initial phase to initialize the every plugins.
 type Initializer interface {
 	// Init initialize the specific plugin and would return error when the configuration is error.
-	InitPlugin() error
+	InitPlugin(config map[string]interface{}) error
 }
 
 // Preparer is used in preparing phase to launch plugins, such as build connection.
