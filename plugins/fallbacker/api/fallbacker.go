@@ -15,33 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package defineclient
+package api
 
 import (
 	"reflect"
 
+	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-// Client is a plugin interface, that defines new clients, such as gRPC client and Kafka client.
-type Client interface {
+// Fallbacker is a plugin interface, that defines some fallback strategies.
+type Fallbacker interface {
 	plugin.Plugin
 
-	// Prepare would make connection with outer service.
-	Prepare()
-	// GetConnection returns the connected client to publish events.
-	GetConnectedClient() interface{}
-	// Close the connection with outer service.
-	Close()
+	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
+	FallBack(batch event.BatchEvents) Fallbacker
 }
 
-var ClientCategory = reflect.TypeOf((*Client)(nil)).Elem()
+var FallbackerCategory = reflect.TypeOf((*Fallbacker)(nil)).Elem()
 
-// Get client plugin.
-func GetClient(pluginName string, config map[string]interface{}) Client {
-	return plugin.Get(ClientCategory, pluginName, config).(Client)
+// Get Fallbacker plugin.
+func GetFallbacker(pluginName string, config map[string]interface{}) Fallbacker {
+	return plugin.Get(FallbackerCategory, pluginName, config).(Fallbacker)
 }
 
 func init() {
-	plugin.AddPluginCategory(ClientCategory)
+	plugin.AddPluginCategory(FallbackerCategory)
 }

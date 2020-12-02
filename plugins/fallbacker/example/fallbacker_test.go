@@ -21,7 +21,7 @@ import (
 	"testing"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/fallbacker/definefallbacker"
+	"github.com/apache/skywalking-satellite/plugins/fallbacker/api"
 )
 
 func Test_Register(t *testing.T) {
@@ -67,5 +67,5 @@ func assertPanic(t *testing.T, name string, config map[string]interface{}, exist
 			t.Errorf("the plugin %s is not pass", name)
 		}
 	}()
-	definefallbacker.GetFallbacker(name, config)
+	api.GetFallbacker(name, config)
 }

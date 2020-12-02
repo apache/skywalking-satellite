@@ -21,7 +21,7 @@ import (
 	"testing"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/filter/deinefilter"
+	"github.com/apache/skywalking-satellite/plugins/filter/api"
 )
 
 func Test_Register(t *testing.T) {
@@ -67,5 +67,5 @@ func assertPanic(t *testing.T, name string, config map[string]interface{}, exist
 			t.Errorf("the plugin %s is not pass", name)
 		}
 	}()
-	deinefilter.GetFilter(name, config)
+	api.GetFilter(name, config)
 }

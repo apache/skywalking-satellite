@@ -18,7 +18,7 @@
 package example
 
 import (
-	"github.com/apache/skywalking-satellite/plugins/queue/definequeue"
+	"github.com/apache/skywalking-satellite/plugins/queue/api"
 )
 
 type demoQueue struct {
@@ -40,11 +40,11 @@ func (d *demoQueue) Description() string {
 func (d *demoQueue) InitPlugin(config map[string]interface{}) {
 }
 
-func (d *demoQueue) Publisher() definequeue.QueuePublisher {
+func (d *demoQueue) Publisher() api.QueuePublisher {
 	panic("implement me")
 }
 
-func (d *demoQueue) Consumer() definequeue.QueueConsumer {
+func (d *demoQueue) Consumer() api.QueueConsumer {
 	panic("implement me")
 }
 
@@ -59,11 +59,11 @@ func (d demoQueue2) Description() string {
 func (d demoQueue2) InitPlugin(config map[string]interface{}) {
 }
 
-func (d demoQueue2) Publisher() definequeue.QueuePublisher {
+func (d demoQueue2) Publisher() api.QueuePublisher {
 	panic("implement me")
 }
 
-func (d demoQueue2) Consumer() definequeue.QueueConsumer {
+func (d demoQueue2) Consumer() api.QueueConsumer {
 	panic("implement me")
 }
 

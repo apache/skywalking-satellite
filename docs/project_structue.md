@@ -5,7 +5,7 @@
 - internal/satellite: The core of Satellite.
 - plugins: Contains all plugins.
 - plugins/{type}: Contains the plugins of this {type}. Satellite has 6 plugin types, which are collector, queue, parser, filter, client, and forward.
-- plugins/{type}/define{type}: Contains the plugin define.
+- plugins/api: Contains the plugin definition.
 - plugins/{type}/{plugin-name}: Contains the specific plugin, and {plugin-name}-{type} would be registered as the plugin unique name in the registry. 
 
 

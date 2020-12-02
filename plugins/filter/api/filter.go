@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package defineparser
+package api
 
 import (
 	"reflect"
@@ -24,26 +24,27 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-//
-// Collector ==> RawData ==> Parser ==> SerializableEvent
-//
-// Parser is a plugin interface, that defines new Parsers for Collector plugin.
-type Parser interface {
+//   Init()        Initiating stage: Init plugin by config
+//    ||
+//    \/
+//   Process()     Running stage:    Process the input event to convert to new event. During the processing,
+//                                   the method should also tag event type to mark the event category.
+
+// Filter is a plugin interface, that defines new pipeline filters.
+type Filter interface {
 	plugin.Plugin
 
-	// ParseBytes parse the byte buffer into events.
-	ParseBytes(bytes []byte) ([]event.SerializableEvent, error)
-
-	// ParseStr parse the string into events.
-	ParseStr(str string) ([]event.SerializableEvent, error)
+	// Process produces a new event by processing incoming event.
+	Process(in event.Event) event.Event
 }
 
-var ParserCategory = reflect.TypeOf((*Parser)(nil)).Elem()
+var FilterCategory = reflect.TypeOf((*Filter)(nil)).Elem()
 
-func GetParser(pluginName string, config map[string]interface{}) Parser {
-	return plugin.Get(ParserCategory, pluginName, config).(Parser)
+// Get filter plugin.
+func GetFilter(pluginName string, config map[string]interface{}) Filter {
+	return plugin.Get(FilterCategory, pluginName, config).(Filter)
 }
 
 func init() {
-	plugin.AddPluginCategory(ParserCategory)
+	plugin.AddPluginCategory(FilterCategory)
 }

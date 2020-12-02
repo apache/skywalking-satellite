@@ -21,7 +21,7 @@ import (
 	"testing"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/parser/defineparser"
+	"github.com/apache/skywalking-satellite/plugins/parser/api"
 )
 
 func Test_Register(t *testing.T) {
@@ -67,5 +67,5 @@ func assertPanic(t *testing.T, name string, config map[string]interface{}, exist
 			t.Errorf("the plugin %s is not pass", name)
 		}
 	}()
-	defineparser.GetParser(name, config)
+	api.GetParser(name, config)
 }

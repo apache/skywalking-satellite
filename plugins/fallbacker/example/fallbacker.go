@@ -19,7 +19,7 @@ package example
 
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/plugins/fallbacker/definefallbacker"
+	"github.com/apache/skywalking-satellite/plugins/fallbacker/api"
 )
 
 type demoFallbacker struct {
@@ -41,7 +41,7 @@ func (d *demoFallbacker) Description() string {
 func (d *demoFallbacker) InitPlugin(config map[string]interface{}) {
 }
 
-func (d *demoFallbacker) FallBack(batch event.BatchEvents) definefallbacker.Fallbacker {
+func (d *demoFallbacker) FallBack(batch event.BatchEvents) api.Fallbacker {
 	panic("implement me")
 }
 
@@ -52,6 +52,6 @@ func (d demoFallbacker2) Description() string {
 func (d demoFallbacker2) InitPlugin(config map[string]interface{}) {
 }
 
-func (d demoFallbacker2) FallBack(batch event.BatchEvents) definefallbacker.Fallbacker {
+func (d demoFallbacker2) FallBack(batch event.BatchEvents) api.Fallbacker {
 	panic("implement me")
 }
