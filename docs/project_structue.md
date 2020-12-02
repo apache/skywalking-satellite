@@ -31,32 +31,32 @@
 │       └── ...
 ├── plugins
 │   ├── client
-│   │   ├── defineclient
+│   │   ├── api
 │   │   │   └── client.go
 │   │   ├── grpc
 │   │   └── kakka
 │   ├── collector
-│   │   ├── definecollector
+│   │   ├── api
 │   │   │   └── collector.go
 │   │   ├── example
 │   │   └── log-grpc
 │   │       └── README.md
 │   ├── fallbacker
-│   │   ├── definefallbacker
+│   │   ├── api
 │   │   │   └── fallbacker.go
 │   ├── filter
-│   │   ├── deinefilter
+│   │   ├── api
 │   │   │   └── filter.go
 │   ├── forwarder
-│   │   ├── defineforwarder
+│   │   ├── api
 │   │   │   └── forwarder.go
 │   ├── parser
-│   │   ├── defineparser
+│   │   ├── api
 │   │   │   └── parser.go
 │   │   └── gork
 │   │       └── README.md
 │   └── queue
-│       ├── definequeue
+│       ├── api
 │       │   └── queue.go
 │       └── mmap
 │           └── README.md
