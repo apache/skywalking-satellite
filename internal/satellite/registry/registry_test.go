@@ -335,7 +335,7 @@ func TestRegisterClientPlugin(t *testing.T) {
 	}
 }
 
-func (d demoCollector) InitPlugin() error {
+func (d demoCollector) InitPlugin(config map[string]interface{}) error {
 	println("demoCollector init")
 	return nil
 }
@@ -354,7 +354,7 @@ func (d demoCollector) Next() (api.SerializableEvent, error) {
 	return nil, nil
 }
 
-func (d demoParser) InitPlugin() error {
+func (d demoParser) InitPlugin(config map[string]interface{}) error {
 	println("demoParser init")
 	return nil
 }
@@ -369,7 +369,7 @@ func (d demoParser) ParseStr(str string) ([]api.SerializableEvent, error) {
 	return nil, nil
 }
 
-func (d demoQueue) InitPlugin() error {
+func (d demoQueue) InitPlugin(config map[string]interface{}) error {
 	println("demoQueue init")
 	return nil
 }
@@ -389,7 +389,7 @@ func (d demoQueue) Consumer() api.QueueConsumer {
 	return nil
 }
 
-func (d demoFilter) InitPlugin() error {
+func (d demoFilter) InitPlugin(config map[string]interface{}) error {
 	println("demoFilter init")
 	return nil
 }
@@ -399,7 +399,7 @@ func (d demoFilter) Process(in api.Event) api.Event {
 	return nil
 }
 
-func (d demoForwarder) InitPlugin() error {
+func (d demoForwarder) InitPlugin(config map[string]interface{}) error {
 	println("demoForwarder Process")
 	return nil
 }
@@ -422,7 +422,7 @@ func (d demoForwarder) ForwardType() api.EventType {
 	return api.SegmentEvent
 }
 
-func (d demoFallbacker) InitPlugin() error {
+func (d demoFallbacker) InitPlugin(config map[string]interface{}) error {
 	println("demoFallbacker init")
 	return nil
 }
@@ -432,7 +432,7 @@ func (d demoFallbacker) FallBack(batch api.BatchEvents) api.Fallbacker {
 	return nil
 }
 
-func (d demoClient) InitPlugin() error {
+func (d demoClient) InitPlugin(config map[string]interface{}) error {
 	println("demoClient init")
 	return nil
 }
