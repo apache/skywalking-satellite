@@ -449,3 +449,7 @@ func (d demoClient) Close() error {
 func TestRegisterPlugin1(t *testing.T) {
 
 }
+
+func (d demoClient) GetConnectedClient() interface{} {
+	panic("implement me")
+}

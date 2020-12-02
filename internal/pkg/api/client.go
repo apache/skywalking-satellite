@@ -22,4 +22,7 @@ type Client interface {
 	Initializer
 	Preparer
 	Closer
+
+	// GetConnection returns the connected client to publish events.
+	GetConnectedClient() interface{}
 }

@@ -78,6 +78,8 @@ import "io"
 // preparing phase, running phase, and closing phase. In the running phase, each plugin has
 // its own interface definition. However, the other three phases have to be defined uniformly.
 
+// NOTICE: Each plugin should have a unique method to distinguish from other plugins.
+
 // Initializer is used in initial phase to initialize the every plugins.
 type Initializer interface {
 	// Init initialize the specific plugin and would return error when the configuration is error.

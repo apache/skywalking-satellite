@@ -20,102 +20,111 @@ package registry
 import (
 	"fmt"
 	"reflect"
+	"sync"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/api"
 )
 
-// The creator registry.
 // All plugins is wrote in ./plugins dir. The plugin type would be as the next level dirs,
 // such as collector, client, or queue. And the 3rd level is the plugin name, that is also
 // used as key in pluginRegistry.
-type pluginRegistry struct {
-	collectorRegistry  map[string]api.Collector
-	queueRegistry      map[string]api.Queue
-	filterRegistry     map[string]api.Filter
-	forwarderRegistry  map[string]api.Forwarder
-	parserRegistry     map[string]api.Parser
-	clientRegistry     map[string]api.Client
-	fallbackerRegistry map[string]api.Fallbacker
-}
 
 // reg is the global plugin registry
-var reg *pluginRegistry
+var reg map[reflect.Type]map[string]interface{}
+var lock sync.Mutex
 
-// Plugin type.
+// Supported plugin types
 var (
 	collectorType  = reflect.TypeOf((*api.Collector)(nil)).Elem()
 	queueType      = reflect.TypeOf((*api.Queue)(nil)).Elem()
 	filterType     = reflect.TypeOf((*api.Filter)(nil)).Elem()
-	forwardType    = reflect.TypeOf((*api.Forwarder)(nil)).Elem()
+	forwarderType  = reflect.TypeOf((*api.Forwarder)(nil)).Elem()
 	parserType     = reflect.TypeOf((*api.Parser)(nil)).Elem()
 	clientType     = reflect.TypeOf((*api.Client)(nil)).Elem()
 	fallbackerType = reflect.TypeOf((*api.Fallbacker)(nil)).Elem()
 )
 
 func init() {
-	reg = &pluginRegistry{}
-	reg.collectorRegistry = make(map[string]api.Collector)
-	reg.queueRegistry = make(map[string]api.Queue)
-	reg.filterRegistry = make(map[string]api.Filter)
-	reg.forwarderRegistry = make(map[string]api.Forwarder)
-	reg.parserRegistry = make(map[string]api.Parser)
-	reg.clientRegistry = make(map[string]api.Client)
-	reg.fallbackerRegistry = make(map[string]api.Fallbacker)
+	reg = make(map[reflect.Type]map[string]interface{})
+	reg[collectorType] = make(map[string]interface{})
+	reg[queueType] = make(map[string]interface{})
+	reg[filterType] = make(map[string]interface{})
+	reg[forwarderType] = make(map[string]interface{})
+	reg[parserType] = make(map[string]interface{})
+	reg[clientType] = make(map[string]interface{})
+	reg[fallbackerType] = make(map[string]interface{})
 }
 
 // RegisterPlugin registers the pluginType as plugin.
-func RegisterPlugin(pluginType string, plugin interface{}) {
+func RegisterPlugin(pluginName string, plugin interface{}) {
+	lock.Lock()
+	defer lock.Unlock()
 	t := reflect.TypeOf(plugin)
-	switch {
-	case t.Implements(collectorType):
-		fmt.Printf("register %s collector successfully ", t.String())
-		reg.collectorRegistry[pluginType] = plugin.(api.Collector)
-	case t.Implements(queueType):
-		fmt.Printf("register %s queue successfully ", t.String())
-		reg.queueRegistry[pluginType] = plugin.(api.Queue)
-	case t.Implements(filterType):
-		fmt.Printf("register %s filter successfully ", t.String())
-		reg.filterRegistry[pluginType] = plugin.(api.Filter)
-	case t.Implements(forwardType):
-		fmt.Printf("register %s forwarder successfully ", t.String())
-		reg.forwarderRegistry[pluginType] = plugin.(api.Forwarder)
-	case t.Implements(parserType):
-		fmt.Printf("register %s parser successfully ", t.String())
-		reg.parserRegistry[pluginType] = plugin.(api.Parser)
-	case t.Implements(clientType):
-		fmt.Printf("register %s client successfully ", t.String())
-		reg.clientRegistry[pluginType] = plugin.(api.Client)
-	case t.Implements(fallbackerType):
-		fmt.Printf("register %s fallbacker successfully ", t.String())
-		reg.fallbackerRegistry[pluginType] = plugin.(api.Fallbacker)
-	default:
-		fmt.Printf("this type is not supported to register : %s", t.String())
+	success := false
+	for pType, pReg := range reg {
+		if t.Implements(pType) {
+			pReg[pluginName] = plugin
+			fmt.Printf("register %s %s successfully ", pluginName, t.String())
+			success = true
+			break
+		}
+	}
+	if !success {
+		fmt.Printf("this type of %s is not supported to register : %s", pluginName, t.String())
 	}
 }
 
-func GetCollector(pluginType string) api.Collector {
-	return reg.collectorRegistry[pluginType]
+func GetCollector(pluginName string) api.Collector {
+	plugin := reg[collectorType][pluginName]
+	if plugin != nil {
+		return plugin.(api.Collector)
+	}
+	return nil
 }
 
-func GetQueue(pluginType string) api.Queue {
-	return reg.queueRegistry[pluginType]
+func GetQueue(pluginName string) api.Queue {
+	plugin := reg[queueType][pluginName]
+	if plugin != nil {
+		return plugin.(api.Queue)
+	}
+	return nil
 }
 
-func GetFilter(pluginType string) api.Filter {
-	return reg.filterRegistry[pluginType]
+func GetFilter(pluginName string) api.Filter {
+	plugin := reg[filterType][pluginName]
+	if plugin != nil {
+		return plugin.(api.Filter)
+	}
+	return nil
 }
 
-func GetForwarder(pluginType string) api.Forwarder {
-	return reg.forwarderRegistry[pluginType]
+func GetForwarder(pluginName string) api.Forwarder {
+	plugin := reg[forwarderType][pluginName]
+	if plugin != nil {
+		return plugin.(api.Forwarder)
+	}
+	return nil
 }
-func GetParser(pluginType string) api.Parser {
-	return reg.parserRegistry[pluginType]
+func GetParser(pluginName string) api.Parser {
+	plugin := reg[parserType][pluginName]
+	if plugin != nil {
+		return plugin.(api.Parser)
+	}
+	return nil
 }
 
-func GetFallbacker(pluginType string) api.Fallbacker {
-	return reg.fallbackerRegistry[pluginType]
+func GetFallbacker(pluginName string) api.Fallbacker {
+	plugin := reg[fallbackerType][pluginName]
+	if plugin != nil {
+		return plugin.(api.Fallbacker)
+	}
+	return nil
 }
 
-func GetClient(pluginType string) api.Client {
-	return reg.clientRegistry[pluginType]
+func GetClient(pluginName string) api.Client {
+	plugin := reg[clientType][pluginName]
+	if plugin != nil {
+		return plugin.(api.Client)
+	}
+	return nil
 }
