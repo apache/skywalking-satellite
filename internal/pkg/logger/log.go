@@ -62,6 +62,9 @@ func Init(opts ...Option) {
 		if f.timePattern == "" {
 			f.timePattern = defaultTimePattern
 		}
+		if !strings.Contains(f.logPattern, "\n") {
+			f.logPattern += "\n"
+		}
 		Log.SetFormatter(f)
 	})
 }

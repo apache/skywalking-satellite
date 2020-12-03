@@ -38,7 +38,7 @@ func TestFormatter_Format(t *testing.T) {
 	}{
 		{
 			name: "logWithEmptyFields",
-			want: []byte("[2020-12-12 12:12:12,012][trace][] - entry1"),
+			want: []byte("[2020-12-12 12:12:12,012][trace][] - entry1\n"),
 			args: args{
 				entry: func() *logrus.Entry {
 					entry := Log.WithTime(time.Date(2020, 12, 12, 12, 12, 12, 12, time.Local).Local())
@@ -50,7 +50,7 @@ func TestFormatter_Format(t *testing.T) {
 		},
 		{
 			name: "logWithFields",
-			want: []byte("[2020-12-12 12:12:12,012][warning][a=b] - entry2"),
+			want: []byte("[2020-12-12 12:12:12,012][warning][a=b] - entry2\n"),
 			args: args{
 				entry: func() *logrus.Entry {
 					entry := Log.WithField("a", "b").WithTime(time.Date(2020, 12, 12, 12, 12, 12, 12, time.Local).Local())
