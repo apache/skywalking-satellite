@@ -52,3 +52,11 @@ jobs:
 
       - name: Test
         run: make test
+  result:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    needs: [build]
+    steps:
+      - name: Build Result
+        run: echo "Just to make the GitHub merge button green"
+
