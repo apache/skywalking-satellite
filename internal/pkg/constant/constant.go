@@ -15,36 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package constant
 
-import (
-	"reflect"
+const (
+	// project name
+	ProjectName = "skywalking-satellite"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	// Module names
+	ClientManagerModule = "client-manager"
+	GathererModule      = "gatherer"
+	ProcessorModule     = "processor"
+	SenderModule        = "sender"
 )
-
-// Client is a plugin interface, that defines new clients, such as gRPC client and Kafka client.
-type Client interface {
-	plugin.Plugin
-
-	// Init would make connection with outer service.
-	Connect() error
-
-	// Return the status of the client.
-	IsConnected() bool
-
-	// GetConnection returns the connected client to publish events.
-	GetConnectedClient() interface{}
-
-	// Close the connection with outer service.
-	Close() error
-}
-
-// Get client plugin.
-func GetClient(config plugin.DefaultConfig) Client {
-	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
-}
-
-func init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Client)(nil)).Elem(), nil, nil, nil)
-}

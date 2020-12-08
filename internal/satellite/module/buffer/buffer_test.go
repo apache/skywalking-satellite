@@ -15,31 +15,58 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package buffer
 
 import (
-	"reflect"
+	"testing"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 )
 
-// Fallbacker is a plugin interface, that defines some fallback strategies.
-type Fallbacker interface {
-	plugin.Plugin
-	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc, callback DisconnectionCallback) Fallbacker
+func TestNewBuffer(t *testing.T) {
+	buffer := NewBatchBuffer(3)
+	tests := []struct {
+		name string
+		args *event.OutputEventContext
+		want int
+	}{
+		{
+			name: "add-1",
+			args: &event.OutputEventContext{Offset: 1},
+			want: 1,
+		},
+		{
+			name: "add-2",
+			args: &event.OutputEventContext{Offset: 2},
+			want: 2,
+		},
+		{
+			name: "add-3",
+			args: &event.OutputEventContext{Offset: 3},
+			want: 3,
+		},
+		{
+			name: "add-4",
+			args: &event.OutputEventContext{Offset: 4},
+			want: 3,
+		},
+		{
+			name: "add-5",
+			args: &event.OutputEventContext{Offset: 5},
+			want: 3,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			buffer.Add(tt.args)
+			if got := buffer.Len(); got != tt.want {
+				t.Errorf("Buffer Len() = %v, want %v", got, tt.want)
+			}
+		})
+	}
 }
 
-type DisconnectionCallback func()
-
-// Get Fallbacker plugin.
-func GetFallbacker(config plugin.DefaultConfig) Fallbacker {
-	return plugin.Get(reflect.TypeOf((*Fallbacker)(nil)).Elem(), config).(Fallbacker)
-}
-
-// init register the Fallbacker interface
 func init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Fallbacker)(nil)).Elem(), nil, nil, nil)
+	log.Init(&log.LoggerConfig{})
 }

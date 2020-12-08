@@ -15,36 +15,37 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package main
 
 import (
-	"reflect"
+	"github.com/urfave/cli/v2"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/satellite/boot"
+	"github.com/apache/skywalking-satellite/internal/satellite/config"
 )
 
-// Client is a plugin interface, that defines new clients, such as gRPC client and Kafka client.
-type Client interface {
-	plugin.Plugin
+var (
+	cmdStart = cli.Command{
+		Name:  "start",
+		Usage: "start satellite",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "config, c",
+				Usage:   "Load configuration from `FILE`",
+				EnvVars: []string{"MOSN_CONFIG"},
+				Value:   "configs/satellite_config.yaml",
+			},
+		},
+		Action: func(c *cli.Context) error {
 
-	// Init would make connection with outer service.
-	Connect() error
+			cfg := loadConfig(c)
+			return boot.Start(cfg)
+		},
+	}
+)
 
-	// Return the status of the client.
-	IsConnected() bool
-
-	// GetConnection returns the connected client to publish events.
-	GetConnectedClient() interface{}
-
-	// Close the connection with outer service.
-	Close() error
-}
-
-// Get client plugin.
-func GetClient(config plugin.DefaultConfig) Client {
-	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
-}
-
-func init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Client)(nil)).Elem(), nil, nil, nil)
+func loadConfig(c *cli.Context) *config.SatelliteConfig {
+	configPath := c.String("config")
+	cfg := config.Load(configPath)
+	return cfg
 }

@@ -1,0 +1,49 @@
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+
+logger:
+  log_pattern: "%time [%level][%field] - %msg"
+  time_pattern: "2006-01-02 15:04:05.001"
+  level: "info"
+
+agents:
+  - common_config:
+      namespace: namespace1
+    gatherer:
+      collector:
+        plugin_name: segment-receiver
+        k: v
+      queue:
+        plugin_name: mmap-queue
+        key: value
+    processor:
+      filters:
+        - plugin_name: filtertype1
+          key: value
+    sender:
+      flush_time: 5000
+      max_buffer_size: 100
+      forwarders:
+        - plugin_name: segment-forwarder
+          key: value
+  - common_config:
+      namespace: sharing
+    client_manager:
+      retry_interval: 5000
+      client:
+        plugin_name: "grpc"
+        k: v

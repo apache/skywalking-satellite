@@ -15,36 +15,20 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package test
 
 import (
-	"reflect"
+	"fmt"
+	"os"
+	"strings"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/pkg/constant"
 )
 
-// Client is a plugin interface, that defines new clients, such as gRPC client and Kafka client.
-type Client interface {
-	plugin.Plugin
-
-	// Init would make connection with outer service.
-	Connect() error
-
-	// Return the status of the client.
-	IsConnected() bool
-
-	// GetConnection returns the connected client to publish events.
-	GetConnectedClient() interface{}
-
-	// Close the connection with outer service.
-	Close() error
-}
-
-// Get client plugin.
-func GetClient(config plugin.DefaultConfig) Client {
-	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
-}
-
-func init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Client)(nil)).Elem(), nil, nil, nil)
+func FindRootPath() (string, error) {
+	pwd, err := os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("could not find the project root path: %v", err)
+	}
+	return pwd[0 : strings.Index(pwd, constant.ProjectName)+len(constant.ProjectName)], nil
 }

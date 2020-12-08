@@ -15,36 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package main
 
 import (
-	"reflect"
+	"os"
+	"time"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/urfave/cli/v2"
 )
 
-// Client is a plugin interface, that defines new clients, such as gRPC client and Kafka client.
-type Client interface {
-	plugin.Plugin
+// Version will be initialized when building
+var Version string = "lastest"
 
-	// Init would make connection with outer service.
-	Connect() error
-
-	// Return the status of the client.
-	IsConnected() bool
-
-	// GetConnection returns the connected client to publish events.
-	GetConnectedClient() interface{}
-
-	// Close the connection with outer service.
-	Close() error
-}
-
-// Get client plugin.
-func GetClient(config plugin.DefaultConfig) Client {
-	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
-}
-
-func init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Client)(nil)).Elem(), nil, nil, nil)
+func main() {
+	app := cli.NewApp()
+	app.Name = "SkyWalking-Satellite"
+	app.Version = Version
+	app.Compiled = time.Now()
+	app.Usage = "Satellite is for collecting APM data."
+	app.Description = "A lightweight collector/sidecar could be deployed closing to the target monitored system, to collect metrics, traces, and logs."
+	app.Commands = []*cli.Command{
+		&cmdStart,
+	}
+	app.Action = cli.ShowAppHelp
+	_ = app.Run(os.Args)
 }

@@ -15,36 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package config
 
 import (
-	"reflect"
-
+	"github.com/apache/skywalking-satellite/internal/pkg/constant"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-// Client is a plugin interface, that defines new clients, such as gRPC client and Kafka client.
-type Client interface {
-	plugin.Plugin
+// Config defines the initialization params for ClientManager.
+type ClientManagerConfig struct {
+	// common config
+	common ModuleCommonConfig
 
-	// Init would make connection with outer service.
-	Connect() error
+	// plugins config
+	ClientConfig plugin.DefaultConfig `mapstructure:"client"` // the client plugin config
 
-	// Return the status of the client.
-	IsConnected() bool
-
-	// GetConnection returns the connected client to publish events.
-	GetConnectedClient() interface{}
-
-	// Close the connection with outer service.
-	Close() error
+	// self config
+	RetryInterval int64 `mapstructure:"retry_interval"` // the client retry interval when disconnected.
 }
 
-// Get client plugin.
-func GetClient(config plugin.DefaultConfig) Client {
-	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
+func (c *ClientManagerConfig) ModuleName() string {
+	return constant.ClientManagerModule
 }
 
-func init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Client)(nil)).Elem(), nil, nil, nil)
+func (c *ClientManagerConfig) NameSpace() string {
+	return c.common.RunningNamespace
 }
