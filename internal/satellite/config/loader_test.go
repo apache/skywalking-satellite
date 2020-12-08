@@ -24,14 +24,9 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/internal/pkg/test"
 )
 
 func TestLoad(t *testing.T) {
-	rootPath, err := test.FindRootPath()
-	if err != nil {
-		panic(err)
-	}
 	type args struct {
 		configPath string
 	}
@@ -42,7 +37,7 @@ func TestLoad(t *testing.T) {
 	}{
 		{
 			name: "Legal configuration",
-			args: args{configPath: rootPath + "/configs/satellite_config.yaml"},
+			args: args{configPath: "../../../configs/satellite_config.yaml"},
 			want: &SatelliteConfig{
 				Logger: &log.LoggerConfig{
 					LogPattern:  "%time [%level][%field] - %msg",
