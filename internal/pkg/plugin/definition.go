@@ -15,36 +15,21 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package plugin
 
-import (
-	"reflect"
-
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-)
-
-// Client is a plugin interface, that defines new clients, such as gRPC client and Kafka client.
-type Client interface {
-	plugin.Plugin
-
-	// Init would make connection with outer service.
-	Connect() error
-
-	// Return the status of the client.
-	IsConnected() bool
-
-	// GetConnection returns the connected client to publish events.
-	GetConnectedClient() interface{}
-
-	// Close the connection with outer service.
-	Close() error
+// Plugin defines the plugin model in Satellite.
+type Plugin interface {
+	// Name returns the name of the specific plugin.
+	Name() string
+	// Description returns the description of the specific plugin.
+	Description() string
 }
 
-// Get client plugin.
-func GetClient(config plugin.DefaultConfig) Client {
-	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
-}
+// NameFinderFunc is used to get the plugin name from different plugin configs.
+type NameFinderFunc func(config interface{}) string
 
-func init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Client)(nil)).Elem(), nil, nil, nil)
-}
+// InitializingFunc is used to initialize the specific plugin.
+type InitializingFunc func(plugin Plugin, config interface{})
+
+// CallbackFunc would be invoked after initializing.
+type CallbackFunc func(plugin Plugin)

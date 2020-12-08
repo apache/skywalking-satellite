@@ -38,12 +38,10 @@ type Parser interface {
 	ParseStr(str string) ([]event.SerializableEvent, error)
 }
 
-var ParserCategory = reflect.TypeOf((*Parser)(nil)).Elem()
-
-func GetParser(pluginName string, config map[string]interface{}) Parser {
-	return plugin.Get(ParserCategory, pluginName, config).(Parser)
+func GetParser(pluginName string, config plugin.DefaultConfig) Parser {
+	return plugin.Get(reflect.TypeOf((*Parser)(nil)).Elem(), config).(Parser)
 }
 
 func init() {
-	plugin.AddPluginCategory(ParserCategory)
+	plugin.RegisterPluginCategory(reflect.TypeOf((*Parser)(nil)).Elem(), nil, nil, nil)
 }

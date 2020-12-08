@@ -28,6 +28,9 @@ import (
 type Queue interface {
 	plugin.Plugin
 
+	// Prepare creates the queue.
+	Prepare() error
+
 	// Publisher get the only publisher for the current queue.
 	Publisher() QueuePublisher
 
@@ -35,27 +38,30 @@ type Queue interface {
 	Consumer() QueueConsumer
 
 	// Close would close the queue.
-	Close()
+	Close() error
+
+	// Ack a batch
+	Ack(startOffset int64, batchSize int) chan struct{}
 }
 
 // QueuePublisher is a plugin interface, that defines new queue publishers.
 type QueuePublisher interface {
 	// Enqueue push a inputEvent into the queue.
-	Enqueue(event *event.SerializableEvent) error
+	Enqueue(event event.SerializableEvent) error
 }
 
 // QueueConsumer is a plugin interface, that defines new queue consumers.
 type QueueConsumer interface {
 	// Dequeue pop an event form the Queue. When the queue is empty, the method would be blocked.
-	Dequeue() (event *event.SerializableEvent, offset int64, err error)
+	Dequeue() (event event.SerializableEvent, offset int64, err error)
 }
 
 var QueueCategory = reflect.TypeOf((*Queue)(nil)).Elem()
 
-func GetQueue(pluginName string, config map[string]interface{}) Queue {
-	return plugin.Get(QueueCategory, pluginName, config).(Queue)
+func GetQueue(config plugin.DefaultConfig) Queue {
+	return plugin.Get(QueueCategory, config).(Queue)
 }
 
 func init() {
-	plugin.AddPluginCategory(QueueCategory)
+	plugin.RegisterPluginCategory(QueueCategory, nil, nil, nil)
 }

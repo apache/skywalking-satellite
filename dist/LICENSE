@@ -231,4 +231,5 @@ MIT licenses
 The following components are provided under the MIT License. See project link for details.
 The text of each license is also included at licenses/LICENSE-[project].txt.
 
-	sirupsen (logrus) 1.7.0: https://github.com/sirupsen/logrus MIT
+	sirupsen (logrus) v1.7.0: https://github.com/sirupsen/logrus MIT
+	spf13 (viper) v1.7.1: https://github.com/spf13/viper MIT

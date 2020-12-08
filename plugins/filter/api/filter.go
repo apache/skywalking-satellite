@@ -34,17 +34,17 @@ import (
 type Filter interface {
 	plugin.Plugin
 
-	// Process produces a new event by processing incoming event.
-	Process(in event.Event) event.Event
+	// Process would fetch the needed event
+	Process(context *event.OutputEventContext)
 }
 
 var FilterCategory = reflect.TypeOf((*Filter)(nil)).Elem()
 
 // Get filter plugin.
-func GetFilter(pluginName string, config map[string]interface{}) Filter {
-	return plugin.Get(FilterCategory, pluginName, config).(Filter)
+func GetFilter(config plugin.DefaultConfig) Filter {
+	return plugin.Get(FilterCategory, config).(Filter)
 }
 
 func init() {
-	plugin.AddPluginCategory(FilterCategory)
+	plugin.RegisterPluginCategory(FilterCategory, nil, nil, nil)
 }

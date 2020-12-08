@@ -27,7 +27,7 @@ import (
 //   Init()     Initial stage: Init plugin by config
 //    ||
 //    \/
-//   Prepare()   Preparing stage: Prepare the collector, such as build connection with SkyWalking javaagent.
+//   Init()   Preparing stage: Init the collector, such as build connection with SkyWalking javaagent.
 //    ||
 //    \/
 //   Next()     Running stage: When Collector collect a data, the data would be fetched by the upstream
@@ -38,22 +38,21 @@ import (
 // Collector is a plugin interface, that defines new collectors.
 type Collector interface {
 	plugin.Plugin
-
-	// Prepare creates a listen or reader to gather data.
-	Prepare()
+	// Prepare creates a listener or reader to gather APM data.
+	Prepare() error
 	// Next return the data from the input.
-	Next() (event.SerializableEvent, error)
+	EventChannel() <-chan event.SerializableEvent
 	// Close would close collector.
-	Close()
+	Close() error
 }
 
 var CollectorCategory = reflect.TypeOf((*Collector)(nil)).Elem()
 
 // Get collector plugin.
-func GetCollector(pluginName string, config map[string]interface{}) Collector {
-	return plugin.Get(CollectorCategory, pluginName, config).(Collector)
+func GetCollector(config plugin.DefaultConfig) Collector {
+	return plugin.Get(CollectorCategory, config).(Collector)
 }
 
 func init() {
-	plugin.AddPluginCategory(CollectorCategory)
+	plugin.RegisterPluginCategory(CollectorCategory, nil, nil, nil)
 }
