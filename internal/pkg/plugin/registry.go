@@ -18,6 +18,7 @@
 package plugin
 
 import (
+	"errors"
 	"fmt"
 	"reflect"
 	"sync"
@@ -25,18 +26,14 @@ import (
 
 // the global plugin registry
 var (
-	lock              sync.Mutex
-	reg               map[reflect.Type]map[string]reflect.Value
-	initFuncReg       map[reflect.Type]InitializingFunc
-	callbackFuncReg   map[reflect.Type]CallbackFunc
-	nameFinderFuncReg map[reflect.Type]NameFinderFunc
+	lock sync.Mutex
+	reg  map[reflect.Type]map[string]reflect.Value
+	meta map[reflect.Type]*RegInfo
 )
 
 func init() {
 	reg = make(map[reflect.Type]map[string]reflect.Value)
-	initFuncReg = make(map[reflect.Type]InitializingFunc)
-	callbackFuncReg = make(map[reflect.Type]CallbackFunc)
-	nameFinderFuncReg = make(map[reflect.Type]NameFinderFunc)
+	meta = make(map[reflect.Type]*RegInfo)
 }
 
 // RegisterCategory register new plugin category with default InitializingFunc.
@@ -46,26 +43,23 @@ func init() {
 // n: the plugin name finder,and the default value is defaultNameFinder
 // i, the plugin initializer, and the default value is defaultInitializing
 // c, the plugin initializer callback func, and the default value is defaultCallBack
-func RegisterPluginCategory(pluginCategory reflect.Type, n NameFinderFunc, i InitializingFunc, c CallbackFunc) {
+func RegisterPluginCategory(m *RegInfo) {
 	lock.Lock()
 	defer lock.Unlock()
-	reg[pluginCategory] = map[string]reflect.Value{}
-
-	if n == nil {
-		nameFinderFuncReg[pluginCategory] = defaultNameFinder
-	} else {
-		nameFinderFuncReg[pluginCategory] = n
+	if m.PluginType == nil {
+		panic(errors.New("cannot register RegInfo because the PluginType is nil"))
 	}
-	if i == nil {
-		initFuncReg[pluginCategory] = defaultInitializing
-	} else {
-		initFuncReg[pluginCategory] = i
+	if m.NameFinder == nil {
+		m.NameFinder = defaultNameFinder
 	}
-	if c == nil {
-		callbackFuncReg[pluginCategory] = defaultCallBack
-	} else {
-		callbackFuncReg[pluginCategory] = c
+	if m.Initializing == nil {
+		m.Initializing = defaultInitializing
 	}
+	if m.Callback == nil {
+		m.Callback = defaultCallBack
+	}
+	reg[m.PluginType] = map[string]reflect.Value{}
+	meta[m.PluginType] = m
 }
 
 // RegisterPlugin registers the pluginType as plugin.
@@ -91,7 +85,7 @@ func RegisterPlugin(plugin Plugin) {
 func Get(category reflect.Type, cfg interface{}) Plugin {
 	lock.Lock()
 	defer lock.Unlock()
-	pluginName := nameFinderFuncReg[category](cfg)
+	pluginName := meta[category].NameFinder(cfg)
 	value, ok := reg[category][pluginName]
 	if !ok {
 		panic(fmt.Errorf("cannot find %s plugin, and the category of plugin is %s", pluginName, category))
@@ -102,7 +96,7 @@ func Get(category reflect.Type, cfg interface{}) Plugin {
 	}
 
 	plugin := reflect.New(t).Interface().(Plugin)
-	initFuncReg[category](plugin, cfg)
-	callbackFuncReg[category](plugin)
+	meta[category].Initializing(plugin, cfg)
+	meta[category].Callback(plugin)
 	return plugin
 }

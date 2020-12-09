@@ -46,5 +46,5 @@ func GetClient(config plugin.DefaultConfig) Client {
 }
 
 func init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Client)(nil)).Elem(), nil, nil, nil)
+	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Client)(nil)).Elem()})
 }

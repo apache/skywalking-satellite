@@ -24,21 +24,10 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-//   Init()     Initial stage: Init plugin by config
-//    ||
-//    \/
-//   Init()   Preparing stage: Init the collector, such as build connection with SkyWalking javaagent.
-//    ||
-//    \/
-//   Next()     Running stage: When Collector collect a data, the data would be fetched by the upstream
-//    ||                       component through this method.
-//    \/
-//   Close()    Closing stage: Close the Collector, such as close connection with SkyWalking javaagent.
-
 // Collector is a plugin interface, that defines new collectors.
 type Collector interface {
 	plugin.Plugin
-	// Prepare creates a listener or reader to gather APM data.
+	// Prepare creates a listener or reader to gather APM data, such as build connection with SkyWalking javaagent.
 	Prepare() error
 	// Next return the data from the input.
 	EventChannel() <-chan event.SerializableEvent
@@ -46,13 +35,11 @@ type Collector interface {
 	Close() error
 }
 
-var CollectorCategory = reflect.TypeOf((*Collector)(nil)).Elem()
-
 // Get collector plugin.
 func GetCollector(config plugin.DefaultConfig) Collector {
-	return plugin.Get(CollectorCategory, config).(Collector)
+	return plugin.Get(reflect.TypeOf((*Collector)(nil)).Elem(), config).(Collector)
 }
 
 func init() {
-	plugin.RegisterPluginCategory(CollectorCategory, nil, nil, nil)
+	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Collector)(nil)).Elem()})
 }

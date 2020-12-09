@@ -24,27 +24,19 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-//   Init()        Initiating stage: Init plugin by config
-//    ||
-//    \/
-//   Process()     Running stage:    Process the input event to convert to new event. During the processing,
-//                                   the method should also tag event type to mark the event category.
-
 // Filter is a plugin interface, that defines new pipeline filters.
 type Filter interface {
 	plugin.Plugin
 
-	// Process would fetch the needed event
+	// Process would put the needed event to the OutputEventContext.
 	Process(context *event.OutputEventContext)
 }
 
-var FilterCategory = reflect.TypeOf((*Filter)(nil)).Elem()
-
 // Get filter plugin.
 func GetFilter(config plugin.DefaultConfig) Filter {
-	return plugin.Get(FilterCategory, config).(Filter)
+	return plugin.Get(reflect.TypeOf((*Filter)(nil)).Elem(), config).(Filter)
 }
 
 func init() {
-	plugin.RegisterPluginCategory(FilterCategory, nil, nil, nil)
+	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Filter)(nil)).Elem()})
 }

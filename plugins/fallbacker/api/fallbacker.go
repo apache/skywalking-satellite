@@ -29,7 +29,7 @@ import (
 type Fallbacker interface {
 	plugin.Plugin
 	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc, callback DisconnectionCallback) Fallbacker
+	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc)
 }
 
 type DisconnectionCallback func()
@@ -41,5 +41,5 @@ func GetFallbacker(config plugin.DefaultConfig) Fallbacker {
 
 // init register the Fallbacker interface
 func init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Fallbacker)(nil)).Elem(), nil, nil, nil)
+	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Fallbacker)(nil)).Elem()})
 }

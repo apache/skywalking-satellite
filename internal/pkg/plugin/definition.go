@@ -17,6 +17,8 @@
 
 package plugin
 
+import "reflect"
+
 // Plugin defines the plugin model in Satellite.
 type Plugin interface {
 	// Name returns the name of the specific plugin.
@@ -33,3 +35,10 @@ type InitializingFunc func(plugin Plugin, config interface{})
 
 // CallbackFunc would be invoked after initializing.
 type CallbackFunc func(plugin Plugin)
+
+type RegInfo struct {
+	PluginType   reflect.Type
+	NameFinder   NameFinderFunc
+	Initializing InitializingFunc
+	Callback     CallbackFunc
+}

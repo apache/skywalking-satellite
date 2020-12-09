@@ -96,6 +96,6 @@ func TestPlugin(t *testing.T) {
 }
 
 func init() {
-	RegisterPluginCategory(reflect.TypeOf((*DemoCategory)(nil)).Elem(), nil, nil, nil)
+	RegisterPluginCategory(&RegInfo{PluginType: reflect.TypeOf((*DemoCategory)(nil)).Elem()})
 	RegisterPlugin(&DemoPlugin{})
 }

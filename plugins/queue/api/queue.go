@@ -56,12 +56,10 @@ type QueueConsumer interface {
 	Dequeue() (event event.SerializableEvent, offset int64, err error)
 }
 
-var QueueCategory = reflect.TypeOf((*Queue)(nil)).Elem()
-
 func GetQueue(config plugin.DefaultConfig) Queue {
-	return plugin.Get(QueueCategory, config).(Queue)
+	return plugin.Get(reflect.TypeOf((*Queue)(nil)).Elem(), config).(Queue)
 }
 
 func init() {
-	plugin.RegisterPluginCategory(QueueCategory, nil, nil, nil)
+	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Queue)(nil)).Elem()})
 }

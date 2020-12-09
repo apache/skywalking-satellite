@@ -24,9 +24,6 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-//
-// Collector ==> RawData ==> Parser ==> SerializableEvent
-//
 // Parser is a plugin interface, that defines new Parsers for Collector plugin.
 type Parser interface {
 	plugin.Plugin
@@ -43,5 +40,5 @@ func GetParser(pluginName string, config plugin.DefaultConfig) Parser {
 }
 
 func init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Parser)(nil)).Elem(), nil, nil, nil)
+	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Parser)(nil)).Elem()})
 }

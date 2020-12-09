@@ -27,7 +27,6 @@ import (
 // Forwarder is a plugin interface, that defines new forwarders.
 type Forwarder interface {
 	plugin.Plugin
-
 	// Forward the batch events to the external services, such as Kafka MQ and SkyWalking OAP cluster.
 	Forward(connection interface{}, batch event.BatchEvents) error
 	// ForwardType returns the supported event type.
@@ -44,5 +43,5 @@ func GetForwarder(config map[string]interface{}) Forwarder {
 
 // init register the Forwarder interface
 func init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Forwarder)(nil)).Elem(), nil, nil, nil)
+	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Forwarder)(nil)).Elem()})
 }
