@@ -27,7 +27,7 @@ import (
 // Collector is a plugin interface, that defines new collectors.
 type Collector interface {
 	plugin.Plugin
-	// Prepare creates a listener or reader to gather APM data, such as build connection with SkyWalking javaagent.
+	// Prepare creates a listener or reader to gather APM data, such as start a gRPC listener for Segment receiving.
 	Prepare() error
 	// Next return the data from the input.
 	EventChannel() <-chan event.SerializableEvent

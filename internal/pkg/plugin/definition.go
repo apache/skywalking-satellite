@@ -36,9 +36,14 @@ type InitializingFunc func(plugin Plugin, config interface{})
 // CallbackFunc would be invoked after initializing.
 type CallbackFunc func(plugin Plugin)
 
+// RegInfo is a metadata to be registered in the global type registry.
 type RegInfo struct {
-	PluginType   reflect.Type
-	NameFinder   NameFinderFunc
+	// the plugin interface type. (required)
+	PluginType reflect.Type
+	// the plugin name finder,and the default value is defaultNameFinder (optional,default value is defaultNameFinder)
+	NameFinder NameFinderFunc
+	// the plugin initializer (optional, default value is defaultInitializing)
 	Initializing InitializingFunc
-	Callback     CallbackFunc
+	// the plugin initializer callback func (optional, default value is defaultCallBack)
+	Callback CallbackFunc
 }

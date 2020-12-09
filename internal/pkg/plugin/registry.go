@@ -36,13 +36,7 @@ func init() {
 	meta = make(map[reflect.Type]*RegInfo)
 }
 
-// RegisterCategory register new plugin category with default InitializingFunc.
-// required:
-// pluginCategory: the plugin interface type.
-// Optional:
-// n: the plugin name finder,and the default value is defaultNameFinder
-// i, the plugin initializer, and the default value is defaultInitializing
-// c, the plugin initializer callback func, and the default value is defaultCallBack
+// RegisterPluginCategory register the RegInfo to the global type registry.
 func RegisterPluginCategory(m *RegInfo) {
 	lock.Lock()
 	defer lock.Unlock()
@@ -81,7 +75,7 @@ func RegisterPlugin(plugin Plugin) {
 	}
 }
 
-// Get an initialized specific plugin according to the pluginCategory and pluginName.
+// Get an initialized specific plugin according to the pluginCategory and config.
 func Get(category reflect.Type, cfg interface{}) Plugin {
 	lock.Lock()
 	defer lock.Unlock()
