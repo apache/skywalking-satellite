@@ -36,13 +36,6 @@ func init() {
 	meta = make(map[reflect.Type]*RegInfo)
 }
 
-// RegisterCategory register new plugin category with default InitializingFunc.
-// required:
-// pluginCategory: the plugin interface type.
-// Optional:
-// n: the plugin name finder,and the default value is defaultNameFinder
-// i, the plugin initializer, and the default value is defaultInitializing
-// c, the plugin initializer callback func, and the default value is defaultCallBack
 func RegisterPluginCategory(m *RegInfo) {
 	lock.Lock()
 	defer lock.Unlock()
