@@ -42,7 +42,7 @@ ARCH = amd64
 
 SHELL = /bin/bash
 
-all: clean license deps lint test build
+all: clean license deps lint test
 
 tools:
 	$(GO_PACKR) -v || $(GO_GET) -u github.com/gobuffalo/packr/v2/...
