@@ -24,13 +24,13 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
-// Version will be initialized when building
-var Version string = "lastest"
+// version will be initialized when building
+var version string = "lastest"
 
 func main() {
 	app := cli.NewApp()
 	app.Name = "SkyWalking-Satellite"
-	app.Version = Version
+	app.Version = version
 	app.Compiled = time.Now()
 	app.Usage = "Satellite is for collecting APM data."
 	app.Description = "A lightweight collector/sidecar could be deployed closing to the target monitored system, to collect metrics, traces, and logs."

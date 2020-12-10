@@ -42,7 +42,7 @@ ARCH = amd64
 
 SHELL = /bin/bash
 
-all: clean license deps lint test
+all: clean license deps lint test build
 
 tools:
 	$(GO_PACKR) -v || $(GO_GET) -u github.com/gobuffalo/packr/v2/...
@@ -70,3 +70,12 @@ verify: clean license lint test
 .PHONY: clean
 clean: tools
 	-rm -rf coverage.txt
+
+.PHONY: build
+build: deps windows linux darwin
+
+
+.PHONY: $(PLATFORMS)
+$(PLATFORMS):
+	mkdir -p $(OUT_DIR)
+	GOOS=$(os) GOARCH=$(ARCH) $(GO_BUILD) $(GO_BUILD_FLAGS) -ldflags "$(GO_BUILD_LDFLAGS)" -o $(OUT_DIR)/$(BINARY)-$(VERSION)-$(os)-$(ARCH) ./cmd
