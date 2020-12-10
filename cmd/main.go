@@ -15,20 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package main
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"os"
+	"time"
+
+	"github.com/urfave/cli/v2"
 )
 
-// Collector is a plugin interface, that defines new collectors.
-type Collector interface {
-	plugin.Plugin
-	// Prepare creates a listener or reader to gather APM data, such as start a gRPC listener for Segment receiving.
-	Prepare() error
-	// Next return the data from the input.
-	EventChannel() <-chan event.SerializableEvent
-	// Close would close collector.
-	Close() error
+// Version will be initialized when building
+var Version string = "lastest"
+
+func main() {
+	app := cli.NewApp()
+	app.Name = "SkyWalking-Satellite"
+	app.Version = Version
+	app.Compiled = time.Now()
+	app.Usage = "Satellite is for collecting APM data."
+	app.Description = "A lightweight collector/sidecar could be deployed closing to the target monitored system, to collect metrics, traces, and logs."
+	app.Commands = []*cli.Command{
+		&cmdStart,
+	}
+	app.Action = cli.ShowAppHelp
+	_ = app.Run(os.Args)
 }

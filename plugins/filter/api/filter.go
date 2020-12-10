@@ -18,8 +18,6 @@
 package api
 
 import (
-	"reflect"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
@@ -30,13 +28,4 @@ type Filter interface {
 
 	// Process would put the needed event to the OutputEventContext.
 	Process(context *event.OutputEventContext)
-}
-
-// Get filter plugin.
-func GetFilter(config plugin.DefaultConfig) Filter {
-	return plugin.Get(reflect.TypeOf((*Filter)(nil)).Elem(), config).(Filter)
-}
-
-func init() {
-	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Filter)(nil)).Elem()})
 }

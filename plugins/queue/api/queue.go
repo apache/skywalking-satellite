@@ -18,8 +18,6 @@
 package api
 
 import (
-	"reflect"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
@@ -54,12 +52,4 @@ type QueuePublisher interface {
 type QueueConsumer interface {
 	// Dequeue pop an event form the Queue. When the queue is empty, the method would be blocked.
 	Dequeue() (event event.SerializableEvent, offset int64, err error)
-}
-
-func GetQueue(config plugin.DefaultConfig) Queue {
-	return plugin.Get(reflect.TypeOf((*Queue)(nil)).Elem(), config).(Queue)
-}
-
-func init() {
-	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Queue)(nil)).Elem()})
 }

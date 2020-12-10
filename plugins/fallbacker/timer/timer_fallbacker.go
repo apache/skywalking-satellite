@@ -46,7 +46,7 @@ latency_factor: 2000
 `
 }
 
-func (t *Fallbacker) FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) {
+func (t *Fallbacker) FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) bool {
 	if err := forward(connection, batch); err != nil {
 		count := 1
 		currentLatency := count * t.latencyFactor
@@ -55,8 +55,10 @@ func (t *Fallbacker) FallBack(batch event.BatchEvents, connection interface{}, f
 			if err := forward(connection, batch); err != nil {
 				currentLatency *= 2
 			} else {
-				break
+				return true
 			}
 		}
+		return false
 	}
+	return true
 }

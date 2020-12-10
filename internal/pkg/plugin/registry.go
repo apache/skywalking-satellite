@@ -18,42 +18,29 @@
 package plugin
 
 import (
-	"errors"
 	"fmt"
 	"reflect"
+	"strings"
 	"sync"
+
+	"github.com/spf13/viper"
 )
 
 // the global plugin registry
 var (
 	lock sync.Mutex
 	reg  map[reflect.Type]map[string]reflect.Value
-	meta map[reflect.Type]*RegInfo
 )
 
 func init() {
 	reg = make(map[reflect.Type]map[string]reflect.Value)
-	meta = make(map[reflect.Type]*RegInfo)
 }
 
 // RegisterPluginCategory register the RegInfo to the global type registry.
-func RegisterPluginCategory(m *RegInfo) {
+func RegisterPluginCategory(pluginType reflect.Type) {
 	lock.Lock()
 	defer lock.Unlock()
-	if m.PluginType == nil {
-		panic(errors.New("cannot register RegInfo because the PluginType is nil"))
-	}
-	if m.NameFinder == nil {
-		m.NameFinder = defaultNameFinder
-	}
-	if m.Initializing == nil {
-		m.Initializing = defaultInitializing
-	}
-	if m.Callback == nil {
-		m.Callback = defaultCallBack
-	}
-	reg[m.PluginType] = map[string]reflect.Value{}
-	meta[m.PluginType] = m
+	reg[pluginType] = map[string]reflect.Value{}
 }
 
 // RegisterPlugin registers the pluginType as plugin.
@@ -76,10 +63,10 @@ func RegisterPlugin(plugin Plugin) {
 }
 
 // Get an initialized specific plugin according to the pluginCategory and config.
-func Get(category reflect.Type, cfg interface{}) Plugin {
+func Get(category reflect.Type, cfg Config) Plugin {
 	lock.Lock()
 	defer lock.Unlock()
-	pluginName := meta[category].NameFinder(cfg)
+	pluginName := nameFinder(cfg)
 	value, ok := reg[category][pluginName]
 	if !ok {
 		panic(fmt.Errorf("cannot find %s plugin, and the category of plugin is %s", pluginName, category))
@@ -88,9 +75,37 @@ func Get(category reflect.Type, cfg interface{}) Plugin {
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
-
 	plugin := reflect.New(t).Interface().(Plugin)
-	meta[category].Initializing(plugin, cfg)
-	meta[category].Callback(plugin)
+	initializing(plugin, cfg)
 	return plugin
+}
+
+// nameFinder is used to get the plugin name in Config.
+func nameFinder(cfg interface{}) string {
+	c, ok := cfg.(Config)
+	if !ok {
+		panic(fmt.Errorf("nameFinder only supports Config"))
+	}
+	name, ok := c[NameField]
+	if !ok {
+		panic(fmt.Errorf("%s is requeired in Config", NameField))
+	}
+	return name.(string)
+}
+
+// initializing initialize the fields by fields mapping.
+func initializing(plugin Plugin, cfg Config) {
+	v := viper.New()
+	v.SetConfigType("yaml")
+	if plugin.DefaultConfig() != "" {
+		if err := v.ReadConfig(strings.NewReader(plugin.DefaultConfig())); err != nil {
+			panic(fmt.Errorf("cannot read default config in the plugin: %s, the error is %v", plugin.Name(), err))
+		}
+	}
+	if err := v.MergeConfigMap(cfg); err != nil {
+		panic(fmt.Errorf("%s plugin cannot merge the custom configuration, the error is %v", plugin.Name(), err))
+	}
+	if err := v.Unmarshal(plugin); err != nil {
+		panic(fmt.Errorf("cannot inject  the config to the %s plugin, the error is %v", plugin.Name(), err))
+	}
 }

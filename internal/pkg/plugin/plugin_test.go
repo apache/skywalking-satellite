@@ -23,7 +23,7 @@ import (
 )
 
 type DemoCategory interface {
-	DefaultInitializingPlugin
+	Plugin
 	Say() string
 }
 
@@ -54,12 +54,12 @@ project: "skywalking-satellite"
 func TestPlugin(t *testing.T) {
 	tests := []struct {
 		name string
-		args DefaultConfig
+		args Config
 		want *DemoPlugin
 	}{
 		{
 			name: "test1",
-			args: DefaultConfig{
+			args: Config{
 				"plugin_name":  "demoplugin",
 				"organization": "CNCF",
 				"project":      "Fluentd",
@@ -71,7 +71,7 @@ func TestPlugin(t *testing.T) {
 		},
 		{
 			name: "demoplugin",
-			args: DefaultConfig{
+			args: Config{
 				"plugin_name": "demoplugin",
 			},
 			want: &DemoPlugin{
@@ -96,6 +96,6 @@ func TestPlugin(t *testing.T) {
 }
 
 func init() {
-	RegisterPluginCategory(&RegInfo{PluginType: reflect.TypeOf((*DemoCategory)(nil)).Elem()})
+	RegisterPluginCategory(reflect.TypeOf((*DemoCategory)(nil)).Elem())
 	RegisterPlugin(&DemoPlugin{})
 }

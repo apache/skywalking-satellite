@@ -18,17 +18,23 @@
 package api
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"context"
 )
 
-// Collector is a plugin interface, that defines new collectors.
-type Collector interface {
-	plugin.Plugin
-	// Prepare creates a listener or reader to gather APM data, such as start a gRPC listener for Segment receiving.
+// TODO add metrics func
+// Module id a custom plugin interface, which defines the processing.
+type Module interface {
+
+	// Prepare would do some preparing workers, such build connection with external services.
 	Prepare() error
-	// Next return the data from the input.
-	EventChannel() <-chan event.SerializableEvent
-	// Close would close collector.
-	Close() error
+	// Boot would start the module and return error when started failed. When a stop signal received
+	// or an exception occurs, the shutdown function would be called.
+	Boot(ctx context.Context)
+
+	// Shutdown could do some clean job to close Module.
+	Shutdown()
+}
+
+type ModuleCommonConfig struct {
+	RunningNamespace string `mapstructure:"namespace"`
 }

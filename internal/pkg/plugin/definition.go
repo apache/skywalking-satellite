@@ -17,33 +17,19 @@
 
 package plugin
 
-import "reflect"
-
 // Plugin defines the plugin model in Satellite.
 type Plugin interface {
 	// Name returns the name of the specific plugin.
 	Name() string
 	// Description returns the description of the specific plugin.
 	Description() string
+
+	// Config returns the default config, that is a YAML pattern.
+	DefaultConfig() string
 }
 
-// NameFinderFunc is used to get the plugin name from different plugin configs.
-type NameFinderFunc func(config interface{}) string
+// Config is used to initialize the DefaultInitializingPlugin.
+type Config map[string]interface{}
 
-// InitializingFunc is used to initialize the specific plugin.
-type InitializingFunc func(plugin Plugin, config interface{})
-
-// CallbackFunc would be invoked after initializing.
-type CallbackFunc func(plugin Plugin)
-
-// RegInfo is a metadata to be registered in the global type registry.
-type RegInfo struct {
-	// the plugin interface type. (required)
-	PluginType reflect.Type
-	// the plugin name finder,and the default value is defaultNameFinder (optional,default value is defaultNameFinder)
-	NameFinder NameFinderFunc
-	// the plugin initializer (optional, default value is defaultInitializing)
-	Initializing InitializingFunc
-	// the plugin initializer callback func (optional, default value is defaultCallBack)
-	Callback CallbackFunc
-}
+// NameField is a required field in Config.
+const NameField = "plugin_name"

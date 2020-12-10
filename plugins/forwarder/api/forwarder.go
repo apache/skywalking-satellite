@@ -18,8 +18,6 @@
 package api
 
 import (
-	"reflect"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
@@ -35,13 +33,3 @@ type Forwarder interface {
 
 // ForwardFunc represent the Forward() in Forwarder
 type ForwardFunc func(connection interface{}, batch event.BatchEvents) error
-
-// GetForwarder returns an initialized forwarder plugin.
-func GetForwarder(config map[string]interface{}) Forwarder {
-	return plugin.Get(reflect.TypeOf((*Forwarder)(nil)).Elem(), config).(Forwarder)
-}
-
-// init register the Forwarder interface
-func init() {
-	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Forwarder)(nil)).Elem()})
-}

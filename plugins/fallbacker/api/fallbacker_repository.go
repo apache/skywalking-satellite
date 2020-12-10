@@ -18,17 +18,25 @@
 package api
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"reflect"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/plugins/fallbacker/timer"
 )
 
-// Collector is a plugin interface, that defines new collectors.
-type Collector interface {
-	plugin.Plugin
-	// Prepare creates a listener or reader to gather APM data, such as start a gRPC listener for Segment receiving.
-	Prepare() error
-	// Next return the data from the input.
-	EventChannel() <-chan event.SerializableEvent
-	// Close would close collector.
-	Close() error
+// Get an initialized client plugin.
+func GetFallbacker(config plugin.Config) Fallbacker {
+	return plugin.Get(reflect.TypeOf((*Fallbacker)(nil)).Elem(), config).(Fallbacker)
+}
+
+// RegisterFallbackerPlugins register the used fallbacker plugins.
+func RegisterFallbackerPlugins() {
+	plugin.RegisterPluginCategory(reflect.TypeOf((*Fallbacker)(nil)).Elem())
+	fallbackers := []Fallbacker{
+		// Please register the fallbacker plugins at here.
+		&timer.Fallbacker{},
+	}
+	for _, fallbacker := range fallbackers {
+		plugin.RegisterPlugin(fallbacker)
+	}
 }

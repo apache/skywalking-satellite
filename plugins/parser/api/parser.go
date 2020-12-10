@@ -18,8 +18,6 @@
 package api
 
 import (
-	"reflect"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
@@ -33,12 +31,4 @@ type Parser interface {
 
 	// ParseStr parse the string into events.
 	ParseStr(str string) ([]event.SerializableEvent, error)
-}
-
-func GetParser(pluginName string, config plugin.DefaultConfig) Parser {
-	return plugin.Get(reflect.TypeOf((*Parser)(nil)).Elem(), config).(Parser)
-}
-
-func init() {
-	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Parser)(nil)).Elem()})
 }

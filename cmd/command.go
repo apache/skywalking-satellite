@@ -15,20 +15,37 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package main
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/urfave/cli/v2"
+
+	"github.com/apache/skywalking-satellite/internal/satellite/boot"
+	"github.com/apache/skywalking-satellite/internal/satellite/config"
 )
 
-// Collector is a plugin interface, that defines new collectors.
-type Collector interface {
-	plugin.Plugin
-	// Prepare creates a listener or reader to gather APM data, such as start a gRPC listener for Segment receiving.
-	Prepare() error
-	// Next return the data from the input.
-	EventChannel() <-chan event.SerializableEvent
-	// Close would close collector.
-	Close() error
+var (
+	cmdStart = cli.Command{
+		Name:  "start",
+		Usage: "start satellite",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "config, c",
+				Usage:   "Load configuration from `FILE`",
+				EnvVars: []string{"MOSN_CONFIG"},
+				Value:   "configs/satellite_config.yaml",
+			},
+		},
+		Action: func(c *cli.Context) error {
+
+			cfg := loadConfig(c)
+			return boot.Start(cfg)
+		},
+	}
+)
+
+func loadConfig(c *cli.Context) *config.SatelliteConfig {
+	configPath := c.String("config")
+	cfg := config.Load(configPath)
+	return cfg
 }

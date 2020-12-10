@@ -18,8 +18,6 @@
 package api
 
 import (
-	"reflect"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
@@ -38,13 +36,4 @@ type Client interface {
 
 	// Close the connection with outer service.
 	Close() error
-}
-
-// Get client plugin.
-func GetClient(config plugin.DefaultConfig) Client {
-	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
-}
-
-func init() {
-	plugin.RegisterPluginCategory(&plugin.RegInfo{PluginType: reflect.TypeOf((*Client)(nil)).Elem()})
 }

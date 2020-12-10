@@ -18,17 +18,23 @@
 package api
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"reflect"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-// Collector is a plugin interface, that defines new collectors.
-type Collector interface {
-	plugin.Plugin
-	// Prepare creates a listener or reader to gather APM data, such as start a gRPC listener for Segment receiving.
-	Prepare() error
-	// Next return the data from the input.
-	EventChannel() <-chan event.SerializableEvent
-	// Close would close collector.
-	Close() error
+// GetForwarder an initialized filter plugin.
+func GetForwarder(config plugin.Config) Forwarder {
+	return plugin.Get(reflect.TypeOf((*Forwarder)(nil)).Elem(), config).(Forwarder)
+}
+
+// RegisterForwarderPlugins register the used filter plugins.
+func RegisterForwarderPlugins() {
+	plugin.RegisterPluginCategory(reflect.TypeOf((*Forwarder)(nil)).Elem())
+	forwarders := []Forwarder{
+		// Please register the forwarder plugins at here.
+	}
+	for _, forwarder := range forwarders {
+		plugin.RegisterPlugin(forwarder)
+	}
 }
