@@ -49,7 +49,7 @@ func Load(cfg *config.SharingConfig) {
 func Close() {
 	for _, sharingPlugin := range Manager {
 		if err := sharingPlugin.Close(); err != nil {
-			log.Logger.Errorf("error in closing the %s sharing plugin: %v", err)
+			log.Logger.Errorf("error in closing the %s sharing plugin: %v", sharingPlugin.Name(), err)
 		}
 	}
 }

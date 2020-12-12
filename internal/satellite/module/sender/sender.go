@@ -128,8 +128,8 @@ func (s *Sender) Shutdown() {
 
 // consume would forward the events by type and ack this batch.
 func (s *Sender) consume(batch *buffer.BatchBuffer) {
-	log.Logger.Infof("sender module of %s namespace is flushing a new batch buffer. the start offset is %d, and the size is %d", batch.Len(),
-		s.config.RunningNamespace, batch.First())
+	log.Logger.Infof("sender module of %s namespace is flushing a new batch buffer."+
+		" the start offset is %s, and the size is %d", s.config.RunningNamespace, batch.Last(), batch.Len())
 	var events = make(map[event.Type]event.BatchEvents)
 	for i := 0; i < batch.Len(); i++ {
 		eventContext := batch.Buf()[i]
