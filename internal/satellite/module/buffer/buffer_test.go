@@ -33,27 +33,27 @@ func TestNewBuffer(t *testing.T) {
 	}{
 		{
 			name: "add-1",
-			args: &event.OutputEventContext{Offset: 1},
+			args: &event.OutputEventContext{Offset: "1"},
 			want: 1,
 		},
 		{
 			name: "add-2",
-			args: &event.OutputEventContext{Offset: 2},
+			args: &event.OutputEventContext{Offset: "1"},
 			want: 2,
 		},
 		{
 			name: "add-3",
-			args: &event.OutputEventContext{Offset: 3},
+			args: &event.OutputEventContext{Offset: "1"},
 			want: 3,
 		},
 		{
 			name: "add-4",
-			args: &event.OutputEventContext{Offset: 4},
+			args: &event.OutputEventContext{Offset: "1"},
 			want: 3,
 		},
 		{
 			name: "add-5",
-			args: &event.OutputEventContext{Offset: 5},
+			args: &event.OutputEventContext{Offset: "1"},
 			want: 3,
 		},
 	}

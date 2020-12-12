@@ -23,18 +23,18 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-// Get an initialized client plugin.
-func GetClient(config plugin.Config) Client {
-	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
+// Get an initialized fetcher plugin.
+func GetFetcher(config plugin.Config) Fetcher {
+	return plugin.Get(reflect.TypeOf((*Fetcher)(nil)).Elem(), config).(Fetcher)
 }
 
-// RegisterClientPlugins register the used client plugins.
-func RegisterClientPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Client)(nil)).Elem())
-	clients := []Client{
-		// Please register the client plugins at here.
+// RegisterFallbackerPlugins register the used fetcher plugins.
+func RegisterFetcherPlugins() {
+	plugin.RegisterPluginCategory(reflect.TypeOf((*Fetcher)(nil)).Elem())
+	fetchers := []Fetcher{
+		// Please register the fetcher plugins at here.
 	}
-	for _, client := range clients {
-		plugin.RegisterPlugin(client)
+	for _, fetcher := range fetchers {
+		plugin.RegisterPlugin(fetcher)
 	}
 }

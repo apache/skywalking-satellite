@@ -18,23 +18,13 @@
 package api
 
 import (
-	"reflect"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
 )
 
-// Get an initialized client plugin.
-func GetClient(config plugin.Config) Client {
-	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
-}
+// ProcessorConfig contains all implementation fields.
+type ProcessorConfig struct {
+	api.ModuleCommonConfig
 
-// RegisterClientPlugins register the used client plugins.
-func RegisterClientPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Client)(nil)).Elem())
-	clients := []Client{
-		// Please register the client plugins at here.
-	}
-	for _, client := range clients {
-		plugin.RegisterPlugin(client)
-	}
+	FilterConfig []plugin.Config `mapstructure:"filters"` // filter plugins
 }

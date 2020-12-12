@@ -14,8 +14,7 @@ structure:
 
 ## Initialization mechanism
 
-Users can easily find a plugin type and initialize an empty plugin instance according to the previous registration mechanism. However, users often need an initialized plugin rather than an empty plugin. So we define the initialization mechanism in
-Plugin structure.
+Users can easily find a plugin type and initialize an empty plugin instance according to the previous registration mechanism. For setting up the configuration of the extension convenience, we define the initialization mechanism in Plugin structure.
 
 In the initialization mechanism, `the plugin category(interface)` and `the init config is required`.
  
@@ -27,20 +26,21 @@ Initialize processing is like the following.
 4. Initialize the plugin according to the merged config, which is created by the input config and the default config.
 
 
+
 ## Plugin usage in Satellite
+Nowadays, we have 9 kinds of plugins in Satellite. 2 kinds of Plugins are the [sharing plugins](module_design.md) and the others are the [normal plugins](module_design.md).
+
+
 
 - Extension: 
-    - Collector interface 
-        - the specific plugin: segment-receiver
-    - Queue interface
-        - the specific plugin: mmap-queue
-    - Filter interface
-        - the specific plugin: sampling-filter
-    - Client interface
-        - the specific plugin: gRpc-client
-    - Fallbacker interface
-        - the specific plugin: timer-fallbacker
-    - Forwarder interface
-        - the specific plugin: grpc-segment-forwarder
-    - Parser interface
-        - the specific plugin: csv-parser
+    - sharing plugins
+        - Server interface
+        - Client interface
+    - normal plugins
+        - Receiver interface 
+        - Fetcher interface 
+        - Parser interface
+        - Queue interface
+        - Filter interface
+        - Fallbacker interface
+        - Forwarder interface

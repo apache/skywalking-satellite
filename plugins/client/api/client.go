@@ -21,19 +21,28 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
+// The client statuses.
+const (
+	_ ClientStatus = iota
+	Connected
+	Disconnect
+)
+
+// ClientStatus represents the status of the client.
+type ClientStatus int8
+
 // Client is a plugin interface, that defines new clients, such as gRPC client and Kafka client.
 type Client interface {
-	plugin.Plugin
+	plugin.SharingPlugin
 
-	// Init would make connection with outer service.
+	// Connect would make connection with outer service.
 	Connect() error
-
-	// Return the status of the client.
+	// IsConnected returns the status of the client.
 	IsConnected() bool
-
 	// GetConnection returns the connected client to publish events.
 	GetConnectedClient() interface{}
-
-	// Close the connection with outer service.
-	Close() error
+	// RegisterListener register a listener to listen the client status.
+	RegisterListener(chan<- ClientStatus)
+	// Report client error connection error to notify other listeners.
+	ReportErr()
 }

@@ -23,9 +23,15 @@ type Plugin interface {
 	Name() string
 	// Description returns the description of the specific plugin.
 	Description() string
-
 	// Config returns the default config, that is a YAML pattern.
 	DefaultConfig() string
+}
+
+// SharingPlugin the plugins cloud be sharing with different modules in different namespaces.
+type SharingPlugin interface {
+	Plugin
+	// Close the sharing plugin.
+	Close() error
 }
 
 // Config is used to initialize the DefaultInitializingPlugin.

@@ -29,27 +29,21 @@ type Queue interface {
 	// Prepare creates the queue.
 	Prepare() error
 
-	// Publisher get the only publisher for the current queue.
-	Publisher() QueuePublisher
+	// Push a inputEvent into the queue.
+	Push(event event.SerializableEvent) error
 
-	// Consumer get the only consumer for the current queue.
-	Consumer() QueueConsumer
+	// Pop returns a SequenceEvent when Queue is not empty,
+	Pop() chan *SequenceEvent
 
 	// Close would close the queue.
 	Close() error
 
-	// Ack a batch
-	Ack(startOffset int64, batchSize int) chan struct{}
+	// Ack the lastOffset
+	Ack(lastOffset event.Offset)
 }
 
-// QueuePublisher is a plugin interface, that defines new queue publishers.
-type QueuePublisher interface {
-	// Enqueue push a inputEvent into the queue.
-	Enqueue(event event.SerializableEvent) error
-}
-
-// QueueConsumer is a plugin interface, that defines new queue consumers.
-type QueueConsumer interface {
-	// Dequeue pop an event form the Queue. When the queue is empty, the method would be blocked.
-	Dequeue() (event event.SerializableEvent, offset int64, err error)
+// SequenceEvent is a wrapper to pass the event and the offset.
+type SequenceEvent struct {
+	Event  event.Event
+	Offset event.Offset
 }

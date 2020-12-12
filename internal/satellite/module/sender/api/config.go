@@ -18,23 +18,18 @@
 package api
 
 import (
-	"reflect"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
 )
 
-// Get an initialized client plugin.
-func GetCollector(config plugin.Config) Collector {
-	return plugin.Get(reflect.TypeOf((*Collector)(nil)).Elem(), config).(Collector)
-}
+type SenderConfig struct {
+	api.ModuleCommonConfig
+	// plugins config
+	ForwardersConfig []plugin.Config `mapstructure:"forwarders"`  // forwarder plugins config
+	FallbackerConfig plugin.Config   `mapstructure:"fallbacker"`  // fallbacker plugins config
+	ClientName       string          `mapstructure:"client_name"` // client plugin name
 
-// RegisterCollectorPlugins register the used collector plugins.
-func RegisterCollectorPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Collector)(nil)).Elem())
-	collectors := []Collector{
-		// Please register the collector plugins at here.
-	}
-	for _, collector := range collectors {
-		plugin.RegisterPlugin(collector)
-	}
+	MaxBufferSize  int `mapstructure:"max_buffer_size"`  // the max buffer capacity
+	MinFlushEvents int `mapstructure:"min_flush_events"` // the min flush events when receives a timer flush signal
+	FlushTime      int `mapstructure:"flush_time"`       // the period flush time
 }

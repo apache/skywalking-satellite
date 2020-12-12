@@ -1,18 +1,25 @@
 # Module structure
 
+## Overview
 Module is the core workers in Satellite. Module is constituted by the specific extension plugins.
-There are four modules in Satellite, which is ClientManager, Gatherer, Sender, and Processor.
+There are 3 modules in one agent, which are Gatherer, Processor, and Sender.
 
-Responsibilities:
+- The Gatherer module is responsible for fetching or receiving data and pushing the data to Queue. So there are 2 kinds of Gatherer, which are ReceiverGatherer and FetcherGatherer.
+- The Processor module is responsible for reading data from the queue and processing data by a series of filter chains.
+- The Sender module is responsible for async processing and forwarding the data to the external services in the batch mode. After sending success, Sender would also acknowledge the offset of Queue in Gatherer.
 
-- ClientManager: Maintain connection and monitor connection status
-- Sender: Sender data to the external services, such as Kafka and OAP
-- Gatherer: Gather the APM data from the other systems, such as fetch prometheus metrics.
-- Processor: Data processing to create new metrics data.
+```
+                            Agent
+ --------------------------------------------------------------------
+|            ----------      -----------      --------               |
+|           | Gatherer | => | Processor | => | Sender |              |                          
+|            ----------      -----------      --------               |
+ --------------------------------------------------------------------
+```
 
-LifeCycles:
+## LifeCycle
 
-- Prepare: Prepare phase is to do some preparation works, such as make the connection with external services.
+- Prepare: Prepare phase is to do some preparation works, such as register the client status listener to the client in ReceiverGatherer.
 - Boot: Boot phase is to start the current module until receives a close signal.
 - ShutDown: ShutDown phase is to close the used resources.
 

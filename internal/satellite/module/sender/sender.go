@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package module
+package sender
 
 import (
 	"context"
@@ -24,72 +24,40 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/buffer"
+	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
+	client "github.com/apache/skywalking-satellite/plugins/client/api"
 	fallbacker "github.com/apache/skywalking-satellite/plugins/fallbacker/api"
 	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
-type SenderConfig struct {
-	api.ModuleCommonConfig
-	// plugins config
-	ForwardersConfig []plugin.Config `mapstructure:"forwarders"` // forwarder plugins config
-	FallbackerConfig plugin.Config   `mapstructure:"fallbacker"` // fallbacker plugins config
-
-	// self config
-	MaxBufferSize  int `mapstructure:"max_buffer_size"`  // the max buffer capacity
-	MinFlushEvents int `mapstructure:"min_flush_events"` // the min flush events when receives a timer flush signal
-	FlushTime      int `mapstructure:"flush_time"`       // the period flush time
-}
-
 // Sender is the forward module in Satellite.
 type Sender struct {
 	// config
-	config *SenderConfig
+	config *api.SenderConfig
 
 	// dependency plugins
 	runningForwarders []forwarder.Forwarder
 	runningFallbacker fallbacker.Fallbacker
+	runningClient     client.Client
 
 	// dependency modules
-	gatherer      *Gatherer
-	clientManager *ClientManager
+	gatherer gatherer.Gatherer
 
 	// self components
-	Input        chan *event.OutputEventContext // logic input channel
-	input        chan *event.OutputEventContext // physical input channel
-	listener     chan ClientStatus              // client status listener
-	flushChannel chan *buffer.BatchBuffer       // forwarder flush channel
-	buffer       *buffer.BatchBuffer            // cache the downstream input data
-}
-
-// Init Sender, dependency plugins and self components.
-func NewSender(cfg *SenderConfig, gatherer *Gatherer, manager *ClientManager) *Sender {
-	log.Logger.Infof("sender module of %s namespace is being initialized", cfg.RunningNamespace)
-	s := &Sender{
-		gatherer:          gatherer,
-		clientManager:     manager,
-		config:            cfg,
-		flushChannel:      make(chan *buffer.BatchBuffer, 1),
-		listener:          make(chan ClientStatus),
-		input:             make(chan *event.OutputEventContext),
-		runningFallbacker: fallbacker.GetFallbacker(cfg.FallbackerConfig),
-		runningForwarders: []forwarder.Forwarder{},
-		buffer:            buffer.NewBatchBuffer(cfg.MaxBufferSize),
-		Input:             nil,
-	}
-	for _, c := range s.config.ForwardersConfig {
-		s.runningForwarders = append(s.runningForwarders, forwarder.GetForwarder(c))
-	}
-	return s
+	logicInput    chan *event.OutputEventContext // logic input channel
+	physicalInput chan *event.OutputEventContext // physical input channel
+	listener      chan client.ClientStatus       // client status listener
+	flushChannel  chan *buffer.BatchBuffer       // forwarder flush channel
+	buffer        *buffer.BatchBuffer            // cache the downstream input data
 }
 
 // Prepare register the client status listener to the client manager and open input channel.
 func (s *Sender) Prepare() error {
 	log.Logger.Infof("sender module of %s namespace is preparing", s.config.RunningNamespace)
-	s.clientManager.RegisterListener(s.listener)
-	s.Input = s.input
+	s.runningClient.RegisterListener(s.listener)
+	s.logicInput = s.physicalInput
 	return nil
 }
 
@@ -107,26 +75,26 @@ func (s *Sender) Boot(ctx context.Context) {
 			select {
 			case status := <-s.listener:
 				switch status {
-				case Connected:
-					log.Logger.Infof("sender module of %s namespace is notified the connection is connected", s.config.RunningNamespace)
-					s.Input = s.input
-				case Disconnect:
-					log.Logger.Infof("sender module of %s namespace is notified the connection is disconnected", s.config.RunningNamespace)
-					s.Input = nil
+				case client.Connected:
+					log.Logger.Infof("sender module of %s namespace is notified the connection connected", s.config.RunningNamespace)
+					s.logicInput = s.physicalInput
+				case client.Disconnect:
+					log.Logger.Infof("sender module of %s namespace is notified the connection disconnected", s.config.RunningNamespace)
+					s.logicInput = nil
 				}
 			case <-timeTicker.C:
 				if s.buffer.Len() > s.config.MinFlushEvents {
 					s.flushChannel <- s.buffer
 					s.buffer = buffer.NewBatchBuffer(s.config.MaxBufferSize)
 				}
-			case e := <-s.Input:
+			case e := <-s.logicInput:
 				s.buffer.Add(e)
 				if s.buffer.Len() == s.config.MaxBufferSize {
 					s.flushChannel <- s.buffer
 					s.buffer = buffer.NewBatchBuffer(s.config.MaxBufferSize)
 				}
 			case <-ctx.Done():
-				s.Input = nil
+				s.logicInput = nil
 				return
 			}
 		}
@@ -150,7 +118,7 @@ func (s *Sender) Boot(ctx context.Context) {
 // Shutdown closes the channels and tries to force forward the events in the buffer.
 func (s *Sender) Shutdown() {
 	log.Logger.Infof("sender module of %s namespace is closing", s.config.RunningNamespace)
-	close(s.input)
+	close(s.logicInput)
 	for buf := range s.flushChannel {
 		s.consume(buf)
 	}
@@ -160,8 +128,8 @@ func (s *Sender) Shutdown() {
 
 // consume would forward the events by type and ack this batch.
 func (s *Sender) consume(batch *buffer.BatchBuffer) {
-	log.Logger.Infof("sender module of %s namespace is flushing a new batch buffer. the start offset is %d, and the batch size is %d",
-		s.config.RunningNamespace, batch.First(), batch.BatchSize())
+	log.Logger.Infof("sender module of %s namespace is flushing a new batch buffer. the start offset is %d, and the size is %d", batch.Len(),
+		s.config.RunningNamespace, batch.First())
 	var events = make(map[event.Type]event.BatchEvents)
 	for i := 0; i < batch.Len(); i++ {
 		eventContext := batch.Buf()[i]
@@ -177,15 +145,19 @@ func (s *Sender) consume(batch *buffer.BatchBuffer) {
 			if f.ForwardType() != t {
 				continue
 			}
-			if err := f.Forward(s.clientManager.GetConnectedClient(), batchEvents); err == nil {
+			if err := f.Forward(s.runningClient.GetConnectedClient(), batchEvents); err == nil {
 				continue
 			}
-			if !s.runningFallbacker.FallBack(batchEvents, s.clientManager.GetConnectedClient(), f.Forward) {
-				if s.clientManager.runningClient.IsConnected() {
-					s.clientManager.ReportError()
+			if !s.runningFallbacker.FallBack(batchEvents, s.runningClient.GetConnectedClient(), f.Forward) {
+				if s.runningClient.IsConnected() {
+					s.runningClient.ReportErr()
 				}
 			}
 		}
 	}
-	s.gatherer.Ack(batch.First(), batch.BatchSize())
+	s.gatherer.Ack(batch.Last())
+}
+
+func (s *Sender) InputDataChannel() chan<- *event.OutputEventContext {
+	return s.logicInput
 }

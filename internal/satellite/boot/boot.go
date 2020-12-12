@@ -29,22 +29,28 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/config"
-	"github.com/apache/skywalking-satellite/internal/satellite/module"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/processor"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/sender"
+	"github.com/apache/skywalking-satellite/internal/satellite/sharing"
 	"github.com/apache/skywalking-satellite/plugins"
 )
 
+// ModuleContainer contains the every running module in each namespace.
 type ModuleContainer map[string][]api.Module
 
 // Start Satellite.
 func Start(cfg *config.SatelliteConfig) error {
 	log.Init(cfg.Logger)
+	// register the supported plugin types to the registry
 	plugins.RegisterPlugins()
-
-	// use context to perceive external signal.
+	// use context to receive the external signal.
 	ctx, cancel := context.WithCancel(context.Background())
 	addShutdownListener(cancel)
-
+	// initialize the sharing plugins
+	sharing.Load(cfg.Sharing)
+	defer sharing.Close()
 	// boot Satellite
 	if modules, err := initModules(cfg); err != nil {
 		return err
@@ -72,33 +78,15 @@ func initModules(cfg *config.SatelliteConfig) (ModuleContainer, error) {
 	if err := initModuleConfig(cfg); err != nil {
 		return nil, err
 	}
-
-	// contains the initialized modules.
+	// container contains the modules in each namespace.
 	container := make(ModuleContainer)
-	var sharingClientManager *module.ClientManager
-	var sharingNamespace = "sharing"
-
-	// add sharing client manager module
-	if cfg.ClientManager != nil {
-		sharingClientManager = module.NewClientManager(cfg.ClientManager)
-		container[sharingNamespace] = []api.Module{sharingClientManager}
-	}
-
-	// add the modules in each namespaces.
 	for _, aCfg := range cfg.Agents {
-		// the added sequence should follow clientManager, gather, sender and processor to purpose the booting sequence.
+		// the added sequence should follow gather, sender and processor to purpose the booting sequence.
 		var modules []api.Module
-		var usingClientManager = sharingClientManager
-
-		if aCfg.ClientManager != nil {
-			usingClientManager = module.NewClientManager(aCfg.ClientManager)
-			modules = append(modules, usingClientManager)
-		}
-		gatherer := module.NewGatherer(aCfg.Gatherer)
-		sender := module.NewSender(aCfg.Sender, gatherer, usingClientManager)
-		processor := module.NewProcessor(aCfg.Processor, sender, gatherer)
-
-		modules = append(modules, gatherer, sender, processor)
+		g := gatherer.NewGatherer(aCfg.Gatherer)
+		s := sender.NewSender(aCfg.Sender, g)
+		p := processor.NewProcessor(aCfg.Processor, s, g)
+		modules = append(modules, g, s, p)
 		container[aCfg.ModuleCommonConfig.RunningNamespace] = modules
 	}
 	return container, nil
@@ -110,13 +98,9 @@ func initModuleConfig(cfg *config.SatelliteConfig) error {
 		if aCfg.Gatherer == nil || aCfg.Sender == nil || aCfg.Processor == nil {
 			return errors.New("gatherer, sender, and processor is required in agent config")
 		}
-		if cfg.ClientManager == nil && aCfg.ClientManager == nil {
-			return errors.New("at least one sharing client manager configuration or custom configuration is required")
-		}
 	}
 	// inject module common config to the specific module config
 	for _, aCfg := range cfg.Agents {
-		aCfg.ClientManager.ModuleCommonConfig = *aCfg.ModuleCommonConfig
 		aCfg.Sender.ModuleCommonConfig = *aCfg.ModuleCommonConfig
 		aCfg.Gatherer.ModuleCommonConfig = *aCfg.ModuleCommonConfig
 		aCfg.Gatherer.ModuleCommonConfig = *aCfg.ModuleCommonConfig

@@ -17,18 +17,15 @@
 
 package api
 
-import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-)
+import "github.com/apache/skywalking-satellite/internal/pkg/plugin"
 
-// Collector is a plugin interface, that defines new collectors.
-type Collector interface {
-	plugin.Plugin
-	// Prepare creates a listener or reader to gather APM data, such as start a gRPC listener for Segment receiving.
-	Prepare() error
-	// Next return the data from the input.
-	EventChannel() <-chan event.SerializableEvent
-	// Close would close collector.
-	Close() error
+// Server is a plugin interface, that defines new servers, such as gRPC server and http server.
+type Server interface {
+	plugin.SharingPlugin
+
+	// Initialize would do some preparation works.
+	Initialize()
+
+	// Start a server to receive the input APM data.
+	Start() error
 }

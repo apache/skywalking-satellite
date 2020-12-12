@@ -19,22 +19,30 @@ package config
 
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
-	"github.com/apache/skywalking-satellite/internal/satellite/module"
+	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
+	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
 )
 
 // SatelliteConfig is to initialize Satellite.
 type SatelliteConfig struct {
-	Logger        *log.LoggerConfig           `mapstructure:"logger"`
-	Agents        []*AgentConfig              `mapstructure:"agents"`
-	ClientManager *module.ClientManagerConfig `mapstructure:"client_manager"`
+	Logger  *log.LoggerConfig `mapstructure:"logger"`
+	Agents  []*AgentConfig    `mapstructure:"agents"`
+	Sharing *SharingConfig    `mapstructure:"sharing"`
+}
+
+// SharingConfig contains some plugins,which could be shared by every namespace. That is useful to reduce resources cost.
+type SharingConfig struct {
+	Clients []plugin.Config `mapstructure:"clients"`
+	Servers []plugin.Config `mapstructure:"servers"`
 }
 
 // AgentConfig initializes the different module in different namespace.
 type AgentConfig struct {
-	ModuleCommonConfig *api.ModuleCommonConfig     `mapstructure:"common_config"`
-	ClientManager      *module.ClientManagerConfig `mapstructure:"client_manager"`
-	Gatherer           *module.GathererConfig      `mapstructure:"gatherer"`
-	Processor          *module.ProcessorConfig     `mapstructure:"processor"`
-	Sender             *module.SenderConfig        `mapstructure:"sender"`
+	ModuleCommonConfig *api.ModuleCommonConfig    `mapstructure:"common_config"`
+	Gatherer           *gatherer.GathererConfig   `mapstructure:"gatherer"`
+	Processor          *processor.ProcessorConfig `mapstructure:"processor"`
+	Sender             *sender.SenderConfig       `mapstructure:"sender"`
 }

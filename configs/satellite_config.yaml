@@ -37,18 +37,20 @@ logger:
   time_pattern: "2006-01-02 15:04:05.001"
   level: "info"
 
-client_manager:
-  retry_interval: 5000
-  client:
-    plugin_name: "grpc"
-    k: v
-
+sharing:
+  clients:
+    - plugin_name: "grpc-client"
+      k: v
+  servers:
+    - plugin_name: "grpc-server"
+      k: v
 agents:
   - common_config:
       namespace: namespace1
     gatherer:
-      collector:
+      receiver:
         plugin_name: segment-receiver
+        server_name: "grpc-server"
         k: v
       queue:
         plugin_name: mmap-queue
@@ -58,8 +60,10 @@ agents:
         - plugin_name: filtertype1
           key: value
     sender:
-      flush_time: 5000
+      flush_time: 200
       max_buffer_size: 100
+      min_flush_events: 30
+      client_name: grpc-client
       forwarders:
         - plugin_name: segment-forwarder
           key: value

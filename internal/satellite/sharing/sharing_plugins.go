@@ -15,31 +15,41 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package plugins
+package sharing
 
 import (
+	"sync"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/satellite/config"
 	client "github.com/apache/skywalking-satellite/plugins/client/api"
-	fallbacker "github.com/apache/skywalking-satellite/plugins/fallbacker/api"
-	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
-	filter "github.com/apache/skywalking-satellite/plugins/filter/api"
-	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
-	parser "github.com/apache/skywalking-satellite/plugins/parser/api"
-	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
-	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 )
 
-// RegisterPlugins register the whole supported plugin category and plugin types to the registry.
-func RegisterPlugins() {
-	// plugins
-	filter.RegisterFilterPlugins()
-	forwarder.RegisterForwarderPlugins()
-	parser.RegisterParserPlugins()
-	queue.RegisterQueuePlugins()
-	receiver.RegisterReceiverPlugins()
-	fetcher.RegisterFetcherPlugins()
-	fallbacker.RegisterFallbackerPlugins()
-	// sharing plugins
-	server.RegisterServerPlugins()
-	client.RegisterClientPlugins()
+// Manager contains the sharing plugins, only supports client and server plugins.
+var Manager map[string]plugin.SharingPlugin
+var once sync.Once
+
+// Load loads the sharing config to the Manager.
+func Load(cfg *config.SharingConfig) {
+	once.Do(func() {
+		for _, c := range cfg.Clients {
+			p := client.GetClient(c)
+			Manager[p.Name()] = p
+		}
+		for _, c := range cfg.Servers {
+			p := server.GetServer(c)
+			Manager[p.Name()] = p
+		}
+	},
+	)
+}
+
+func Close() {
+	for _, sharingPlugin := range Manager {
+		if err := sharingPlugin.Close(); err != nil {
+			log.Logger.Errorf("error in closing the %s sharing plugin: %v", err)
+		}
+	}
 }

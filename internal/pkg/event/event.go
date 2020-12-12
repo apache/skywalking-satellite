@@ -36,6 +36,9 @@ const (
 
 type Type int32
 
+// Offset is a generic form, which allows having different definitions in different Queues.
+type Offset string
+
 // Event that implement this interface would be allowed to transmit in the Satellite.
 type Event interface {
 	// Name returns the event name.
@@ -74,7 +77,7 @@ type BatchEvents []Event
 // OutputEventContext is a container to store the output context.
 type OutputEventContext struct {
 	Context map[string]Event
-	Offset  int64
+	Offset  Offset
 }
 
 // Put puts the incoming event into the context when the event is a remote event.

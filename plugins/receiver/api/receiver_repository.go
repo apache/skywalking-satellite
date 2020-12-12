@@ -23,18 +23,18 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-// Get an initialized client plugin.
-func GetClient(config plugin.Config) Client {
-	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
+// Get an initialized receiver plugin.
+func GetReceiver(config plugin.Config) Receiver {
+	return plugin.Get(reflect.TypeOf((*Receiver)(nil)).Elem(), config).(Receiver)
 }
 
-// RegisterClientPlugins register the used client plugins.
-func RegisterClientPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Client)(nil)).Elem())
-	clients := []Client{
-		// Please register the client plugins at here.
+// RegisterReceiverPlugins register the used receiver plugins.
+func RegisterReceiverPlugins() {
+	plugin.RegisterPluginCategory(reflect.TypeOf((*Receiver)(nil)).Elem())
+	receivers := []Receiver{
+		// Please register the receiver plugins at here.
 	}
-	for _, client := range clients {
-		plugin.RegisterPlugin(client)
+	for _, receiver := range receivers {
+		plugin.RegisterPlugin(receiver)
 	}
 }

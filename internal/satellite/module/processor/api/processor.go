@@ -17,24 +17,9 @@
 
 package api
 
-import (
-	"reflect"
+import "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-)
-
-// Get an initialized client plugin.
-func GetClient(config plugin.Config) Client {
-	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
-}
-
-// RegisterClientPlugins register the used client plugins.
-func RegisterClientPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Client)(nil)).Elem())
-	clients := []Client{
-		// Please register the client plugins at here.
-	}
-	for _, client := range clients {
-		plugin.RegisterPlugin(client)
-	}
+// Processor is the APM data processing module in Satellite.
+type Processor interface {
+	api.Module
 }

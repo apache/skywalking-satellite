@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package module
+package processor
 
 import (
 	"context"
@@ -23,44 +23,23 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
+	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
 	filter "github.com/apache/skywalking-satellite/plugins/filter/api"
 )
-
-type ProcessorConfig struct {
-	api.ModuleCommonConfig
-
-	// plugins config
-	FilterConfig []plugin.Config `mapstructure:"filters"` // filter plugins
-}
 
 // Processor is the processing module in Satellite.
 type Processor struct {
 	// config
-	config *ProcessorConfig
+	config *processor.ProcessorConfig
 
 	// dependency plugins
 	runningFilters []filter.Filter
 
 	// dependency modules
-	sender   *Sender
-	gatherer *Gatherer
-}
-
-// Init Processor and dependency plugins
-func NewProcessor(cfg *ProcessorConfig, sender *Sender, gatherer *Gatherer) *Processor {
-	log.Logger.Infof("processor module of %s namespace is being initialized", cfg.RunningNamespace)
-	p := &Processor{
-		sender:         sender,
-		gatherer:       gatherer,
-		config:         cfg,
-		runningFilters: []filter.Filter{},
-	}
-	for _, c := range p.config.FilterConfig {
-		p.runningFilters = append(p.runningFilters, filter.GetFilter(c))
-	}
-	return p
+	sender   sender.Sender
+	gatherer gatherer.Gatherer
 }
 
 func (p *Processor) Prepare() error {
@@ -76,25 +55,20 @@ func (p *Processor) Boot(ctx context.Context) {
 	go func() {
 		defer wg.Done()
 		for {
-			// fetch a new event from Queue of Gatherer
-			e, offset, err := p.gatherer.runningQueue.Consumer().Dequeue()
-			if err != nil {
-				// todo add metrics
-				log.Logger.Errorf("cannot get event from queue in %s namespace, error is: %v", p.config.RunningNamespace, err)
-				continue
-			}
-			c := &event.OutputEventContext{
-				Offset:  offset,
-				Context: make(map[string]event.Event),
-			}
-			// processing the event with filters, that put the necessary events to OutputEventContext.
-			c.Put(e)
-			for _, f := range p.runningFilters {
-				f.Process(c)
-			}
 			select {
-			// put result input the Input channel of Sender
-			case p.sender.Input <- c:
+			// receive the input event from the output channel of the gatherer
+			case e := <-p.gatherer.OutputDataChannel():
+				c := &event.OutputEventContext{
+					Offset:  e.Offset,
+					Context: make(map[string]event.Event),
+				}
+				c.Put(e.Event)
+				// processing the event with filters, that put the necessary events to OutputEventContext.
+				for _, f := range p.runningFilters {
+					f.Process(c)
+				}
+				// send the final context that contains many events to the sender.
+				p.sender.InputDataChannel() <- c
 			case <-ctx.Done():
 				p.Shutdown()
 				return

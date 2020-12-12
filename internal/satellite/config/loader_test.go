@@ -24,8 +24,10 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/internal/satellite/module"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
+	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
 )
 
 func TestLoad(t *testing.T) {
@@ -46,15 +48,30 @@ func TestLoad(t *testing.T) {
 					TimePattern: "2006-01-02 15:04:05.001",
 					Level:       "info",
 				},
+				Sharing: &SharingConfig{
+					Clients: []plugin.Config{
+						{
+							"plugin_name": "grpc-client",
+							"k":           "v",
+						},
+					},
+					Servers: []plugin.Config{
+						{
+							"plugin_name": "grpc-server",
+							"k":           "v",
+						},
+					},
+				},
 				Agents: []*AgentConfig{
 					{
 						ModuleCommonConfig: &api.ModuleCommonConfig{
 							RunningNamespace: "namespace1",
 						},
 
-						Gatherer: &module.GathererConfig{
-							CollectorConfig: plugin.Config{
+						Gatherer: &gatherer.GathererConfig{
+							ReceiverConfig: plugin.Config{
 								"plugin_name": "segment-receiver",
+								"server_name": "grpc-server",
 								"k":           "v",
 							},
 							QueueConfig: plugin.Config{
@@ -62,7 +79,7 @@ func TestLoad(t *testing.T) {
 								"key":         "value",
 							},
 						},
-						Processor: &module.ProcessorConfig{
+						Processor: &processor.ProcessorConfig{
 							FilterConfig: []plugin.Config{
 								{
 									"plugin_name": "filtertype1",
@@ -70,26 +87,16 @@ func TestLoad(t *testing.T) {
 								},
 							},
 						},
-						Sender: &module.SenderConfig{
-							FlushTime:     5000,
-							MaxBufferSize: 100,
+						Sender: &sender.SenderConfig{
+							MaxBufferSize:  100,
+							MinFlushEvents: 30,
+							FlushTime:      200,
+							ClientName:     "grpc-client",
 							ForwardersConfig: []plugin.Config{
 								{
 									"plugin_name": "segment-forwarder",
 									"key":         "value",
 								},
-							},
-						},
-					},
-					{
-						ModuleCommonConfig: &api.ModuleCommonConfig{
-							RunningNamespace: "sharing",
-						},
-						ClientManager: &module.ClientManagerConfig{
-							RetryInterval: 5000,
-							ClientConfig: plugin.Config{
-								"plugin_name": "grpc",
-								"k":           "v",
 							},
 						},
 					},
@@ -104,6 +111,8 @@ func TestLoad(t *testing.T) {
 				t.Fatalf("cannot load config: %v", err)
 			}
 			doJudgeEqual(t, c.Logger, tt.want.Logger)
+			doJudgeEqual(t, c.Sharing.Servers, tt.want.Sharing.Servers)
+			doJudgeEqual(t, c.Sharing.Clients, tt.want.Sharing.Clients)
 			doJudgeEqual(t, c.Agents[0].ModuleCommonConfig, tt.want.Agents[0].ModuleCommonConfig)
 			doJudgeEqual(t, c.Agents[0].Gatherer, tt.want.Agents[0].Gatherer)
 			doJudgeEqual(t, c.Agents[0].Processor, tt.want.Agents[0].Processor)
