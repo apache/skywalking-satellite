@@ -35,8 +35,6 @@ type ClientStatus int8
 type Client interface {
 	plugin.SharingPlugin
 
-	// Connect would make connection with outer service.
-	Connect() error
 	// IsConnected returns the status of the client.
 	IsConnected() bool
 	// GetConnection returns the connected client to publish events.

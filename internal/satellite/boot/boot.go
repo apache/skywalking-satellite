@@ -20,6 +20,7 @@ package boot
 import (
 	"context"
 	"errors"
+	"fmt"
 	"os"
 	"reflect"
 	"sync"
@@ -50,6 +51,9 @@ func Start(cfg *config.SatelliteConfig) error {
 	addShutdownListener(cancel)
 	// initialize the sharing plugins
 	sharing.Load(cfg.Sharing)
+	if err := sharing.Prepare(); err != nil {
+		return fmt.Errorf("error in preparing the sharing plugins: %v", err)
+	}
 	defer sharing.Close()
 	// boot Satellite
 	if modules, err := initModules(cfg); err != nil {

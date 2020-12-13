@@ -23,9 +23,6 @@ import "github.com/apache/skywalking-satellite/internal/pkg/plugin"
 type Server interface {
 	plugin.SharingPlugin
 
-	// Initialize would do some preparation works.
-	Initialize()
-
 	// Start a server to receive the input APM data.
 	Start() error
 }

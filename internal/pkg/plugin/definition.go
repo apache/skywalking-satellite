@@ -30,6 +30,9 @@ type Plugin interface {
 // SharingPlugin the plugins cloud be sharing with different modules in different namespaces.
 type SharingPlugin interface {
 	Plugin
+
+	// Prepare the sharing plugins, such as build the connection with the external services.
+	Prepare() error
 	// Close the sharing plugin.
 	Close() error
 }

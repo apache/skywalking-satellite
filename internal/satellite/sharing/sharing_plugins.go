@@ -18,6 +18,7 @@
 package sharing
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
@@ -44,6 +45,17 @@ func Load(cfg *config.SharingConfig) {
 		}
 	},
 	)
+}
+
+func Prepare() error {
+	for _, sharingPlugin := range Manager {
+		if err := sharingPlugin.Prepare(); err != nil {
+			log.Logger.Errorf("error in closing the %s sharing plugin: %v", sharingPlugin.Name(), err)
+			Close()
+			return fmt.Errorf("cannot preare the sharing plugins named %s: %v", sharingPlugin.Name(), err)
+		}
+	}
+	return nil
 }
 
 func Close() {
