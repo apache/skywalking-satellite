@@ -32,7 +32,7 @@ var (
 			&cli.StringFlag{
 				Name:    "config, c",
 				Usage:   "Load configuration from `FILE`",
-				EnvVars: []string{"MOSN_CONFIG"},
+				EnvVars: []string{"SATELLITE_CONFIG"},
 				Value:   "configs/satellite_config.yaml",
 			},
 		},
