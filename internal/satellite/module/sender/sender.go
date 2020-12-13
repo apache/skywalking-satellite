@@ -55,7 +55,7 @@ type Sender struct {
 
 // Prepare register the client status listener to the client manager and open input channel.
 func (s *Sender) Prepare() error {
-	log.Logger.Infof("sender module of %s namespace is preparing", s.config.RunningNamespace)
+	log.Logger.Infof("sender module of %s namespace is preparing", s.config.NamespaceName)
 	s.runningClient.RegisterListener(s.listener)
 	s.logicInput = s.physicalInput
 	return nil
@@ -63,7 +63,7 @@ func (s *Sender) Prepare() error {
 
 // Boot fetches the downstream input data and forward to external services, such as Kafka and OAP receiver.
 func (s *Sender) Boot(ctx context.Context) {
-	log.Logger.Infof("sender module of %s namespace is running", s.config.RunningNamespace)
+	log.Logger.Infof("sender module of %s namespace is running", s.config.NamespaceName)
 	var wg sync.WaitGroup
 	wg.Add(2)
 	// 1. keep fetching the downstream data when client connected, and put it into BatchBuffer.
@@ -76,10 +76,10 @@ func (s *Sender) Boot(ctx context.Context) {
 			case status := <-s.listener:
 				switch status {
 				case client.Connected:
-					log.Logger.Infof("sender module of %s namespace is notified the connection connected", s.config.RunningNamespace)
+					log.Logger.Infof("sender module of %s namespace is notified the connection connected", s.config.NamespaceName)
 					s.logicInput = s.physicalInput
 				case client.Disconnect:
-					log.Logger.Infof("sender module of %s namespace is notified the connection disconnected", s.config.RunningNamespace)
+					log.Logger.Infof("sender module of %s namespace is notified the connection disconnected", s.config.NamespaceName)
 					s.logicInput = nil
 				}
 			case <-timeTicker.C:
@@ -117,7 +117,7 @@ func (s *Sender) Boot(ctx context.Context) {
 
 // Shutdown closes the channels and tries to force forward the events in the buffer.
 func (s *Sender) Shutdown() {
-	log.Logger.Infof("sender module of %s namespace is closing", s.config.RunningNamespace)
+	log.Logger.Infof("sender module of %s namespace is closing", s.config.NamespaceName)
 	close(s.logicInput)
 	for buf := range s.flushChannel {
 		s.consume(buf)
@@ -129,7 +129,7 @@ func (s *Sender) Shutdown() {
 // consume would forward the events by type and ack this batch.
 func (s *Sender) consume(batch *buffer.BatchBuffer) {
 	log.Logger.Infof("sender module of %s namespace is flushing a new batch buffer."+
-		" the start offset is %s, and the size is %d", s.config.RunningNamespace, batch.Last(), batch.Len())
+		" the start offset is %s, and the size is %d", s.config.NamespaceName, batch.Last(), batch.Len())
 	var events = make(map[event.Type]event.BatchEvents)
 	for i := 0; i < batch.Len(); i++ {
 		eventContext := batch.Buf()[i]

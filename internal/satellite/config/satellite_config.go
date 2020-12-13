@@ -28,9 +28,9 @@ import (
 
 // SatelliteConfig is to initialize Satellite.
 type SatelliteConfig struct {
-	Logger  *log.LoggerConfig `mapstructure:"logger"`
-	Agents  []*AgentConfig    `mapstructure:"agents"`
-	Sharing *SharingConfig    `mapstructure:"sharing"`
+	Logger     *log.LoggerConfig  `mapstructure:"logger"`
+	Namespaces []*NamespaceConfig `mapstructure:"namespaces"`
+	Sharing    *SharingConfig     `mapstructure:"sharing"`
 }
 
 // SharingConfig contains some plugins,which could be shared by every namespace. That is useful to reduce resources cost.
@@ -39,8 +39,8 @@ type SharingConfig struct {
 	Servers []plugin.Config `mapstructure:"servers"`
 }
 
-// AgentConfig initializes the different module in different namespace.
-type AgentConfig struct {
+// NamespaceConfig initializes the different module in different namespace.
+type NamespaceConfig struct {
 	ModuleCommonConfig *api.ModuleCommonConfig    `mapstructure:"common_config"`
 	Gatherer           *gatherer.GathererConfig   `mapstructure:"gatherer"`
 	Processor          *processor.ProcessorConfig `mapstructure:"processor"`

@@ -36,5 +36,5 @@ type Module interface {
 }
 
 type ModuleCommonConfig struct {
-	RunningNamespace string `mapstructure:"namespace"`
+	NamespaceName string `mapstructure:"name"`
 }

@@ -31,7 +31,7 @@ import (
 
 // NewSender crate a Sender.
 func NewSender(cfg *api.SenderConfig, g gatherer.Gatherer) api.Sender {
-	log.Logger.Infof("sender module of %s namespace is being initialized", cfg.RunningNamespace)
+	log.Logger.Infof("sender module of %s namespace is being initialized", cfg.NamespaceName)
 	s := &Sender{
 		config:            cfg,
 		runningForwarders: []forwarder.Forwarder{},

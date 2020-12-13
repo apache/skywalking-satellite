@@ -62,10 +62,10 @@ func TestLoad(t *testing.T) {
 						},
 					},
 				},
-				Agents: []*AgentConfig{
+				Namespaces: []*NamespaceConfig{
 					{
 						ModuleCommonConfig: &api.ModuleCommonConfig{
-							RunningNamespace: "namespace1",
+							NamespaceName: "namespace1",
 						},
 
 						Gatherer: &gatherer.GathererConfig{
@@ -113,10 +113,10 @@ func TestLoad(t *testing.T) {
 			doJudgeEqual(t, c.Logger, tt.want.Logger)
 			doJudgeEqual(t, c.Sharing.Servers, tt.want.Sharing.Servers)
 			doJudgeEqual(t, c.Sharing.Clients, tt.want.Sharing.Clients)
-			doJudgeEqual(t, c.Agents[0].ModuleCommonConfig, tt.want.Agents[0].ModuleCommonConfig)
-			doJudgeEqual(t, c.Agents[0].Gatherer, tt.want.Agents[0].Gatherer)
-			doJudgeEqual(t, c.Agents[0].Processor, tt.want.Agents[0].Processor)
-			doJudgeEqual(t, c.Agents[0].Sender, tt.want.Agents[0].Sender)
+			doJudgeEqual(t, c.Namespaces[0].ModuleCommonConfig, tt.want.Namespaces[0].ModuleCommonConfig)
+			doJudgeEqual(t, c.Namespaces[0].Gatherer, tt.want.Namespaces[0].Gatherer)
+			doJudgeEqual(t, c.Namespaces[0].Processor, tt.want.Namespaces[0].Processor)
+			doJudgeEqual(t, c.Namespaces[0].Sender, tt.want.Namespaces[0].Sender)
 		})
 	}
 }

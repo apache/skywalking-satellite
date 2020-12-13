@@ -39,7 +39,7 @@ func NewGatherer(cfg *api.GathererConfig) api.Gatherer {
 
 // newFetcherGatherer crates a gatherer with the fetcher role.
 func newFetcherGatherer(cfg *api.GathererConfig) *FetcherGatherer {
-	log.Logger.Infof("fetcher gatherer module of %s namespace is being initialized", cfg.RunningNamespace)
+	log.Logger.Infof("fetcher gatherer module of %s namespace is being initialized", cfg.NamespaceName)
 	return &FetcherGatherer{
 		config:         cfg,
 		runningQueue:   queue.GetQueue(cfg.QueueConfig),
@@ -50,7 +50,7 @@ func newFetcherGatherer(cfg *api.GathererConfig) *FetcherGatherer {
 
 // newReceiverGatherer crates a gatherer with the receiver role.
 func newReceiverGatherer(cfg *api.GathererConfig) *ReceiverGatherer {
-	log.Logger.Infof("receiver gatherer module of %s namespace is being initialized", cfg.RunningNamespace)
+	log.Logger.Infof("receiver gatherer module of %s namespace is being initialized", cfg.NamespaceName)
 	return &ReceiverGatherer{
 		config:          cfg,
 		runningQueue:    queue.GetQueue(cfg.QueueConfig),

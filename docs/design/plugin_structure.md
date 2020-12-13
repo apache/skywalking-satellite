@@ -28,19 +28,17 @@ Initialize processing is like the following.
 
 
 ## Plugin usage in Satellite
-Nowadays, we have 9 kinds of plugins in Satellite. 2 kinds of Plugins are the [sharing plugins](module_design.md) and the others are the [normal plugins](module_design.md).
+Nowadays, the numbers of [sharing Plugin](module_design.md) is 2, and the numbers of the other [normal Plugin](module_design.md) is 7.
 
-
-
-- Extension: 
+- Extension Plugins: 
     - sharing plugins
-        - Server interface
-        - Client interface
+        - Server Plugin
+        - Client Plugin
     - normal plugins
-        - Receiver interface 
-        - Fetcher interface 
-        - Parser interface
-        - Queue interface
-        - Filter interface
-        - Fallbacker interface
-        - Forwarder interface
+        - Receiver Plugin
+        - Fetcher Plugin
+        - Parser Plugin
+        - Queue Plugin
+        - Filter Plugin
+        - Fallbacker Plugin
+        - Forwarder Plugin

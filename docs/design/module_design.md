@@ -1,30 +1,31 @@
 # Module Design
 ## Namespace
-Namespace is an isolation concept in Satellite. Each namespace has one agent to collect the APM data.
-So many agents would be running at the same time in Satellite.
+The namespace is an isolation concept in Satellite. 
+Each namespace has one pipeline to process the telemetry data(metrics/traces/logs). Two namespaces are not sharing data.
+
 ```
                             Satellite
  ---------------------------------------------------------------------
 |            -------------------------------------------              |
-|           |                 Agent                     |             |
+|           |                 Namespace                 |             |
 |            -------------------------------------------              |
 |            -------------------------------------------              |
-|           |                 Agent                     |             |
+|           |                 Namespace                 |             |
 |            -------------------------------------------              |
 |            -------------------------------------------              |
-|           |                 Agent                     |             |
+|           |                 Namespace                 |             |
 |            -------------------------------------------              |
  ---------------------------------------------------------------------
 ```
 ## Modules
-There are 3 modules in one agent, which are Gatherer, Processor, and Sender.
+There are 3 modules in one namespace, which are Gatherer, Processor, and Sender.
 
 - The Gatherer module is responsible for fetching or receiving data and pushing the data to Queue. So there are 2 kinds of Gatherer, which are ReceiverGatherer and FetcherGatherer.
 - The Processor module is responsible for reading data from the queue and processing data by a series of filter chains.
 - The Sender module is responsible for async processing and forwarding the data to the external services in the batch mode. After sending success, Sender would also acknowledge the offset of Queue in Gatherer.
 
 ```
-                            Agent
+                            Namespace
  --------------------------------------------------------------------
 |            ----------      -----------      --------               |
 |           | Gatherer | => | Processor | => | Sender |              |                          
@@ -40,7 +41,7 @@ Plugin is the minimal components in the module. There are 2 kinds of plugins in 
 - a normal plugin instance is only be used in a fixed module of the fixed namespaces.
 
 ### Sharing plugin
-Nowadays, there are 2 sharing plugins in Satellite, which are server plugins and client plugins. The reason why they are sharing plugins is to reduce the resource cost in connection. Server plugins are sharing with the ReceiverGatherer modules in the different namespaces to receive the external requests. And the client plugins is sharing with the Sender modules in the different namespaces to connect with external services, such as Kafka and OAP.
+Nowadays, there are 2 kinds of sharing plugins in Satellite, which are server plugins and client plugins. The reason why they are sharing plugins is to reduce the resource cost in connection. Server plugins are sharing with the ReceiverGatherer modules in the different namespaces to receive the external requests. And the client plugins is sharing with the Sender modules in the different namespaces to connect with external services, such as Kafka and OAP.
 
 ```
            Sharing Server                      Sharing Client
@@ -62,7 +63,7 @@ Nowadays, there are 2 sharing plugins in Satellite, which are server plugins and
 ```
 
 ### Normal plugin
-There are 7 normal plugins in Satellite, which are Receiver, Fetcher, Queue, Parser, Filter, Forwarder, and Fallbacker.
+There are 7 kinds of normal plugins in Satellite, which are Receiver, Fetcher, Queue, Parser, Filter, Forwarder, and Fallbacker.
 
 - Receiver: receives the input APM data from the request.
 - Fetcher: fetch the APM data by fetching.

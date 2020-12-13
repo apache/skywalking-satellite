@@ -48,7 +48,7 @@ func (p *Processor) Prepare() error {
 
 // Boot fetches the data of Queue, does a series of processing, and then sends to Sender.
 func (p *Processor) Boot(ctx context.Context) {
-	log.Logger.Infof("processor module of %s namespace is running", p.config.RunningNamespace)
+	log.Logger.Infof("processor module of %s namespace is running", p.config.NamespaceName)
 	var wg sync.WaitGroup
 	wg.Add(1)
 

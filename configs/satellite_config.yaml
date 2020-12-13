@@ -44,9 +44,9 @@ sharing:
   servers:
     - plugin_name: "grpc-server"
       k: v
-agents:
+namespaces:
   - common_config:
-      namespace: namespace1
+      name: namespace1
     gatherer:
       receiver:
         plugin_name: segment-receiver

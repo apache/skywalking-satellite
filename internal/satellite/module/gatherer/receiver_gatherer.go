@@ -43,10 +43,10 @@ type ReceiverGatherer struct {
 }
 
 func (r *ReceiverGatherer) Prepare() error {
-	log.Logger.Infof("receiver gatherer module of %s namespace is preparing", r.config.RunningNamespace)
+	log.Logger.Infof("receiver gatherer module of %s namespace is preparing", r.config.NamespaceName)
 	r.runningReceiver.RegisterHandler(r.runningServer)
 	if err := r.runningQueue.Prepare(); err != nil {
-		log.Logger.Infof("the %s queue of %s namespace was failed to initialize", r.runningQueue.Name(), r.config.RunningNamespace)
+		log.Logger.Infof("the %s queue of %s namespace was failed to initialize", r.runningQueue.Name(), r.config.NamespaceName)
 		return err
 	}
 	return nil
@@ -63,7 +63,7 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 				err := r.runningQueue.Push(e)
 				if err != nil {
 					// todo add abandonedCount metrics
-					log.Logger.Errorf("cannot put event into queue in %s namespace, error is: %v", r.config.RunningNamespace, err)
+					log.Logger.Errorf("cannot put event into queue in %s namespace, error is: %v", r.config.NamespaceName, err)
 				}
 			case e := <-r.runningQueue.Pop():
 				r.outputChannel <- e
@@ -77,9 +77,9 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 }
 
 func (r *ReceiverGatherer) Shutdown() {
-	log.Logger.Infof("receiver gatherer module of %s namespace is closing", r.config.RunningNamespace)
+	log.Logger.Infof("receiver gatherer module of %s namespace is closing", r.config.NamespaceName)
 	if err := r.runningQueue.Close(); err != nil {
-		log.Logger.Errorf("failure occurs when closing %s queue  in %s namespace, error is: %v", r.runningQueue.Name(), r.config.RunningNamespace, err)
+		log.Logger.Errorf("failure occurs when closing %s queue  in %s namespace, error is: %v", r.runningQueue.Name(), r.config.NamespaceName, err)
 	}
 }
 

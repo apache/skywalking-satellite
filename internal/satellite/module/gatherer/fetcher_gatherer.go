@@ -59,7 +59,7 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 					err := f.runningQueue.Push(event)
 					if err != nil {
 						// todo add abandonedCount metrics
-						log.Logger.Errorf("cannot put event into queue in %s namespace, %v", f.config.RunningNamespace, err)
+						log.Logger.Errorf("cannot put event into queue in %s namespace, %v", f.config.NamespaceName, err)
 					}
 				}
 			case e := <-f.runningQueue.Pop():
@@ -74,9 +74,9 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 }
 
 func (f *FetcherGatherer) Shutdown() {
-	log.Logger.Infof("fetcher gatherer module of %s namespace is closing", f.config.RunningNamespace)
+	log.Logger.Infof("fetcher gatherer module of %s namespace is closing", f.config.NamespaceName)
 	if err := f.runningQueue.Close(); err != nil {
-		log.Logger.Errorf("failure occurs when closing %s queue  in %s namespace :%v", f.runningQueue.Name(), f.config.RunningNamespace, err)
+		log.Logger.Errorf("failure occurs when closing %s queue  in %s namespace :%v", f.runningQueue.Name(), f.config.NamespaceName, err)
 	}
 }
 

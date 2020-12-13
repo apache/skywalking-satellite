@@ -80,27 +80,27 @@ func initModules(cfg *config.SatelliteConfig) (ModuleContainer, error) {
 	}
 	// container contains the modules in each namespace.
 	container := make(ModuleContainer)
-	for _, aCfg := range cfg.Agents {
+	for _, aCfg := range cfg.Namespaces {
 		// the added sequence should follow gather, sender and processor to purpose the booting sequence.
 		var modules []api.Module
 		g := gatherer.NewGatherer(aCfg.Gatherer)
 		s := sender.NewSender(aCfg.Sender, g)
 		p := processor.NewProcessor(aCfg.Processor, s, g)
 		modules = append(modules, g, s, p)
-		container[aCfg.ModuleCommonConfig.RunningNamespace] = modules
+		container[aCfg.ModuleCommonConfig.NamespaceName] = modules
 	}
 	return container, nil
 }
 
 // initModuleConfig valid the config pattern and inject the common config to the specific module config.
 func initModuleConfig(cfg *config.SatelliteConfig) error {
-	for _, aCfg := range cfg.Agents {
+	for _, aCfg := range cfg.Namespaces {
 		if aCfg.Gatherer == nil || aCfg.Sender == nil || aCfg.Processor == nil {
-			return errors.New("gatherer, sender, and processor is required in agent config")
+			return errors.New("gatherer, sender, and processor is required in the namespace config")
 		}
 	}
 	// inject module common config to the specific module config
-	for _, aCfg := range cfg.Agents {
+	for _, aCfg := range cfg.Namespaces {
 		aCfg.Sender.ModuleCommonConfig = *aCfg.ModuleCommonConfig
 		aCfg.Gatherer.ModuleCommonConfig = *aCfg.ModuleCommonConfig
 		aCfg.Gatherer.ModuleCommonConfig = *aCfg.ModuleCommonConfig
