@@ -21,15 +21,13 @@ import (
 	"fmt"
 	"reflect"
 	"strings"
-	"sync"
 
 	"github.com/spf13/viper"
 )
 
 // the global plugin registry
 var (
-	lock sync.Mutex
-	reg  map[reflect.Type]map[string]reflect.Value
+	reg map[reflect.Type]map[string]reflect.Value
 )
 
 func init() {
@@ -38,16 +36,12 @@ func init() {
 
 // RegisterPluginCategory register the RegInfo to the global type registry.
 func RegisterPluginCategory(pluginType reflect.Type) {
-	lock.Lock()
-	defer lock.Unlock()
 	reg[pluginType] = map[string]reflect.Value{}
 }
 
 // RegisterPlugin registers the pluginType as plugin.
 // If the plugin is a pointer receiver, please pass a pointer. Otherwise, please pass a value.
 func RegisterPlugin(plugin Plugin) {
-	lock.Lock()
-	defer lock.Unlock()
 	v := reflect.ValueOf(plugin)
 	success := false
 	for pCategory, pReg := range reg {
@@ -64,8 +58,6 @@ func RegisterPlugin(plugin Plugin) {
 
 // Get an initialized specific plugin according to the pluginCategory and config.
 func Get(category reflect.Type, cfg Config) Plugin {
-	lock.Lock()
-	defer lock.Unlock()
 	pluginName := nameFinder(cfg)
 	value, ok := reg[category][pluginName]
 	if !ok {
