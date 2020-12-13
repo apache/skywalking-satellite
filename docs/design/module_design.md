@@ -35,7 +35,7 @@ There are 3 modules in one namespace, which are Gatherer, Processor, and Sender.
 
 ## Plugins
 
-Plugin is the minimal components in the module. There are 2 kinds of plugins in Satellite, which are sharing plugins and normal plugins.
+Plugin is the minimal components in the module. Sateliite has 2 plugin catalogs, which are sharing plugins and normal plugins.
 
 - a sharing plugin instance could be sharing with multiple modules in the different namespaces.
 - a normal plugin instance is only be used in a fixed module of the fixed namespaces.
