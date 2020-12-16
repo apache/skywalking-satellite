@@ -20,14 +20,16 @@ package api
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	"github.com/apache/skywalking-satellite/plugins/server/api"
 )
 
-// Fallbacker is a plugin interface, that defines some fallback strategies.
-type Fallbacker interface {
+// Receiver is a plugin interface, that defines new collectors.
+type Receiver interface {
 	plugin.Plugin
-	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) bool
-}
 
-type DisconnectionCallback func()
+	// RegisterHandler register  a handler to the server, such as to handle a gRPC or an HTTP request
+	RegisterHandler(server api.Server)
+
+	// Channel would be put a data when the receiver receives an APM data.
+	Channel() <-chan event.SerializableEvent
+}

@@ -18,8 +18,6 @@
 package api
 
 import (
-	"reflect"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
@@ -28,34 +26,24 @@ import (
 type Queue interface {
 	plugin.Plugin
 
-	// Publisher get the only publisher for the current queue.
-	Publisher() QueuePublisher
+	// Prepare creates the queue.
+	Prepare() error
 
-	// Consumer get the only consumer for the current queue.
-	Consumer() QueueConsumer
+	// Push a inputEvent into the queue.
+	Push(event event.SerializableEvent) error
+
+	// Pop returns a SequenceEvent when Queue is not empty,
+	Pop() chan *SequenceEvent
 
 	// Close would close the queue.
-	Close()
+	Close() error
+
+	// Ack the lastOffset
+	Ack(lastOffset event.Offset)
 }
 
-// QueuePublisher is a plugin interface, that defines new queue publishers.
-type QueuePublisher interface {
-	// Enqueue push a inputEvent into the queue.
-	Enqueue(event *event.SerializableEvent) error
-}
-
-// QueueConsumer is a plugin interface, that defines new queue consumers.
-type QueueConsumer interface {
-	// Dequeue pop an event form the Queue. When the queue is empty, the method would be blocked.
-	Dequeue() (event *event.SerializableEvent, offset int64, err error)
-}
-
-var QueueCategory = reflect.TypeOf((*Queue)(nil)).Elem()
-
-func GetQueue(pluginName string, config map[string]interface{}) Queue {
-	return plugin.Get(QueueCategory, pluginName, config).(Queue)
-}
-
-func init() {
-	plugin.AddPluginCategory(QueueCategory)
+// SequenceEvent is a wrapper to pass the event and the offset.
+type SequenceEvent struct {
+	Event  event.Event
+	Offset event.Offset
 }

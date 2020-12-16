@@ -36,6 +36,9 @@ const (
 
 type Type int32
 
+// Offset is a generic form, which allows having different definitions in different Queues.
+type Offset string
+
 // Event that implement this interface would be allowed to transmit in the Satellite.
 type Event interface {
 	// Name returns the event name.
@@ -73,20 +76,20 @@ type BatchEvents []Event
 
 // OutputEventContext is a container to store the output context.
 type OutputEventContext struct {
-	context map[string]Event
-	Offset  int64
+	Context map[string]Event
+	Offset  Offset
 }
 
 // Put puts the incoming event into the context when the event is a remote event.
 func (c *OutputEventContext) Put(event Event) {
 	if event.IsRemote() {
-		c.context[event.Name()] = event
+		c.Context[event.Name()] = event
 	}
 }
 
 // Get returns a event in the context. When the eventName does not exist, a error would be returned.
 func (c *OutputEventContext) Get(eventName string) (Event, error) {
-	e, ok := c.context[eventName]
+	e, ok := c.Context[eventName]
 	if !ok {
 		err := fmt.Errorf("cannot find the event name in OutputEventContext : %s", eventName)
 		return nil, err

@@ -20,14 +20,12 @@ package api
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
-// Fallbacker is a plugin interface, that defines some fallback strategies.
-type Fallbacker interface {
+// Fetcher is a plugin interface, that defines new fetchers.
+type Fetcher interface {
 	plugin.Plugin
-	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) bool
-}
 
-type DisconnectionCallback func()
+	// Fetch would fetch some APM data.
+	Fetch() []event.SerializableEvent
+}

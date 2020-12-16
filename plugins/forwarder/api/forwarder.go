@@ -18,40 +18,18 @@
 package api
 
 import (
-	"reflect"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-//   Init()     Initiating stage: Init plugin by config
-//    ||
-//    \/
-//   Prepare()   Preparing stage: Prepare the Forwarder, such as get remote client.
-//    ||
-//    \/
-//   Forward()  Running stage: Forward the batch events
-//    ||
-//    \/
-//   Close()    Closing stage: Close the Collector, such as close connection with SkyWalking javaagent.
-
 // Forwarder is a plugin interface, that defines new forwarders.
 type Forwarder interface {
 	plugin.Plugin
-
 	// Forward the batch events to the external services, such as Kafka MQ and SkyWalking OAP cluster.
-	Forward(batch event.BatchEvents)
-
-	// ForwardType returns the supporting event type that could be forwarded.
+	Forward(connection interface{}, batch event.BatchEvents) error
+	// ForwardType returns the supported event type.
 	ForwardType() event.Type
 }
 
-var ForwarderCategory = reflect.TypeOf((*Forwarder)(nil)).Elem()
-
-func GetForwarder(pluginName string, config map[string]interface{}) Forwarder {
-	return plugin.Get(ForwarderCategory, pluginName, config).(Forwarder)
-}
-
-func init() {
-	plugin.AddPluginCategory(ForwarderCategory)
-}
+// ForwardFunc represent the Forward() in Forwarder
+type ForwardFunc func(connection interface{}, batch event.BatchEvents) error

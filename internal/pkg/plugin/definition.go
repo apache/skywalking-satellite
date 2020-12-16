@@ -15,19 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package plugin
 
-import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
-)
-
-// Fallbacker is a plugin interface, that defines some fallback strategies.
-type Fallbacker interface {
-	plugin.Plugin
-	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) bool
+// Plugin defines the plugin model in Satellite.
+type Plugin interface {
+	// Name returns the name of the specific plugin.
+	Name() string
+	// Description returns the description of the specific plugin.
+	Description() string
+	// Config returns the default config, that is a YAML pattern.
+	DefaultConfig() string
 }
 
-type DisconnectionCallback func()
+// SharingPlugin the plugins cloud be sharing with different modules in different namespaces.
+type SharingPlugin interface {
+	Plugin
+
+	// Prepare the sharing plugins, such as build the connection with the external services.
+	Prepare() error
+	// Close the sharing plugin.
+	Close() error
+}
+
+// Config is used to initialize the DefaultInitializingPlugin.
+type Config map[string]interface{}
+
+// NameField is a required field in Config.
+const NameField = "plugin_name"

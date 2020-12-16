@@ -15,19 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package main
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	"os"
+	"time"
+
+	"github.com/urfave/cli/v2"
 )
 
-// Fallbacker is a plugin interface, that defines some fallback strategies.
-type Fallbacker interface {
-	plugin.Plugin
-	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) bool
-}
+// version will be initialized when building
+var version string = "lastest"
 
-type DisconnectionCallback func()
+func main() {
+	app := cli.NewApp()
+	app.Name = "SkyWalking-Satellite"
+	app.Version = version
+	app.Compiled = time.Now()
+	app.Usage = "Satellite is for collecting APM data."
+	app.Description = "A lightweight collector/sidecar could be deployed closing to the target monitored system, to collect metrics, traces, and logs."
+	app.Commands = []*cli.Command{
+		&cmdStart,
+	}
+	app.Action = cli.ShowAppHelp
+	_ = app.Run(os.Args)
+}

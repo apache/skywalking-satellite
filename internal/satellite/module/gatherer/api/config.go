@@ -18,16 +18,21 @@
 package api
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
 )
 
-// Fallbacker is a plugin interface, that defines some fallback strategies.
-type Fallbacker interface {
-	plugin.Plugin
-	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) bool
-}
+// GathererConfig contains all implementation fields.
+type GathererConfig struct {
+	// common config
+	api.ModuleCommonConfig
+	QueueConfig plugin.Config `mapstructure:"queue"` // queue plugin config
 
-type DisconnectionCallback func()
+	// ReceiverGatherer
+	ReceiverConfig plugin.Config `mapstructure:"receiver"`    // collector plugin config
+	ServerName     string        `mapstructure:"server_name"` // depends on which server
+
+	// FetcherGatherer
+	FetcherConfig plugin.Config `mapstructure:"fetcher"`        // fetcher plugin config
+	FetchInterval int           `mapstructure:"fetch_interval"` // fetch interval, the time unit is millisecond
+}

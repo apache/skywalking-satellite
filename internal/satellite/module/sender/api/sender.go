@@ -19,15 +19,12 @@ package api
 
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
 )
 
-// Fallbacker is a plugin interface, that defines some fallback strategies.
-type Fallbacker interface {
-	plugin.Plugin
-	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) bool
-}
+type Sender interface {
+	api.Module
 
-type DisconnectionCallback func()
+	// InputDataChannel is a blocking channel to receive the apm data from the downstream processor module.
+	InputDataChannel() chan<- *event.OutputEventContext
+}

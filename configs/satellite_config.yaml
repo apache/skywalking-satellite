@@ -15,34 +15,38 @@
 # limitations under the License.
 #
 
-Gatherer:
-  - name: segment-receiver
-    type: segment-receiver
-    config:
-      key: value
-      key2: value2
-    queue:
-      type: mmap-queue
-      config:
+logger:
+  log_pattern: "%time [%level][%field] - %msg"
+  time_pattern: "2006-01-02 15:04:05.001"
+  level: "info"
+
+sharing:
+  clients:
+    - plugin_name: "grpc-client"
+      k: v
+  servers:
+    - plugin_name: "grpc-server"
+      k: v
+namespaces:
+  - common_config:
+      name: namespace1
+    gatherer:
+      receiver:
+        plugin_name: segment-receiver
+        server_name: "grpc-server"
+        k: v
+      queue:
+        plugin_name: mmap-queue
         key: value
-        key2: value2
-    processor: processor1
-Processor:
-  - name: processor1
-    filters:
-      - filtername1
-      - filtername2
-      - filtername3
-Sender:
-  client:
-    name: gRPC-client
-    type: gRPC
-    config:
-      key1: value1
-      key2: value2
-  forwarders:
-    - type: segment-forwarder
-      eventType: segment
-      config:
-        key1: value1
-        key2: value2
+    processor:
+      filters:
+        - plugin_name: filtertype1
+          key: value
+    sender:
+      flush_time: 200
+      max_buffer_size: 100
+      min_flush_events: 30
+      client_name: grpc-client
+      forwarders:
+        - plugin_name: segment-forwarder
+          key: value

@@ -19,15 +19,15 @@ package api
 
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
 )
 
-// Fallbacker is a plugin interface, that defines some fallback strategies.
-type Fallbacker interface {
-	plugin.Plugin
-	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) bool
-}
+// Gatherer is the APM data collection module in Satellite.
+type Gatherer interface {
+	api.Module
+	// DataChannel is a blocking channel to transfer the apm data to the upstream processor module.
+	OutputDataChannel() <-chan *queue.SequenceEvent
 
-type DisconnectionCallback func()
+	Ack(lastOffset event.Offset)
+}

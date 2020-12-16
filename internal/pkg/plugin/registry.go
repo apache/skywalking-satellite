@@ -20,60 +20,84 @@ package plugin
 import (
 	"fmt"
 	"reflect"
-	"sync"
+	"strings"
+
+	"github.com/spf13/viper"
 )
 
-// All plugins is wrote in ./plugins dir. The plugin type would be as the next level dirs,
-// such as collector, client, or queue. And the 3rd level is the plugin name, that is also
-// used as key in pluginRegistry.
-
-// reg is the global plugin registry
+// the global plugin registry
 var (
-	reg  map[reflect.Type]map[string]reflect.Value
-	lock sync.Mutex
+	reg map[reflect.Type]map[string]reflect.Value
 )
 
 func init() {
 	reg = make(map[reflect.Type]map[string]reflect.Value)
 }
 
-// Add new plugin category. The different plugin category could have same plugin names.
-func AddPluginCategory(pluginCategory reflect.Type) {
-	lock.Lock()
-	defer lock.Unlock()
-	reg[pluginCategory] = map[string]reflect.Value{}
+// RegisterPluginCategory register the RegInfo to the global type registry.
+func RegisterPluginCategory(pluginType reflect.Type) {
+	reg[pluginType] = map[string]reflect.Value{}
 }
 
 // RegisterPlugin registers the pluginType as plugin.
 // If the plugin is a pointer receiver, please pass a pointer. Otherwise, please pass a value.
-func RegisterPlugin(pluginName string, plugin interface{}) {
-	lock.Lock()
-	defer lock.Unlock()
+func RegisterPlugin(plugin Plugin) {
 	v := reflect.ValueOf(plugin)
 	success := false
 	for pCategory, pReg := range reg {
 		if v.Type().Implements(pCategory) {
-			pReg[pluginName] = v
-			fmt.Printf("register %s %s successfully ", pluginName, v.Type().String())
+			pReg[plugin.Name()] = v
+			fmt.Printf("register %s %s successfully ", plugin.Name(), v.Type().String())
 			success = true
 		}
 	}
 	if !success {
-		fmt.Printf("this type of %s is not supported to register : %s", pluginName, v.Type().String())
+		fmt.Printf("this type of %s is not supported to register : %s", plugin.Name(), v.Type().String())
 	}
 }
 
-// Get the specific plugin according to the pluginCategory and pluginName.
-func Get(pluginCategory reflect.Type, pluginName string, config map[string]interface{}) Plugin {
-	value, ok := reg[pluginCategory][pluginName]
+// Get an initialized specific plugin according to the pluginCategory and config.
+func Get(category reflect.Type, cfg Config) Plugin {
+	pluginName := nameFinder(cfg)
+	value, ok := reg[category][pluginName]
 	if !ok {
-		panic(fmt.Errorf("cannot find %s plugin, and the category of plugin is %s", pluginName, pluginCategory))
+		panic(fmt.Errorf("cannot find %s plugin, and the category of plugin is %s", pluginName, category))
 	}
 	t := value.Type()
 	if t.Kind() == reflect.Ptr {
 		t = t.Elem()
 	}
 	plugin := reflect.New(t).Interface().(Plugin)
-	plugin.InitPlugin(config)
+	initializing(plugin, cfg)
 	return plugin
+}
+
+// nameFinder is used to get the plugin name in Config.
+func nameFinder(cfg interface{}) string {
+	c, ok := cfg.(Config)
+	if !ok {
+		panic(fmt.Errorf("nameFinder only supports Config"))
+	}
+	name, ok := c[NameField]
+	if !ok {
+		panic(fmt.Errorf("%s is requeired in Config", NameField))
+	}
+	return name.(string)
+}
+
+// initializing initialize the fields by fields mapping.
+func initializing(plugin Plugin, cfg Config) {
+	v := viper.New()
+	v.SetConfigType("yaml")
+	if plugin.DefaultConfig() != "" {
+		if err := v.ReadConfig(strings.NewReader(plugin.DefaultConfig())); err != nil {
+			panic(fmt.Errorf("cannot read default config in the plugin: %s, the error is %v", plugin.Name(), err))
+		}
+	}
+	if err := v.MergeConfigMap(cfg); err != nil {
+		panic(fmt.Errorf("%s plugin cannot merge the custom configuration, the error is %v", plugin.Name(), err))
+	}
+	if err := v.Unmarshal(plugin); err != nil {
+		panic(fmt.Errorf("cannot inject  the config to the %s plugin, the error is %v", plugin.Name(), err))
+	}
 }

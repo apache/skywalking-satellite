@@ -15,8 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package main
+package api
 
-func main() {
-	print("OK")
+import "github.com/apache/skywalking-satellite/internal/pkg/plugin"
+
+// Server is a plugin interface, that defines new servers, such as gRPC server and http server.
+type Server interface {
+	plugin.SharingPlugin
+
+	// Start a server to receive the input APM data.
+	Start() error
 }

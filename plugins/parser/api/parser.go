@@ -18,15 +18,10 @@
 package api
 
 import (
-	"reflect"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-//
-// Collector ==> RawData ==> Parser ==> SerializableEvent
-//
 // Parser is a plugin interface, that defines new Parsers for Collector plugin.
 type Parser interface {
 	plugin.Plugin
@@ -36,14 +31,4 @@ type Parser interface {
 
 	// ParseStr parse the string into events.
 	ParseStr(str string) ([]event.SerializableEvent, error)
-}
-
-var ParserCategory = reflect.TypeOf((*Parser)(nil)).Elem()
-
-func GetParser(pluginName string, config map[string]interface{}) Parser {
-	return plugin.Get(ParserCategory, pluginName, config).(Parser)
-}
-
-func init() {
-	plugin.AddPluginCategory(ParserCategory)
 }

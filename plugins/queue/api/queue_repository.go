@@ -18,16 +18,23 @@
 package api
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"reflect"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
-// Fallbacker is a plugin interface, that defines some fallback strategies.
-type Fallbacker interface {
-	plugin.Plugin
-	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) bool
+// GetQueue an initialized filter plugin.
+func GetQueue(config plugin.Config) Queue {
+	return plugin.Get(reflect.TypeOf((*Queue)(nil)).Elem(), config).(Queue)
 }
 
-type DisconnectionCallback func()
+// RegisterQueuePlugins register the used queue plugins.
+func RegisterQueuePlugins() {
+	plugin.RegisterPluginCategory(reflect.TypeOf((*Queue)(nil)).Elem())
+	queues := []Queue{
+		// Please register the queue plugins at here.
+	}
+	for _, queue := range queues {
+		plugin.RegisterPlugin(queue)
+	}
+}

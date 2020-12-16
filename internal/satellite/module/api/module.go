@@ -18,16 +18,23 @@
 package api
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	"context"
 )
 
-// Fallbacker is a plugin interface, that defines some fallback strategies.
-type Fallbacker interface {
-	plugin.Plugin
-	//  FallBack returns nil when finishing a successful process and returns a new Fallbacker when failure.
-	FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) bool
+// TODO add metrics func
+// Module id a custom plugin interface, which defines the processing.
+type Module interface {
+
+	// Prepare would do some preparing workers, such build connection with external services.
+	Prepare() error
+	// Boot would start the module and return error when started failed. When a stop signal received
+	// or an exception occurs, the shutdown function would be called.
+	Boot(ctx context.Context)
+
+	// Shutdown could do some clean job to close Module.
+	Shutdown()
 }
 
-type DisconnectionCallback func()
+type ModuleCommonConfig struct {
+	NamespaceName string `mapstructure:"name"`
+}
