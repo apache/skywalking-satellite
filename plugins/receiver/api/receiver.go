@@ -31,5 +31,5 @@ type Receiver interface {
 	RegisterHandler(server api.Server)
 
 	// Channel would be put a data when the receiver receives an APM data.
-	Channel() <-chan event.SerializableEvent
+	Channel() <-chan *event.Event
 }

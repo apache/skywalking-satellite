@@ -18,6 +18,8 @@
 package api
 
 import (
+	"reflect"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
@@ -26,14 +28,14 @@ import (
 type Queue interface {
 	plugin.Plugin
 
-	// Prepare creates the queue.
-	Prepare() error
+	// Initialize creates the queue.
+	Initialize() error
 
 	// Push a inputEvent into the queue.
-	Push(event event.SerializableEvent) error
+	Push(event *event.Event) error
 
 	// Pop returns a SequenceEvent when Queue is not empty,
-	Pop() chan *SequenceEvent
+	Pop() (*SequenceEvent, error)
 
 	// Close would close the queue.
 	Close() error
@@ -44,6 +46,11 @@ type Queue interface {
 
 // SequenceEvent is a wrapper to pass the event and the offset.
 type SequenceEvent struct {
-	Event  event.Event
+	Event  *event.Event
 	Offset event.Offset
+}
+
+// GetQueue an initialized filter plugin.
+func GetQueue(config plugin.Config) Queue {
+	return plugin.Get(reflect.TypeOf((*Queue)(nil)).Elem(), config).(Queue)
 }

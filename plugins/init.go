@@ -24,7 +24,7 @@ import (
 	filter "github.com/apache/skywalking-satellite/plugins/filter/api"
 	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
 	parser "github.com/apache/skywalking-satellite/plugins/parser/api"
-	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
+	"github.com/apache/skywalking-satellite/plugins/queue"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 )

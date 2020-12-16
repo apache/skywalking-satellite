@@ -60,7 +60,7 @@ func (p *Processor) Boot(ctx context.Context) {
 			case e := <-p.gatherer.OutputDataChannel():
 				c := &event.OutputEventContext{
 					Offset:  e.Offset,
-					Context: make(map[string]event.Event),
+					Context: make(map[string]*event.Event),
 				}
 				c.Put(e.Event)
 				// processing the event with filters, that put the necessary events to OutputEventContext.

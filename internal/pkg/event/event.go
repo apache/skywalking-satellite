@@ -39,56 +39,31 @@ type Type int32
 // Offset is a generic form, which allows having different definitions in different Queues.
 type Offset string
 
-// Event that implement this interface would be allowed to transmit in the Satellite.
-type Event interface {
-	// Name returns the event name.
-	Name() string
-
-	// Meta is a pair of key and value to record meta data, such as labels.
-	Meta() map[string]string
-
-	// Data returns the wrapped data.
-	Data() interface{}
-
-	// Time returns the event time.
-	Time() time.Time
-
-	// Type is to distinguish different events.
-	Type() Type
-
-	// IsRemote means is a output event when returns true.
-	IsRemote() bool
-}
-
-// SerializableEvent is used in Collector to bridge Queue.
-type SerializableEvent interface {
-	Event
-
-	// ToBytes serialize the event to a byte array.
-	ToBytes() []byte
-
-	// FromBytes deserialize the byte array to an event.
-	FromBytes(bytes []byte) SerializableEvent
+type Event struct {
+	Name      string
+	Timestamp time.Time
+	Meta      map[string]string
+	Type      Type
+	Remote    bool
+	Data      map[string]interface{}
 }
 
 // BatchEvents is used by Forwarder to forward.
-type BatchEvents []Event
+type BatchEvents []*Event
 
 // OutputEventContext is a container to store the output context.
 type OutputEventContext struct {
-	Context map[string]Event
+	Context map[string]*Event
 	Offset  Offset
 }
 
-// Put puts the incoming event into the context when the event is a remote event.
-func (c *OutputEventContext) Put(event Event) {
-	if event.IsRemote() {
-		c.Context[event.Name()] = event
-	}
+// Put puts the incoming event into the context.
+func (c *OutputEventContext) Put(event *Event) {
+	c.Context[event.Name] = event
 }
 
-// Get returns a event in the context. When the eventName does not exist, a error would be returned.
-func (c *OutputEventContext) Get(eventName string) (Event, error) {
+// Get returns an event in the context. When the eventName does not exist, an error would be returned.
+func (c *OutputEventContext) Get(eventName string) (*Event, error) {
 	e, ok := c.Context[eventName]
 	if !ok {
 		err := fmt.Errorf("cannot find the event name in OutputEventContext : %s", eventName)

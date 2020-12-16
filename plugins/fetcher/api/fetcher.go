@@ -27,5 +27,5 @@ type Fetcher interface {
 	plugin.Plugin
 
 	// Fetch would fetch some APM data.
-	Fetch() []event.SerializableEvent
+	Fetch() event.BatchEvents
 }

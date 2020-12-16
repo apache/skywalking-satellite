@@ -134,8 +134,8 @@ func (s *Sender) consume(batch *buffer.BatchBuffer) {
 	for i := 0; i < batch.Len(); i++ {
 		eventContext := batch.Buf()[i]
 		for _, e := range eventContext.Context {
-			if e.IsRemote() {
-				events[e.Type()] = append(events[e.Type()], e)
+			if e.Remote {
+				events[e.Type] = append(events[e.Type], e)
 			}
 		}
 	}

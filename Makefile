@@ -25,6 +25,7 @@ RELEASE_SRC = skywalking-satellite-$(VERSION)-src
 OS = $(shell uname)
 
 GO = go
+GIT = git
 GO_PATH = $$($(GO) env GOPATH)
 GO_BUILD = $(GO) build
 GO_GET = $(GO) get
@@ -36,7 +37,7 @@ GO_BUILD_FLAGS = -v
 GO_BUILD_LDFLAGS = -X main.version=$(VERSION)
 GQL_GEN = $(GO_PATH)/bin/gqlgen
 
-PLATFORMS := windows linux darwin
+PLATFORMS := linux darwin
 os = $(word 1, $@)
 ARCH = amd64
 
@@ -72,7 +73,7 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: deps windows linux darwin
+build: deps linux darwin
 
 
 .PHONY: $(PLATFORMS)

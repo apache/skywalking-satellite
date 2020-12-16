@@ -15,26 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package queue
 
 import (
 	"reflect"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/plugins/queue/api"
+	"github.com/apache/skywalking-satellite/plugins/queue/mmap"
 )
-
-// GetQueue an initialized filter plugin.
-func GetQueue(config plugin.Config) Queue {
-	return plugin.Get(reflect.TypeOf((*Queue)(nil)).Elem(), config).(Queue)
-}
 
 // RegisterQueuePlugins register the used queue plugins.
 func RegisterQueuePlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Queue)(nil)).Elem())
-	queues := []Queue{
+	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Queue)(nil)).Elem())
+	queues := []api.Queue{
+		&mmap.Queue{},
 		// Please register the queue plugins at here.
 	}
-	for _, queue := range queues {
-		plugin.RegisterPlugin(queue)
+	for _, q := range queues {
+		plugin.RegisterPlugin(q)
 	}
 }
