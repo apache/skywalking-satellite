@@ -280,7 +280,7 @@ func TestQueue_MemCost(t *testing.T) {
 	}
 	defer cleanTestQueue(t, q)
 	events := getBatchEvents(20)
-	var memcost []int
+	var memcost []int32
 	for _, e := range events {
 		err = q.Push(e)
 		memcost = append(memcost, q.mmapCount)
@@ -288,7 +288,7 @@ func TestQueue_MemCost(t *testing.T) {
 			t.Errorf("queue cannot push one event: %+v", err)
 		}
 	}
-	want := []int{
+	want := []int32{
 		1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 5, 6, 6, 7, 7, 8,
 	}
 	if !cmp.Equal(want, memcost) {

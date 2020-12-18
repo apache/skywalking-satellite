@@ -19,9 +19,8 @@ package meta
 
 import (
 	"fmt"
-	"syscall"
-
 	"path/filepath"
+	"syscall"
 
 	"github.com/grandecola/mmap"
 

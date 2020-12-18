@@ -50,6 +50,9 @@ jobs:
       - name: Lint
         run: make lint
 
+      - name: Check
+        run: make check
+
       - name: Test
         run: make test
   result:

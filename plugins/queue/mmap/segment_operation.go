@@ -22,6 +22,7 @@ import (
 	"fmt"
 	"path"
 	"strconv"
+	"sync/atomic"
 
 	"github.com/grandecola/mmap"
 
@@ -56,7 +57,7 @@ func (q *Queue) mapSegment(segmentID int64) error {
 	if err != nil {
 		return err
 	}
-	q.mmapCount++
+	atomic.AddInt32(&q.mmapCount, 1)
 	q.segments[index] = file
 	return nil
 }
@@ -70,7 +71,7 @@ func (q *Queue) unmapSegment(segmentID int64) error {
 	if err := q.segments[index].Unmap(); err != nil {
 		return fmt.Errorf("error in unmap segemnt: %v", err)
 	}
-	q.mmapCount--
+	atomic.AddInt32(&q.mmapCount, -1)
 	q.segments[index] = nil
 	return nil
 }

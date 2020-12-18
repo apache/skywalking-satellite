@@ -37,11 +37,12 @@ func (q *Queue) flush() {
 	ctx, cancel := context.WithCancel(q.ctx)
 	defer cancel()
 	for {
-		timeTicker := time.NewTicker(time.Duration(q.FlushPeriod) * time.Millisecond)
+		timer := time.NewTimer(time.Duration(q.FlushPeriod) * time.Millisecond)
 		select {
 		case <-q.flushChannel:
 			q.doFlush()
-		case <-timeTicker.C:
+			timer.Reset(time.Duration(q.FlushPeriod) * time.Millisecond)
+		case <-timer.C:
 			q.doFlush()
 		case <-ctx.Done():
 			q.doFlush()

@@ -37,7 +37,7 @@ type Queue struct {
 	sync.Mutex
 	// config
 	SegmentSize           int    `mapstructure:"segment_size"`            // The size of each segment. The unit is byte.
-	MaxInMemSegments      int    `mapstructure:"max_in_mem_segments"`     // The max num of segments in memory.
+	MaxInMemSegments      int32  `mapstructure:"max_in_mem_segments"`     // The max num of segments in memory.
 	QueueCapacitySegments int    `mapstructure:"queue_capacity_segments"` // The capacity of Queue = segment_size * queue_capacity_segments.
 	FlushPeriod           int    `mapstructure:"flush_period"`            // The period flush time. The unit is ms.
 	FlushCeilingNum       int    `mapstructure:"flush_ceiling_num"`       // The max number in one flush time.
@@ -47,7 +47,7 @@ type Queue struct {
 	// running components
 	meta                   *meta.Metadata // The metadata file.
 	segments               []*mmap.File   // The data files.
-	mmapCount              int            // The number of the memory mapped files.
+	mmapCount              int32          // The number of the memory mapped files.
 	unflushedNum           int            // The unflushed number.
 	flushChannel           chan struct{}  // The flushChannel channel would receive a signal when the unflushedNum reach the flush_ceiling_num.
 	insufficientMemChannel chan struct{}  // Notify when memory is insufficient
