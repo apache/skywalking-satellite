@@ -53,8 +53,6 @@ jobs:
       - name: Check
         run: make check
 
-      - name: Test
-        run: make test
   result:
     runs-on: ubuntu-latest
     timeout-minutes: 90
