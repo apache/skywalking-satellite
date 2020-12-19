@@ -235,3 +235,4 @@ The text of each license is also included at licenses/LICENSE-[project].txt.
 	spf13 (viper) v1.7.1: https://github.com/spf13/viper MIT
 	urfave (cli) v2.3.0: https://github.com/urfave/cli MIT
 	grandecola (mmap) v0.6.0: https://github.com/grandecola/mmap MIT
+	grandecola (bigqueue) v0.4.0: https://github.com/grandecola/bigqueue MIT

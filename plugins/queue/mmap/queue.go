@@ -21,7 +21,11 @@ import (
 	"context"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 	"sync"
+	"syscall"
+	"time"
 
 	"github.com/grandecola/mmap"
 
@@ -182,4 +186,81 @@ func (q *Queue) Ack(lastOffset event.Offset) {
 		log.Logger.Errorf("cannot ack queue with the offset:%s", lastOffset)
 	}
 	q.meta.PutCommittedOffset(id, offset)
+}
+
+// flush control the flush operation by timer or counter.
+func (q *Queue) flush() {
+	defer q.showDownWg.Done()
+	ctx, cancel := context.WithCancel(q.ctx)
+	defer cancel()
+	for {
+		timer := time.NewTimer(time.Duration(q.FlushPeriod) * time.Millisecond)
+		select {
+		case <-q.flushChannel:
+			q.doFlush()
+			timer.Reset(time.Duration(q.FlushPeriod) * time.Millisecond)
+		case <-timer.C:
+			q.doFlush()
+		case <-ctx.Done():
+			q.doFlush()
+			return
+		}
+	}
+}
+
+// doFlush flush the segment and meta files to the disk.
+func (q *Queue) doFlush() {
+	q.Lock()
+	defer q.Unlock()
+	for _, segment := range q.segments {
+		if segment == nil {
+			continue
+		}
+		if err := segment.Flush(syscall.MS_SYNC); err != nil {
+			log.Logger.Errorf("cannot flush segment file: %v", err)
+		}
+	}
+	wid, woffset := q.meta.GetWritingOffset()
+	q.meta.PutWatermarkOffset(wid, woffset)
+	if err := q.meta.Flush(); err != nil {
+		log.Logger.Errorf("cannot flush meta file: %v", err)
+	}
+}
+
+// isEmpty returns the capacity status
+func (q *Queue) isEmpty() bool {
+	rid, roffset := q.meta.GetReadingOffset()
+	wid, woffset := q.meta.GetWritingOffset()
+	return rid == wid && roffset == woffset
+}
+
+// isEmpty returns the capacity status
+func (q *Queue) isFull() bool {
+	rid, _ := q.meta.GetReadingOffset()
+	wid, _ := q.meta.GetWritingOffset()
+	// ensure enough spaces to promise data stability.
+	maxWid := rid + int64(q.QueueCapacitySegments) - 1 - int64(q.MaxEventSize/q.SegmentSize)
+	return wid >= maxWid
+}
+
+// encode the meta to the offset
+func (q *Queue) encodeOffset(id, offset int64) event.Offset {
+	return event.Offset(strconv.FormatInt(id, 10) + "-" + strconv.FormatInt(offset, 10))
+}
+
+// decode the offset to the meta of the mmap queue.
+func (q *Queue) decodeOffset(val event.Offset) (id, offset int64, err error) {
+	arr := strings.Split(string(val), "-")
+	if len(arr) == 2 {
+		id, err := strconv.ParseInt(arr[0], 10, 64)
+		if err != nil {
+			return 0, 0, err
+		}
+		offset, err := strconv.ParseInt(arr[1], 10, 64)
+		if err != nil {
+			return 0, 0, err
+		}
+		return id, offset, nil
+	}
+	return 0, 0, fmt.Errorf("the input offset string is illegal: %s", val)
 }

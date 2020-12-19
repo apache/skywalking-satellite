@@ -1,74 +1,42 @@
-// Licensed to Apache Software Foundation (ASF) under one or more contributor
-// license agreements. See the NOTICE file distributed with
-// this work for additional information regarding copyright
-// ownership. Apache Software Foundation (ASF) licenses this file to you under
-// the Apache License, Version 2.0 (the "License"); you may
-// not use this file except in compliance with the License.
-// You may obtain a copy of the License at
+// MIT License
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+// Copyright (c) 2018 Aman Mangal
 //
-// Unless required by applicable law or agreed to in writing,
-// software distributed under the License is distributed on an
-// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
-// KIND, either express or implied.  See the License for the
-// specific language governing permissions and limitations
-// under the License.
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in all
+// copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+// SOFTWARE.
 
 package mmap
 
 import (
-	"context"
 	"fmt"
-	"strconv"
-	"strings"
-	"syscall"
-	"time"
-
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
 )
 
+// Because the design of the mmap-queue in Satellite references the design of the
+// bigqueue(https://github.com/grandecola/bigqueue), the queue operation file retains
+// the original author license.
+//
+// The reason why we references the source codes of bigqueue rather than using the lib
+// is the file queue in Satellite is like following.
+// 1. Only one consumer and publisher in the Satellite queue.
+// 2. Reusing files strategy is required to reduce the creation times in the Satellite queue.
+// 3. More complex OFFSET design is needed to ensure the final stability of data.
+
 const uInt64Size = 8
-
-// flush control the flush operation by timer or counter.
-func (q *Queue) flush() {
-	defer q.showDownWg.Done()
-	ctx, cancel := context.WithCancel(q.ctx)
-	defer cancel()
-	for {
-		timer := time.NewTimer(time.Duration(q.FlushPeriod) * time.Millisecond)
-		select {
-		case <-q.flushChannel:
-			q.doFlush()
-			timer.Reset(time.Duration(q.FlushPeriod) * time.Millisecond)
-		case <-timer.C:
-			q.doFlush()
-		case <-ctx.Done():
-			q.doFlush()
-			return
-		}
-	}
-}
-
-// doFlush flush the segment and meta files to the disk.
-func (q *Queue) doFlush() {
-	q.Lock()
-	defer q.Unlock()
-	for _, segment := range q.segments {
-		if segment == nil {
-			continue
-		}
-		if err := segment.Flush(syscall.MS_SYNC); err != nil {
-			log.Logger.Errorf("cannot flush segment file: %v", err)
-		}
-	}
-	wid, woffset := q.meta.GetWritingOffset()
-	q.meta.PutWatermarkOffset(wid, woffset)
-	if err := q.meta.Flush(); err != nil {
-		log.Logger.Errorf("cannot flush meta file: %v", err)
-	}
-}
 
 // push writes the data into the file system. It first writes the length of the data,
 // then the data itself. It means the whole data may not exist in the one segments.
@@ -196,42 +164,4 @@ func (q *Queue) writeBytes(bytes []byte, id, offset int64) (newID, newOffset int
 		}
 	}
 	return id, offset, nil
-}
-
-// isEmpty returns the capacity status
-func (q *Queue) isEmpty() bool {
-	rid, roffset := q.meta.GetReadingOffset()
-	wid, woffset := q.meta.GetWritingOffset()
-	return rid == wid && roffset == woffset
-}
-
-// isEmpty returns the capacity status
-func (q *Queue) isFull() bool {
-	rid, _ := q.meta.GetReadingOffset()
-	wid, _ := q.meta.GetWritingOffset()
-	// ensure enough spaces to promise data stability.
-	maxWid := rid + int64(q.QueueCapacitySegments) - 1 - int64(q.MaxEventSize/q.SegmentSize)
-	return wid >= maxWid
-}
-
-// encode the meta to the offset
-func (q *Queue) encodeOffset(id, offset int64) event.Offset {
-	return event.Offset(strconv.FormatInt(id, 10) + "-" + strconv.FormatInt(offset, 10))
-}
-
-// decode the offset to the meta of the mmap queue.
-func (q *Queue) decodeOffset(val event.Offset) (id, offset int64, err error) {
-	arr := strings.Split(string(val), "-")
-	if len(arr) == 2 {
-		id, err := strconv.ParseInt(arr[0], 10, 64)
-		if err != nil {
-			return 0, 0, err
-		}
-		offset, err := strconv.ParseInt(arr[1], 10, 64)
-		if err != nil {
-			return 0, 0, err
-		}
-		return id, offset, nil
-	}
-	return 0, 0, fmt.Errorf("the input offset string is illegal: %s", val)
 }
