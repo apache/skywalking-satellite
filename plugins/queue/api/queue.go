@@ -22,6 +22,7 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 // Queue is a plugin interface, that defines new queues.
@@ -32,7 +33,7 @@ type Queue interface {
 	Initialize() error
 
 	// Push a inputEvent into the queue.
-	Push(event *event.Event) error
+	Push(event *protocol.Event) error
 
 	// Pop returns a SequenceEvent when Queue is not empty,
 	Pop() (*SequenceEvent, error)
@@ -46,7 +47,7 @@ type Queue interface {
 
 // SequenceEvent is a wrapper to pass the event and the offset.
 type SequenceEvent struct {
-	Event  *event.Event
+	Event  *protocol.Event
 	Offset event.Offset
 }
 

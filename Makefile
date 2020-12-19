@@ -53,6 +53,10 @@ tools:
 deps: tools
 	$(GO_GET) -v -t -d ./...
 
+.PHONY: gen
+gen:
+	/bin/sh tools/protocol_gen.sh
+
 .PHONY: lint
 lint: tools
 	$(GO_LINT) run -v ./...
@@ -63,7 +67,7 @@ test: clean lint
 
 .PHONY: license
 license: clean tools
-	$(GO_LICENSER) -d -licensor='Apache Software Foundation (ASF)' .
+	$(GO_LICENSER) -d -exclude=protocol/gen-codes -licensor='Apache Software Foundation (ASF)' .
 
 .PHONY: verify
 verify: clean license lint test

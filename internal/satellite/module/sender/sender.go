@@ -30,6 +30,7 @@ import (
 	client "github.com/apache/skywalking-satellite/plugins/client/api"
 	fallbacker "github.com/apache/skywalking-satellite/plugins/fallbacker/api"
 	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 // Sender is the forward module in Satellite.
@@ -130,7 +131,7 @@ func (s *Sender) Shutdown() {
 func (s *Sender) consume(batch *buffer.BatchBuffer) {
 	log.Logger.Infof("sender module of %s namespace is flushing a new batch buffer."+
 		" the start offset is %s, and the size is %d", s.config.NamespaceName, batch.Last(), batch.Len())
-	var events = make(map[event.Type]event.BatchEvents)
+	var events = make(map[protocol.EventType]event.BatchEvents)
 	for i := 0; i < batch.Len(); i++ {
 		eventContext := batch.Buf()[i]
 		for _, e := range eventContext.Context {

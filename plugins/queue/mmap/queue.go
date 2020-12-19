@@ -18,7 +18,6 @@
 package mmap
 
 import (
-	"bytes"
 	"context"
 	"fmt"
 	"os"
@@ -26,10 +25,13 @@ import (
 
 	"github.com/grandecola/mmap"
 
+	"google.golang.org/protobuf/proto"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
 	"github.com/apache/skywalking-satellite/plugins/queue/mmap/meta"
+	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 // Queue is a memory mapped queue to store the input data.
@@ -58,10 +60,6 @@ type Queue struct {
 	cancel     context.CancelFunc // Parent ctx cancel function
 	showDownWg sync.WaitGroup     // The shutdown wait group.
 
-	bufPool *sync.Pool
-
-	encoder *Encoder
-	decoder *Decoder
 }
 
 func (q *Queue) Name() string {
@@ -92,12 +90,6 @@ max_event_size: 20480
 }
 
 func (q *Queue) Initialize() error {
-	q.encoder = NewEncoder()
-	q.decoder = NewDecoder()
-
-	q.bufPool = &sync.Pool{New: func() interface{} {
-		return new(bytes.Buffer)
-	}}
 	// the size of each segment file should be a multiple of the page size.
 	pageSize := os.Getpagesize()
 	if q.SegmentSize%pageSize != 0 {
@@ -140,8 +132,8 @@ func (q *Queue) Initialize() error {
 	return nil
 }
 
-func (q *Queue) Push(e *event.Event) error {
-	data, err := q.encoder.serialize(e)
+func (q *Queue) Push(e *protocol.Event) error {
+	data, err := proto.Marshal(e)
 	if err != nil {
 		return err
 	}
@@ -156,7 +148,8 @@ func (q *Queue) Pop() (*api.SequenceEvent, error) {
 	if err != nil {
 		return nil, err
 	}
-	e, err := q.decoder.deserialize(data)
+	e := &protocol.Event{}
+	err = proto.Unmarshal(data, e)
 	if err != nil {
 		return nil, err
 	}

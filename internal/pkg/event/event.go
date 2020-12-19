@@ -19,19 +19,8 @@ package event
 
 import (
 	"fmt"
-	"time"
-)
 
-// The event type.
-const (
-	// Mapping to the type supported by SkyWalking OAP.
-	_ Type = iota
-	MetricsEvent
-	ProfilingEvent
-	SegmentEvent
-	ManagementEvent
-	MeterEvent
-	LogEvent
+	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 type Type int32
@@ -39,31 +28,22 @@ type Type int32
 // Offset is a generic form, which allows having different definitions in different Queues.
 type Offset string
 
-type Event struct {
-	Name      string
-	Timestamp time.Time
-	Meta      map[string]string
-	Type      Type
-	Remote    bool
-	Data      map[string]interface{}
-}
-
 // BatchEvents is used by Forwarder to forward.
-type BatchEvents []*Event
+type BatchEvents []*protocol.Event
 
 // OutputEventContext is a container to store the output context.
 type OutputEventContext struct {
-	Context map[string]*Event
+	Context map[string]*protocol.Event
 	Offset  Offset
 }
 
 // Put puts the incoming event into the context.
-func (c *OutputEventContext) Put(event *Event) {
-	c.Context[event.Name] = event
+func (c *OutputEventContext) Put(event *protocol.Event) {
+	c.Context[event.GetName()] = event
 }
 
 // Get returns an event in the context. When the eventName does not exist, an error would be returned.
-func (c *OutputEventContext) Get(eventName string) (*Event, error) {
+func (c *OutputEventContext) Get(eventName string) (*protocol.Event, error) {
 	e, ok := c.Context[eventName]
 	if !ok {
 		err := fmt.Errorf("cannot find the event name in OutputEventContext : %s", eventName)

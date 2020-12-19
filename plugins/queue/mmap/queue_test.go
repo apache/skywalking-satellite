@@ -18,20 +18,22 @@
 package mmap
 
 import (
-	"bytes"
 	"fmt"
 	"os"
 	"reflect"
+	v3 "skywalking/network/common/v3"
+	logging "skywalking/network/logging/v3"
 	"strconv"
+	"strings"
 	"testing"
 	"time"
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
+	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 func initMmapQueue(cfg plugin.Config) (*Queue, error) {
@@ -60,48 +62,85 @@ func cleanTestQueue(t *testing.T, q api.Queue) {
 	}
 }
 
-func getBatchEvents(count int) []*event.Event {
-	var slice []*event.Event
-	msg := make([]byte, 0)
-	for i := 0; i < 2000; i++ {
-		m := []byte("a")
-		msg = append(msg, m...)
-	}
+func getBatchEvents(count int) []*protocol.Event {
+	var slice []*protocol.Event
 	for i := 0; i < count; i++ {
-		slice = append(slice, &event.Event{
+		slice = append(slice, &protocol.Event{
 			Name:      "event" + strconv.Itoa(i),
-			Timestamp: time.Now(),
+			Timestamp: time.Now().Unix(),
 			Meta: map[string]string{
 				"meta": "mval" + strconv.Itoa(i),
 			},
-			Data: map[string]interface{}{
-				"data":  "dval" + strconv.Itoa(i),
-				"bytes": msg,
-				"index": i,
-			},
-			Type:   event.LogEvent,
+			Type:   protocol.EventType_Logging,
 			Remote: true,
-		})
+			Data: &protocol.Event_Log{
+				Log: &logging.LogData{
+					Service:         "mock-service",
+					ServiceInstance: "mock-serviceInstance",
+					Timestamp:       time.Date(2020, 12, 20, 12, 12, 12, 0, time.UTC).Unix(),
+					Endpoint:        "mock-endpoint",
+					Tags:            make([]*v3.KeyStringValuePair, 0),
+					TraceContext: &logging.TraceContext{
+						TraceId:        "traceId",
+						TraceSegmentId: "trace-segmentId",
+						SpanId:         12,
+					},
+					Body: &logging.LogDataBody{
+						Type: "body-type",
+						Content: &logging.LogDataBody_Text{
+							Text: &logging.TextLog{
+								Text: getNKData(2) + strconv.Itoa(i),
+							},
+						},
+					},
+				},
+			},
+		},
+		)
 	}
 	return slice
 }
 
-func getNKData(n int) []byte {
-	return bytes.Repeat([]byte("a"), 1024*n)
+func getNKData(n int) string {
+	return strings.Repeat("a", n*1024)
 }
 
-func getLargeEvent(n int) *event.Event {
-	return &event.Event{
+func getLargeEvent(n int) *protocol.Event {
+	return &protocol.Event{
 		Name:      "largeEvent",
-		Timestamp: time.Now(),
+		Timestamp: time.Now().Unix(),
 		Meta: map[string]string{
 			"meta": "largeEvent",
 		},
-		Data: map[string]interface{}{
-			"data": getNKData(n),
-		},
-		Type:   event.LogEvent,
+		Type:   protocol.EventType_Logging,
 		Remote: true,
+		Data: &protocol.Event_Log{
+			Log: &logging.LogData{
+				Service:         "mock-service",
+				ServiceInstance: "mock-serviceInstance",
+				Timestamp:       time.Date(2020, 12, 20, 12, 12, 12, 0, time.UTC).Unix(),
+				Endpoint:        "mock-endpoint",
+				Tags: []*v3.KeyStringValuePair{
+					{
+						Key:   "tags-key",
+						Value: "tags-val",
+					},
+				},
+				TraceContext: &logging.TraceContext{
+					TraceId:        "traceId",
+					TraceSegmentId: "trace-segmentId",
+					SpanId:         12,
+				},
+				Body: &logging.LogDataBody{
+					Type: "body-type",
+					Content: &logging.LogDataBody_Text{
+						Text: &logging.TextLog{
+							Text: getNKData(n),
+						},
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -123,7 +162,7 @@ func TestQueue_Normal(t *testing.T) {
 		sequenceEvent, err := q.Pop()
 		if err != nil {
 			t.Errorf("error in fetching data from queue: %v", err)
-		} else if !cmp.Equal(events[i], sequenceEvent.Event) {
+		} else if !cmp.Equal(events[i].String(), sequenceEvent.Event.String()) {
 			t.Errorf("history data and fetching data is not equal\n,history:%+v\n. pop data:%+v\n", events[i], sequenceEvent.Event)
 		}
 	}
@@ -180,7 +219,7 @@ func TestQueue_ReadHistory(t *testing.T) {
 			sequenceEvent, err := q.Pop()
 			if err != nil {
 				t.Errorf("error in fetching data from queue: %v", err)
-			} else if cmp.Equal(events[index], sequenceEvent.Event) {
+			} else if cmp.Equal(events[index].String(), sequenceEvent.Event.String()) {
 				q.Ack(sequenceEvent.Offset)
 			} else {
 				t.Errorf("history data and fetching data is not equal\n,history:%+v\n. pop data:%+v\n", events[index], sequenceEvent.Event)
@@ -289,7 +328,7 @@ func TestQueue_MemCost(t *testing.T) {
 		}
 	}
 	want := []int32{
-		1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 5, 6, 6, 7, 7, 8,
+		1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 6, 6, 7, 7, 8, 5,
 	}
 	if !cmp.Equal(want, memcost) {
 		t.Fatalf("the memory cost trends are not in line with expectations,\n want: %v,\n but got: %v", want, memcost)
