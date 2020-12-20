@@ -7,7 +7,8 @@ Apache SkyWalking Satellite
 
 [![GitHub stars](https://img.shields.io/github/stars/apache/skywalking.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/skywalking)
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=for-the-badge&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
-
+# Compile
+[How to compile the Satellite.](./docs/compile/compile.md)
 # Quick Start
 
 # Documentation
