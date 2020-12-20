@@ -51,7 +51,7 @@ jobs:
         run: make lint
 
       - name: Test
-          run: make test
+        run: make test
 
   result:
     runs-on: ubuntu-latest
@@ -60,4 +60,3 @@ jobs:
     steps:
       - name: Build Result
         run: echo "Just to make the GitHub merge button green"
-
