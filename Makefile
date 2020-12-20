@@ -45,6 +45,7 @@ SHELL = /bin/bash
 
 all: clean license deps lint test build
 
+.PHONY: tools
 tools:
 	$(GO_PACKR) -v || $(GO_GET) -u github.com/gobuffalo/packr/v2/...
 	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.33.0
@@ -61,7 +62,7 @@ gen:
 lint: tools
 	$(GO_LINT) run -v ./...
 
-.PHONE: test
+.PHONY: test
 test: clean lint
 	$(GO_TEST) ./... -coverprofile=coverage.txt -covermode=atomic
 
