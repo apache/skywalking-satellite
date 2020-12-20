@@ -67,7 +67,7 @@ test: clean lint
 
 .PHONY: license
 license: clean tools
-	$(GO_LICENSER) -d  -exclude=plugins/queue/mmap -exclude=protocol/gen-codes  -licensor='Apache Software Foundation (ASF)' .
+	$(GO_LICENSER) -d -exclude=plugins/queue/mmap -exclude=protocol/gen-codes -licensor='Apache Software Foundation (ASF)' .
 
 .PHONY: verify
 verify: clean license lint test
@@ -79,14 +79,6 @@ clean: tools
 .PHONY: build
 build: deps linux darwin
 
-.PHONY: check
-check:
-	$(GO) mod tidy &> /dev/null
-	@if [ ! -z "`git status -s`" ]; then \
-		echo "Following files are not consistent with CI:"; \
-		git status -s; \
-		exit 1; \
-	fi
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):
