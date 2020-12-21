@@ -7,8 +7,7 @@ Apache SkyWalking Satellite
 
 [![GitHub stars](https://img.shields.io/github/stars/apache/skywalking.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/skywalking)
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=for-the-badge&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
-# Compile
-[How to compile the Satellite.](./docs/compile/compile.md)
+
 # Quick Start
 
 # Documentation
@@ -17,6 +16,8 @@ Apache SkyWalking Satellite
 
 # Download
 
+# Compile
+[How to compile the Satellite.](./docs/compile/compile.md)
 # Contact Us
 * Mail list: **dev@skywalking.apache.org**. Mail to `dev-subscribe@skywalking.apache.org`, follow the reply to subscribe the mail list.
 * Join `skywalking` channel at [Apache Slack](http://s.apache.org/slack-invite). If the link is not working, find the latest one at [Apache INFRA WIKI](https://cwiki.apache.org/confluence/display/INFRA/Slack+Guest+Invites).

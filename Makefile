@@ -80,6 +80,13 @@ clean: tools
 .PHONY: build
 build: deps linux darwin
 
+.PHONY: check
+check:
+	@if [ ! -z "`git status -s`" ]; then \
+		echo "Following files are not consistent with CI:"; \
+		git status -s; \
+		exit 1; \
+	fi
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):

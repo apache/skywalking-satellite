@@ -53,6 +53,13 @@ jobs:
       - name: Test
         run: make test
 
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: '3.x'
+      - name: Check generate codes
+        run: make gen && make check
+
   result:
     runs-on: ubuntu-latest
     timeout-minutes: 90
