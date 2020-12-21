@@ -68,7 +68,7 @@ test: clean lint
 
 .PHONY: license
 license: clean tools
-	$(GO_LICENSER) -d -exclude=plugins/queue/mmap -exclude=protocol/gen-codes -licensor='Apache Software Foundation (ASF)' .
+	$(GO_LICENSER) -d -exclude=plugins/queue/mmap/queue_opreation.go -exclude=protocol/gen-codes -licensor='Apache Software Foundation (ASF)' ./
 
 .PHONY: verify
 verify: clean license lint test
