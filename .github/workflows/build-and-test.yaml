@@ -36,6 +36,12 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
 
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: '3.x'
+          include-pre-releases: true
+
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
         with:
@@ -53,10 +59,6 @@ jobs:
       - name: Test
         run: make test
 
-      - name: Install Protoc
-        uses: arduino/setup-protoc@v1
-        with:
-          version: '3.x'
       - name: Check generate codes
         run: make gen && make check
 
