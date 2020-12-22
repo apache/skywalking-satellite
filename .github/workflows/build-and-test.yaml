@@ -53,14 +53,16 @@ jobs:
       - name: Get dependencies
         run: make deps
 
+      - name: Check generate codes
+        run: make gen && make check
+
       - name: Lint
         run: make lint
 
       - name: Test
         run: make test
 
-      - name: Check generate codes
-        run: make gen && make check
+
 
   result:
     runs-on: ubuntu-latest

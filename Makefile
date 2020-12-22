@@ -82,6 +82,8 @@ build: deps linux darwin
 
 .PHONY: check
 check:
+	$(MAKE) clean
+	$(GO) mod tidy &> /dev/null
 	@if [ ! -z "`git status -s`" ]; then \
 		echo "Following files are not consistent with CI:"; \
 		git status -s; \
