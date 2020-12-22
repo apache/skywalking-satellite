@@ -84,9 +84,9 @@ build: deps linux darwin
 check:
 	$(MAKE) clean
 	$(GO) mod tidy &> /dev/null
-	@if [ ! -z "`git status -s`" ]; then \
+	@if [ ! -z "`git status -s |grep -v 'go.mod\|go.sum'`" ]; then \
 		echo "Following files are not consistent with CI:"; \
-		git status -s; \
+		git status -s |grep -v 'go.mod\|go.sum'; \
 		exit 1; \
 	fi
 
