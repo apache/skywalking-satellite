@@ -52,7 +52,8 @@ func cleanBenchmarkQueue(b *testing.B, q api.Queue) {
 
 func BenchmarkPush(b *testing.B) {
 	for _, param := range params {
-		name := fmt.Sprintf("segmentSize: %dKB maxInMemSegments:%d message:%dKB queueCapacity:%d", param.segmentSize/1024, param.maxInMemSegments, param.message, param.queueCapacity)
+		name := fmt.Sprintf("segmentSize: %dKB maxInMemSegments:%d message:%dKB queueCapacity:%d",
+			param.segmentSize/1024, param.maxInMemSegments, param.message, param.queueCapacity)
 		b.Run(name, func(b *testing.B) {
 			q, err := initMmapQueue(plugin.Config{
 				"queue_dir":               "BenchmarkPush",
@@ -81,7 +82,8 @@ func BenchmarkPush(b *testing.B) {
 
 func BenchmarkPushAndPop(b *testing.B) {
 	for _, param := range params {
-		name := fmt.Sprintf("segmentSize: %dKB maxInMemSegments:%d message:%dKB queueCapacity:%d", param.segmentSize/1024, param.maxInMemSegments, param.message, param.queueCapacity)
+		name := fmt.Sprintf("segmentSize: %dKB maxInMemSegments:%d message:%dKB queueCapacity:%d",
+			param.segmentSize/1024, param.maxInMemSegments, param.message, param.queueCapacity)
 		b.Run(name, func(b *testing.B) {
 			q, err := initMmapQueue(plugin.Config{
 				"queue_dir":               "BenchmarkPushAndPop",

@@ -68,8 +68,8 @@ func (q *Queue) pop() (data []byte, rid, roffset int64, err error) {
 	if q.isEmpty() {
 		return nil, 0, 0, fmt.Errorf("cannot read data when the queue is empty")
 	}
-	preId, preOffset := q.meta.GetReadingOffset()
-	id, offset, length, err := q.readLength(preId, preOffset)
+	preID, preOffset := q.meta.GetReadingOffset()
+	id, offset, length, err := q.readLength(preID, preOffset)
 	if err != nil {
 		return nil, 0, 0, err
 	}
@@ -78,8 +78,8 @@ func (q *Queue) pop() (data []byte, rid, roffset int64, err error) {
 		return nil, 0, 0, err
 	}
 	q.meta.PutReadingOffset(id, offset)
-	if id != preId {
-		q.markReadChannel <- preId
+	if id != preID {
+		q.markReadChannel <- preID
 	}
 	return bytes, id, offset, nil
 }
