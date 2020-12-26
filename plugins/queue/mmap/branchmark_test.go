@@ -30,16 +30,18 @@ type benchmarkParam struct {
 	segmentSize      int
 	message          int // unit KB
 	maxInMemSegments int
+	queueCapacity    int
 }
 
 var params = []benchmarkParam{
-	{segmentSize: 1024 * 128, message: 8, maxInMemSegments: 10},
+	{segmentSize: 1024 * 128, message: 8, maxInMemSegments: 10, queueCapacity: 10000},
 	// compare the influence of the segmentSize.
-	{segmentSize: 1024 * 256, message: 8, maxInMemSegments: 10},
+	{segmentSize: 1024 * 256, message: 8, maxInMemSegments: 10, queueCapacity: 10000},
 	// compare the influence of the maxInMemSegments.
-	{segmentSize: 1024 * 128, message: 8, maxInMemSegments: 20},
+	{segmentSize: 1024 * 128, message: 8, maxInMemSegments: 20, queueCapacity: 10000},
 	// compare the influence of the message size.
-	{segmentSize: 1024 * 128, message: 16, maxInMemSegments: 10},
+	{segmentSize: 1024 * 128, message: 16, maxInMemSegments: 10, queueCapacity: 10000},
+	{segmentSize: 1024 * 128, message: 8, maxInMemSegments: 10, queueCapacity: 100000},
 }
 
 func cleanBenchmarkQueue(b *testing.B, q api.Queue) {
@@ -50,13 +52,13 @@ func cleanBenchmarkQueue(b *testing.B, q api.Queue) {
 
 func BenchmarkPush(b *testing.B) {
 	for _, param := range params {
-		name := fmt.Sprintf("segmentSize: %dKB maxInMemSegments:%d message:%dKB", param.segmentSize/1024, param.maxInMemSegments, param.message)
+		name := fmt.Sprintf("segmentSize: %dKB maxInMemSegments:%d message:%dKB queueCapacity:%d", param.segmentSize/1024, param.maxInMemSegments, param.message, param.queueCapacity)
 		b.Run(name, func(b *testing.B) {
 			q, err := initMmapQueue(plugin.Config{
 				"queue_dir":               "BenchmarkPush",
 				"segment_size":            param.segmentSize,
 				"max_in_mem_segments":     param.maxInMemSegments,
-				"queue_capacity_segments": 10000,
+				"queue_capacity_segments": param.queueCapacity,
 			})
 			if err != nil {
 				b.Fatalf("cannot get a mmap queue: %v", err)
@@ -79,12 +81,13 @@ func BenchmarkPush(b *testing.B) {
 
 func BenchmarkPushAndPop(b *testing.B) {
 	for _, param := range params {
-		name := fmt.Sprintf("segmentSize: %dKB maxInMemSegments:%d message:%dKB", param.segmentSize/1024, param.maxInMemSegments, param.message)
+		name := fmt.Sprintf("segmentSize: %dKB maxInMemSegments:%d message:%dKB queueCapacity:%d", param.segmentSize/1024, param.maxInMemSegments, param.message, param.queueCapacity)
 		b.Run(name, func(b *testing.B) {
 			q, err := initMmapQueue(plugin.Config{
-				"queue_dir":           "BenchmarkPushAndPop",
-				"segment_size":        param.segmentSize,
-				"max_in_mem_segments": param.maxInMemSegments,
+				"queue_dir":               "BenchmarkPushAndPop",
+				"segment_size":            param.segmentSize,
+				"max_in_mem_segments":     param.maxInMemSegments,
+				"queue_capacity_segments": param.queueCapacity,
 			})
 			if err != nil {
 				b.Fatalf("cannot get a mmap queue: %v", err)

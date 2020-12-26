@@ -83,6 +83,10 @@ func (q *Queue) segmentSwapper() {
 	defer cancel()
 	for {
 		select {
+		case id := <-q.markReadChannel:
+			if q.unmapSegment(id) != nil {
+				log.Logger.Errorf("cannot unmap the markread segment: %d", id)
+			}
 		case <-q.insufficientMemChannel:
 			if q.mmapCount >= q.MaxInMemSegments {
 				if q.doSwap() != nil {
@@ -100,30 +104,14 @@ func (q *Queue) segmentSwapper() {
 func (q *Queue) doSwap() error {
 	rID, _ := q.meta.GetReadingOffset()
 	wID, _ := q.meta.GetWritingOffset()
-	logicRID := rID + int64(q.QueueCapacitySegments)
 	logicWID := wID + int64(q.QueueCapacitySegments)
 	wIndex := q.GetIndex(wID)
 	rIndex := q.GetIndex(rID)
 	for q.mmapCount >= q.MaxInMemSegments {
-		for i := logicRID - int64(q.MaxInMemSegments); i >= 0 && i < logicRID; i++ {
-			if q.GetIndex(i) == wIndex || q.GetIndex(i) == rIndex {
-				continue
-			}
-
-			if err := q.unmapSegment(i); err != nil {
-				return err
-			}
-			// the writing segment and the reading segment should still in memory.
-			// q.MaxInMemSegments/2-1 means keeping half available spaces to receive new data.
-			if q.MaxInMemSegments-q.mmapCount >= q.MaxInMemSegments/2-1 {
-				return nil
-			}
-		}
 		for i := logicWID - 1; i >= 0 && i >= logicWID-int64(q.MaxInMemSegments); i-- {
 			if q.GetIndex(i) == wIndex || q.GetIndex(i) == rIndex {
 				continue
 			}
-
 			if err := q.unmapSegment(i); err != nil {
 				return err
 			}

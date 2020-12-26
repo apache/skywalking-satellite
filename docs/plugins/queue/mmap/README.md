@@ -55,15 +55,15 @@ goarch: amd64
 pkg: github.com/apache/skywalking-satellite/plugins/queue/mmap
 BenchmarkPush
 BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   25764	     39195 ns/op	    9884 B/op	       9 allocs/op
+BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   45946	     28185 ns/op	    9884 B/op	       9 allocs/op
 BenchmarkPush/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
-BenchmarkPush/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   36049	     30039 ns/op	    9837 B/op	       9 allocs/op
+BenchmarkPush/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   68137	     19142 ns/op	    9838 B/op	       9 allocs/op
 BenchmarkPush/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000-12         	   38098	     31098 ns/op	    9884 B/op	       9 allocs/op
+BenchmarkPush/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000-12         	   47361	     22318 ns/op	    9884 B/op	       9 allocs/op
 BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000-12        	   20443	     60139 ns/op	   18934 B/op	      10 allocs/op
+BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000-12        	   24478	     45501 ns/op	   18934 B/op	      10 allocs/op
 BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000-12        	   39374	     30402 ns/op	    9884 B/op	       9 allocs/op
+BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000-12        	   45691	     29413 ns/op	    9884 B/op	       9 allocs/op
 PASS
 ```
 ### push and pop operation
@@ -73,14 +73,14 @@ goarch: amd64
 pkg: github.com/apache/skywalking-satellite/plugins/queue/mmap
 BenchmarkPushAndPop
 BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   19780	     51433 ns/op	   28724 B/op	      41 allocs/op
+BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   30657	     34182 ns/op	   28725 B/op	      41 allocs/op
 BenchmarkPushAndPop/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
-BenchmarkPushAndPop/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   26179	     50371 ns/op	   28676 B/op	      41 allocs/op
+BenchmarkPushAndPop/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   34617	     31619 ns/op	   28677 B/op	      41 allocs/op
 BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000-12         	   22279	     51295 ns/op	   28725 B/op	      41 allocs/op
+BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000-12         	   32440	     38439 ns/op	   28726 B/op	      41 allocs/op
 BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000-12        	   13879	     86100 ns/op	   54930 B/op	      42 allocs/op
+BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000-12        	   18554	     56840 ns/op	   54931 B/op	      42 allocs/op
 BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000-12        	   26086	     46695 ns/op	   28725 B/op	      41 allocs/op
+BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000-12        	   27303	     40016 ns/op	   28725 B/op	      41 allocs/op
 PASS
 ```

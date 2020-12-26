@@ -33,6 +33,20 @@ const (
 	metaVersion = 1
 )
 
+// Offset position
+const (
+	versionPos = iota * 8
+	widPos
+	woffsetPos
+	wmidPos
+	wmoffsetPos
+	cidPos
+	coffsetPos
+	ridPos
+	roffsetPos
+	capacityPos
+)
+
 // Metadata only needs 80B to store the Metadata for the pipe. But for memory alignment,
 // it takes at least one memory page size, which is generally 4K.
 //
@@ -76,66 +90,66 @@ func NewMetaData(metaDir string, capacity int) (*Metadata, error) {
 
 // GetVersion returns the meta version.
 func (m *Metadata) GetVersion() int {
-	return int(m.metaFile.ReadUint64At(0))
+	return int(m.metaFile.ReadUint64At(versionPos))
 }
 
 // PutVersion put the version into the memory mapped file.
 func (m *Metadata) PutVersion(version int64) {
-	m.metaFile.WriteUint64At(uint64(version), 0)
+	m.metaFile.WriteUint64At(uint64(version), versionPos)
 }
 
 // GetWritingOffset returns the writing offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetWritingOffset() (segmentID, offset int64) {
-	return int64(m.metaFile.ReadUint64At(8)), int64(m.metaFile.ReadUint64At(16))
+	return int64(m.metaFile.ReadUint64At(widPos)), int64(m.metaFile.ReadUint64At(woffsetPos))
 }
 
 // PutWritingOffset put the segment ID and the offset of the segment into the writing offset.
 func (m *Metadata) PutWritingOffset(segmentID, offset int64) {
-	m.metaFile.WriteUint64At(uint64(segmentID), 8)
-	m.metaFile.WriteUint64At(uint64(offset), 16)
+	m.metaFile.WriteUint64At(uint64(segmentID), widPos)
+	m.metaFile.WriteUint64At(uint64(offset), woffsetPos)
 }
 
 // GetWatermarkOffset returns the watermark offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetWatermarkOffset() (segmentID, offset int64) {
-	return int64(m.metaFile.ReadUint64At(24)), int64(m.metaFile.ReadUint64At(32))
+	return int64(m.metaFile.ReadUint64At(wmidPos)), int64(m.metaFile.ReadUint64At(wmoffsetPos))
 }
 
 // PutWatermarkOffset put the segment ID and the offset of the segment into the watermark offset.
 func (m *Metadata) PutWatermarkOffset(segmentID, offset int64) {
-	m.metaFile.WriteUint64At(uint64(segmentID), 24)
-	m.metaFile.WriteUint64At(uint64(offset), 32)
+	m.metaFile.WriteUint64At(uint64(segmentID), wmidPos)
+	m.metaFile.WriteUint64At(uint64(offset), wmoffsetPos)
 }
 
 // GetCommittedOffset returns the committed offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetCommittedOffset() (segmentID, offset int64) {
-	return int64(m.metaFile.ReadUint64At(40)), int64(m.metaFile.ReadUint64At(48))
+	return int64(m.metaFile.ReadUint64At(cidPos)), int64(m.metaFile.ReadUint64At(coffsetPos))
 }
 
 // PutCommittedOffset put the segment ID and the offset of the segment into the committed offset.
 func (m *Metadata) PutCommittedOffset(segmentID, offset int64) {
-	m.metaFile.WriteUint64At(uint64(segmentID), 40)
-	m.metaFile.WriteUint64At(uint64(offset), 48)
+	m.metaFile.WriteUint64At(uint64(segmentID), cidPos)
+	m.metaFile.WriteUint64At(uint64(offset), coffsetPos)
 }
 
 // GetReadingOffset returns the reading offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetReadingOffset() (segmentID, offset int64) {
-	return int64(m.metaFile.ReadUint64At(56)), int64(m.metaFile.ReadUint64At(64))
+	return int64(m.metaFile.ReadUint64At(ridPos)), int64(m.metaFile.ReadUint64At(roffsetPos))
 }
 
 // PutReadingOffset put the segment ID and the offset of the segment into the reading offset.
 func (m *Metadata) PutReadingOffset(segmentID, offset int64) {
-	m.metaFile.WriteUint64At(uint64(segmentID), 56)
-	m.metaFile.WriteUint64At(uint64(offset), 64)
+	m.metaFile.WriteUint64At(uint64(segmentID), ridPos)
+	m.metaFile.WriteUint64At(uint64(offset), roffsetPos)
 }
 
 // GetCapacity returns the capacity of the queue.
 func (m *Metadata) GetCapacity() int {
-	return int(m.metaFile.ReadUint64At(72))
+	return int(m.metaFile.ReadUint64At(capacityPos))
 }
 
 // PutCapacity put the capacity into the memory mapped file.
 func (m *Metadata) PutCapacity(version int64) {
-	m.metaFile.WriteUint64At(uint64(version), 72)
+	m.metaFile.WriteUint64At(uint64(version), capacityPos)
 }
 
 // Flush the memory mapped file to the disk.

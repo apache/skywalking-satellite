@@ -50,8 +50,8 @@ func initMmapQueue(cfg plugin.Config) (*Queue, error) {
 	if q == nil {
 		return nil, fmt.Errorf("cannot get a default config mmap queue from the registry")
 	}
-	if q.Initialize() != nil {
-		return nil, fmt.Errorf("queue cannot initialize")
+	if err := q.Initialize(); err != nil {
+		return nil, fmt.Errorf("queue cannot initialize: %v", err)
 	}
 	return q.(*Queue), nil
 }

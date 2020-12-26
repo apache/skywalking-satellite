@@ -38,6 +38,11 @@ import (
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
+const (
+	data4KB         = 131072
+	minimumSegments = 4
+)
+
 // Queue is a memory mapped queue to store the input data.
 type Queue struct {
 	sync.Mutex
@@ -58,6 +63,7 @@ type Queue struct {
 	flushChannel           chan struct{}  // The flushChannel channel would receive a signal when the unflushedNum reach the flush_ceiling_num.
 	insufficientMemChannel chan struct{}  // Notify when memory is insufficient
 	sufficientMemChannel   chan struct{}  // Notify when memory is sufficient
+	markReadChannel        chan int64
 
 	// control components
 	ctx        context.Context    // Parent ctx
@@ -100,11 +106,11 @@ func (q *Queue) Initialize() error {
 		q.SegmentSize -= q.SegmentSize % pageSize
 	}
 	if q.SegmentSize/pageSize == 0 {
-		q.SegmentSize = 131072
+		q.SegmentSize = data4KB
 	}
 	// the minimum MaxInMemSegments value should be 4.
-	if q.MaxInMemSegments < 4 {
-		q.MaxInMemSegments = 4
+	if q.MaxInMemSegments < minimumSegments {
+		q.MaxInMemSegments = minimumSegments
 	}
 	// load metadata and override the reading or writing offset by the committed or watermark offset.
 	md, err := meta.NewMetaData(q.QueueDir, q.QueueCapacitySegments)
@@ -127,6 +133,7 @@ func (q *Queue) Initialize() error {
 	// init components
 	q.insufficientMemChannel = make(chan struct{})
 	q.sufficientMemChannel = make(chan struct{})
+	q.markReadChannel = make(chan int64, 1)
 	q.flushChannel = make(chan struct{})
 	q.ctx, q.cancel = context.WithCancel(context.Background())
 	// async supported processes.
