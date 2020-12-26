@@ -47,7 +47,7 @@ func (f *FetcherGatherer) Prepare() error {
 
 func (f *FetcherGatherer) Boot(ctx context.Context) {
 	var wg sync.WaitGroup
-	wg.Add(1)
+	wg.Add(2)
 	go func() {
 		defer wg.Done()
 		timeTicker := time.NewTicker(time.Duration(f.config.FetchInterval) * time.Millisecond)
@@ -55,18 +55,34 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 			select {
 			case <-timeTicker.C:
 				events := f.runningFetcher.Fetch()
-				for _, event := range events {
-					err := f.runningQueue.Push(event)
+				for _, e := range events {
+					err := f.runningQueue.Push(e)
 					if err != nil {
 						// todo add abandonedCount metrics
 						log.Logger.Errorf("cannot put event into queue in %s namespace, %v", f.config.NamespaceName, err)
 					}
 				}
-			case e := <-f.runningQueue.Pop():
-				f.outputChannel <- e
 			case <-ctx.Done():
 				f.Shutdown()
 				return
+			}
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case <-ctx.Done():
+				f.Shutdown()
+				return
+			default:
+				if e, err := f.runningQueue.Pop(); err == nil {
+					f.outputChannel <- e
+				} else {
+					log.Logger.Errorf("error in popping from the queue: %v", err)
+					time.Sleep(time.Second)
+				}
 			}
 		}
 	}()

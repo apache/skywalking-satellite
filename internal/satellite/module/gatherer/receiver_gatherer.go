@@ -20,6 +20,7 @@ package gatherer
 import (
 	"context"
 	"sync"
+	"time"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
@@ -45,7 +46,7 @@ type ReceiverGatherer struct {
 func (r *ReceiverGatherer) Prepare() error {
 	log.Logger.Infof("receiver gatherer module of %s namespace is preparing", r.config.NamespaceName)
 	r.runningReceiver.RegisterHandler(r.runningServer)
-	if err := r.runningQueue.Prepare(); err != nil {
+	if err := r.runningQueue.Initialize(); err != nil {
 		log.Logger.Infof("the %s queue of %s namespace was failed to initialize", r.runningQueue.Name(), r.config.NamespaceName)
 		return err
 	}
@@ -54,7 +55,7 @@ func (r *ReceiverGatherer) Prepare() error {
 
 func (r *ReceiverGatherer) Boot(ctx context.Context) {
 	var wg sync.WaitGroup
-	wg.Add(1)
+	wg.Add(2)
 	go func() {
 		defer wg.Done()
 		for {
@@ -65,11 +66,27 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 					// todo add abandonedCount metrics
 					log.Logger.Errorf("cannot put event into queue in %s namespace, error is: %v", r.config.NamespaceName, err)
 				}
-			case e := <-r.runningQueue.Pop():
-				r.outputChannel <- e
 			case <-ctx.Done():
 				r.Shutdown()
 				return
+			}
+		}
+	}()
+
+	go func() {
+		defer wg.Done()
+		for {
+			select {
+			case <-ctx.Done():
+				r.Shutdown()
+				return
+			default:
+				if e, err := r.runningQueue.Pop(); err == nil {
+					r.outputChannel <- e
+				} else {
+					log.Logger.Errorf("error in popping from the queue: %v", err)
+					time.Sleep(time.Second)
+				}
 			}
 		}
 	}()

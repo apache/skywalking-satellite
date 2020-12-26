@@ -201,9 +201,9 @@
    limitations under the License.
 
 =======================================================================
-Apache SkyWalking Subcomponents:
+Apache SkyWalking Satellite Subcomponents:
 
-The Apache SkyWalking project contains subcomponents with separate copyright
+The Apache SkyWalking Satellite project contains subcomponents with separate copyright
 notices and license terms. Your use of the source code for the these
 subcomponents is subject to the terms and conditions of the following
 licenses.
@@ -224,3 +224,11 @@ The following components are provided under a BSD license. See project link for 
 The text of each license is also included at licenses/LICENSE-[project].txt.
 
 
+========================================================================
+MIT licenses
+========================================================================
+
+The following components are provided under the MIT License. See project link for details.
+The text of each license is also included at licenses/LICENSE-[project].txt.
+
+grandecola (bigqueue) v0.4.0: https://github.com/grandecola/bigqueue MIT

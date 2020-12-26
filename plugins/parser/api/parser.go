@@ -27,8 +27,8 @@ type Parser interface {
 	plugin.Plugin
 
 	// ParseBytes parse the byte buffer into events.
-	ParseBytes(bytes []byte) ([]event.SerializableEvent, error)
+	ParseBytes(bytes []byte) (event.BatchEvents, error)
 
 	// ParseStr parse the string into events.
-	ParseStr(str string) ([]event.SerializableEvent, error)
+	ParseStr(str string) (event.BatchEvents, error)
 }

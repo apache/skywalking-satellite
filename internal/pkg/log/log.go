@@ -29,7 +29,7 @@ import (
 // Default logger config.
 const (
 	defaultLogPattern  = "%time [%level][%field] - %msg"
-	defaultTimePattern = "2006-01-02 15:04:05.001"
+	defaultTimePattern = "2006-01-02 15:04:05.000"
 )
 
 // LoggerConfig initializes the global logger config.

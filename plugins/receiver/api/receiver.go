@@ -18,9 +18,9 @@
 package api
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins/server/api"
+	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 // Receiver is a plugin interface, that defines new collectors.
@@ -31,5 +31,5 @@ type Receiver interface {
 	RegisterHandler(server api.Server)
 
 	// Channel would be put a data when the receiver receives an APM data.
-	Channel() <-chan event.SerializableEvent
+	Channel() <-chan *protocol.Event
 }

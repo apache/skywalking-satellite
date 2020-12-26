@@ -1,0 +1,72 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ */
+
+syntax = "proto3";
+
+package skywalking.v3;
+
+option go_package = "satellite/protocol";
+
+
+import "language-agent/CLRMetric.proto";
+import "language-agent/JVMMetric.proto";
+import "language-agent/Meter.proto";
+import "language-agent/Tracing.proto";
+import "logging/Logging.proto";
+import "management/Management.proto";
+import "profile/Profile.proto";
+import "service-mesh-probe/service-mesh.proto";
+
+// EventType declares the supported transfer data type.
+enum EventType{
+  CLRMetricType = 0;
+  JVMMetricType = 1;
+  MeterType = 2;
+  TracingType = 3;
+  Logging = 4;
+  ManagementType = 5;
+  ProfileType = 6;
+  ServiceMeshType = 7;
+}
+
+// Event is the transfer unit in Satellite.
+message Event {
+
+  // The occur time.
+  int64 timestamp = 1;
+  // unique event name.
+  string name=2;
+  // The data type.
+  EventType type = 3;
+  // Whether to send to remote. It is used in sampling.
+  bool remote = 4;
+  // Additional meta-information.
+  map<string, string> meta = 5;
+
+  // Transfer data.
+  oneof data{
+    CLRMetricCollection clr = 6;
+    JVMMetricCollection jvm = 7;
+    MeterData meter = 8;
+    SegmentObject segment = 9;
+    LogData log = 10;
+    InstanceProperties instance = 11;
+    ThreadSnapshot profile = 12;
+    ServiceMeshMetric serviceMesh = 13;
+  }
+}

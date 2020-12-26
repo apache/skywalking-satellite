@@ -19,19 +19,8 @@ package event
 
 import (
 	"fmt"
-	"time"
-)
 
-// The event type.
-const (
-	// Mapping to the type supported by SkyWalking OAP.
-	_ Type = iota
-	MetricsEvent
-	ProfilingEvent
-	SegmentEvent
-	ManagementEvent
-	MeterEvent
-	LogEvent
+	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 type Type int32
@@ -39,56 +28,22 @@ type Type int32
 // Offset is a generic form, which allows having different definitions in different Queues.
 type Offset string
 
-// Event that implement this interface would be allowed to transmit in the Satellite.
-type Event interface {
-	// Name returns the event name.
-	Name() string
-
-	// Meta is a pair of key and value to record meta data, such as labels.
-	Meta() map[string]string
-
-	// Data returns the wrapped data.
-	Data() interface{}
-
-	// Time returns the event time.
-	Time() time.Time
-
-	// Type is to distinguish different events.
-	Type() Type
-
-	// IsRemote means is a output event when returns true.
-	IsRemote() bool
-}
-
-// SerializableEvent is used in Collector to bridge Queue.
-type SerializableEvent interface {
-	Event
-
-	// ToBytes serialize the event to a byte array.
-	ToBytes() []byte
-
-	// FromBytes deserialize the byte array to an event.
-	FromBytes(bytes []byte) SerializableEvent
-}
-
 // BatchEvents is used by Forwarder to forward.
-type BatchEvents []Event
+type BatchEvents []*protocol.Event
 
 // OutputEventContext is a container to store the output context.
 type OutputEventContext struct {
-	Context map[string]Event
+	Context map[string]*protocol.Event
 	Offset  Offset
 }
 
-// Put puts the incoming event into the context when the event is a remote event.
-func (c *OutputEventContext) Put(event Event) {
-	if event.IsRemote() {
-		c.Context[event.Name()] = event
-	}
+// Put puts the incoming event into the context.
+func (c *OutputEventContext) Put(event *protocol.Event) {
+	c.Context[event.GetName()] = event
 }
 
-// Get returns a event in the context. When the eventName does not exist, a error would be returned.
-func (c *OutputEventContext) Get(eventName string) (Event, error) {
+// Get returns an event in the context. When the eventName does not exist, an error would be returned.
+func (c *OutputEventContext) Get(eventName string) (*protocol.Event, error) {
 	e, ok := c.Context[eventName]
 	if !ok {
 		err := fmt.Errorf("cannot find the event name in OutputEventContext : %s", eventName)
