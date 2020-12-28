@@ -36,9 +36,6 @@ jobs:
         with:
           go-version: ${{ matrix.go-version }}
 
-      - name: Install protoc
-        run: sh ./tools/workflows/install_protoc.sh
-
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
         with:

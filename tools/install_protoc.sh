@@ -18,7 +18,12 @@
 #
 
 
-PROTOC_ZIP=protoc-3.14.0.-linux-x86_64.zip
+if [[ "$(uname)"=="Darwin" || "$(expr substr $(uname -s) 1 10)"=="MINGW32_NT" ]];then
+  echo "sorry, please install protoc by yourself."
+  exit 1
+fi
+
+PROTOC_ZIP=protoc-3.14.0-linux-x86_64.zip
 curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.14.0/$PROTOC_ZIP
 sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
 sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'

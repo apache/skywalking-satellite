@@ -26,6 +26,7 @@ OS = $(shell uname)
 
 GO = go
 GIT = git
+PROTOC = protoc
 GO_PATH = $$($(GO) env GOPATH)
 GO_BUILD = $(GO) build
 GO_GET = $(GO) get
@@ -50,6 +51,7 @@ tools:
 	$(GO_PACKR) -v || $(GO_GET) -u github.com/gobuffalo/packr/v2/...
 	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.33.0
 	$(GO_LICENSER) -version || GO111MODULE=off $(GO_GET) -u github.com/elastic/go-licenser
+	$(PROTOC) --version || sh tools/install_protoc.sh
 
 deps: tools
 	$(GO_GET) -v -t -d ./...
