@@ -23,7 +23,7 @@
 package mmap
 
 import (
-	"fmt"
+	"github.com/apache/skywalking-satellite/plugins/queue/api"
 )
 
 // Because the design of the mmap-queue in Satellite references the design of the
@@ -42,7 +42,7 @@ const uInt64Size = 8
 // then the data itself. It means the whole data may not exist in the one segments.
 func (q *Queue) push(bytes []byte) error {
 	if q.isFull() {
-		return fmt.Errorf("cannot push data when the queue is full")
+		return api.ErrFull
 	}
 	id, offset := q.meta.GetWritingOffset()
 	id, offset, err := q.writeLength(len(bytes), id, offset)
@@ -66,7 +66,7 @@ func (q *Queue) push(bytes []byte) error {
 // then the data itself. It means the whole data may not exist in the one segments.
 func (q *Queue) pop() (data []byte, rid, roffset int64, err error) {
 	if q.isEmpty() {
-		return nil, 0, 0, fmt.Errorf("cannot read data when the queue is empty")
+		return nil, 0, 0, api.ErrEmpty
 	}
 	preID, preOffset := q.meta.GetReadingOffset()
 	id, offset, length, err := q.readLength(preID, preOffset)

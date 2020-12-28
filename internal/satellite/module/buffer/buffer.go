@@ -18,8 +18,8 @@
 package buffer
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
 // BatchBuffer is a buffer to cache the input data in Sender.

@@ -18,8 +18,8 @@
 package api
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
 // Filter is a plugin interface, that defines new pipeline filters.

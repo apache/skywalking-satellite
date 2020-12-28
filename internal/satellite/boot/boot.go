@@ -35,6 +35,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/module/processor"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/sender"
 	"github.com/apache/skywalking-satellite/internal/satellite/sharing"
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	"github.com/apache/skywalking-satellite/plugins"
 )
 
@@ -43,7 +44,9 @@ type ModuleContainer map[string][]api.Module
 
 // Start Satellite.
 func Start(cfg *config.SatelliteConfig) error {
+	// Init the global components.
 	log.Init(cfg.Logger)
+	telemetry.Init(cfg.Telemetry)
 	// register the supported plugin types to the registry
 	plugins.RegisterPlugins()
 	// use context to receive the external signal.
@@ -59,6 +62,8 @@ func Start(cfg *config.SatelliteConfig) error {
 	if modules, err := initModules(cfg); err != nil {
 		return err
 	} else if err := prepareModules(modules); err != nil {
+		return err
+	} else if err := sharing.Start(); err != nil {
 		return err
 	} else {
 		bootModules(ctx, modules)
@@ -79,37 +84,23 @@ func addShutdownListener(cancel context.CancelFunc) {
 // initModules init the modules and register the modules to the module container.
 func initModules(cfg *config.SatelliteConfig) (ModuleContainer, error) {
 	log.Logger.Infof("satellite is initializing...")
-	if err := initModuleConfig(cfg); err != nil {
-		return nil, err
+	for _, aCfg := range cfg.Pipes {
+		if aCfg.Gatherer == nil || aCfg.Sender == nil || aCfg.Processor == nil {
+			return nil, errors.New("gatherer, sender, and processor is required in the namespace config")
+		}
 	}
 	// container contains the modules in each namespace.
 	container := make(ModuleContainer)
-	for _, aCfg := range cfg.Namespaces {
+	for _, aCfg := range cfg.Pipes {
 		// the added sequence should follow gather, sender and processor to purpose the booting sequence.
 		var modules []api.Module
 		g := gatherer.NewGatherer(aCfg.Gatherer)
 		s := sender.NewSender(aCfg.Sender, g)
 		p := processor.NewProcessor(aCfg.Processor, s, g)
 		modules = append(modules, g, s, p)
-		container[aCfg.ModuleCommonConfig.NamespaceName] = modules
+		container[aCfg.PipeCommonConfig.PipeName] = modules
 	}
 	return container, nil
-}
-
-// initModuleConfig valid the config pattern and inject the common config to the specific module config.
-func initModuleConfig(cfg *config.SatelliteConfig) error {
-	for _, aCfg := range cfg.Namespaces {
-		if aCfg.Gatherer == nil || aCfg.Sender == nil || aCfg.Processor == nil {
-			return errors.New("gatherer, sender, and processor is required in the namespace config")
-		}
-	}
-	// inject module common config to the specific module config
-	for _, aCfg := range cfg.Namespaces {
-		aCfg.Sender.ModuleCommonConfig = *aCfg.ModuleCommonConfig
-		aCfg.Gatherer.ModuleCommonConfig = *aCfg.ModuleCommonConfig
-		aCfg.Gatherer.ModuleCommonConfig = *aCfg.ModuleCommonConfig
-	}
-	return nil
 }
 
 // prepareModules makes that all modules are in a bootable state.
@@ -134,13 +125,14 @@ func prepareModules(container ModuleContainer) error {
 // bootModules boot all modules.
 func bootModules(ctx context.Context, container ModuleContainer) {
 	log.Logger.Infof("satellite is starting...")
+
 	var wg sync.WaitGroup
 	for _, modules := range container {
+		wg.Add(len(modules))
 		for _, m := range modules {
 			m := m
 			go func() {
 				defer wg.Done()
-				wg.Add(1)
 				m.Boot(ctx)
 			}()
 		}

@@ -17,12 +17,20 @@
 
 package api
 
-import "github.com/apache/skywalking-satellite/internal/pkg/plugin"
+import (
+	"reflect"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+)
 
 // Server is a plugin interface, that defines new servers, such as gRPC server and http server.
 type Server interface {
 	plugin.SharingPlugin
+	// GetServer returns the listener server.
+	GetServer() interface{}
+}
 
-	// Start a server to receive the input APM data.
-	Start() error
+// Get an initialized server plugin.
+func GetServer(config plugin.Config) Server {
+	return plugin.Get(reflect.TypeOf((*Server)(nil)).Elem(), config).(Server)
 }

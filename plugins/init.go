@@ -18,15 +18,15 @@
 package plugins
 
 import (
-	client "github.com/apache/skywalking-satellite/plugins/client/api"
-	fallbacker "github.com/apache/skywalking-satellite/plugins/fallbacker/api"
+	"github.com/apache/skywalking-satellite/plugins/client"
+	"github.com/apache/skywalking-satellite/plugins/fallbacker"
 	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
 	filter "github.com/apache/skywalking-satellite/plugins/filter/api"
-	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	"github.com/apache/skywalking-satellite/plugins/forwarder"
 	parser "github.com/apache/skywalking-satellite/plugins/parser/api"
 	"github.com/apache/skywalking-satellite/plugins/queue"
-	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
-	server "github.com/apache/skywalking-satellite/plugins/server/api"
+	"github.com/apache/skywalking-satellite/plugins/receiver"
+	"github.com/apache/skywalking-satellite/plugins/server"
 )
 
 // RegisterPlugins register the whole supported plugin category and plugin types to the registry.

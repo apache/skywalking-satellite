@@ -15,28 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package config
 
-import (
-	"reflect"
-
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/fallbacker/timer"
+const (
+	CommonFieldsName = "CommonFields"
+	TagName          = "mapstructure"
 )
 
-// Get an initialized client plugin.
-func GetFallbacker(config plugin.Config) Fallbacker {
-	return plugin.Get(reflect.TypeOf((*Fallbacker)(nil)).Elem(), config).(Fallbacker)
-}
-
-// RegisterFallbackerPlugins register the used fallbacker plugins.
-func RegisterFallbackerPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Fallbacker)(nil)).Elem())
-	fallbackers := []Fallbacker{
-		// Please register the fallbacker plugins at here.
-		&timer.Fallbacker{},
-	}
-	for _, fallbacker := range fallbackers {
-		plugin.RegisterPlugin(fallbacker)
-	}
+// CommonFields defines some common filed for every modules or plugins.
+type CommonFields struct {
+	// PipeName indicates which pipe belongs to.
+	PipeName string `mapstructure:"pipe_name"`
 }

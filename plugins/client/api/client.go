@@ -18,6 +18,8 @@
 package api
 
 import (
+	"reflect"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
@@ -35,12 +37,13 @@ type ClientStatus int8
 type Client interface {
 	plugin.SharingPlugin
 
-	// IsConnected returns the status of the client.
-	IsConnected() bool
 	// GetConnection returns the connected client to publish events.
 	GetConnectedClient() interface{}
 	// RegisterListener register a listener to listen the client status.
 	RegisterListener(chan<- ClientStatus)
-	// Report client error connection error to notify other listeners.
-	ReportErr()
+}
+
+// Get an initialized client plugin.
+func GetClient(config plugin.Config) Client {
+	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
 }

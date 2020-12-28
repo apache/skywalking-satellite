@@ -18,14 +18,14 @@
 package api
 
 import (
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
 )
 
 // GathererConfig contains all implementation fields.
 type GathererConfig struct {
 	// common config
-	api.ModuleCommonConfig
+	config.CommonFields
 	QueueConfig plugin.Config `mapstructure:"queue"` // queue plugin config
 
 	// ReceiverGatherer

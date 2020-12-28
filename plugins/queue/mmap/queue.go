@@ -31,8 +31,10 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
 	"github.com/apache/skywalking-satellite/plugins/queue/mmap/meta"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
@@ -45,7 +47,7 @@ const (
 
 // Queue is a memory mapped queue to store the input data.
 type Queue struct {
-	sync.Mutex
+	config.CommonFields
 	// config
 	SegmentSize           int    `mapstructure:"segment_size"`            // The size of each segment. The unit is byte.
 	MaxInMemSegments      int32  `mapstructure:"max_in_mem_segments"`     // The max num of segments in memory.
@@ -73,7 +75,7 @@ type Queue struct {
 }
 
 func (q *Queue) Name() string {
-	return "mmap-queue"
+	return plugin.GetPluginName(q)
 }
 
 func (q *Queue) Description() string {
@@ -217,8 +219,6 @@ func (q *Queue) flush() {
 
 // doFlush flush the segment and meta files to the disk.
 func (q *Queue) doFlush() {
-	q.Lock()
-	defer q.Unlock()
 	for _, segment := range q.segments {
 		if segment == nil {
 			continue

@@ -22,11 +22,14 @@ import (
 	"sync"
 	"time"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/buffer"
 	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	client "github.com/apache/skywalking-satellite/plugins/client/api"
 	fallbacker "github.com/apache/skywalking-satellite/plugins/fallbacker/api"
 	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
@@ -52,35 +55,51 @@ type Sender struct {
 	listener      chan client.ClientStatus       // client status listener
 	flushChannel  chan *buffer.BatchBuffer       // forwarder flush channel
 	buffer        *buffer.BatchBuffer            // cache the downstream input data
+
+	// metrics
+	sendCounter *prometheus.CounterVec
 }
 
 // Prepare register the client status listener to the client manager and open input channel.
 func (s *Sender) Prepare() error {
-	log.Logger.Infof("sender module of %s namespace is preparing", s.config.NamespaceName)
+	log.Logger.Infof("sender module of %s namespace is preparing", s.config.PipeName)
 	s.runningClient.RegisterListener(s.listener)
 	s.logicInput = s.physicalInput
+	for _, runningForwarder := range s.runningForwarders {
+		err := runningForwarder.Prepare(s.runningClient.GetConnectedClient())
+		if err != nil {
+			return err
+		}
+	}
+	s.sendCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "sender_send_count",
+		Help: "Total number of the output count in the Sender.",
+	}, []string{"pipe", "status", "type"})
+	telemetry.Registerer.MustRegister(s.sendCounter)
+	log.Logger.Infof("register sendCounter")
 	return nil
 }
 
 // Boot fetches the downstream input data and forward to external services, such as Kafka and OAP receiver.
 func (s *Sender) Boot(ctx context.Context) {
-	log.Logger.Infof("sender module of %s namespace is running", s.config.NamespaceName)
+	log.Logger.Infof("sender module of %s namespace is running", s.config.PipeName)
 	var wg sync.WaitGroup
 	wg.Add(2)
 	// 1. keep fetching the downstream data when client connected, and put it into BatchBuffer.
 	// 2. When reaches the buffer limit or receives a timer flush signal, and put BatchBuffer into flushChannel.
 	go func() {
 		defer wg.Done()
+		childCtx, cancel := context.WithCancel(ctx)
 		timeTicker := time.NewTicker(time.Duration(s.config.FlushTime) * time.Millisecond)
 		for {
 			select {
 			case status := <-s.listener:
 				switch status {
 				case client.Connected:
-					log.Logger.Infof("sender module of %s namespace is notified the connection connected", s.config.NamespaceName)
+					log.Logger.Infof("sender module of %s namespace is notified the connection connected", s.config.PipeName)
 					s.logicInput = s.physicalInput
 				case client.Disconnect:
-					log.Logger.Infof("sender module of %s namespace is notified the connection disconnected", s.config.NamespaceName)
+					log.Logger.Infof("sender module of %s namespace is notified the connection disconnected", s.config.PipeName)
 					s.logicInput = nil
 				}
 			case <-timeTicker.C:
@@ -94,7 +113,8 @@ func (s *Sender) Boot(ctx context.Context) {
 					s.flushChannel <- s.buffer
 					s.buffer = buffer.NewBatchBuffer(s.config.MaxBufferSize)
 				}
-			case <-ctx.Done():
+			case <-childCtx.Done():
+				cancel()
 				s.logicInput = nil
 				return
 			}
@@ -103,11 +123,13 @@ func (s *Sender) Boot(ctx context.Context) {
 	// Keep fetching BatchBuffer to forward.
 	go func() {
 		defer wg.Done()
+		childCtx, cancel := context.WithCancel(ctx)
 		for {
 			select {
 			case b := <-s.flushChannel:
 				s.consume(b)
-			case <-ctx.Done():
+			case <-childCtx.Done():
+				cancel()
 				s.Shutdown()
 				return
 			}
@@ -118,7 +140,7 @@ func (s *Sender) Boot(ctx context.Context) {
 
 // Shutdown closes the channels and tries to force forward the events in the buffer.
 func (s *Sender) Shutdown() {
-	log.Logger.Infof("sender module of %s namespace is closing", s.config.NamespaceName)
+	log.Logger.Infof("sender module of %s namespace is closing", s.config.PipeName)
 	close(s.logicInput)
 	for buf := range s.flushChannel {
 		s.consume(buf)
@@ -130,7 +152,7 @@ func (s *Sender) Shutdown() {
 // consume would forward the events by type and ack this batch.
 func (s *Sender) consume(batch *buffer.BatchBuffer) {
 	log.Logger.Infof("sender module of %s namespace is flushing a new batch buffer."+
-		" the start offset is %s, and the size is %d", s.config.NamespaceName, batch.Last(), batch.Len())
+		" the start offset is %s, and the size is %d", s.config.PipeName, batch.Last(), batch.Len())
 	var events = make(map[protocol.EventType]event.BatchEvents)
 	for i := 0; i < batch.Len(); i++ {
 		eventContext := batch.Buf()[i]
@@ -140,19 +162,17 @@ func (s *Sender) consume(batch *buffer.BatchBuffer) {
 			}
 		}
 	}
-
 	for _, f := range s.runningForwarders {
 		for t, batchEvents := range events {
 			if f.ForwardType() != t {
 				continue
 			}
-			if err := f.Forward(s.runningClient.GetConnectedClient(), batchEvents); err == nil {
+			if err := f.Forward(batchEvents); err == nil {
+				s.sendCounter.WithLabelValues(s.config.PipeName, "success", f.ForwardType().String()).Add(float64(len(batchEvents)))
 				continue
 			}
-			if !s.runningFallbacker.FallBack(batchEvents, s.runningClient.GetConnectedClient(), f.Forward) {
-				if s.runningClient.IsConnected() {
-					s.runningClient.ReportErr()
-				}
+			if !s.runningFallbacker.FallBack(batchEvents, f.Forward) {
+				s.sendCounter.WithLabelValues(s.config.PipeName, "failure", f.ForwardType().String()).Add(float64(len(batchEvents)))
 			}
 		}
 	}

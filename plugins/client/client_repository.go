@@ -15,26 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package client
 
 import (
 	"reflect"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/plugins/client/api"
 )
 
-// Get an initialized server plugin.
-func GetServer(config plugin.Config) Server {
-	return plugin.Get(reflect.TypeOf((*Server)(nil)).Elem(), config).(Server)
-}
-
-// RegisterServerPlugins register the used server plugins.
-func RegisterServerPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Server)(nil)).Elem())
-	servers := []Server{
-		// Please register the server plugins at here.
+// RegisterClientPlugins register the used client plugins.
+func RegisterClientPlugins() {
+	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Client)(nil)).Elem())
+	clients := []api.Client{
+		// Please register the client plugins at here.
 	}
-	for _, server := range servers {
-		plugin.RegisterPlugin(server)
+	for _, client := range clients {
+		plugin.RegisterPlugin(client)
 	}
 }

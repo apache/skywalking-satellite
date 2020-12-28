@@ -27,7 +27,7 @@ import (
 
 // Init Processor and dependency plugins
 func NewProcessor(cfg *api.ProcessorConfig, s sender.Sender, g gatherer.Gatherer) api.Processor {
-	log.Logger.Infof("processor module of %s namespace is being initialized", cfg.NamespaceName)
+	log.Logger.Infof("processor module of %s namespace is being initialized", cfg.PipeName)
 	p := &Processor{
 		sender:         s,
 		gatherer:       g,

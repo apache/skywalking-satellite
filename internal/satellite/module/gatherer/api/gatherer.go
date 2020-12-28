@@ -18,7 +18,7 @@
 package api
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
 )

@@ -20,13 +20,15 @@ package timer
 import (
 	"time"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
 // Fallbacker is a timer fallbacker when forward fails. `latencyFactor` is the standard retry duration,
 // and the time for each retry is expanded by 2 times until the number of retries reaches the maximum.
 type Fallbacker struct {
+	config.CommonFields
 	maxTimes      int `mapstructure:"max_times"`
 	latencyFactor int `mapstructure:"latency_factor"`
 }
@@ -46,19 +48,15 @@ latency_factor: 2000
 `
 }
 
-func (t *Fallbacker) FallBack(batch event.BatchEvents, connection interface{}, forward api.ForwardFunc) bool {
-	if err := forward(connection, batch); err != nil {
-		count := 1
-		currentLatency := count * t.latencyFactor
-		for count < t.maxTimes {
-			time.Sleep(time.Duration(currentLatency) * time.Millisecond)
-			if err := forward(connection, batch); err != nil {
-				currentLatency *= 2
-			} else {
-				return true
-			}
+func (t *Fallbacker) FallBack(batch event.BatchEvents, forward api.ForwardFunc) bool {
+	currentLatency := t.latencyFactor
+	for i := 1; i < t.maxTimes; i++ {
+		time.Sleep(time.Duration(currentLatency) * time.Millisecond)
+		if err := forward(batch); err != nil {
+			currentLatency *= 2
+		} else {
+			return true
 		}
-		return false
 	}
-	return true
+	return false
 }

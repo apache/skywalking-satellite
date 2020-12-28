@@ -15,23 +15,19 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package receiver
 
 import (
 	"reflect"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/plugins/receiver/api"
 )
-
-// Get an initialized receiver plugin.
-func GetReceiver(config plugin.Config) Receiver {
-	return plugin.Get(reflect.TypeOf((*Receiver)(nil)).Elem(), config).(Receiver)
-}
 
 // RegisterReceiverPlugins register the used receiver plugins.
 func RegisterReceiverPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Receiver)(nil)).Elem())
-	receivers := []Receiver{
+	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Receiver)(nil)).Elem())
+	receivers := []api.Receiver{
 		// Please register the receiver plugins at here.
 	}
 	for _, receiver := range receivers {
