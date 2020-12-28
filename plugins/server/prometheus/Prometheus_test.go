@@ -22,6 +22,7 @@ import (
 	"net/http"
 	"reflect"
 	"testing"
+	"time"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
@@ -51,6 +52,7 @@ func TestServer_Start(t *testing.T) {
 		t.Fatalf("cannot init the prometheus server: %v", err)
 	}
 	_ = server.Start()
+	time.Sleep(time.Second)
 	response, err := http.Get("http://127.0.0.1" + server.Address + server.Endpoint)
 	defer func() {
 		_ = response.Body.Close()
