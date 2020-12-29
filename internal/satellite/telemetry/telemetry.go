@@ -30,9 +30,9 @@ var (
 
 // Config defines the common telemetry labels.
 type Config struct {
-	Service   string `mapstructure:"service"`   // The service name.
-	Namespace string `mapstructure:"namespace"` // The kubernetes namespace.
-	Pod       string `mapstructure:"pod"`       // The kubernetes pod name.
+	Cluster  string `mapstructure:"cluster"`  // The cluster name.
+	Service  string `mapstructure:"service"`  // The service name.
+	Instance string `mapstructure:"instance"` // The instance name.
 }
 
 // Init create the global telemetry center according to the config.
@@ -41,11 +41,11 @@ func Init(c *Config) {
 	if c.Service != "" {
 		labels["service"] = c.Service
 	}
-	if c.Namespace != "" {
-		labels["kubernetes_namespace"] = c.Namespace
+	if c.Cluster != "" {
+		labels["cluster"] = c.Cluster
 	}
-	if c.Pod != "" {
-		labels["pod"] = c.Pod
+	if c.Instance != "" {
+		labels["instance"] = c.Instance
 	}
 	registry = prometheus.NewRegistry()
 	Registerer = prometheus.WrapRegistererWith(labels, registry)

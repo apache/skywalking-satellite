@@ -24,15 +24,12 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
+	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	"github.com/apache/skywalking-satellite/plugins/server/api"
 )
 
 func initPrometheusServer(cfg plugin.Config) (*Server, error) {
-	log.Init(&log.LoggerConfig{})
-	telemetry.Init(new(telemetry.Config))
 	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Server)(nil)).Elem())
 	plugin.RegisterPlugin(new(Server))
 	cfg[plugin.NameField] = "prometheus-server"

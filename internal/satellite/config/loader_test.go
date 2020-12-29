@@ -71,9 +71,9 @@ func params() *SatelliteConfig {
 			Level:       "info",
 		},
 		Telemetry: &telemetry.Config{
-			Namespace: "namesspace",
-			Service:   "service1",
-			Pod:       "instance1",
+			Cluster:  "namesspace",
+			Service:  "service1",
+			Instance: "instance1",
 		},
 		Sharing: &SharingConfig{
 			SharingCommonConfig: config.CommonFields{

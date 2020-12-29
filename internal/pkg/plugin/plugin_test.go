@@ -24,6 +24,7 @@ import (
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 )
 
 const pluginName = "plugin-pkg"
@@ -131,6 +132,7 @@ func TestPlugin(t *testing.T) {
 }
 
 func init() {
+	log.Init(new(log.LoggerConfig))
 	RegisterPluginCategory(reflect.TypeOf((*DemoCategory)(nil)).Elem())
 	RegisterPlugin(new(DemoPlugin))
 }
