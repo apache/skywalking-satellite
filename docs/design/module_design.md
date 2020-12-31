@@ -1,31 +1,31 @@
 # Module Design
-## Namespace
-The namespace is an isolation concept in Satellite. 
-Each namespace has one pipeline to process the telemetry data(metrics/traces/logs). Two namespaces are not sharing data.
+## Pipe
+The pipe is an isolation concept in Satellite. 
+Each pipe has one pipeline to process the telemetry data(metrics/traces/logs). Two pipes are not sharing data.
 
 ```
                             Satellite
  ---------------------------------------------------------------------
 |            -------------------------------------------              |
-|           |                 Namespace                 |             |
+|           |                 Pipe                      |             |
 |            -------------------------------------------              |
 |            -------------------------------------------              |
-|           |                 Namespace                 |             |
+|           |                 Pipe                      |             |
 |            -------------------------------------------              |
 |            -------------------------------------------              |
-|           |                 Namespace                 |             |
+|           |                 Pipe                      |             |
 |            -------------------------------------------              |
  ---------------------------------------------------------------------
 ```
 ## Modules
-There are 3 modules in one namespace, which are Gatherer, Processor, and Sender.
+There are 3 modules in one pipe, which are Gatherer, Processor, and Sender.
 
 - The Gatherer module is responsible for fetching or receiving data and pushing the data to Queue. So there are 2 kinds of Gatherer, which are ReceiverGatherer and FetcherGatherer.
 - The Processor module is responsible for reading data from the queue and processing data by a series of filter chains.
 - The Sender module is responsible for async processing and forwarding the data to the external services in the batch mode. After sending success, Sender would also acknowledge the offset of Queue in Gatherer.
 
 ```
-                            Namespace
+                            Pipe
  --------------------------------------------------------------------
 |            ----------      -----------      --------               |
 |           | Gatherer | => | Processor | => | Sender |              |                          
@@ -37,11 +37,11 @@ There are 3 modules in one namespace, which are Gatherer, Processor, and Sender.
 
 Plugin is the minimal components in the module. Sateliite has 2 plugin catalogs, which are sharing plugins and normal plugins.
 
-- a sharing plugin instance could be sharing with multiple modules in the different namespaces.
-- a normal plugin instance is only be used in a fixed module of the fixed namespaces.
+- a sharing plugin instance could be sharing with multiple modules in the different pipes.
+- a normal plugin instance is only be used in a fixed module of the fixed pipes.
 
 ### Sharing plugin
-Nowadays, there are 2 kinds of sharing plugins in Satellite, which are server plugins and client plugins. The reason why they are sharing plugins is to reduce the resource cost in connection. Server plugins are sharing with the ReceiverGatherer modules in the different namespaces to receive the external requests. And the client plugins is sharing with the Sender modules in the different namespaces to connect with external services, such as Kafka and OAP.
+Nowadays, there are 2 kinds of sharing plugins in Satellite, which are server plugins and client plugins. The reason why they are sharing plugins is to reduce the resource cost in connection. Server plugins are sharing with the ReceiverGatherer modules in the different pipes to receive the external requests. And the client plugins is sharing with the Sender modules in the different pipes to connect with external services, such as Kafka and OAP.
 
 ```
            Sharing Server                      Sharing Client

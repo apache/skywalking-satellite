@@ -35,6 +35,7 @@ var once sync.Once
 // Load loads the sharing config to the Manager.
 func Load(cfg *config.SharingConfig) {
 	once.Do(func() {
+		Manager = make(map[string]plugin.SharingPlugin)
 		for _, c := range cfg.Clients {
 			p := client.GetClient(c)
 			Manager[p.Name()] = p
@@ -50,6 +51,17 @@ func Load(cfg *config.SharingConfig) {
 func Prepare() error {
 	for _, sharingPlugin := range Manager {
 		if err := sharingPlugin.Prepare(); err != nil {
+			log.Logger.Errorf("error in closing the %s sharing plugin: %v", sharingPlugin.Name(), err)
+			Close()
+			return fmt.Errorf("cannot preare the sharing plugins named %s: %v", sharingPlugin.Name(), err)
+		}
+	}
+	return nil
+}
+
+func Start() error {
+	for _, sharingPlugin := range Manager {
+		if err := sharingPlugin.Start(); err != nil {
 			log.Logger.Errorf("error in closing the %s sharing plugin: %v", sharingPlugin.Name(), err)
 			Close()
 			return fmt.Errorf("cannot preare the sharing plugins named %s: %v", sharingPlugin.Name(), err)

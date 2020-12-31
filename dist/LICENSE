@@ -214,7 +214,7 @@ Apache 2.0 licenses
 
 The following components are provided under the Apache License. See project link for details.
 The text of each license is the standard Apache 2.0 license.
-
+    client_golang (prometheus) v1.9.0: https://github.com/prometheus/client_golang Apache 2.0
 
 ========================================================================
 BSD licenses

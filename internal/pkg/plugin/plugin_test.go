@@ -20,7 +20,14 @@ package plugin
 import (
 	"reflect"
 	"testing"
+
+	"github.com/google/go-cmp/cmp"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 )
+
+const pluginName = "plugin-pkg"
 
 type DemoCategory interface {
 	Plugin
@@ -28,6 +35,7 @@ type DemoCategory interface {
 }
 
 type DemoPlugin struct {
+	config.CommonFields
 	Organization string `mapstructure:"organization"`
 	Project      string `mapstructure:"project"`
 }
@@ -37,7 +45,7 @@ func (d *DemoPlugin) Say() string {
 }
 
 func (d *DemoPlugin) Name() string {
-	return "demoplugin"
+	return GetPluginName(d)
 }
 
 func (d *DemoPlugin) Description() string {
@@ -51,6 +59,30 @@ project: "skywalking-satellite"
 `
 }
 
+func TestGetPluginName(t *testing.T) {
+	type args struct {
+		p Plugin
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{
+			name: "check-name",
+			args: args{p: new(DemoPlugin)},
+			want: pluginName,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := GetPluginName(tt.args.p); got != tt.want {
+				t.Errorf("GetPluginName() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
 func TestPlugin(t *testing.T) {
 	tests := []struct {
 		name string
@@ -60,11 +92,15 @@ func TestPlugin(t *testing.T) {
 		{
 			name: "test1",
 			args: Config{
-				"plugin_name":  "demoplugin",
-				"organization": "CNCF",
-				"project":      "Fluentd",
+				"plugin_name":            pluginName,
+				"organization":           "CNCF",
+				"project":                "Fluentd",
+				"commonfields_pipe_name": "b",
 			},
 			want: &DemoPlugin{
+				CommonFields: config.CommonFields{
+					PipeName: "b",
+				},
 				Organization: "CNCF",
 				Project:      "Fluentd",
 			},
@@ -72,7 +108,7 @@ func TestPlugin(t *testing.T) {
 		{
 			name: "demoplugin",
 			args: Config{
-				"plugin_name": "demoplugin",
+				"plugin_name": pluginName,
 			},
 			want: &DemoPlugin{
 				Organization: "ASF",
@@ -84,11 +120,11 @@ func TestPlugin(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			defer func() {
 				if i := recover(); i != nil {
-					t.Errorf("the plugin %s is not exist", "demoplugin")
+					t.Errorf("the plugin initialized err: %v", i)
 				}
 			}()
 			plugin := Get(reflect.TypeOf((*DemoCategory)(nil)).Elem(), tt.args)
-			if !reflect.DeepEqual(plugin, tt.want) {
+			if !cmp.Equal(plugin, tt.want) {
 				t.Errorf("Format() got = %v, want %v", plugin, tt.want)
 			}
 		})
@@ -96,6 +132,7 @@ func TestPlugin(t *testing.T) {
 }
 
 func init() {
+	log.Init(new(log.LoggerConfig))
 	RegisterPluginCategory(reflect.TypeOf((*DemoCategory)(nil)).Elem())
-	RegisterPlugin(&DemoPlugin{})
+	RegisterPlugin(new(DemoPlugin))
 }

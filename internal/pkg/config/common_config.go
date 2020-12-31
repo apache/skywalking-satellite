@@ -15,26 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package config
 
-import (
-	"reflect"
-
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+const (
+	CommonFieldsName = "CommonFields"
+	TagName          = "mapstructure"
 )
 
-// Get an initialized server plugin.
-func GetServer(config plugin.Config) Server {
-	return plugin.Get(reflect.TypeOf((*Server)(nil)).Elem(), config).(Server)
-}
-
-// RegisterServerPlugins register the used server plugins.
-func RegisterServerPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Server)(nil)).Elem())
-	servers := []Server{
-		// Please register the server plugins at here.
-	}
-	for _, server := range servers {
-		plugin.RegisterPlugin(server)
-	}
+// CommonFields defines some common filed for every modules or plugins.
+type CommonFields struct {
+	// PipeName indicates which pipe belongs to.
+	PipeName string `mapstructure:"pipe_name"`
 }

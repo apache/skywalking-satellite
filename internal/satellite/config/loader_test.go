@@ -22,12 +22,13 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 )
 
 func TestLoad(t *testing.T) {
@@ -42,66 +43,7 @@ func TestLoad(t *testing.T) {
 		{
 			name: "Legal configuration",
 			args: args{configPath: "../../../configs/satellite_config.yaml"},
-			want: &SatelliteConfig{
-				Logger: &log.LoggerConfig{
-					LogPattern:  "%time [%level][%field] - %msg",
-					TimePattern: "2006-01-02 15:04:05.001",
-					Level:       "info",
-				},
-				Sharing: &SharingConfig{
-					Clients: []plugin.Config{
-						{
-							"plugin_name": "grpc-client",
-							"k":           "v",
-						},
-					},
-					Servers: []plugin.Config{
-						{
-							"plugin_name": "grpc-server",
-							"k":           "v",
-						},
-					},
-				},
-				Namespaces: []*NamespaceConfig{
-					{
-						ModuleCommonConfig: &api.ModuleCommonConfig{
-							NamespaceName: "namespace1",
-						},
-
-						Gatherer: &gatherer.GathererConfig{
-							ReceiverConfig: plugin.Config{
-								"plugin_name": "segment-receiver",
-								"server_name": "grpc-server",
-								"k":           "v",
-							},
-							QueueConfig: plugin.Config{
-								"plugin_name": "mmap-queue",
-								"key":         "value",
-							},
-						},
-						Processor: &processor.ProcessorConfig{
-							FilterConfig: []plugin.Config{
-								{
-									"plugin_name": "filtertype1",
-									"key":         "value",
-								},
-							},
-						},
-						Sender: &sender.SenderConfig{
-							MaxBufferSize:  100,
-							MinFlushEvents: 30,
-							FlushTime:      200,
-							ClientName:     "grpc-client",
-							ForwardersConfig: []plugin.Config{
-								{
-									"plugin_name": "segment-forwarder",
-									"key":         "value",
-								},
-							},
-						},
-					},
-				},
-			},
+			want: params(),
 		},
 	}
 	for _, tt := range tests {
@@ -113,11 +55,101 @@ func TestLoad(t *testing.T) {
 			doJudgeEqual(t, c.Logger, tt.want.Logger)
 			doJudgeEqual(t, c.Sharing.Servers, tt.want.Sharing.Servers)
 			doJudgeEqual(t, c.Sharing.Clients, tt.want.Sharing.Clients)
-			doJudgeEqual(t, c.Namespaces[0].ModuleCommonConfig, tt.want.Namespaces[0].ModuleCommonConfig)
-			doJudgeEqual(t, c.Namespaces[0].Gatherer, tt.want.Namespaces[0].Gatherer)
-			doJudgeEqual(t, c.Namespaces[0].Processor, tt.want.Namespaces[0].Processor)
-			doJudgeEqual(t, c.Namespaces[0].Sender, tt.want.Namespaces[0].Sender)
+			doJudgeEqual(t, c.Pipes[0].PipeCommonConfig, tt.want.Pipes[0].PipeCommonConfig)
+			doJudgeEqual(t, c.Pipes[0].Gatherer, tt.want.Pipes[0].Gatherer)
+			doJudgeEqual(t, c.Pipes[0].Processor, tt.want.Pipes[0].Processor)
+			doJudgeEqual(t, c.Pipes[0].Sender, tt.want.Pipes[0].Sender)
 		})
+	}
+}
+
+func params() *SatelliteConfig {
+	return &SatelliteConfig{
+		Logger: &log.LoggerConfig{
+			LogPattern:  "%time [%level][%field] - %msg",
+			TimePattern: "2006-01-02 15:04:05.000",
+			Level:       "info",
+		},
+		Telemetry: &telemetry.Config{
+			Cluster:  "namesspace",
+			Service:  "service1",
+			Instance: "instance1",
+		},
+		Sharing: &SharingConfig{
+			SharingCommonConfig: config.CommonFields{
+				PipeName: "sharing",
+			},
+			Clients: []plugin.Config{
+				{
+					"plugin_name":            "grpc-client",
+					"k":                      "v",
+					"commonfields_pipe_name": "sharing",
+				},
+			},
+			Servers: []plugin.Config{
+				{
+					"plugin_name":            "grpc-server",
+					"k":                      "v",
+					"commonfields_pipe_name": "sharing",
+				},
+			},
+		},
+		Pipes: []*PipeConfig{
+			{
+				PipeCommonConfig: config.CommonFields{
+					PipeName: "namespace1",
+				},
+
+				Gatherer: &gatherer.GathererConfig{
+					ServerName: "grpc-server",
+					CommonFields: config.CommonFields{
+						PipeName: "namespace1",
+					},
+					ReceiverConfig: plugin.Config{
+						"plugin_name":            "segment-receiver",
+						"k":                      "v",
+						"commonfields_pipe_name": "namespace1",
+					},
+					QueueConfig: plugin.Config{
+						"plugin_name":            "mmap-queue",
+						"key":                    "value",
+						"commonfields_pipe_name": "namespace1",
+					},
+				},
+				Processor: &processor.ProcessorConfig{
+					CommonFields: config.CommonFields{
+						PipeName: "namespace1",
+					},
+					FilterConfig: []plugin.Config{
+						{
+							"plugin_name":            "filtertype1",
+							"key":                    "value",
+							"commonfields_pipe_name": "namespace1",
+						},
+					},
+				},
+				Sender: &sender.SenderConfig{
+					CommonFields: config.CommonFields{
+						PipeName: "namespace1",
+					},
+					FallbackerConfig: plugin.Config{
+						"commonfields_pipe_name": "namespace1",
+						"plugin_name":            "none-fallbacker",
+					},
+					MaxBufferSize:  100,
+					MinFlushEvents: 30,
+					FlushTime:      1000,
+					ClientName:     "grpc-client",
+					ForwardersConfig: []plugin.Config{
+						{
+							"plugin_name":            "segment-forwarder",
+							"key":                    "value",
+							"commonfields_pipe_name": "namespace1",
+						},
+					},
+				},
+			},
+		},
 	}
 }
 
@@ -131,6 +163,6 @@ func doJudgeEqual(t *testing.T, a, b interface{}) {
 		if err != nil {
 			t.Fatalf("cannot do json format: %v", err)
 		}
-		t.Fatalf("config is not equal, got %s, want %s", ajson, bjson)
+		t.Fatalf("config is not equal, got %s,\n want %s", ajson, bjson)
 	}
 }

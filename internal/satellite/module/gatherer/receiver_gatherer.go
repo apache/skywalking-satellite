@@ -22,9 +22,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
@@ -41,15 +44,31 @@ type ReceiverGatherer struct {
 
 	// self components
 	outputChannel chan *queue.SequenceEvent
+	// metrics
+	receiveCounter     *prometheus.CounterVec
+	queueOutputCounter *prometheus.CounterVec
 }
 
 func (r *ReceiverGatherer) Prepare() error {
-	log.Logger.Infof("receiver gatherer module of %s namespace is preparing", r.config.NamespaceName)
-	r.runningReceiver.RegisterHandler(r.runningServer)
+	log.Logger.Infof("receiver gatherer module of %s namespace is preparing", r.config.PipeName)
+	r.runningReceiver.RegisterHandler(r.runningServer.GetServer())
 	if err := r.runningQueue.Initialize(); err != nil {
-		log.Logger.Infof("the %s queue of %s namespace was failed to initialize", r.runningQueue.Name(), r.config.NamespaceName)
+		log.Logger.Infof("the %s queue of %s namespace was failed to initialize", r.runningQueue.Name(), r.config.PipeName)
 		return err
 	}
+	r.receiveCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "gatherer_receive_count",
+		Help: "Total number of the receiving count in the Gatherer.",
+	}, []string{"pipe", "status"})
+	r.queueOutputCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Subsystem: "receiver",
+		Name:      "queue_output_count",
+		Help:      "Total number of the output count in the Queue of Gatherer.",
+	}, []string{"pipe", "status"})
+	telemetry.Registerer.MustRegister(r.receiveCounter)
+	log.Logger.Infof("register receiveCounter")
+	telemetry.Registerer.MustRegister(r.queueOutputCounter)
+	log.Logger.Infof("register queueOutputCounter")
 	return nil
 }
 
@@ -57,16 +76,19 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 	var wg sync.WaitGroup
 	wg.Add(2)
 	go func() {
+		childCtx, cancel := context.WithCancel(ctx)
 		defer wg.Done()
 		for {
 			select {
 			case e := <-r.runningReceiver.Channel():
+				r.receiveCounter.WithLabelValues(r.config.PipeName, "all").Inc()
 				err := r.runningQueue.Push(e)
 				if err != nil {
-					// todo add abandonedCount metrics
-					log.Logger.Errorf("cannot put event into queue in %s namespace, error is: %v", r.config.NamespaceName, err)
+					r.receiveCounter.WithLabelValues(r.config.PipeName, "abandoned").Inc()
+					log.Logger.Errorf("cannot put event into queue in %s namespace, error is: %v", r.config.PipeName, err)
 				}
-			case <-ctx.Done():
+			case <-childCtx.Done():
+				cancel()
 				r.Shutdown()
 				return
 			}
@@ -74,18 +96,23 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 	}()
 
 	go func() {
+		childCtx, cancel := context.WithCancel(ctx)
 		defer wg.Done()
 		for {
 			select {
-			case <-ctx.Done():
+			case <-childCtx.Done():
+				cancel()
 				r.Shutdown()
 				return
 			default:
 				if e, err := r.runningQueue.Pop(); err == nil {
 					r.outputChannel <- e
-				} else {
-					log.Logger.Errorf("error in popping from the queue: %v", err)
+					r.queueOutputCounter.WithLabelValues(r.config.PipeName, "success").Inc()
+				} else if err == queue.ErrEmpty {
 					time.Sleep(time.Second)
+				} else {
+					r.queueOutputCounter.WithLabelValues(r.config.PipeName, "error").Inc()
+					log.Logger.Errorf("error in popping from the queue: %v", err)
 				}
 			}
 		}
@@ -94,9 +121,9 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 }
 
 func (r *ReceiverGatherer) Shutdown() {
-	log.Logger.Infof("receiver gatherer module of %s namespace is closing", r.config.NamespaceName)
+	log.Logger.Infof("receiver gatherer module of %s namespace is closing", r.config.PipeName)
 	if err := r.runningQueue.Close(); err != nil {
-		log.Logger.Errorf("failure occurs when closing %s queue  in %s namespace, error is: %v", r.runningQueue.Name(), r.config.NamespaceName, err)
+		log.Logger.Errorf("failure occurs when closing %s queue  in %s namespace, error is: %v", r.runningQueue.Name(), r.config.PipeName, err)
 	}
 }
 

@@ -23,6 +23,7 @@ import (
 	"path"
 	"strconv"
 	"sync/atomic"
+	"syscall"
 
 	"github.com/grandecola/mmap"
 
@@ -67,6 +68,9 @@ func (q *Queue) unmapSegment(segmentID int64) error {
 	index := q.GetIndex(segmentID)
 	if q.segments[index] == nil {
 		return nil
+	}
+	if err := q.segments[index].Flush(syscall.MS_SYNC); err != nil {
+		return fmt.Errorf("error in flush segemnt when unmapping: %v", err)
 	}
 	if err := q.segments[index].Unmap(); err != nil {
 		return fmt.Errorf("error in unmap segemnt: %v", err)

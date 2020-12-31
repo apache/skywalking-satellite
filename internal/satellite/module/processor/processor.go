@@ -21,8 +21,8 @@ import (
 	"context"
 	"sync"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
@@ -49,11 +49,11 @@ func (p *Processor) Prepare() error {
 
 // Boot fetches the data of Queue, does a series of processing, and then sends to Sender.
 func (p *Processor) Boot(ctx context.Context) {
-	log.Logger.Infof("processor module of %s namespace is running", p.config.NamespaceName)
+	log.Logger.Infof("processor module of %s namespace is running", p.config.PipeName)
 	var wg sync.WaitGroup
 	wg.Add(1)
-
 	go func() {
+		childCtx, cancel := context.WithCancel(ctx)
 		defer wg.Done()
 		for {
 			select {
@@ -70,7 +70,8 @@ func (p *Processor) Boot(ctx context.Context) {
 				}
 				// send the final context that contains many events to the sender.
 				p.sender.InputDataChannel() <- c
-			case <-ctx.Done():
+			case <-childCtx.Done():
+				cancel()
 				p.Shutdown()
 				return
 			}

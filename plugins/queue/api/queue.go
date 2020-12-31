@@ -20,8 +20,8 @@ package api
 import (
 	"reflect"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 

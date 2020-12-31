@@ -15,26 +15,15 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package test
 
 import (
-	"reflect"
-
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 )
 
-// GetForwarder an initialized filter plugin.
-func GetForwarder(config plugin.Config) Forwarder {
-	return plugin.Get(reflect.TypeOf((*Forwarder)(nil)).Elem(), config).(Forwarder)
-}
-
-// RegisterForwarderPlugins register the used filter plugins.
-func RegisterForwarderPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Forwarder)(nil)).Elem())
-	forwarders := []Forwarder{
-		// Please register the forwarder plugins at here.
-	}
-	for _, forwarder := range forwarders {
-		plugin.RegisterPlugin(forwarder)
-	}
+// init the dependency components.
+func init() {
+	log.Init(new(log.LoggerConfig))
+	telemetry.Init(new(telemetry.Config))
 }

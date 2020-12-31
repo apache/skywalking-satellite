@@ -34,7 +34,3 @@ type Module interface {
 	// Shutdown could do some clean job to close Module.
 	Shutdown()
 }
-
-type ModuleCommonConfig struct {
-	NamespaceName string `mapstructure:"name"`
-}

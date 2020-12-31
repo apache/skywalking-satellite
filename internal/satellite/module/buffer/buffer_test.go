@@ -20,8 +20,8 @@ package buffer
 import (
 	"testing"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
 func TestNewBuffer(t *testing.T) {

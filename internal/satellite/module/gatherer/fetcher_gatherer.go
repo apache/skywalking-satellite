@@ -22,9 +22,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"github.com/prometheus/client_golang/prometheus"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
 	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
 )
@@ -39,9 +42,24 @@ type FetcherGatherer struct {
 
 	// self components
 	outputChannel chan *queue.SequenceEvent
+
+	// metrics
+	fetchCounter       *prometheus.CounterVec
+	queueOutputCounter *prometheus.CounterVec
 }
 
 func (f *FetcherGatherer) Prepare() error {
+	f.fetchCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: "gatherer_fetch_count",
+		Help: "Total number of the receiving count in the Gatherer.",
+	}, []string{"pipe", "status"})
+	f.queueOutputCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
+		Subsystem: "fetcher",
+		Name:      "queue_output_count",
+		Help:      "Total number of the output count in the Queue of Gatherer.",
+	}, []string{"pipe", "status"})
+	telemetry.Registerer.MustRegister(f.fetchCounter)
+	telemetry.Registerer.MustRegister(f.queueOutputCounter)
 	return nil
 }
 
@@ -50,6 +68,7 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 	wg.Add(2)
 	go func() {
 		defer wg.Done()
+		childCtx, cancel := context.WithCancel(ctx)
 		timeTicker := time.NewTicker(time.Duration(f.config.FetchInterval) * time.Millisecond)
 		for {
 			select {
@@ -57,12 +76,14 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 				events := f.runningFetcher.Fetch()
 				for _, e := range events {
 					err := f.runningQueue.Push(e)
+					f.fetchCounter.WithLabelValues(f.config.PipeName, "all").Inc()
 					if err != nil {
-						// todo add abandonedCount metrics
-						log.Logger.Errorf("cannot put event into queue in %s namespace, %v", f.config.NamespaceName, err)
+						f.fetchCounter.WithLabelValues(f.config.PipeName, "abandoned").Inc()
+						log.Logger.Errorf("cannot put event into queue in %s namespace, %v", f.config.PipeName, err)
 					}
 				}
-			case <-ctx.Done():
+			case <-childCtx.Done():
+				cancel()
 				f.Shutdown()
 				return
 			}
@@ -71,17 +92,22 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 
 	go func() {
 		defer wg.Done()
+		childCtx, cancel := context.WithCancel(ctx)
 		for {
 			select {
-			case <-ctx.Done():
+			case <-childCtx.Done():
+				cancel()
 				f.Shutdown()
 				return
 			default:
 				if e, err := f.runningQueue.Pop(); err == nil {
 					f.outputChannel <- e
-				} else {
-					log.Logger.Errorf("error in popping from the queue: %v", err)
+					f.queueOutputCounter.WithLabelValues(f.config.PipeName, "success").Inc()
+				} else if err == queue.ErrEmpty {
 					time.Sleep(time.Second)
+				} else {
+					f.queueOutputCounter.WithLabelValues(f.config.PipeName, "error").Inc()
+					log.Logger.Errorf("error in popping from the queue: %v", err)
 				}
 			}
 		}
@@ -90,9 +116,9 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 }
 
 func (f *FetcherGatherer) Shutdown() {
-	log.Logger.Infof("fetcher gatherer module of %s namespace is closing", f.config.NamespaceName)
+	log.Logger.Infof("fetcher gatherer module of %s namespace is closing", f.config.PipeName)
 	if err := f.runningQueue.Close(); err != nil {
-		log.Logger.Errorf("failure occurs when closing %s queue  in %s namespace :%v", f.runningQueue.Name(), f.config.NamespaceName, err)
+		log.Logger.Errorf("failure occurs when closing %s queue  in %s namespace :%v", f.runningQueue.Name(), f.config.PipeName, err)
 	}
 }
 

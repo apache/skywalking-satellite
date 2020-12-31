@@ -18,8 +18,9 @@
 package api
 
 import (
+	"reflect"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/server/api"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
@@ -28,8 +29,13 @@ type Receiver interface {
 	plugin.Plugin
 
 	// RegisterHandler register  a handler to the server, such as to handle a gRPC or an HTTP request
-	RegisterHandler(server api.Server)
+	RegisterHandler(server interface{})
 
 	// Channel would be put a data when the receiver receives an APM data.
 	Channel() <-chan *protocol.Event
+}
+
+// Get an initialized receiver plugin.
+func GetReceiver(config plugin.Config) Receiver {
+	return plugin.Get(reflect.TypeOf((*Receiver)(nil)).Elem(), config).(Receiver)
 }

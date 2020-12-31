@@ -18,14 +18,15 @@
 package api
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
 // Fetcher is a plugin interface, that defines new fetchers.
 type Fetcher interface {
 	plugin.Plugin
 
+	Prepare()
 	// Fetch would fetch some APM data.
 	Fetch() event.BatchEvents
 }

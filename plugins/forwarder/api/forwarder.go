@@ -18,19 +18,28 @@
 package api
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/event"
+	"reflect"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 // Forwarder is a plugin interface, that defines new forwarders.
 type Forwarder interface {
 	plugin.Plugin
+	// Prepare do some preparation works, such as create a stub in gRPC and create a producer in Kafka.
+	Prepare(connection interface{}) error
 	// Forward the batch events to the external services, such as Kafka MQ and SkyWalking OAP cluster.
-	Forward(connection interface{}, batch event.BatchEvents) error
+	Forward(batch event.BatchEvents) error
 	// ForwardType returns the supported event type.
 	ForwardType() protocol.EventType
 }
 
 // ForwardFunc represent the Forward() in Forwarder
-type ForwardFunc func(connection interface{}, batch event.BatchEvents) error
+type ForwardFunc func(batch event.BatchEvents) error
+
+// GetForwarder an initialized filter plugin.
+func GetForwarder(config plugin.Config) Forwarder {
+	return plugin.Get(reflect.TypeOf((*Forwarder)(nil)).Elem(), config).(Forwarder)
+}

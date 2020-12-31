@@ -15,26 +15,24 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package fallbacker
 
 import (
 	"reflect"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/plugins/fallbacker/api"
+	"github.com/apache/skywalking-satellite/plugins/fallbacker/timer"
 )
 
-// Get an initialized receiver plugin.
-func GetReceiver(config plugin.Config) Receiver {
-	return plugin.Get(reflect.TypeOf((*Receiver)(nil)).Elem(), config).(Receiver)
-}
-
-// RegisterReceiverPlugins register the used receiver plugins.
-func RegisterReceiverPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Receiver)(nil)).Elem())
-	receivers := []Receiver{
-		// Please register the receiver plugins at here.
+// RegisterFallbackerPlugins register the used fallbacker plugins.
+func RegisterFallbackerPlugins() {
+	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Fallbacker)(nil)).Elem())
+	fallbackers := []api.Fallbacker{
+		// Please register the fallbacker plugins at here.
+		&timer.Fallbacker{},
 	}
-	for _, receiver := range receivers {
-		plugin.RegisterPlugin(receiver)
+	for _, fallbacker := range fallbackers {
+		plugin.RegisterPlugin(fallbacker)
 	}
 }

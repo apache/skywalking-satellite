@@ -30,14 +30,13 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 func initMmapQueue(cfg plugin.Config) (*Queue, error) {
-	log.Init(&log.LoggerConfig{})
 	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Queue)(nil)).Elem())
 	plugin.RegisterPlugin(&Queue{})
 	var config plugin.Config = map[string]interface{}{

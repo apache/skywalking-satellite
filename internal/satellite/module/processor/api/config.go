@@ -18,13 +18,13 @@
 package api
 
 import (
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
 )
 
 // ProcessorConfig contains all implementation fields.
 type ProcessorConfig struct {
-	api.ModuleCommonConfig
+	config.CommonFields
 
 	FilterConfig []plugin.Config `mapstructure:"filters"` // filter plugins
 }

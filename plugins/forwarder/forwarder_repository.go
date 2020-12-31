@@ -15,21 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package forwarder
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"reflect"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
-type SenderConfig struct {
-	config.CommonFields
-	// plugins config
-	ForwardersConfig []plugin.Config `mapstructure:"forwarders"`  // forwarder plugins config
-	FallbackerConfig plugin.Config   `mapstructure:"fallbacker"`  // fallbacker plugins config
-	ClientName       string          `mapstructure:"client_name"` // client plugin name
-
-	MaxBufferSize  int `mapstructure:"max_buffer_size"`  // the max buffer capacity
-	MinFlushEvents int `mapstructure:"min_flush_events"` // the min flush events when receives a timer flush signal
-	FlushTime      int `mapstructure:"flush_time"`       // the period flush time
+// RegisterForwarderPlugins register the used filter plugins.
+func RegisterForwarderPlugins() {
+	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Forwarder)(nil)).Elem())
+	forwarders := []api.Forwarder{
+		// Please register the forwarder plugins at here.
+	}
+	for _, forwarder := range forwarders {
+		plugin.RegisterPlugin(forwarder)
+	}
 }

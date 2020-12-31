@@ -23,6 +23,9 @@ import (
 	"strings"
 
 	"github.com/spf13/viper"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 )
 
 // the global plugin registry
@@ -47,12 +50,12 @@ func RegisterPlugin(plugin Plugin) {
 	for pCategory, pReg := range reg {
 		if v.Type().Implements(pCategory) {
 			pReg[plugin.Name()] = v
-			fmt.Printf("register %s %s successfully ", plugin.Name(), v.Type().String())
+			log.Logger.Infof("register %s %s successfully", plugin.Name(), v.Type().String())
 			success = true
 		}
 	}
 	if !success {
-		fmt.Printf("this type of %s is not supported to register : %s", plugin.Name(), v.Type().String())
+		log.Logger.Errorf("this type of %s is not supported to register : %s", plugin.Name(), v.Type().String())
 	}
 }
 
@@ -99,5 +102,17 @@ func initializing(plugin Plugin, cfg Config) {
 	}
 	if err := v.Unmarshal(plugin); err != nil {
 		panic(fmt.Errorf("cannot inject  the config to the %s plugin, the error is %v", plugin.Name(), err))
+	}
+	cf := reflect.ValueOf(plugin).Elem().FieldByName(config.CommonFieldsName)
+	if !cf.IsValid() {
+		panic(fmt.Errorf("%s plugin must have a field named CommonField", plugin.Name()))
+	}
+	for i := 0; i < cf.NumField(); i++ {
+		tagVal := cf.Type().Field(i).Tag.Get(config.TagName)
+		if tagVal != "" {
+			if val := cfg[strings.ToLower(config.CommonFieldsName)+"_"+tagVal]; val != nil {
+				cf.Field(i).Set(reflect.ValueOf(val))
+			}
+		}
 	}
 }
