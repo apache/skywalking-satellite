@@ -12,6 +12,7 @@ require (
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/viper v1.7.1
 	github.com/urfave/cli/v2 v2.3.0
+	google.golang.org/grpc v1.34.0
 	google.golang.org/protobuf v1.25.0
 	skywalking/network v1.0.0
 )
