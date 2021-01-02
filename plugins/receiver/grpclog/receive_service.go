@@ -35,7 +35,6 @@ type LogReportService struct {
 }
 
 func (s *LogReportService) Collect(stream logging.LogReportService_CollectServer) error {
-	startTime := time.Now()
 	for {
 		logData, err := stream.Recv()
 		if err == io.EOF {
@@ -46,7 +45,7 @@ func (s *LogReportService) Collect(stream logging.LogReportService_CollectServer
 		}
 		e := &protocol.Event{
 			Name:      eventName,
-			Timestamp: startTime.Unix(),
+			Timestamp: time.Now().Unix(),
 			Meta:      nil,
 			Type:      protocol.EventType_Logging,
 			Remote:    true,
