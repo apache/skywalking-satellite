@@ -5,6 +5,7 @@ go 1.14
 replace skywalking/network v1.0.0 => ./protocol/gen-codes/skywalking/network
 
 require (
+	github.com/Shopify/sarama v1.27.2
 	github.com/golang/protobuf v1.4.3
 	github.com/google/go-cmp v0.5.4
 	github.com/grandecola/mmap v0.6.0
