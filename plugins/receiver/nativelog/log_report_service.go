@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package grpclog
+package nativelog
 
 import (
 	"io"
@@ -45,7 +45,7 @@ func (s *LogReportService) Collect(stream logging.LogReportService_CollectServer
 		}
 		e := &protocol.Event{
 			Name:      eventName,
-			Timestamp: time.Now().Unix(),
+			Timestamp: time.Now().UnixNano() / 1e6,
 			Meta:      nil,
 			Type:      protocol.EventType_Logging,
 			Remote:    true,
