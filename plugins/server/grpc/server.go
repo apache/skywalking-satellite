@@ -35,7 +35,7 @@ type Server struct {
 	MaxRecvMsgSize       int    `mapstructure:"max_recv_msg_size"`      // The max size of the received log.
 	MaxConcurrentStreams uint32 `mapstructure:"max_concurrent_streams"` // The max concurrent stream channels.
 	TLSCertFile          string `mapstructure:"tls_cert_file"`          // The TLS cert file path.
-	TLSKeytFile          string `mapstructure:"tls_key_file"`           // The TLS key file path.
+	TLSKeyFile           string `mapstructure:"tls_key_file"`           // The TLS key file path.
 	// components
 	server   *grpc.Server
 	listener net.Listener
@@ -68,8 +68,8 @@ tls_key_file:
 
 func (s *Server) Prepare() error {
 	var options []grpc.ServerOption
-	if s.TLSCertFile != "" && s.TLSKeytFile != "" {
-		if c, err := credentials.NewClientTLSFromFile(s.TLSCertFile, s.TLSKeytFile); err == nil {
+	if s.TLSCertFile != "" && s.TLSKeyFile != "" {
+		if c, err := credentials.NewClientTLSFromFile(s.TLSCertFile, s.TLSKeyFile); err == nil {
 			options = append(options, grpc.Creds(c))
 		} else {
 			log.Logger.Errorf("error in checking TLS files: %v", err)
