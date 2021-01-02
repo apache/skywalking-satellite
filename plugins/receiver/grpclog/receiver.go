@@ -35,8 +35,8 @@ type Receiver struct {
 	MaxBufferSpaces int `mapstructure:"max_buffer_spaces"` // The max buffer events.
 
 	server        *grpc.Server
-	service       *LogReportService
-	outputChannel chan *protocol.Event // The output channel of grpc log
+	service       *LogReportService    // The gRPC request handler for logData.
+	outputChannel chan *protocol.Event // The channel is to bridge the LogReportService and the Gatherer to delivery the data.
 
 }
 
@@ -45,7 +45,7 @@ func (r *Receiver) Name() string {
 }
 
 func (r *Receiver) Description() string {
-	return "this is a grpc log receiver"
+	return "This is a receiver for SkyWalking native logging format, which is defined at https://github.com/apache/skywalking-data-collect-protocol/blob/master/logging/Logging.proto."
 }
 
 func (r *Receiver) DefaultConfig() string {
