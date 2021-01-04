@@ -27,17 +27,14 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	grpcreceiver "github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 type Receiver struct {
 	config.CommonFields
-	MaxBufferSpaces int `mapstructure:"max_buffer_spaces"` // The max buffer events.
-
-	server        *grpc.Server
-	service       *LogReportService    // The gRPC request handler for logData.
-	outputChannel chan *protocol.Event // The channel is to bridge the LogReportService and the Gatherer to delivery the data.
-
+	grpcreceiver.CommonGRPCReceiverFields
+	service *LogReportService // The gRPC request handler for logData.
 }
 
 func (r *Receiver) Name() string {
@@ -50,10 +47,7 @@ func (r *Receiver) Description() string {
 }
 
 func (r *Receiver) DefaultConfig() string {
-	return `
-# The max buffer events to process flow surge.
-max_buffer_spaces: 1
-`
+	return ""
 }
 
 func (r *Receiver) RegisterHandler(server interface{}) {
@@ -61,12 +55,12 @@ func (r *Receiver) RegisterHandler(server interface{}) {
 	if !ok {
 		panic(fmt.Errorf("registerHandler does not support %s", reflect.TypeOf(server).String()))
 	}
-	r.server = s
-	r.outputChannel = make(chan *protocol.Event, r.MaxBufferSpaces)
-	r.service = &LogReportService{receiveChannel: r.outputChannel}
-	logging.RegisterLogReportServiceServer(r.server, r.service)
+	r.Server = s
+	r.OutputChannel = make(chan *protocol.Event)
+	r.service = &LogReportService{receiveChannel: r.OutputChannel}
+	logging.RegisterLogReportServiceServer(r.Server, r.service)
 }
 
 func (r *Receiver) Channel() <-chan *protocol.Event {
-	return r.outputChannel
+	return r.OutputChannel
 }

@@ -131,7 +131,7 @@ func initServer(cfg plugin.Config, t *testing.T) server.Server {
 }
 
 func initReceiver(cfg plugin.Config, t *testing.T) receiver.Receiver {
-	cfg[plugin.NameField] = "nativelog-receiver"
+	cfg[plugin.NameField] = "grpc-nativelog-receiver"
 	q := receiver.GetReceiver(cfg)
 	if q == nil {
 		t.Fatalf("cannot get grpclog-receiver from the registry")
