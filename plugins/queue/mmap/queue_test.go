@@ -40,7 +40,7 @@ func initMmapQueue(cfg plugin.Config) (*Queue, error) {
 	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Queue)(nil)).Elem())
 	plugin.RegisterPlugin(&Queue{})
 	var config plugin.Config = map[string]interface{}{
-		plugin.NameField: "mmap-queue",
+		plugin.NameField: Name,
 	}
 	for k, v := range cfg {
 		config[k] = v

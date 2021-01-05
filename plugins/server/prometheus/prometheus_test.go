@@ -32,7 +32,7 @@ import (
 func initPrometheusServer(cfg plugin.Config) (*Server, error) {
 	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Server)(nil)).Elem())
 	plugin.RegisterPlugin(new(Server))
-	cfg[plugin.NameField] = "prometheus-server"
+	cfg[plugin.NameField] = Name
 	q := api.GetServer(cfg)
 	if q == nil {
 		return nil, fmt.Errorf("cannot get a default config mmap queue from the registry")
