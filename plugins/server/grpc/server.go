@@ -25,8 +25,9 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
+
+const Name = "grpc-server"
 
 type Server struct {
 	config.CommonFields
@@ -42,7 +43,7 @@ type Server struct {
 }
 
 func (s *Server) Name() string {
-	return plugin.GetPluginName(s)
+	return Name
 }
 
 func (s *Server) Description() string {

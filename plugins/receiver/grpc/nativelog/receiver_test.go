@@ -119,7 +119,7 @@ func Init() {
 }
 
 func initServer(cfg plugin.Config, t *testing.T) server.Server {
-	cfg[plugin.NameField] = "grpc-server"
+	cfg[plugin.NameField] = grpcserver.Name
 	q := server.GetServer(cfg)
 	if q == nil {
 		t.Fatalf("cannot get a grpc server from the registry")

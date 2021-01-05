@@ -28,7 +28,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-const pluginName = "demodir1-demodir2-democategory"
+const pluginName = "demo-plugin"
 
 type DemoCategory interface {
 	plugin.Plugin
@@ -46,7 +46,7 @@ func (d *DemoPlugin) Say() string {
 }
 
 func (d *DemoPlugin) Name() string {
-	return plugin.GetPluginName(d)
+	return "demo-plugin"
 }
 
 func (d *DemoPlugin) Description() string {
@@ -58,30 +58,6 @@ func (d *DemoPlugin) DefaultConfig() string {
 organization: "ASF"
 project: "skywalking-satellite"
 `
-}
-
-func TestGetPluginName(t *testing.T) {
-	type args struct {
-		p plugin.Plugin
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		{
-			name: "check-name",
-			args: args{p: new(DemoPlugin)},
-			want: pluginName,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := plugin.GetPluginName(tt.args.p); got != tt.want {
-				t.Errorf("GetPluginName() = %v, want %v", got, tt.want)
-			}
-		})
-	}
 }
 
 func TestPlugin(t *testing.T) {

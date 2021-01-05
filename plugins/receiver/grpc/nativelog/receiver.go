@@ -18,18 +18,14 @@
 package nativelog
 
 import (
-	"fmt"
-	"reflect"
-
-	"google.golang.org/grpc"
-
 	logging "skywalking/network/logging/v3"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	grpcreceiver "github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
+
+const Name = "grpc-nativelog-receiver"
 
 type Receiver struct {
 	config.CommonFields
@@ -38,7 +34,7 @@ type Receiver struct {
 }
 
 func (r *Receiver) Name() string {
-	return plugin.GetPluginName(r)
+	return Name
 }
 
 func (r *Receiver) Description() string {
@@ -51,12 +47,7 @@ func (r *Receiver) DefaultConfig() string {
 }
 
 func (r *Receiver) RegisterHandler(server interface{}) {
-	s, ok := server.(*grpc.Server)
-	if !ok {
-		panic(fmt.Errorf("registerHandler does not support %s", reflect.TypeOf(server).String()))
-	}
-	r.Server = s
-	r.OutputChannel = make(chan *protocol.Event)
+	r.CommonGRPCReceiverFields = *grpcreceiver.InitCommonGRPCReceiverFields(server)
 	r.service = &LogReportService{receiveChannel: r.OutputChannel}
 	logging.RegisterLogReportServiceServer(r.Server, r.service)
 }
