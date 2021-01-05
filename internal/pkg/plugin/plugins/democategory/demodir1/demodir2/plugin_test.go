@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package plugin
+package demodir2
 
 import (
 	"reflect"
@@ -25,12 +25,13 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-const pluginName = "plugin-pkg"
+const pluginName = "demo-plugin"
 
 type DemoCategory interface {
-	Plugin
+	plugin.Plugin
 	Say() string
 }
 
@@ -45,7 +46,7 @@ func (d *DemoPlugin) Say() string {
 }
 
 func (d *DemoPlugin) Name() string {
-	return GetPluginName(d)
+	return "demo-plugin"
 }
 
 func (d *DemoPlugin) Description() string {
@@ -59,39 +60,15 @@ project: "skywalking-satellite"
 `
 }
 
-func TestGetPluginName(t *testing.T) {
-	type args struct {
-		p Plugin
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		{
-			name: "check-name",
-			args: args{p: new(DemoPlugin)},
-			want: pluginName,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := GetPluginName(tt.args.p); got != tt.want {
-				t.Errorf("GetPluginName() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestPlugin(t *testing.T) {
 	tests := []struct {
 		name string
-		args Config
+		args plugin.Config
 		want *DemoPlugin
 	}{
 		{
 			name: "test1",
-			args: Config{
+			args: plugin.Config{
 				"plugin_name":            pluginName,
 				"organization":           "CNCF",
 				"project":                "Fluentd",
@@ -107,7 +84,7 @@ func TestPlugin(t *testing.T) {
 		},
 		{
 			name: "demoplugin",
-			args: Config{
+			args: plugin.Config{
 				"plugin_name": pluginName,
 			},
 			want: &DemoPlugin{
@@ -123,9 +100,9 @@ func TestPlugin(t *testing.T) {
 					t.Errorf("the plugin initialized err: %v", i)
 				}
 			}()
-			plugin := Get(reflect.TypeOf((*DemoCategory)(nil)).Elem(), tt.args)
-			if !cmp.Equal(plugin, tt.want) {
-				t.Errorf("Format() got = %v, want %v", plugin, tt.want)
+			p := plugin.Get(reflect.TypeOf((*DemoCategory)(nil)).Elem(), tt.args)
+			if !cmp.Equal(p, tt.want) {
+				t.Errorf("Format() got = %v, want %v", p, tt.want)
 			}
 		})
 	}
@@ -133,6 +110,6 @@ func TestPlugin(t *testing.T) {
 
 func init() {
 	log.Init(new(log.LoggerConfig))
-	RegisterPluginCategory(reflect.TypeOf((*DemoCategory)(nil)).Elem())
-	RegisterPlugin(new(DemoPlugin))
+	plugin.RegisterPluginCategory(reflect.TypeOf((*DemoCategory)(nil)).Elem())
+	plugin.RegisterPlugin(new(DemoPlugin))
 }

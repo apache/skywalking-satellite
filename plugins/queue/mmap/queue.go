@@ -33,7 +33,6 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
 	"github.com/apache/skywalking-satellite/plugins/queue/mmap/meta"
@@ -43,6 +42,7 @@ import (
 const (
 	data4KB         = 131072
 	minimumSegments = 4
+	Name            = "mmap-queue"
 )
 
 // Queue is a memory mapped queue to store the input data.
@@ -75,7 +75,7 @@ type Queue struct {
 }
 
 func (q *Queue) Name() string {
-	return plugin.GetPluginName(q)
+	return Name
 }
 
 func (q *Queue) Description() string {
