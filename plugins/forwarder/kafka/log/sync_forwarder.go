@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package kafkalog
+package log
 
 import (
 	"fmt"
@@ -27,10 +27,11 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
+
+const Name = "log-kafka-forwarder"
 
 type Forwarder struct {
 	config.CommonFields
@@ -39,7 +40,7 @@ type Forwarder struct {
 }
 
 func (f *Forwarder) Name() string {
-	return plugin.GetPluginName(f)
+	return Name
 }
 
 func (f *Forwarder) Description() string {

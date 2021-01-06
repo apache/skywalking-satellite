@@ -25,9 +25,10 @@ import (
 	"github.com/Shopify/sarama"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins/client/api"
 )
+
+const Name = "kafka-client"
 
 type Client struct {
 	config.CommonFields
@@ -39,7 +40,8 @@ type Client struct {
 	ClientKeyPath      string `mapstructure:"client_key_path"`      // The file path of client.key. The config only works when opening the TLS switch.
 	CaPemPath          string `mapstructure:"ca_pem_path"`          // The file path oca.pem. The config only works when opening the TLS switch.
 	RequiredAcks       int16  `mapstructure:"required_acks"`        // 0 means NoResponse, 1 means WaitForLocal and -1 means WaitForAll (default 1).
-	MaxRetry           int    `mapstructure:"max_retry"`            // The producer max retry times (default 3).
+	ProducerMaxRetry   int    `mapstructure:"producer_max_retry"`   // The producer max retry times (default 3).
+	MetaMaxRetry       int    `mapstructure:"meta_max_retry"`       // The meta max retry times (default 3).
 	RetryBackoff       int    `mapstructure:"retry_backoff"`        // How long to wait for the cluster to settle between retries (default 100ms).
 	MaxMessageBytes    int    `mapstructure:"max_message_bytes"`    // The max message bytes.
 	IdempotentWrites   bool   `mapstructure:"idempotent_writes"`    // Ensure that exactly one copy of each message is written when is true.
@@ -57,7 +59,7 @@ type Client struct {
 }
 
 func (c *Client) Name() string {
-	return plugin.GetPluginName(c)
+	return Name
 }
 
 func (c *Client) Description() string {
@@ -88,7 +90,10 @@ ca_pem_path: ""
 required_acks: 1
 
 # The producer max retry times (default 3).
-max_retry: 3
+producer_max_retry: 3
+
+# The meta max retry times (default 3).
+meta_max_retry: 3
 
 # How long to wait for the cluster to settle between retries (default 100ms). Time unit is ms.
 retry_backoff: 100

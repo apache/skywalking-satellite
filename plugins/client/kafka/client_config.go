@@ -40,8 +40,11 @@ func (c *Client) loadConfig() (*sarama.Config, error) {
 	cfg.Producer.Idempotent = c.IdempotentWrites
 	cfg.Producer.RequiredAcks = sarama.RequiredAcks(c.RequiredAcks)
 	cfg.Producer.Compression = sarama.CompressionCodec(c.CompressionCodec)
-	if c.MaxRetry > 0 {
-		cfg.Producer.Retry.Max = c.MaxRetry
+	if c.ProducerMaxRetry > 0 {
+		cfg.Producer.Retry.Max = c.ProducerMaxRetry
+	}
+	if c.MetaMaxRetry > 0 {
+		cfg.Metadata.Retry.Max = c.MetaMaxRetry
 	}
 	if c.RetryBackoff > 0 {
 		cfg.Producer.Retry.Backoff = time.Millisecond * time.Duration(c.RetryBackoff)
