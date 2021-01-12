@@ -31,17 +31,23 @@ import (
 )
 
 const (
-	docDir  = "docs"
-	docPath = docDir + "/plugin-description.md"
+	docDir      = "docs"
+	docPath     = docDir + "/plugin-description.md"
+	topLevel    = "# "
+	SecondLevel = "## "
+	thirdLevel  = "### "
+	LF          = "\n"
+	codeQuote   = "```"
+	descStr     = "description"
+	confStr     = "defaultConfig"
 )
 
 func GeneratePluginDoc() error {
 	log.Init(&log.LoggerConfig{})
 	plugins.RegisterPlugins()
-	doc := ""
-	const topLevel, SecondLevel, thirdLevel, LF, codeQuote = "# ", "## ", "### ", "\n", "```"
-	const descStr, confStr = "description", "defaultConfig"
-
+	// the generated doc content
+	var doc string
+	// sort categories by dictionary sequence
 	var categories []reflect.Type
 	for c := range plugin.Reg {
 		categories = append(categories, c)
@@ -65,7 +71,7 @@ func GeneratePluginDoc() error {
 		}
 	}
 	if err := createDir(docDir); err != nil {
-		return fmt.Errorf("the docs dir contains error: %v", err)
+		return fmt.Errorf("create docs dir error: %v", err)
 	}
 	if err := ioutil.WriteFile(docPath, []byte(doc), os.ModePerm); err != nil {
 		return fmt.Errorf("cannot init the plugin doc: %v", err)
