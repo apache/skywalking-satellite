@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"sort"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
@@ -38,11 +39,17 @@ func GeneratePluginDoc() error {
 	doc := ""
 	const topLevel, SecondLevel, thirdLevel, LF, codeQuote = "# ", "## ", "### ", "\n", "```"
 	const descStr, confStr = "description", "defaultConfig"
+
 	for category, mapping := range plugin.Reg {
-		for name := range mapping {
-			p := plugin.Get(category, plugin.Config{plugin.NameField: name})
+		var keys []string
+		for k := range mapping {
+			keys = append(keys, k)
+		}
+		sort.Strings(keys)
+		for _, key := range keys {
+			p := plugin.Get(category, plugin.Config{plugin.NameField: key})
 			doc += topLevel + category.String() + LF
-			doc += SecondLevel + name + LF
+			doc += SecondLevel + key + LF
 			doc += thirdLevel + descStr + LF + codeQuote + p.Description() + codeQuote + LF
 			doc += thirdLevel + confStr + LF + codeQuote + p.DefaultConfig() + codeQuote + LF
 		}

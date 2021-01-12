@@ -1,42 +1,3 @@
-# api.Fallbacker
-## timer-fallbacker
-### description
-```this is a timer fallback trigger when forward fails.```
-### defaultConfig
-```
-max_times: 3
-latency_factor: 2000
-```
-# api.Forwarder
-## log-kafka-forwarder
-### description
-```this is a synchronization Kafka log forwarder.```
-### defaultConfig
-```
-# The remote topic. 
-topic: "log-topic"
-```
-# api.Queue
-## mmap-queue
-### description
-```this is a memory mapped queue to provide the persistent storage.```
-### defaultConfig
-```
-# The size of each segment. Default value is 128K. The unit is Byte.
-segment_size: 131072
-# The max num of segments in memory. Default value is 10.
-max_in_mem_segments: 10
-# The capacity of Queue = segment_size * queue_capacity_segments.
-queue_capacity_segments: 4000
-# The period flush time. The unit is ms. Default value is 1 second.
-flush_period: 1000
-# The max number in one flush time.  Default value is 10000.
-flush_ceiling_num: 10000
-# Contains all files in the queue.
-queue_dir: satellite-mmap-queue
-# The max size of the input event. Default value is 20k.
-max_event_size: 20480
-```
 # api.Server
 ## prometheus-server
 ### description
@@ -47,6 +8,15 @@ max_event_size: 20480
 address: ":9299"
 # The prometheus server metrics endpoint.
 endpoint: "/metrics"
+```
+# api.Fallbacker
+## timer-fallbacker
+### description
+```this is a timer fallback trigger when forward fails.```
+### defaultConfig
+```
+max_times: 3
+latency_factor: 2000
 ```
 # api.Client
 ## kafka-client
@@ -101,4 +71,34 @@ compression_codec: 0
 
 # InsecureSkipVerify controls whether a client verifies the server's certificate chain and host name.
 insecure_skip_verify: true
+```
+# api.Forwarder
+## log-kafka-forwarder
+### description
+```this is a synchronization Kafka log forwarder.```
+### defaultConfig
+```
+# The remote topic. 
+topic: "log-topic"
+```
+# api.Queue
+## mmap-queue
+### description
+```this is a memory mapped queue to provide the persistent storage.```
+### defaultConfig
+```
+# The size of each segment. Default value is 128K. The unit is Byte.
+segment_size: 131072
+# The max num of segments in memory. Default value is 10.
+max_in_mem_segments: 10
+# The capacity of Queue = segment_size * queue_capacity_segments.
+queue_capacity_segments: 4000
+# The period flush time. The unit is ms. Default value is 1 second.
+flush_period: 1000
+# The max number in one flush time.  Default value is 10000.
+flush_ceiling_num: 10000
+# Contains all files in the queue.
+queue_dir: satellite-mmap-queue
+# The max size of the input event. Default value is 20k.
+max_event_size: 20480
 ```
