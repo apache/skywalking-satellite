@@ -47,8 +47,8 @@ jobs:
       - name: Get dependencies
         run: make deps
 
-      - name: Check generate codes
-        run: make gen && make check
+      - name: Check generate
+        run: make gen && make build && make check
 
       - name: Lint
         run: make lint
