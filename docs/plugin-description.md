@@ -1,23 +1,3 @@
-# api.Server
-## prometheus-server
-### description
-```this is a prometheus server to export the metrics in Satellite.```
-### defaultConfig
-```
-# The prometheus server address.
-address: ":9299"
-# The prometheus server metrics endpoint.
-endpoint: "/metrics"
-```
-# api.Fallbacker
-## timer-fallbacker
-### description
-```this is a timer fallback trigger when forward fails.```
-### defaultConfig
-```
-max_times: 3
-latency_factor: 2000
-```
 # api.Client
 ## kafka-client
 ### description
@@ -72,6 +52,15 @@ compression_codec: 0
 # InsecureSkipVerify controls whether a client verifies the server's certificate chain and host name.
 insecure_skip_verify: true
 ```
+# api.Fallbacker
+## timer-fallbacker
+### description
+```this is a timer fallback trigger when forward fails.```
+### defaultConfig
+```
+max_times: 3
+latency_factor: 2000
+```
 # api.Forwarder
 ## log-kafka-forwarder
 ### description
@@ -101,4 +90,15 @@ flush_ceiling_num: 10000
 queue_dir: satellite-mmap-queue
 # The max size of the input event. Default value is 20k.
 max_event_size: 20480
+```
+# api.Server
+## prometheus-server
+### description
+```this is a prometheus server to export the metrics in Satellite.```
+### defaultConfig
+```
+# The prometheus server address.
+address: ":9299"
+# The prometheus server metrics endpoint.
+endpoint: "/metrics"
 ```

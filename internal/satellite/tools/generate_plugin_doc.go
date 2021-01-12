@@ -21,7 +21,9 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"reflect"
 	"sort"
+	"strings"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
@@ -40,7 +42,15 @@ func GeneratePluginDoc() error {
 	const topLevel, SecondLevel, thirdLevel, LF, codeQuote = "# ", "## ", "### ", "\n", "```"
 	const descStr, confStr = "description", "defaultConfig"
 
-	for category, mapping := range plugin.Reg {
+	var categories []reflect.Type
+	for c := range plugin.Reg {
+		categories = append(categories, c)
+	}
+	sort.Slice(categories, func(i, j int) bool {
+		return strings.Compare(categories[i].String(), categories[j].String()) <= 0
+	})
+	for _, category := range categories {
+		mapping := plugin.Reg[category]
 		var keys []string
 		for k := range mapping {
 			keys = append(keys, k)
@@ -54,7 +64,6 @@ func GeneratePluginDoc() error {
 			doc += thirdLevel + confStr + LF + codeQuote + p.DefaultConfig() + codeQuote + LF
 		}
 	}
-
 	if err := createDir(docDir); err != nil {
 		return fmt.Errorf("the docs dir contains error: %v", err)
 	}
