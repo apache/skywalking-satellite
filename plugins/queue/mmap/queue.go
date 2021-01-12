@@ -79,7 +79,7 @@ func (q *Queue) Name() string {
 }
 
 func (q *Queue) Description() string {
-	return "this is a mmap queue"
+	return "this is a memory mapped queue to provide the persistent storage."
 }
 
 func (q *Queue) DefaultConfig() string {

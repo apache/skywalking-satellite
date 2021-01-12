@@ -22,6 +22,7 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/satellite/boot"
 	"github.com/apache/skywalking-satellite/internal/satellite/config"
+	"github.com/apache/skywalking-satellite/internal/satellite/tools"
 )
 
 var (
@@ -37,15 +38,17 @@ var (
 			},
 		},
 		Action: func(c *cli.Context) error {
-
-			cfg := loadConfig(c)
+			configPath := c.String("config")
+			cfg := config.Load(configPath)
 			return boot.Start(cfg)
 		},
 	}
-)
 
-func loadConfig(c *cli.Context) *config.SatelliteConfig {
-	configPath := c.String("config")
-	cfg := config.Load(configPath)
-	return cfg
-}
+	cmdDocs = cli.Command{
+		Name:  "docs",
+		Usage: "generate satellite plugin docs",
+		Action: func(c *cli.Context) error {
+			return tools.GeneratePluginDoc()
+		},
+	}
+)
