@@ -86,7 +86,7 @@ build: deps linux darwin
 check:
 	$(MAKE) clean
 	$(GO) mod tidy &> /dev/null
-	/bin/sh ./bin/skywalking-satellite-latest-linux-amd64 docs
+	/bin/sh bin/skywalking-satellite-latest-linux-amd64 docs
 	@if [ ! -z "`git status -s |grep -v 'go.mod\|go.sum'`" ]; then \
 		echo "Following files are not consistent with CI:"; \
 		git status -s |grep -v 'go.mod\|go.sum'; \
