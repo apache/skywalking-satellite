@@ -36,6 +36,7 @@ func main() {
 	app.Description = "A lightweight collector/sidecar could be deployed closing to the target monitored system, to collect metrics, traces, and logs."
 	app.Commands = []*cli.Command{
 		&cmdStart,
+		&cmdDocs,
 	}
 	app.Action = cli.ShowAppHelp
 	_ = app.Run(os.Args)

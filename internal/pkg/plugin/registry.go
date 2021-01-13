@@ -30,16 +30,16 @@ import (
 
 // the global plugin registry
 var (
-	reg map[reflect.Type]map[string]reflect.Value
+	Reg map[reflect.Type]map[string]reflect.Value
 )
 
 func init() {
-	reg = make(map[reflect.Type]map[string]reflect.Value)
+	Reg = make(map[reflect.Type]map[string]reflect.Value)
 }
 
 // RegisterPluginCategory register the RegInfo to the global type registry.
 func RegisterPluginCategory(pluginType reflect.Type) {
-	reg[pluginType] = map[string]reflect.Value{}
+	Reg[pluginType] = map[string]reflect.Value{}
 }
 
 // RegisterPlugin registers the pluginType as plugin.
@@ -47,7 +47,7 @@ func RegisterPluginCategory(pluginType reflect.Type) {
 func RegisterPlugin(plugin Plugin) {
 	v := reflect.ValueOf(plugin)
 	success := false
-	for pCategory, pReg := range reg {
+	for pCategory, pReg := range Reg {
 		if v.Type().Implements(pCategory) {
 			pReg[plugin.Name()] = v
 			log.Logger.Infof("register %s %s successfully", plugin.Name(), v.Type().String())
@@ -62,7 +62,7 @@ func RegisterPlugin(plugin Plugin) {
 // Get an initialized specific plugin according to the pluginCategory and config.
 func Get(category reflect.Type, cfg Config) Plugin {
 	pluginName := nameFinder(cfg)
-	value, ok := reg[category][pluginName]
+	value, ok := Reg[category][pluginName]
 	if !ok {
 		panic(fmt.Errorf("cannot find %s plugin, and the category of plugin is %s", pluginName, category))
 	}

@@ -38,7 +38,7 @@ func (t *Fallbacker) Name() string {
 }
 
 func (t *Fallbacker) Description() string {
-	return "this is a timer trigger when forward fails."
+	return "this is a timer fallback trigger when forward fails."
 }
 
 func (t *Fallbacker) DefaultConfig() string {
