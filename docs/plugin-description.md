@@ -1,9 +1,9 @@
 # api.Client
 ## kafka-client
 ### description
-```this is a sharing client to delivery the data to Kafka.```
+this is a sharing client to delivery the data to Kafka.
 ### defaultConfig
-```
+```yaml
 # The Kafka broker addresses (default localhost:9092). Multiple values are separated by commas.
 brokers: localhost:9092
 
@@ -55,27 +55,27 @@ insecure_skip_verify: true
 # api.Fallbacker
 ## timer-fallbacker
 ### description
-```this is a timer fallback trigger when forward fails.```
+this is a timer fallback trigger when forward fails.
 ### defaultConfig
-```
+```yaml
 max_times: 3
 latency_factor: 2000
 ```
 # api.Forwarder
 ## log-kafka-forwarder
 ### description
-```this is a synchronization Kafka log forwarder.```
+this is a synchronization Kafka log forwarder.
 ### defaultConfig
-```
+```yaml
 # The remote topic. 
 topic: "log-topic"
 ```
 # api.Queue
 ## mmap-queue
 ### description
-```this is a memory mapped queue to provide the persistent storage.```
+this is a memory mapped queue to provide the persistent storage.
 ### defaultConfig
-```
+```yaml
 # The size of each segment. Default value is 128K. The unit is Byte.
 segment_size: 131072
 # The max num of segments in memory. Default value is 10.
@@ -94,9 +94,9 @@ max_event_size: 20480
 # api.Server
 ## prometheus-server
 ### description
-```this is a prometheus server to export the metrics in Satellite.```
+this is a prometheus server to export the metrics in Satellite.
 ### defaultConfig
-```
+```yaml
 # The prometheus server address.
 address: ":9299"
 # The prometheus server metrics endpoint.
