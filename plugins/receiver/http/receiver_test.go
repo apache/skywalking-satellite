@@ -23,13 +23,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"reflect"
+	common "skywalking/network/common/v3"
+	logging "skywalking/network/logging/v3"
 	"strconv"
 	"testing"
 	"time"
-
-	"github.com/google/go-cmp/cmp"
-	common "skywalking/network/common/v3"
-	logging "skywalking/network/logging/v3"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
@@ -37,6 +35,7 @@ import (
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 	httpserver "github.com/apache/skywalking-satellite/plugins/server/http"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+	"github.com/google/go-cmp/cmp"
 )
 
 func TestReceiver_http_RegisterHandler(t *testing.T) {
@@ -103,11 +102,6 @@ func initData(sequence int) *logging.LogData {
 		},
 		Body: &logging.LogDataBody{
 			Type: "mock-type" + seq,
-			//Content: &logging.LogDataBody_Text{
-			//	Text: &logging.TextLog{
-			//		Text: "this is a mock text mock log" + seq,
-			//	},
-			//},
 		},
 	}
 }
