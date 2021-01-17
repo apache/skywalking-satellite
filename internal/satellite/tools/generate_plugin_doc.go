@@ -31,15 +31,16 @@ import (
 )
 
 const (
-	docDir      = "docs"
-	docPath     = docDir + "/plugin-description.md"
-	topLevel    = "# "
-	SecondLevel = "## "
-	thirdLevel  = "### "
-	LF          = "\n"
-	codeQuote   = "```"
-	descStr     = "description"
-	confStr     = "defaultConfig"
+	docDir         = "docs"
+	docPath        = docDir + "/plugin-description.md"
+	topLevel       = "# "
+	SecondLevel    = "## "
+	thirdLevel     = "### "
+	LF             = "\n"
+	yamlQuoteStart = "```yaml"
+	yamlQuoteEnd   = "```"
+	descStr        = "description"
+	confStr        = "defaultConfig"
 )
 
 func GeneratePluginDoc() error {
@@ -66,8 +67,8 @@ func GeneratePluginDoc() error {
 			p := plugin.Get(category, plugin.Config{plugin.NameField: key})
 			doc += topLevel + category.String() + LF
 			doc += SecondLevel + key + LF
-			doc += thirdLevel + descStr + LF + codeQuote + p.Description() + codeQuote + LF
-			doc += thirdLevel + confStr + LF + codeQuote + p.DefaultConfig() + codeQuote + LF
+			doc += thirdLevel + descStr + LF + p.Description() + LF
+			doc += thirdLevel + confStr + LF + yamlQuoteStart + p.DefaultConfig() + yamlQuoteEnd + LF
 		}
 	}
 	if err := createDir(docDir); err != nil {
