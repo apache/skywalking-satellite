@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"time"
 
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	http_server "github.com/apache/skywalking-satellite/plugins/server/http"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
@@ -20,6 +21,7 @@ const (
 )
 
 type Receiver struct {
+	config.CommonFields
 	Server        *http_server.Server
 	OutputChannel chan *protocol.Event
 }
@@ -39,6 +41,7 @@ func (r *Receiver) DefaultConfig() string {
 
 func (r *Receiver) RegisterHandler(server interface{}) {
 	r.Server = server.(*http_server.Server)
+	r.OutputChannel = make(chan *protocol.Event)
 	r.Server.Server.Handle(r.Server.Uri, httpHandler(r))
 }
 
@@ -50,7 +53,7 @@ func httpHandler(r *Receiver) http.Handler {
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
-		var data *logging.LogData
+		var data logging.LogData
 		err = json.Unmarshal(b, &data)
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusInternalServerError)
@@ -63,10 +66,11 @@ func httpHandler(r *Receiver) http.Handler {
 			Type:      protocol.EventType_Logging,
 			Remote:    true,
 			Data: &protocol.Event_Log{
-				Log: data,
+				Log: &data,
 			},
 		}
 		r.OutputChannel <- e
+		return
 	})
 	return http.TimeoutHandler(h, timeout, fmt.Sprintf("Exceeded configured timeout of %v \n", timeout))
 }
