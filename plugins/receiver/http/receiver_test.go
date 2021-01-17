@@ -20,22 +20,25 @@ package http
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"reflect"
-	common "skywalking/network/common/v3"
-	logging "skywalking/network/logging/v3"
 	"strconv"
 	"testing"
 	"time"
-	"fmt"
+
+	common "skywalking/network/common/v3"
+	logging "skywalking/network/logging/v3"
+
+	"github.com/google/go-cmp/cmp"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 	httpserver "github.com/apache/skywalking-satellite/plugins/server/http"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
-	"github.com/google/go-cmp/cmp"
 )
 
 func TestReceiver_http_RegisterHandler(t *testing.T) {
