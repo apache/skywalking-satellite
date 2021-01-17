@@ -24,11 +24,12 @@ import (
 	"net/http"
 	"time"
 
+	logging "skywalking/network/logging/v3"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	http_server "github.com/apache/skywalking-satellite/plugins/server/http"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
-	logging "skywalking/network/logging/v3"
 )
 
 const (
