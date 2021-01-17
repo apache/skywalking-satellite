@@ -69,7 +69,6 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 				fmt.Printf("cannot request the http-server , error: %v", err)
 			}
 			defer resp.Body.Close()
-			t.Log(resp.StatusCode)
 			_, err = ioutil.ReadAll(resp.Body)
 			if err != nil {
 				fmt.Printf("cannot get response from request, error: %v ", err.Error())
