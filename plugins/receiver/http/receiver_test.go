@@ -29,6 +29,8 @@ import (
 	"testing"
 	"time"
 
+	"fmt"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
@@ -63,15 +65,14 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 		go func() {
 			resp, err := client.Post("http://localhost:8080/logging", "application/json", bytes.NewBuffer(dataBytes))
 			if err != nil {
-				t.Fatalf("cannot request the http-server , error: %v", err)
+				fmt.Printf("cannot request the http-server , error: %v", err)
 			}
 			defer resp.Body.Close()
 			t.Log(resp.StatusCode)
-			content, err := ioutil.ReadAll(resp.Body)
+			_, err = ioutil.ReadAll(resp.Body)
 			if err != nil {
-				t.Fatalf("cannot get response from request, error: %v ", err.Error())
+				fmt.Printf("cannot get response from request, error: %v ", err.Error())
 			}
-			t.Log(string(content))
 		}()
 
 		newData := <-r.Channel()

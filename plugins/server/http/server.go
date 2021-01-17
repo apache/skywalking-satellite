@@ -29,7 +29,7 @@ const Name = "http-server"
 type Server struct {
 	config.CommonFields
 	Address string `mapstructure:"address"`
-	Uri     string `mapstructure:"uri"`
+	URI     string `mapstructure:"uri"`
 
 	Server *http.ServeMux // The http server.
 }

@@ -60,7 +60,7 @@ func (r *Receiver) DefaultConfig() string {
 func (r *Receiver) RegisterHandler(server interface{}) {
 	r.Server = server.(*http_server.Server)
 	r.OutputChannel = make(chan *protocol.Event)
-	r.Server.Server.Handle(r.Server.Uri, httpHandler(r))
+	r.Server.Server.Handle(r.Server.URI, httpHandler(r))
 }
 
 func httpHandler(r *Receiver) http.Handler {
@@ -88,7 +88,6 @@ func httpHandler(r *Receiver) http.Handler {
 			},
 		}
 		r.OutputChannel <- e
-		return
 	})
 	return http.TimeoutHandler(h, timeout, fmt.Sprintf("Exceeded configured timeout of %v \n", timeout))
 }
