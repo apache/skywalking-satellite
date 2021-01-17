@@ -12,6 +12,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // LogReportServiceClient is the client API for LogReportService service.
@@ -33,7 +34,7 @@ func NewLogReportServiceClient(cc grpc.ClientConnInterface) LogReportServiceClie
 }
 
 func (c *logReportServiceClient) Collect(ctx context.Context, opts ...grpc.CallOption) (LogReportService_CollectClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_LogReportService_serviceDesc.Streams[0], "/skywalking.v3.LogReportService/collect", opts...)
+	stream, err := c.cc.NewStream(ctx, &LogReportService_ServiceDesc.Streams[0], "/skywalking.v3.LogReportService/collect", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -94,7 +95,7 @@ type UnsafeLogReportServiceServer interface {
 }
 
 func RegisterLogReportServiceServer(s grpc.ServiceRegistrar, srv LogReportServiceServer) {
-	s.RegisterService(&_LogReportService_serviceDesc, srv)
+	s.RegisterService(&LogReportService_ServiceDesc, srv)
 }
 
 func _LogReportService_Collect_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -123,7 +124,10 @@ func (x *logReportServiceCollectServer) Recv() (*LogData, error) {
 	return m, nil
 }
 
-var _LogReportService_serviceDesc = grpc.ServiceDesc{
+// LogReportService_ServiceDesc is the grpc.ServiceDesc for LogReportService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var LogReportService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "skywalking.v3.LogReportService",
 	HandlerType: (*LogReportServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},

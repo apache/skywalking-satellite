@@ -12,6 +12,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // BrowserPerfServiceClient is the client API for BrowserPerfService service.
@@ -42,7 +43,7 @@ func (c *browserPerfServiceClient) CollectPerfData(ctx context.Context, in *Brow
 }
 
 func (c *browserPerfServiceClient) CollectErrorLogs(ctx context.Context, opts ...grpc.CallOption) (BrowserPerfService_CollectErrorLogsClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_BrowserPerfService_serviceDesc.Streams[0], "/skywalking.v3.BrowserPerfService/collectErrorLogs", opts...)
+	stream, err := c.cc.NewStream(ctx, &BrowserPerfService_ServiceDesc.Streams[0], "/skywalking.v3.BrowserPerfService/collectErrorLogs", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -106,7 +107,7 @@ type UnsafeBrowserPerfServiceServer interface {
 }
 
 func RegisterBrowserPerfServiceServer(s grpc.ServiceRegistrar, srv BrowserPerfServiceServer) {
-	s.RegisterService(&_BrowserPerfService_serviceDesc, srv)
+	s.RegisterService(&BrowserPerfService_ServiceDesc, srv)
 }
 
 func _BrowserPerfService_CollectPerfData_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -153,7 +154,10 @@ func (x *browserPerfServiceCollectErrorLogsServer) Recv() (*BrowserErrorLog, err
 	return m, nil
 }
 
-var _BrowserPerfService_serviceDesc = grpc.ServiceDesc{
+// BrowserPerfService_ServiceDesc is the grpc.ServiceDesc for BrowserPerfService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var BrowserPerfService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "skywalking.v3.BrowserPerfService",
 	HandlerType: (*BrowserPerfServiceServer)(nil),
 	Methods: []grpc.MethodDesc{

@@ -11,6 +11,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // ServiceMeshMetricServiceClient is the client API for ServiceMeshMetricService service.
@@ -29,7 +30,7 @@ func NewServiceMeshMetricServiceClient(cc grpc.ClientConnInterface) ServiceMeshM
 }
 
 func (c *serviceMeshMetricServiceClient) Collect(ctx context.Context, opts ...grpc.CallOption) (ServiceMeshMetricService_CollectClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ServiceMeshMetricService_serviceDesc.Streams[0], "/skywalking.v3.ServiceMeshMetricService/collect", opts...)
+	stream, err := c.cc.NewStream(ctx, &ServiceMeshMetricService_ServiceDesc.Streams[0], "/skywalking.v3.ServiceMeshMetricService/collect", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -88,7 +89,7 @@ type UnsafeServiceMeshMetricServiceServer interface {
 }
 
 func RegisterServiceMeshMetricServiceServer(s grpc.ServiceRegistrar, srv ServiceMeshMetricServiceServer) {
-	s.RegisterService(&_ServiceMeshMetricService_serviceDesc, srv)
+	s.RegisterService(&ServiceMeshMetricService_ServiceDesc, srv)
 }
 
 func _ServiceMeshMetricService_Collect_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -117,7 +118,10 @@ func (x *serviceMeshMetricServiceCollectServer) Recv() (*ServiceMeshMetric, erro
 	return m, nil
 }
 
-var _ServiceMeshMetricService_serviceDesc = grpc.ServiceDesc{
+// ServiceMeshMetricService_ServiceDesc is the grpc.ServiceDesc for ServiceMeshMetricService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ServiceMeshMetricService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "skywalking.v3.ServiceMeshMetricService",
 	HandlerType: (*ServiceMeshMetricServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
