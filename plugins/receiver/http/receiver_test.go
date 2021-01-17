@@ -28,9 +28,7 @@ import (
 	"strconv"
 	"testing"
 	"time"
-
 	"fmt"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
