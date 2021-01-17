@@ -12,6 +12,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // MeterReportServiceClient is the client API for MeterReportService service.
@@ -31,7 +32,7 @@ func NewMeterReportServiceClient(cc grpc.ClientConnInterface) MeterReportService
 }
 
 func (c *meterReportServiceClient) Collect(ctx context.Context, opts ...grpc.CallOption) (MeterReportService_CollectClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_MeterReportService_serviceDesc.Streams[0], "/skywalking.v3.MeterReportService/collect", opts...)
+	stream, err := c.cc.NewStream(ctx, &MeterReportService_ServiceDesc.Streams[0], "/skywalking.v3.MeterReportService/collect", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -90,7 +91,7 @@ type UnsafeMeterReportServiceServer interface {
 }
 
 func RegisterMeterReportServiceServer(s grpc.ServiceRegistrar, srv MeterReportServiceServer) {
-	s.RegisterService(&_MeterReportService_serviceDesc, srv)
+	s.RegisterService(&MeterReportService_ServiceDesc, srv)
 }
 
 func _MeterReportService_Collect_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -119,7 +120,10 @@ func (x *meterReportServiceCollectServer) Recv() (*MeterData, error) {
 	return m, nil
 }
 
-var _MeterReportService_serviceDesc = grpc.ServiceDesc{
+// MeterReportService_ServiceDesc is the grpc.ServiceDesc for MeterReportService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var MeterReportService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "skywalking.v3.MeterReportService",
 	HandlerType: (*MeterReportServiceServer)(nil),
 	Methods:     []grpc.MethodDesc{},
