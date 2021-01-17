@@ -12,6 +12,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // ProfileTaskClient is the client API for ProfileTask service.
@@ -44,7 +45,7 @@ func (c *profileTaskClient) GetProfileTaskCommands(ctx context.Context, in *Prof
 }
 
 func (c *profileTaskClient) CollectSnapshot(ctx context.Context, opts ...grpc.CallOption) (ProfileTask_CollectSnapshotClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_ProfileTask_serviceDesc.Streams[0], "/skywalking.v3.ProfileTask/collectSnapshot", opts...)
+	stream, err := c.cc.NewStream(ctx, &ProfileTask_ServiceDesc.Streams[0], "/skywalking.v3.ProfileTask/collectSnapshot", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -122,7 +123,7 @@ type UnsafeProfileTaskServer interface {
 }
 
 func RegisterProfileTaskServer(s grpc.ServiceRegistrar, srv ProfileTaskServer) {
-	s.RegisterService(&_ProfileTask_serviceDesc, srv)
+	s.RegisterService(&ProfileTask_ServiceDesc, srv)
 }
 
 func _ProfileTask_GetProfileTaskCommands_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -187,7 +188,10 @@ func _ProfileTask_ReportTaskFinish_Handler(srv interface{}, ctx context.Context,
 	return interceptor(ctx, in, info, handler)
 }
 
-var _ProfileTask_serviceDesc = grpc.ServiceDesc{
+// ProfileTask_ServiceDesc is the grpc.ServiceDesc for ProfileTask service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var ProfileTask_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "skywalking.v3.ProfileTask",
 	HandlerType: (*ProfileTaskServer)(nil),
 	Methods: []grpc.MethodDesc{

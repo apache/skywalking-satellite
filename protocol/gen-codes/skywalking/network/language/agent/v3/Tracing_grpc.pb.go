@@ -12,6 +12,7 @@ import (
 
 // This is a compile-time assertion to ensure that this generated file
 // is compatible with the grpc package it is being compiled against.
+// Requires gRPC-Go v1.32.0 or later.
 const _ = grpc.SupportPackageIsVersion7
 
 // TraceSegmentReportServiceClient is the client API for TraceSegmentReportService service.
@@ -38,7 +39,7 @@ func NewTraceSegmentReportServiceClient(cc grpc.ClientConnInterface) TraceSegmen
 }
 
 func (c *traceSegmentReportServiceClient) Collect(ctx context.Context, opts ...grpc.CallOption) (TraceSegmentReportService_CollectClient, error) {
-	stream, err := c.cc.NewStream(ctx, &_TraceSegmentReportService_serviceDesc.Streams[0], "/skywalking.v3.TraceSegmentReportService/collect", opts...)
+	stream, err := c.cc.NewStream(ctx, &TraceSegmentReportService_ServiceDesc.Streams[0], "/skywalking.v3.TraceSegmentReportService/collect", opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -117,7 +118,7 @@ type UnsafeTraceSegmentReportServiceServer interface {
 }
 
 func RegisterTraceSegmentReportServiceServer(s grpc.ServiceRegistrar, srv TraceSegmentReportServiceServer) {
-	s.RegisterService(&_TraceSegmentReportService_serviceDesc, srv)
+	s.RegisterService(&TraceSegmentReportService_ServiceDesc, srv)
 }
 
 func _TraceSegmentReportService_Collect_Handler(srv interface{}, stream grpc.ServerStream) error {
@@ -164,7 +165,10 @@ func _TraceSegmentReportService_CollectInSync_Handler(srv interface{}, ctx conte
 	return interceptor(ctx, in, info, handler)
 }
 
-var _TraceSegmentReportService_serviceDesc = grpc.ServiceDesc{
+// TraceSegmentReportService_ServiceDesc is the grpc.ServiceDesc for TraceSegmentReportService service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var TraceSegmentReportService_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "skywalking.v3.TraceSegmentReportService",
 	HandlerType: (*TraceSegmentReportServiceServer)(nil),
 	Methods: []grpc.MethodDesc{
