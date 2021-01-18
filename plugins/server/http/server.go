@@ -28,10 +28,8 @@ const Name = "http-server"
 
 type Server struct {
 	config.CommonFields
-	Address string `mapstructure:"address"`
-	URI     string `mapstructure:"uri"`
-
-	Server *http.ServeMux // The http server.
+	Address string         `mapstructure:"address"`
+	Server  *http.ServeMux // The http server.
 }
 
 func (s *Server) Name() string {
@@ -46,8 +44,6 @@ func (s *Server) DefaultConfig() string {
 	return `
 # The http server address.
 address: ":8080"
-# The http server .
-uri: "/logging"
 `
 }
 

@@ -42,6 +42,7 @@ type Receiver struct {
 	config.CommonFields
 	Server        *http_server.Server
 	OutputChannel chan *protocol.Event
+	URI           string `mapstructure:"uri"`
 }
 
 func (r *Receiver) Name() string {
@@ -54,13 +55,17 @@ func (r *Receiver) Description() string {
 }
 
 func (r *Receiver) DefaultConfig() string {
-	return ""
+	return `
+# The http server uri .
+uri: "/logging"
+`
+
 }
 
 func (r *Receiver) RegisterHandler(server interface{}) {
 	r.Server = server.(*http_server.Server)
 	r.OutputChannel = make(chan *protocol.Event)
-	r.Server.Server.Handle(r.Server.URI, httpHandler(r))
+	r.Server.Server.Handle(r.URI, httpHandler(r))
 }
 
 func httpHandler(r *Receiver) http.Handler {
