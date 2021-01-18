@@ -59,7 +59,6 @@ func (r *Receiver) DefaultConfig() string {
 # The http server uri .
 uri: "/logging"
 `
-
 }
 
 func (r *Receiver) RegisterHandler(server interface{}) {
