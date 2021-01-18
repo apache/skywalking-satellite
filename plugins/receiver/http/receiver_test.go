@@ -19,7 +19,6 @@ package http
 
 import (
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -39,6 +38,7 @@ import (
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 	httpserver "github.com/apache/skywalking-satellite/plugins/server/http"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+	"github.com/golang/protobuf/proto"
 )
 
 func TestReceiver_http_RegisterHandler(t *testing.T) {
@@ -58,7 +58,7 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 	}()
 	for i := 0; i < 10; i++ {
 		data := initData(i)
-		dataBytes, err := json.Marshal(data)
+		dataBytes, err := proto.Marshal(data)
 		client := http.Client{Timeout: 5 * time.Second}
 		if err != nil {
 			t.Fatalf("cannot marshal the data: %v", err)
@@ -103,6 +103,11 @@ func initData(sequence int) *logging.LogData {
 		},
 		Body: &logging.LogDataBody{
 			Type: "mock-type" + seq,
+			Content: &logging.LogDataBody_Text{
+				Text: &logging.TextLog{
+					Text: "this is a mock text mock log" + seq,
+				},
+			},
 		},
 	}
 }

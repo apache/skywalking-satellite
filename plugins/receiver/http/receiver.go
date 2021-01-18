@@ -18,13 +18,14 @@
 package http
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
 
 	logging "skywalking/network/logging/v3"
+
+	"github.com/golang/protobuf/proto"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
@@ -76,7 +77,7 @@ func httpHandler(r *Receiver) http.Handler {
 			return
 		}
 		var data logging.LogData
-		err = json.Unmarshal(b, &data)
+		err = proto.Unmarshal(b, &data)
 		if err != nil {
 			http.Error(rsp, err.Error(), http.StatusInternalServerError)
 			return
