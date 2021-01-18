@@ -31,6 +31,7 @@ import (
 	logging "skywalking/network/logging/v3"
 
 	"github.com/google/go-cmp/cmp"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
@@ -38,7 +39,6 @@ import (
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 	httpserver "github.com/apache/skywalking-satellite/plugins/server/http"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
-	"github.com/golang/protobuf/proto"
 )
 
 func TestReceiver_http_RegisterHandler(t *testing.T) {
