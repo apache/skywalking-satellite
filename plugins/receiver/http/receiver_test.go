@@ -76,7 +76,7 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 				fmt.Printf("cannot get response from request, error: %v ", err.Error())
 			}
 			var response Response
-			json.Unmarshal(result, &response)
+			_ = json.Unmarshal(result, &response)
 			if !cmp.Equal(response.Status, Success) {
 				panic("the response should be success, but failing")
 			}

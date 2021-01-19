@@ -84,7 +84,7 @@ func httpHandler(r *Receiver) http.Handler {
 		if err != nil {
 			log.Logger.Errorf("get http body error: %v", err)
 			response := &Response{Status: Failing, Msg: err.Error()}
-			json.NewEncoder(rsp).Encode(response)
+			_ = json.NewEncoder(rsp).Encode(response)
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
@@ -92,7 +92,7 @@ func httpHandler(r *Receiver) http.Handler {
 		err = proto.Unmarshal(b, &data)
 		if err != nil {
 			response := &Response{Status: Failing, Msg: err.Error()}
-			json.NewEncoder(rsp).Encode(response)
+			_ = json.NewEncoder(rsp).Encode(response)
 			http.Error(rsp, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -108,8 +108,7 @@ func httpHandler(r *Receiver) http.Handler {
 		}
 		r.OutputChannel <- e
 		response := &Response{Status: Success, Msg: Success}
-		json.NewEncoder(rsp).Encode(response)
-		return
+		_ = json.NewEncoder(rsp).Encode(response)
 	})
 	return http.TimeoutHandler(h, timeout, fmt.Sprintf("Exceeded configured timeout of %v \n", timeout))
 }
