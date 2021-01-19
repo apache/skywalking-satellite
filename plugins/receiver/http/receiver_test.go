@@ -90,6 +90,43 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 	}
 }
 
+func TestReceiver_http_RegisterHandler_failed(t *testing.T) {
+	Init()
+	r := initReceiver(make(plugin.Config), t)
+	s := initServer(make(plugin.Config), t)
+	r.RegisterHandler(s.GetServer())
+	err := s.Start()
+	if err != nil {
+		t.Fatalf(err.Error())
+	}
+	time.Sleep(time.Second)
+	defer func() {
+		if err = s.Close(); err != nil {
+			t.Fatalf("cannot close the http sever: %v", err)
+		}
+	}()
+	data := initData(0)
+	dataBytes, err := json.Marshal(data)
+	client := http.Client{Timeout: 5 * time.Second}
+	if err != nil {
+		t.Fatalf("cannot marshal the data: %v", err)
+	}
+	resp, err := client.Post("http://localhost:8080/logging", "application/json", bytes.NewBuffer(dataBytes))
+	if err != nil {
+		fmt.Printf("cannot request the http-server , error: %v", err)
+	}
+	defer resp.Body.Close()
+	result, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Printf("cannot get response from request, error: %v ", err.Error())
+	}
+	var response Response
+	_ = json.Unmarshal(result, &response)
+	if !cmp.Equal(response.Status, Failing) {
+		panic("the response should be failing, but success")
+	}
+}
+
 func initData(sequence int) *logging.LogData {
 	seq := strconv.Itoa(sequence)
 	return &logging.LogData{

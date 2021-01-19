@@ -77,6 +77,11 @@ func (r *Receiver) RegisterHandler(server interface{}) {
 	r.Server.Server.Handle(r.URI, httpHandler(r))
 }
 
+func ResponseWithJSON(rsp http.ResponseWriter, response *Response, code int) {
+	rsp.WriteHeader(code)
+	_ = json.NewEncoder(rsp).Encode(response)
+}
+
 func httpHandler(r *Receiver) http.Handler {
 	h := http.HandlerFunc(func(rsp http.ResponseWriter, req *http.Request) {
 		rsp.Header().Set("Content-Type", "application/json")
@@ -84,16 +89,14 @@ func httpHandler(r *Receiver) http.Handler {
 		if err != nil {
 			log.Logger.Errorf("get http body error: %v", err)
 			response := &Response{Status: Failing, Msg: err.Error()}
-			_ = json.NewEncoder(rsp).Encode(response)
-			http.Error(rsp, err.Error(), http.StatusBadRequest)
+			ResponseWithJSON(rsp, response, http.StatusBadRequest)
 			return
 		}
 		var data logging.LogData
 		err = proto.Unmarshal(b, &data)
 		if err != nil {
 			response := &Response{Status: Failing, Msg: err.Error()}
-			_ = json.NewEncoder(rsp).Encode(response)
-			http.Error(rsp, err.Error(), http.StatusInternalServerError)
+			ResponseWithJSON(rsp, response, http.StatusInternalServerError)
 			return
 		}
 		e := &protocol.Event{
@@ -108,7 +111,7 @@ func httpHandler(r *Receiver) http.Handler {
 		}
 		r.OutputChannel <- e
 		response := &Response{Status: Success, Msg: Success}
-		_ = json.NewEncoder(rsp).Encode(response)
+		ResponseWithJSON(rsp, response, http.StatusOK)
 	})
 	return http.TimeoutHandler(h, timeout, fmt.Sprintf("Exceeded configured timeout of %v \n", timeout))
 }
