@@ -33,6 +33,8 @@ import (
 	"github.com/google/go-cmp/cmp"
 	"google.golang.org/protobuf/proto"
 
+	"encoding/json"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
@@ -69,9 +71,14 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 				fmt.Printf("cannot request the http-server , error: %v", err)
 			}
 			defer resp.Body.Close()
-			_, err = ioutil.ReadAll(resp.Body)
+			result, err := ioutil.ReadAll(resp.Body)
 			if err != nil {
 				fmt.Printf("cannot get response from request, error: %v ", err.Error())
+			}
+			var response Response
+			json.Unmarshal(result, &response)
+			if !cmp.Equal(response.Status, Success) {
+				panic("the response should be success, but failing")
 			}
 		}()
 

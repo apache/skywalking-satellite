@@ -27,6 +27,8 @@ import (
 
 	"google.golang.org/protobuf/proto"
 
+	"encoding/json"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	http_server "github.com/apache/skywalking-satellite/plugins/server/http"
@@ -37,6 +39,8 @@ const (
 	Name      = "http-log-receiver"
 	eventName = "http-log-event"
 	timeout   = 5 * time.Second
+	Success   = "success"
+	Failing   = "failing"
 )
 
 type Receiver struct {
@@ -44,6 +48,11 @@ type Receiver struct {
 	Server        *http_server.Server
 	OutputChannel chan *protocol.Event
 	URI           string `mapstructure:"uri"`
+}
+
+type Response struct {
+	Status string `json:"status"`
+	Msg    string `json:"msg"`
 }
 
 func (r *Receiver) Name() string {
@@ -70,15 +79,20 @@ func (r *Receiver) RegisterHandler(server interface{}) {
 
 func httpHandler(r *Receiver) http.Handler {
 	h := http.HandlerFunc(func(rsp http.ResponseWriter, req *http.Request) {
+		rsp.Header().Set("Content-Type", "application/json")
 		b, err := ioutil.ReadAll(req.Body)
 		if err != nil {
 			log.Logger.Errorf("get http body error: %v", err)
+			response := &Response{Status: Failing, Msg: err.Error()}
+			json.NewEncoder(rsp).Encode(response)
 			http.Error(rsp, err.Error(), http.StatusBadRequest)
 			return
 		}
 		var data logging.LogData
 		err = proto.Unmarshal(b, &data)
 		if err != nil {
+			response := &Response{Status: Failing, Msg: err.Error()}
+			json.NewEncoder(rsp).Encode(response)
 			http.Error(rsp, err.Error(), http.StatusInternalServerError)
 			return
 		}
@@ -93,6 +107,9 @@ func httpHandler(r *Receiver) http.Handler {
 			},
 		}
 		r.OutputChannel <- e
+		response := &Response{Status: Success, Msg: Success}
+		json.NewEncoder(rsp).Encode(response)
+		return
 	})
 	return http.TimeoutHandler(h, timeout, fmt.Sprintf("Exceeded configured timeout of %v \n", timeout))
 }
