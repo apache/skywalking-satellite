@@ -22,7 +22,7 @@ BINARY = skywalking-satellite
 RELEASE_BIN = skywalking-satellite-$(VERSION)-bin
 RELEASE_SRC = skywalking-satellite-$(VERSION)-src
 
-OS = $(shell uname)
+OSNAME := $(if $(findstring Darwin,$(shell uname)),darwin,linux)
 
 SH = sh
 GO = go
@@ -84,13 +84,12 @@ clean: tools
 build: deps linux darwin
 
 .PHONY: check
-check:
-	$(MAKE) clean
-	$(OUT_DIR)/skywalking-satellite-latest-linux-amd64 docs
-	$(GO) mod tidy &> /dev/null
-	@if [ ! -z "`git status -s |grep -v 'go.mod\|go.sum'`" ]; then \
+check: clean
+	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs
+	$(GO) mod tidy > /dev/null
+	@if [ ! -z "`git status -s`" ]; then \
 		echo "Following files are not consistent with CI:"; \
-		git status -s |grep -v 'go.mod\|go.sum'; \
+		git status -s; \
 		exit 1; \
 	fi
 
