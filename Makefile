@@ -22,7 +22,7 @@ BINARY = skywalking-satellite
 RELEASE_BIN = skywalking-satellite-$(VERSION)-bin
 RELEASE_SRC = skywalking-satellite-$(VERSION)-src
 
-OS = $(shell uname)
+OSNAME := $(if $(findstring Darwin,$(shell uname)),darwin,linux)
 
 SH = sh
 GO = go
@@ -34,7 +34,6 @@ GO_GET = $(GO) get
 GO_TEST = $(GO) test
 GO_LINT = $(GO_PATH)/bin/golangci-lint
 GO_LICENSER = $(GO_PATH)/bin/go-licenser
-GO_PACKR = $(GO_PATH)/bin/packr2
 GO_BUILD_FLAGS = -v
 GO_BUILD_LDFLAGS = -X main.version=$(VERSION)
 GQL_GEN = $(GO_PATH)/bin/gqlgen
@@ -49,7 +48,6 @@ all: clean license deps lint test build
 
 .PHONY: tools
 tools:
-	$(GO_PACKR) -v || $(GO_GET) -u github.com/gobuffalo/packr/v2/...
 	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.33.0
 	$(GO_LICENSER) -version || GO111MODULE=off $(GO_GET) -u github.com/elastic/go-licenser
 	$(PROTOC) --version || sh tools/install_protoc.sh
@@ -84,13 +82,13 @@ clean: tools
 build: deps linux darwin
 
 .PHONY: check
-check:
-	$(MAKE) clean
-	$(OUT_DIR)/skywalking-satellite-latest-linux-amd64 docs
-	$(GO) mod tidy &> /dev/null
-	@if [ ! -z "`git status -s |grep -v 'go.mod\|go.sum'`" ]; then \
+check: clean
+	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs
+	$(GO) mod tidy > /dev/null
+	@if [ ! -z "`git status -s`" ]; then \
 		echo "Following files are not consistent with CI:"; \
-		git status -s |grep -v 'go.mod\|go.sum'; \
+		git status -s; \
+		git diff; \
 		exit 1; \
 	fi
 
