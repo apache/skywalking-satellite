@@ -28,7 +28,6 @@ import (
 	"time"
 
 	"github.com/grandecola/mmap"
-
 	"google.golang.org/protobuf/proto"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
