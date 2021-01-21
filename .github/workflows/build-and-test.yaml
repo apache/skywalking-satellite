@@ -51,7 +51,7 @@ jobs:
         run: make gen && make build
 
       - name: Check CI Consistency
-        if: ${{ matrix.go-version }} == 1.15
+        if: matrix.go-version == '1.15'
         run: make check
 
       - name: Lint
