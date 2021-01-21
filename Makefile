@@ -88,6 +88,7 @@ check: clean
 	@if [ ! -z "`git status -s`" ]; then \
 		echo "Following files are not consistent with CI:"; \
 		git status -s; \
+		git diff; \
 		exit 1; \
 	fi
 
