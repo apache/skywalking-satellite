@@ -48,7 +48,11 @@ jobs:
         run: make deps
 
       - name: Check generate
-        run: make gen && make build && make check
+        run: make gen && make build
+
+      - name: Check CI Consistency
+        if: "${{ matrix.go-version }}" == "1.15"
+        run: make check
 
       - name: Lint
         run: make lint
