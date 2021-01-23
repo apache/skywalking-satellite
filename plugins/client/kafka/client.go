@@ -25,6 +25,7 @@ import (
 	"github.com/Shopify/sarama"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/plugins/client/api"
 )
 
@@ -111,7 +112,7 @@ client_id: Satellite
 compression_codec: 0
 
 # How frequently to refresh the cluster metadata in the background. Defaults to 10 minutes. The unit is minute.
-# refresh_period: 10
+refresh_period: 10
 
 # InsecureSkipVerify controls whether a client verifies the server's certificate chain and host name.
 insecure_skip_verify: true
@@ -123,6 +124,7 @@ func (c *Client) Prepare() error {
 	if err != nil {
 		return fmt.Errorf("cannot init the kafka producer: %v", err)
 	}
+	sarama.Logger = log.Logger
 	client, err := sarama.NewClient(strings.Split(c.Brokers, ","), cfg)
 	if err != nil {
 		return fmt.Errorf("cannot init the kafka client: %v", err)

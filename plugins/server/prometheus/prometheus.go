@@ -65,7 +65,7 @@ func (s *Server) Start() error {
 	telemetry.Registerer.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
 	telemetry.Registerer.MustRegister(prometheus.NewGoCollector())
 	// register prometheus metrics exporter handler.
-	s.server.Handle(s.Endpoint, promhttp.HandlerFor(telemetry.Gatherer, promhttp.HandlerOpts{}))
+	s.server.Handle(s.Endpoint, promhttp.HandlerFor(telemetry.Gatherer, promhttp.HandlerOpts{ErrorLog: log.Logger}))
 	go func() {
 		err := http.ListenAndServe(s.Address, s.server)
 		if err != nil {

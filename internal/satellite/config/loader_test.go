@@ -71,7 +71,7 @@ func params() *SatelliteConfig {
 			Level:       "info",
 		},
 		Telemetry: &telemetry.Config{
-			Cluster:  "namesspace",
+			Cluster:  "namespaces",
 			Service:  "service1",
 			Instance: "instance1",
 		},
@@ -81,15 +81,20 @@ func params() *SatelliteConfig {
 			},
 			Clients: []plugin.Config{
 				{
-					"plugin_name":            "grpc-client",
-					"k":                      "v",
+					"plugin_name":            "kafka-client",
+					"brokers":                "127.0.0.1:9092",
+					"version":                "2.1.1",
 					"commonfields_pipe_name": "sharing",
 				},
 			},
 			Servers: []plugin.Config{
 				{
 					"plugin_name":            "grpc-server",
-					"k":                      "v",
+					"commonfields_pipe_name": "sharing",
+				},
+				{
+					"plugin_name":            "prometheus-server",
+					"address":                ":8090",
 					"commonfields_pipe_name": "sharing",
 				},
 			},
@@ -106,26 +111,20 @@ func params() *SatelliteConfig {
 						PipeName: "namespace1",
 					},
 					ReceiverConfig: plugin.Config{
-						"plugin_name":            "segment-receiver",
-						"k":                      "v",
+						"plugin_name":            "grpc-nativelog-receiver",
 						"commonfields_pipe_name": "namespace1",
 					},
 					QueueConfig: plugin.Config{
 						"plugin_name":            "mmap-queue",
-						"key":                    "value",
+						"segment_size":           524288,
+						"max_in_mem_segments":    6,
+						"queue_dir":              "namespace1-log-grpc-receiver-queue",
 						"commonfields_pipe_name": "namespace1",
 					},
 				},
 				Processor: &processor.ProcessorConfig{
 					CommonFields: config.CommonFields{
 						PipeName: "namespace1",
-					},
-					FilterConfig: []plugin.Config{
-						{
-							"plugin_name":            "filtertype1",
-							"key":                    "value",
-							"commonfields_pipe_name": "namespace1",
-						},
 					},
 				},
 				Sender: &sender.SenderConfig{
@@ -136,14 +135,14 @@ func params() *SatelliteConfig {
 						"commonfields_pipe_name": "namespace1",
 						"plugin_name":            "none-fallbacker",
 					},
-					MaxBufferSize:  100,
-					MinFlushEvents: 30,
 					FlushTime:      1000,
-					ClientName:     "grpc-client",
+					MaxBufferSize:  200,
+					MinFlushEvents: 100,
+					ClientName:     "kafka-client",
 					ForwardersConfig: []plugin.Config{
 						{
-							"plugin_name":            "segment-forwarder",
-							"key":                    "value",
+							"plugin_name":            "nativelog-kafka-forwarder",
+							"topic":                  "log-topic",
 							"commonfields_pipe_name": "namespace1",
 						},
 					},

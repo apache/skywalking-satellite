@@ -22,7 +22,7 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/kafka/log"
+	"github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativelog"
 )
 
 // RegisterForwarderPlugins register the used filter plugins.
@@ -30,7 +30,7 @@ func RegisterForwarderPlugins() {
 	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Forwarder)(nil)).Elem())
 	forwarders := []api.Forwarder{
 		// Please register the forwarder plugins at here.
-		new(log.Forwarder),
+		new(nativelog.Forwarder),
 	}
 	for _, forwarder := range forwarders {
 		plugin.RegisterPlugin(forwarder)

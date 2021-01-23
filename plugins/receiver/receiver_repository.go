@@ -22,6 +22,8 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins/receiver/api"
+	grpcnavtivelog "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativelog"
+	httpnavtivelog "github.com/apache/skywalking-satellite/plugins/receiver/http/nativcelog"
 )
 
 // RegisterReceiverPlugins register the used receiver plugins.
@@ -29,6 +31,8 @@ func RegisterReceiverPlugins() {
 	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Receiver)(nil)).Elem())
 	receivers := []api.Receiver{
 		// Please register the receiver plugins at here.
+		new(grpcnavtivelog.Receiver),
+		new(httpnavtivelog.Receiver),
 	}
 	for _, receiver := range receivers {
 		plugin.RegisterPlugin(receiver)

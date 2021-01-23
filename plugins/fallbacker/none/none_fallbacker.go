@@ -15,57 +15,32 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package http
+package none
 
 import (
-	"net/http"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
-const Name = "http-server"
+const Name = "none-fallbacker"
 
-type Server struct {
+type Fallbacker struct {
 	config.CommonFields
-	Address string         `mapstructure:"address"`
-	Server  *http.ServeMux // The http server.
 }
 
-func (s *Server) Name() string {
+func (f *Fallbacker) Name() string {
 	return Name
 }
 
-func (s *Server) Description() string {
-	return "this is a http server."
+func (f *Fallbacker) Description() string {
+	return "this is a nothing to do fallbacker."
 }
 
-func (s *Server) DefaultConfig() string {
-	return `
-# The http server address.
-address: ":8080"
-`
+func (f *Fallbacker) DefaultConfig() string {
+	return ""
 }
 
-func (s *Server) Prepare() error {
-	s.Server = http.NewServeMux()
-	return nil
-}
-
-func (s *Server) Start() error {
-	go func() {
-		err := http.ListenAndServe(s.Address, s.Server)
-		if err != nil {
-			log.Logger.Errorf("start http server error: %v", err)
-		}
-	}()
-	return nil
-}
-
-func (s *Server) Close() error {
-	return nil
-}
-
-func (s *Server) GetServer() interface{} {
-	return s
+func (f *Fallbacker) FallBack(batch event.BatchEvents, forward api.ForwardFunc) bool {
+	return true
 }

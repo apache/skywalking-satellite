@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package log
+package nativelog
 
 import (
 	"fmt"
@@ -31,7 +31,7 @@ import (
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
-const Name = "log-kafka-forwarder"
+const Name = "nativelog-kafka-forwarder"
 
 type Forwarder struct {
 	config.CommonFields
