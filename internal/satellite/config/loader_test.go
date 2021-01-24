@@ -71,7 +71,7 @@ func params() *SatelliteConfig {
 			Level:       "info",
 		},
 		Telemetry: &telemetry.Config{
-			Cluster:  "namespaces",
+			Cluster:  "cluster1",
 			Service:  "service1",
 			Instance: "instance1",
 		},
@@ -102,37 +102,37 @@ func params() *SatelliteConfig {
 		Pipes: []*PipeConfig{
 			{
 				PipeCommonConfig: config.CommonFields{
-					PipeName: "namespace1",
+					PipeName: "pipe1",
 				},
 
 				Gatherer: &gatherer.GathererConfig{
 					ServerName: "grpc-server",
 					CommonFields: config.CommonFields{
-						PipeName: "namespace1",
+						PipeName: "pipe1",
 					},
 					ReceiverConfig: plugin.Config{
 						"plugin_name":            "grpc-nativelog-receiver",
-						"commonfields_pipe_name": "namespace1",
+						"commonfields_pipe_name": "pipe1",
 					},
 					QueueConfig: plugin.Config{
 						"plugin_name":            "mmap-queue",
 						"segment_size":           524288,
 						"max_in_mem_segments":    6,
-						"queue_dir":              "namespace1-log-grpc-receiver-queue",
-						"commonfields_pipe_name": "namespace1",
+						"queue_dir":              "pipe1-log-grpc-receiver-queue",
+						"commonfields_pipe_name": "pipe1",
 					},
 				},
 				Processor: &processor.ProcessorConfig{
 					CommonFields: config.CommonFields{
-						PipeName: "namespace1",
+						PipeName: "pipe1",
 					},
 				},
 				Sender: &sender.SenderConfig{
 					CommonFields: config.CommonFields{
-						PipeName: "namespace1",
+						PipeName: "pipe1",
 					},
 					FallbackerConfig: plugin.Config{
-						"commonfields_pipe_name": "namespace1",
+						"commonfields_pipe_name": "pipe1",
 						"plugin_name":            "none-fallbacker",
 					},
 					FlushTime:      1000,
@@ -143,7 +143,7 @@ func params() *SatelliteConfig {
 						{
 							"plugin_name":            "nativelog-kafka-forwarder",
 							"topic":                  "log-topic",
-							"commonfields_pipe_name": "namespace1",
+							"commonfields_pipe_name": "pipe1",
 						},
 					},
 				},
