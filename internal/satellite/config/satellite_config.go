@@ -30,22 +30,22 @@ import (
 // SatelliteConfig is to initialize Satellite.
 type SatelliteConfig struct {
 	Logger    *log.LoggerConfig `mapstructure:"logger"`
-	Telemetry *telemetry.Config `mapstructure:"telemetry"`
-	Sharing   *SharingConfig    `mapstructure:"sharing"`
 	Pipes     []*PipeConfig     `mapstructure:"pipes"`
+	Sharing   *SharingConfig    `mapstructure:"sharing"`
+	Telemetry *telemetry.Config `mapstructure:"telemetry"`
 }
 
 // SharingConfig contains some plugins,which could be shared by every namespace. That is useful to reduce resources cost.
 type SharingConfig struct {
-	SharingCommonConfig config.CommonFields `mapstructure:"common_config"`
 	Clients             []plugin.Config     `mapstructure:"clients"`
 	Servers             []plugin.Config     `mapstructure:"servers"`
+	SharingCommonConfig config.CommonFields `mapstructure:"common_config"`
 }
 
 // PipeConfig initializes the different module in different namespace.
 type PipeConfig struct {
-	PipeCommonConfig config.CommonFields        `mapstructure:"common_config"`
 	Gatherer         *gatherer.GathererConfig   `mapstructure:"gatherer"`
+	PipeCommonConfig config.CommonFields        `mapstructure:"common_config"`
 	Processor        *processor.ProcessorConfig `mapstructure:"processor"`
 	Sender           *sender.SenderConfig       `mapstructure:"sender"`
 }
