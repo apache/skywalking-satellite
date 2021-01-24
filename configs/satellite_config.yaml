@@ -21,7 +21,7 @@ logger:
   level: "info"
 
 telemetry:
-  namespace: namespaces
+  cluster: cluster1
   service: service1
   instance: instance1
 
@@ -29,33 +29,34 @@ sharing:
   common_config:
     pipe_name: sharing
   clients:
-    - plugin_name: "grpc-client"
-      k: v
+    - plugin_name: "kafka-client"
+      brokers: 127.0.0.1:9092
+      version: 2.1.1
   servers:
     - plugin_name: "grpc-server"
-      k: v
+    - plugin_name: "prometheus-server"
+      address: ":8090"
 pipes:
   - common_config:
-      pipe_name: namespace1
+      pipe_name: pipe1
     gatherer:
       server_name: "grpc-server"
       receiver:
-        plugin_name: segment-receiver
-        k: v
+        plugin_name: "grpc-nativelog-receiver"
       queue:
-        plugin_name: mmap-queue
-        key: value
+        plugin_name: "mmap-queue"
+        segment_size: 524288
+        max_in_mem_segments: 6
+        queue_dir: "pipe1-log-grpc-receiver-queue"
     processor:
       filters:
-        - plugin_name: filtertype1
-          key: value
     sender:
       fallbacker:
         plugin_name: none-fallbacker
       flush_time: 1000
-      max_buffer_size: 100
-      min_flush_events: 30
-      client_name: grpc-client
+      max_buffer_size: 200
+      min_flush_events: 100
+      client_name: kafka-client
       forwarders:
-        - plugin_name: segment-forwarder
-          key: value
+        - plugin_name: nativelog-kafka-forwarder
+          topic: log-topic

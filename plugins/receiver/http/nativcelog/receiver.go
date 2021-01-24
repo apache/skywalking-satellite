@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package http
+package nativcelog
 
 import (
 	"fmt"
@@ -38,16 +38,18 @@ import (
 const (
 	Name      = "http-log-receiver"
 	eventName = "http-log-event"
-	timeout   = 5 * time.Second
-	Success   = "success"
-	Failing   = "failing"
+	success   = "success"
+	failing   = "failing"
 )
 
 type Receiver struct {
 	config.CommonFields
+	// config
+	URI     string `mapstructure:"uri"`
+	Timeout int    `mapstructure:"timeout"`
+	// components
 	Server        *http_server.Server
 	OutputChannel chan *protocol.Event
-	URI           string `mapstructure:"uri"`
 }
 
 type Response struct {
@@ -66,15 +68,17 @@ func (r *Receiver) Description() string {
 
 func (r *Receiver) DefaultConfig() string {
 	return `
-# The http server uri .
+# The native log request URI.
 uri: "/logging"
+# The request timeout seconds.
+timeout: 5
 `
 }
 
 func (r *Receiver) RegisterHandler(server interface{}) {
 	r.Server = server.(*http_server.Server)
 	r.OutputChannel = make(chan *protocol.Event)
-	r.Server.Server.Handle(r.URI, httpHandler(r))
+	r.Server.Server.Handle(r.URI, r.httpHandler())
 }
 
 func ResponseWithJSON(rsp http.ResponseWriter, response *Response, code int) {
@@ -82,20 +86,20 @@ func ResponseWithJSON(rsp http.ResponseWriter, response *Response, code int) {
 	_ = json.NewEncoder(rsp).Encode(response)
 }
 
-func httpHandler(r *Receiver) http.Handler {
+func (r *Receiver) httpHandler() http.Handler {
 	h := http.HandlerFunc(func(rsp http.ResponseWriter, req *http.Request) {
 		rsp.Header().Set("Content-Type", "application/json")
 		b, err := ioutil.ReadAll(req.Body)
 		if err != nil {
 			log.Logger.Errorf("get http body error: %v", err)
-			response := &Response{Status: Failing, Msg: err.Error()}
+			response := &Response{Status: failing, Msg: err.Error()}
 			ResponseWithJSON(rsp, response, http.StatusBadRequest)
 			return
 		}
 		var data logging.LogData
 		err = proto.Unmarshal(b, &data)
 		if err != nil {
-			response := &Response{Status: Failing, Msg: err.Error()}
+			response := &Response{Status: failing, Msg: err.Error()}
 			ResponseWithJSON(rsp, response, http.StatusInternalServerError)
 			return
 		}
@@ -110,10 +114,10 @@ func httpHandler(r *Receiver) http.Handler {
 			},
 		}
 		r.OutputChannel <- e
-		response := &Response{Status: Success, Msg: Success}
+		response := &Response{Status: success, Msg: success}
 		ResponseWithJSON(rsp, response, http.StatusOK)
 	})
-	return http.TimeoutHandler(h, timeout, fmt.Sprintf("Exceeded configured timeout of %v \n", timeout))
+	return http.TimeoutHandler(h, time.Duration(r.Timeout)*time.Second, fmt.Sprintf("Exceeded configured timeout of %d seconds", r.Timeout))
 }
 
 func (r *Receiver) Channel() <-chan *protocol.Event {

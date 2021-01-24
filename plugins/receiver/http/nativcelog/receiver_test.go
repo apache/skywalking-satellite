@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package http
+package nativcelog
 
 import (
 	"bytes"
@@ -77,7 +77,7 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 			}
 			var response Response
 			_ = json.Unmarshal(result, &response)
-			if !cmp.Equal(response.Status, Success) {
+			if !cmp.Equal(response.Status, success) {
 				panic("the response should be success, but failing")
 			}
 		}()
@@ -122,7 +122,7 @@ func TestReceiver_http_RegisterHandler_failed(t *testing.T) {
 	}
 	var response Response
 	_ = json.Unmarshal(result, &response)
-	if !cmp.Equal(response.Status, Failing) {
+	if !cmp.Equal(response.Status, failing) {
 		panic("the response should be failing, but success")
 	}
 }

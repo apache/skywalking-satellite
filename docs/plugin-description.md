@@ -47,11 +47,17 @@ client_id: Satellite
 compression_codec: 0
 
 # How frequently to refresh the cluster metadata in the background. Defaults to 10 minutes. The unit is minute.
-# refresh_period: 10
+refresh_period: 10
 
 # InsecureSkipVerify controls whether a client verifies the server's certificate chain and host name.
 insecure_skip_verify: true
 ```
+# api.Fallbacker
+## none-fallbacker
+### description
+this is a nothing to do fallbacker.
+### defaultConfig
+```yaml```
 # api.Fallbacker
 ## timer-fallbacker
 ### description
@@ -62,7 +68,7 @@ max_times: 3
 latency_factor: 2000
 ```
 # api.Forwarder
-## log-kafka-forwarder
+## nativelog-kafka-forwarder
 ### description
 this is a synchronization Kafka log forwarder.
 ### defaultConfig
@@ -90,6 +96,51 @@ flush_ceiling_num: 10000
 queue_dir: satellite-mmap-queue
 # The max size of the input event. Default value is 20k.
 max_event_size: 20480
+```
+# api.Receiver
+## grpc-nativelog-receiver
+### description
+This is a receiver for SkyWalking native logging format, which is defined at https://github.com/apache/skywalking-data-collect-protocol/blob/master/logging/Logging.proto.
+### defaultConfig
+```yaml```
+# api.Receiver
+## http-log-receiver
+### description
+This is a receiver for SkyWalking http logging format, which is defined at https://github.com/apache/skywalking-data-collect-protocol/blob/master/logging/Logging.proto.
+### defaultConfig
+```yaml
+# The native log request URI.
+uri: "/logging"
+# The request timeout seconds.
+timeout: 5
+```
+# api.Server
+## grpc-server
+### description
+this is a grpc server
+### defaultConfig
+```yaml
+# The address of grpc server. Default value is :8000
+address: :8000
+# The network of grpc. Default value is :tcp
+network: tcp
+# The max size of receiving log. Default value is 2M. The unit is Byte.
+max_recv_msg_size: 2097152
+# The max concurrent stream channels.
+max_concurrent_streams: 32
+# The TLS cert file path.
+tls_cert_file: 
+# The TLS key file path.
+tls_key_file: 
+```
+# api.Server
+## http-server
+### description
+this is a http server.
+### defaultConfig
+```yaml
+# The http server address.
+address: ":8080"
 ```
 # api.Server
 ## prometheus-server
