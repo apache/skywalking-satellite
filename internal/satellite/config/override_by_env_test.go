@@ -114,8 +114,7 @@ func Test_overrideString(t *testing.T) {
 	for _, tt := range tests {
 		if tt.args.env != "" {
 			envArr := strings.Split(tt.args.env, "=")
-			err := os.Setenv(envArr[0], envArr[1])
-			if err != nil {
+			if err := os.Setenv(envArr[0], envArr[1]); err != nil {
 				t.Fatalf("cannot set the env %s config: %v", tt.args.env, err)
 			}
 		}
@@ -123,7 +122,6 @@ func Test_overrideString(t *testing.T) {
 		if err != nil {
 			t.Fatalf("cannot generate the regular expression: %s", tt.args.regex)
 		}
-
 		t.Run(tt.name, func(t *testing.T) {
 			if got := overrideString(tt.args.s, regex); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("overrideString() = %v, want %v", got, tt.want)
@@ -190,7 +188,6 @@ func Test_overrideMapStringInterface(t *testing.T) {
 			if err != nil {
 				t.Fatalf("cannot set the env config{%s=%s}: %v", k, v, err)
 			}
-
 		}
 		t.Run(tt.name, func(t *testing.T) {
 			regex, _ := regexp.Compile(RegularExpression)

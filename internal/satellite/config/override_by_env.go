@@ -46,15 +46,15 @@ func overrideConfigByEnv(v *viper.Viper) error {
 func overrideMapStringInterface(cfg map[string]interface{}, regex *regexp.Regexp) map[string]interface{} {
 	res := make(map[string]interface{})
 	for key, val := range cfg {
-		switch val.(type) {
+		switch val := val.(type) {
 		case string:
-			res[key] = overrideString(val.(string), regex)
+			res[key] = overrideString(val, regex)
 		case []interface{}:
-			res[key] = overrideSlice(val.([]interface{}), regex)
+			res[key] = overrideSlice(val, regex)
 		case map[string]interface{}:
-			res[key] = overrideMapStringInterface(val.(map[string]interface{}), regex)
+			res[key] = overrideMapStringInterface(val, regex)
 		case map[interface{}]interface{}:
-			res[key] = overrideMapInterfaceInterface(val.(map[interface{}]interface{}), regex)
+			res[key] = overrideMapInterfaceInterface(val, regex)
 		default:
 			res[key] = val
 		}
@@ -65,11 +65,11 @@ func overrideMapStringInterface(cfg map[string]interface{}, regex *regexp.Regexp
 func overrideSlice(m []interface{}, regex *regexp.Regexp) []interface{} {
 	res := make([]interface{}, 0)
 	for _, val := range m {
-		switch val.(type) {
+		switch val := val.(type) {
 		case map[string]interface{}:
-			res = append(res, overrideMapStringInterface(val.(map[string]interface{}), regex))
+			res = append(res, overrideMapStringInterface(val, regex))
 		case map[interface{}]interface{}:
-			res = append(res, overrideMapInterfaceInterface(val.(map[interface{}]interface{}), regex))
+			res = append(res, overrideMapInterfaceInterface(val, regex))
 		}
 	}
 	return res
