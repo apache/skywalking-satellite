@@ -30,9 +30,9 @@ import (
 // SatelliteConfig is to initialize Satellite.
 type SatelliteConfig struct {
 	Logger    *log.LoggerConfig `mapstructure:"logger"`
-	Pipes     []*PipeConfig     `mapstructure:"pipes"`
-	Sharing   *SharingConfig    `mapstructure:"sharing"`
 	Telemetry *telemetry.Config `mapstructure:"telemetry"`
+	Sharing   *SharingConfig    `mapstructure:"sharing"`
+	Pipes     []*PipeConfig     `mapstructure:"pipes"`
 }
 
 // SharingConfig contains some plugins,which could be shared by every namespace. That is useful to reduce resources cost.
