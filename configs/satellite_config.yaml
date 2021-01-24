@@ -21,7 +21,7 @@ logger:
   level: "info"
 
 telemetry:
-  cluster: namespaces
+  cluster: cluster1
   service: service1
   instance: instance1
 
@@ -38,7 +38,7 @@ sharing:
       address: ":8090"
 pipes:
   - common_config:
-      pipe_name: namespace1
+      pipe_name: pipe1
     gatherer:
       server_name: "grpc-server"
       receiver:
@@ -47,7 +47,7 @@ pipes:
         plugin_name: "mmap-queue"
         segment_size: 524288
         max_in_mem_segments: 6
-        queue_dir: "namespace1-log-grpc-receiver-queue"
+        queue_dir: "pipe1-log-grpc-receiver-queue"
     processor:
       filters:
     sender:
