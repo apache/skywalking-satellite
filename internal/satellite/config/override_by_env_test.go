@@ -29,9 +29,8 @@ import (
 
 func Test_overrideString(t *testing.T) {
 	type args struct {
-		s     string
-		env   string
-		regex string
+		expression string
+		env        string
 	}
 	tests := []struct {
 		name string
@@ -41,89 +40,84 @@ func Test_overrideString(t *testing.T) {
 		{
 			name: "override_string",
 			args: args{
-				s:     "${TEST_OVERRIDE_STRING:test_str}",
-				env:   "TEST_OVERRIDE_STRING=test_override_string",
-				regex: RegularExpression,
+				expression: "${TEST_OVERRIDE_STRING:test_str}",
+				env:        "TEST_OVERRIDE_STRING=test_override_string",
 			},
 			want: "test_override_string",
 		},
 		{
 			name: "no_override_string",
 			args: args{
-				s:     "${TEST_NO_OVERRIDE_STRING:test_str}",
-				env:   "",
-				regex: RegularExpression,
+				expression: "${TEST_NO_OVERRIDE_STRING:test_str}",
 			},
 			want: "test_str",
 		},
 		{
 			name: "no_override_false",
 			args: args{
-				s:     "${TEST_NO_OVERRIDE_FALSE:false}",
-				env:   "",
-				regex: RegularExpression,
+				expression: "${TEST_NO_OVERRIDE_FALSE:false}",
 			},
 			want: false,
 		},
 		{
 			name: "no_override_true",
 			args: args{
-				s:     "${TEST_NO_OVERRIDE_TRUE:true}",
-				env:   "",
-				regex: RegularExpression,
+				expression: "${TEST_NO_OVERRIDE_TRUE:true}",
 			},
 			want: true,
 		},
 		{
 			name: "override_boolean",
 			args: args{
-				s:     "${TEST_OVERRIDE_BOOLEAN:true}",
-				env:   "TEST_OVERRIDE_BOOLEAN=false",
-				regex: RegularExpression,
+				expression: "${TEST_OVERRIDE_BOOLEAN:true}",
+				env:        "TEST_OVERRIDE_BOOLEAN=false",
 			},
 			want: false,
 		},
 		{
 			name: "no_override_int",
 			args: args{
-				s:     "${TEST_OVERRIDE_INT:10}",
-				env:   "",
-				regex: RegularExpression,
+				expression: "${TEST_OVERRIDE_INT:10}",
 			},
 			want: 10,
 		},
 		{
 			name: "override_int",
 			args: args{
-				s:     "${TEST_OVERRIDE_INT:10}",
-				env:   "TEST_OVERRIDE_INT=15",
-				regex: RegularExpression,
+				expression: "${TEST_OVERRIDE_INT:10}",
+				env:        "TEST_OVERRIDE_INT=15",
 			},
 			want: 15,
 		},
 		{
 			name: "override_float",
 			args: args{
-				s:     "${TEST_OVERRIDE_FLOAT:10.5}",
-				env:   "TEST_OVERRIDE_FLOAT=15.7",
-				regex: RegularExpression,
+				expression: "${TEST_OVERRIDE_FLOAT:10.5}",
+				env:        "TEST_OVERRIDE_FLOAT=15.7",
 			},
 			want: 15.7,
+		},
+		{
+			name: "no_override_force_string",
+			args: args{
+				expression: "${TEST_NO_OVERRIDE_FORCE_STRING:\"10.5\"}",
+			},
+			want: "10.5",
 		},
 	}
 	for _, tt := range tests {
 		if tt.args.env != "" {
 			envArr := strings.Split(tt.args.env, "=")
 			if err := os.Setenv(envArr[0], envArr[1]); err != nil {
-				t.Fatalf("cannot set the env %s config: %v", tt.args.env, err)
+				t.Fatalf("cannot set the env %s  config: %v", tt.args.env, err)
 			}
 		}
-		regex, err := regexp.Compile(tt.args.regex)
+		regex, err := regexp.Compile(RegularExpression)
 		if err != nil {
-			t.Fatalf("cannot generate the regular expression: %s", tt.args.regex)
+			t.Fatalf("cannot generate the regular expression: %s", RegularExpression)
 		}
 		t.Run(tt.name, func(t *testing.T) {
-			if got := overrideString(tt.args.s, regex); !reflect.DeepEqual(got, tt.want) {
+			if got := overrideString(tt.args.expression, regex); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("overrideString() = %v, want %v", got, tt.want)
 			}
 		})
