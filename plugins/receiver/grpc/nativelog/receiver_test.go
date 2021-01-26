@@ -86,10 +86,12 @@ func initData(sequence int) *logging.LogData {
 			TraceId:        "mock-traceId" + seq,
 			SpanId:         1,
 		},
-		Tags: []*common.KeyStringValuePair{
-			{
-				Key:   "mock-key" + seq,
-				Value: "mock-value" + seq,
+		Tags: &logging.LogTags{
+			Data: []*common.KeyStringValuePair{
+				{
+					Key:   "mock-key" + seq,
+					Value: "mock-value" + seq,
+				},
 			},
 		},
 		Body: &logging.LogDataBody{
