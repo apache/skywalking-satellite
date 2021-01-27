@@ -78,7 +78,7 @@ func getBatchEvents(count int) []*protocol.Event {
 					ServiceInstance: "mock-serviceInstance",
 					Timestamp:       time.Date(2020, 12, 20, 12, 12, 12, 0, time.UTC).Unix(),
 					Endpoint:        "mock-endpoint",
-					Tags:            make([]*v3.KeyStringValuePair, 0),
+					Tags:            &logging.LogTags{},
 					TraceContext: &logging.TraceContext{
 						TraceId:        "traceId",
 						TraceSegmentId: "trace-segmentId",
@@ -119,10 +119,12 @@ func getLargeEvent(n int) *protocol.Event {
 				ServiceInstance: "mock-serviceInstance",
 				Timestamp:       time.Date(2020, 12, 20, 12, 12, 12, 0, time.UTC).Unix(),
 				Endpoint:        "mock-endpoint",
-				Tags: []*v3.KeyStringValuePair{
-					{
-						Key:   "tags-key",
-						Value: "tags-val",
+				Tags: &logging.LogTags{
+					Data: []*v3.KeyStringValuePair{
+						{
+							Key:   "tags-key",
+							Value: "tags-val",
+						},
 					},
 				},
 				TraceContext: &logging.TraceContext{
