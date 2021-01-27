@@ -15,27 +15,31 @@
 # limitations under the License.
 #
 
+# The logger configuration.
 logger:
-  log_pattern: "%time [%level][%field] - %msg"
-  time_pattern: "2006-01-02 15:04:05.000"
-  level: "info"
+  log_pattern: ${SATELLITE_LOGGER_LOG_PATTERN:%time [%level][%field] - %msg}
+  time_pattern: ${SATELLITE_LOGGER_TIME_PATTERN:2006-01-02 15:04:05.000}
+  level: ${SATELLITE_LOGGER_LEVEL:info}
 
+# The Satellite self telemetry configuration.
 telemetry:
-  cluster: cluster1
-  service: service1
-  instance: instance1
+  cluster: ${SATELLITE_TELEMETRY_CLUSTER:default-cluster}
+  service: ${SATELLITE_TELEMETRY_SERVICE:default-service}
+  instance: ${SATELLITE_TELEMETRY_SERVICE:default-instance}
 
+# The sharing plugins referenced by the specific plugins in the different pipes.
 sharing:
   common_config:
     pipe_name: sharing
   clients:
     - plugin_name: "kafka-client"
-      brokers: 127.0.0.1:9092
-      version: 2.1.1
+      brokers: ${SATELLITE_KAFKA_CLIENT_BROKERS:127.0.0.1:9092}
+      version: ${SATELLITE_KAFKA_VERSION:"2.1.1"}
   servers:
     - plugin_name: "grpc-server"
     - plugin_name: "prometheus-server"
-      address: ":8090"
+      address: ${SATELLITE_PROMETHEUS_ADDRESS:":8090"}
+# The working pipes.
 pipes:
   - common_config:
       pipe_name: pipe1
@@ -45,18 +49,18 @@ pipes:
         plugin_name: "grpc-nativelog-receiver"
       queue:
         plugin_name: "mmap-queue"
-        segment_size: 524288
-        max_in_mem_segments: 6
+        segment_size: ${SATELLITE_MMAP_QUEUE_SIZE:524288}
+        max_in_mem_segments: ${SATELLITE_MMAP_QUEUE_MAX_IN_MEM_SEGMENTS:6}
         queue_dir: "pipe1-log-grpc-receiver-queue"
     processor:
       filters:
     sender:
       fallbacker:
         plugin_name: none-fallbacker
-      flush_time: 1000
-      max_buffer_size: 200
-      min_flush_events: 100
+      flush_time: ${SATELLITE_PIPE1_SENDER_FLUSH_TIME:1000}
+      max_buffer_size: ${SATELLITE_PIPE1_SENDER_MAX_BUFFER_SIZE:200}
+      min_flush_events: ${SATELLITE_PIPE1_SENDER_MIN_FLUSH_EVENTS:100}
       client_name: kafka-client
       forwarders:
         - plugin_name: nativelog-kafka-forwarder
-          topic: log-topic
+          topic: ${SATELLITE_NATIVELOG-TOPIC:log-topic}

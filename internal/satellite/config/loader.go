@@ -61,13 +61,13 @@ func load(configPath string) (*SatelliteConfig, error) {
 		return nil, err
 	}
 	v := viper.New()
-	v.AutomaticEnv()
-	v.SetEnvPrefix("satellite")
-	v.SetEnvKeyReplacer(strings.NewReplacer(".", "_"))
 	v.SetConfigType("yaml")
 	cfg := SatelliteConfig{}
 	if err := v.ReadConfig(bytes.NewReader(content)); err != nil {
 		return nil, err
+	}
+	if err := overrideConfigByEnv(v); err != nil {
+		return nil, fmt.Errorf("cannot override value by env config: %v", err)
 	}
 	if err := v.Unmarshal(&cfg); err != nil {
 		return nil, err
