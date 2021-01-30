@@ -77,7 +77,7 @@ func (q *Queue) Initialize() error {
 	return nil
 }
 
-func (q *Queue) Push(e *protocol.Event) error {
+func (q *Queue) Enqueue(e *protocol.Event) error {
 	if q.isFull() {
 		switch q.DiscardStrategy {
 		case discardLatest:
@@ -93,7 +93,7 @@ func (q *Queue) Push(e *protocol.Event) error {
 	return nil
 }
 
-func (q *Queue) Pop() (*api.SequenceEvent, error) {
+func (q *Queue) Dequeue() (*api.SequenceEvent, error) {
 	if q.isEmpty() {
 		return nil, api.ErrEmpty
 	}

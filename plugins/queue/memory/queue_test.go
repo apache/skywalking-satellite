@@ -47,7 +47,7 @@ func initMemoryQueue(cfg plugin.Config) (*Queue, error) {
 	return q.(*Queue), nil
 }
 
-func TestQueue_Push_Strategy(t *testing.T) {
+func TestQueue_Enqueue_Strategy(t *testing.T) {
 	const num = 5
 	tests := []struct {
 		name    string
@@ -78,18 +78,18 @@ func TestQueue_Push_Strategy(t *testing.T) {
 				t.Fatalf("cannot init the memory queue: %v", err)
 			}
 			for i := 0; i < num; i++ {
-				if err := q.Push(new(protocol.Event)); err != nil {
-					t.Fatalf("cannot push event to the queue: %v", err)
+				if err := q.Enqueue(new(protocol.Event)); err != nil {
+					t.Fatalf("cannot enqueue event to the queue: %v", err)
 				}
 			}
-			if err := q.Push(new(protocol.Event)); (err != nil) != tt.wantErr {
-				t.Errorf("Push() error = %v, wantErr %v", err, tt.wantErr)
+			if err := q.Enqueue(new(protocol.Event)); (err != nil) != tt.wantErr {
+				t.Errorf("Enqueue() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
 	}
 }
 
-func TestQueue_Push(t *testing.T) {
+func TestQueue_Enqueue(t *testing.T) {
 	const num = 10
 	q, err := initMemoryQueue(map[string]interface{}{
 		"event_buffer_size": num,
@@ -100,21 +100,21 @@ func TestQueue_Push(t *testing.T) {
 	}
 
 	for i := 0; i < num; i++ {
-		if err := q.Push(new(protocol.Event)); err != nil {
-			t.Fatalf("the push want seuccess but failure: %v", err)
+		if err := q.Enqueue(new(protocol.Event)); err != nil {
+			t.Fatalf("the enqueue want seuccess but failure: %v", err)
 		}
 	}
-	if err := q.Push(new(protocol.Event)); err == nil {
-		t.Fatalf("the push want failure but success")
+	if err := q.Enqueue(new(protocol.Event)); err == nil {
+		t.Fatalf("the enqueue want failure but success")
 	}
 	for i := 0; i < num; i++ {
-		if e, err := q.Pop(); err != nil {
-			t.Fatalf("the pop want seuccess but failure: %v", err)
+		if e, err := q.Dequeue(); err != nil {
+			t.Fatalf("the dequeue want seuccess but failure: %v", err)
 		} else if e == nil {
-			t.Fatalf("the pop want a event but got nil")
+			t.Fatalf("the dequeue want a event but got nil")
 		}
 	}
-	if _, err := q.Pop(); err == nil {
-		t.Fatalf("the pop want error but success: %v", err)
+	if _, err := q.Dequeue(); err == nil {
+		t.Fatalf("the dequeue want error but success: %v", err)
 	}
 }

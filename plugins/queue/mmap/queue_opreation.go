@@ -38,9 +38,9 @@ import (
 
 const uInt64Size = 8
 
-// push writes the data into the file system. It first writes the length of the data,
+// enqueue writes the data into the file system. It first writes the length of the data,
 // then the data itself. It means the whole data may not exist in the one segments.
-func (q *Queue) push(bytes []byte) error {
+func (q *Queue) enqueue(bytes []byte) error {
 	if q.isFull() {
 		return api.ErrFull
 	}
@@ -62,9 +62,9 @@ func (q *Queue) push(bytes []byte) error {
 	return nil
 }
 
-// pop reads the data from the file system. It first reads the length of the data,
+// dequeue reads the data from the file system. It first reads the length of the data,
 // then the data itself. It means the whole data may not exist in the one segments.
-func (q *Queue) pop() (data []byte, rid, roffset int64, err error) {
+func (q *Queue) dequeue() (data []byte, rid, roffset int64, err error) {
 	if q.isEmpty() {
 		return nil, 0, 0, api.ErrEmpty
 	}

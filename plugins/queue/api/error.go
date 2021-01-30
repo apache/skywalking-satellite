@@ -21,5 +21,5 @@ import "errors"
 
 var (
 	ErrEmpty = errors.New("cannot read data when the queue is empty")
-	ErrFull  = errors.New("cannot push data when the queue is full")
+	ErrFull  = errors.New("cannot write data when the queue is full")
 )

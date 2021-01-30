@@ -32,11 +32,11 @@ type Queue interface {
 	// Initialize creates the queue.
 	Initialize() error
 
-	// Push a inputEvent into the queue.
-	Push(event *protocol.Event) error
+	// Enqueue a inputEvent into the queue.
+	Enqueue(event *protocol.Event) error
 
-	// Pop returns a SequenceEvent when Queue is not empty,
-	Pop() (*SequenceEvent, error)
+	// Dequeue returns a SequenceEvent when Queue is not empty,
+	Dequeue() (*SequenceEvent, error)
 
 	// Close would close the queue.
 	Close() error

@@ -155,16 +155,16 @@ func TestQueue_Normal(t *testing.T) {
 	}
 	events := getBatchEvents(10)
 	for _, e := range events {
-		if err = q.Push(e); err != nil {
-			t.Errorf("queue cannot push one event: %+v", err)
+		if err = q.Enqueue(e); err != nil {
+			t.Errorf("queue cannot enqueue one event: %+v", err)
 		}
 	}
 	for i := 0; i < 10; i++ {
-		sequenceEvent, err := q.Pop()
+		sequenceEvent, err := q.Dequeue()
 		if err != nil {
 			t.Errorf("error in fetching data from queue: %v", err)
 		} else if !cmp.Equal(events[i].String(), sequenceEvent.Event.String()) {
-			t.Errorf("history data and fetching data is not equal\n,history:%+v\n. pop data:%+v\n", events[i], sequenceEvent.Event)
+			t.Errorf("history data and fetching data is not equal\n,history:%+v\n. dequeue data:%+v\n", events[i], sequenceEvent.Event)
 		}
 	}
 }
@@ -199,8 +199,8 @@ func TestQueue_ReadHistory(t *testing.T) {
 		}
 		for j := 0; j < batchNum; j++ {
 			index := i*batchSize + j
-			if err = q.Push(events[index]); err != nil {
-				t.Errorf("queue cannot push one event: %+v", err)
+			if err = q.Enqueue(events[index]); err != nil {
+				t.Errorf("queue cannot enqueue one event: %+v", err)
 			}
 		}
 		if err := q.Close(); err != nil {
@@ -217,13 +217,13 @@ func TestQueue_ReadHistory(t *testing.T) {
 		}
 		for j := 0; j < batchNum; j++ {
 			index := i*batchSize + j
-			sequenceEvent, err := q.Pop()
+			sequenceEvent, err := q.Dequeue()
 			if err != nil {
 				t.Errorf("error in fetching data from queue: %v", err)
 			} else if cmp.Equal(events[index].String(), sequenceEvent.Event.String()) {
 				q.Ack(sequenceEvent.Offset)
 			} else {
-				t.Errorf("history data and fetching data is not equal\n,history:%+v\n. pop data:%+v\n", events[index], sequenceEvent.Event)
+				t.Errorf("history data and fetching data is not equal\n,history:%+v\n. dequeue data:%+v\n", events[index], sequenceEvent.Event)
 			}
 		}
 		if err := q.Close(); err != nil {
@@ -244,7 +244,7 @@ func TestQueue_PushOverCeilingMsg(t *testing.T) {
 		t.Fatalf("cannot get a mmap queue: %v", err)
 	}
 	defer cleanTestQueue(t, q)
-	err = q.Push(largeEvent)
+	err = q.Enqueue(largeEvent)
 	if err == nil {
 		t.Fatalf("The insertion of the over ceiling event is not as expected")
 	} else {
@@ -267,9 +267,9 @@ func TestQueue_FlushWhenReachNum(t *testing.T) {
 	events := getBatchEvents(5)
 
 	for _, e := range events {
-		err = q.Push(e)
+		err = q.Enqueue(e)
 		if err != nil {
-			t.Errorf("queue cannot push one event: %+v", err)
+			t.Errorf("queue cannot enqueue one event: %+v", err)
 		}
 	}
 	time.Sleep(time.Second)
@@ -295,9 +295,9 @@ func TestQueue_FlushPeriod(t *testing.T) {
 	events := getBatchEvents(5)
 
 	for _, e := range events {
-		err = q.Push(e)
+		err = q.Enqueue(e)
 		if err != nil {
-			t.Errorf("queue cannot push one event: %+v", err)
+			t.Errorf("queue cannot enqueue one event: %+v", err)
 		}
 	}
 	time.Sleep(time.Second * 2)
@@ -322,10 +322,10 @@ func TestQueue_MemCost(t *testing.T) {
 	events := getBatchEvents(20)
 	var memcost []int32
 	for _, e := range events {
-		err = q.Push(e)
+		err = q.Enqueue(e)
 		memcost = append(memcost, q.mmapCount)
 		if err != nil {
-			t.Errorf("queue cannot push one event: %+v", err)
+			t.Errorf("queue cannot enqueue one event: %+v", err)
 		}
 	}
 	want := []int32{
@@ -349,9 +349,9 @@ func TestQueue_OverSegmentEvent(t *testing.T) {
 	size := 10
 	wantPos := size * 1024 / q.SegmentSize
 	largeEvent := getLargeEvent(size)
-	err = q.Push(largeEvent)
+	err = q.Enqueue(largeEvent)
 	if err != nil {
-		t.Errorf("queue cannot push one event: %+v", err)
+		t.Errorf("queue cannot enqueue one event: %+v", err)
 	}
 	id, _ := q.meta.GetWritingOffset()
 	if int(id) != wantPos {
@@ -373,11 +373,11 @@ func TestQueue_ReusingFiles(t *testing.T) {
 	defer cleanTestQueue(t, q)
 
 	for i := 0; i < 100; i++ {
-		err = q.Push(getLargeEvent(2))
+		err = q.Enqueue(getLargeEvent(2))
 		if err != nil {
-			t.Errorf("queue cannot push one event: %+v", err)
+			t.Errorf("queue cannot enqueue one event: %+v", err)
 		}
-		_, err := q.Pop()
+		_, err := q.Dequeue()
 		if err != nil {
 			t.Errorf("error in fetching data from queue: %v", err)
 		}
@@ -402,17 +402,17 @@ func TestQueue_Empty(t *testing.T) {
 	}
 	defer cleanTestQueue(t, q)
 	for _, e := range getBatchEvents(3) {
-		err = q.Push(e)
+		err = q.Enqueue(e)
 		if err != nil {
-			t.Errorf("queue cannot push one event: %+v", err)
+			t.Errorf("queue cannot enqueue one event: %+v", err)
 		}
 	}
 	for i := 0; i < 3; i++ {
-		if _, err = q.Pop(); err != nil {
+		if _, err = q.Dequeue(); err != nil {
 			t.Errorf("error in fetching data from queue: %v", err)
 		}
 	}
-	_, err = q.Pop()
+	_, err = q.Dequeue()
 	if err != nil && err.Error() != "cannot read data when the queue is empty" {
 		t.Fatalf("not except err: %v", err)
 	}
@@ -430,13 +430,13 @@ func TestQueue_Full(t *testing.T) {
 	}
 	defer cleanTestQueue(t, q)
 	for _, e := range getBatchEvents(8) {
-		err = q.Push(e)
+		err = q.Enqueue(e)
 		if err != nil {
-			t.Errorf("queue cannot push one event: %+v", err)
+			t.Errorf("queue cannot enqueue one event: %+v", err)
 		}
 	}
-	err = q.Push(getLargeEvent(2))
-	if err != nil && err.Error() != "cannot push data when the queue is full" {
+	err = q.Enqueue(getLargeEvent(2))
+	if err != nil && err.Error() != "cannot write data when the queue is full" {
 		t.Fatalf("not except err: %v", err)
 	}
 }

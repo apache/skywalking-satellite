@@ -82,7 +82,7 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 			select {
 			case e := <-r.runningReceiver.Channel():
 				r.receiveCounter.WithLabelValues(r.config.PipeName, "all").Inc()
-				err := r.runningQueue.Push(e)
+				err := r.runningQueue.Enqueue(e)
 				if err != nil {
 					r.receiveCounter.WithLabelValues(r.config.PipeName, "abandoned").Inc()
 					log.Logger.Errorf("cannot put event into queue in %s namespace, error is: %v", r.config.PipeName, err)
@@ -105,7 +105,7 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 				r.Shutdown()
 				return
 			default:
-				if e, err := r.runningQueue.Pop(); err == nil {
+				if e, err := r.runningQueue.Dequeue(); err == nil {
 					r.outputChannel <- e
 					r.queueOutputCounter.WithLabelValues(r.config.PipeName, "success").Inc()
 				} else if err == queue.ErrEmpty {

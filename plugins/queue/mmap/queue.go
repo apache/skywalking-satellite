@@ -144,19 +144,19 @@ func (q *Queue) Initialize() error {
 	return nil
 }
 
-func (q *Queue) Push(e *protocol.Event) error {
+func (q *Queue) Enqueue(e *protocol.Event) error {
 	data, err := proto.Marshal(e)
 	if err != nil {
 		return err
 	}
 	if len(data) > q.MaxEventSize {
-		return fmt.Errorf("cannot push the event to the queue because the size %dB is over ceiling", len(data))
+		return fmt.Errorf("cannot enqueue the event to the queue because the size %dB is over ceiling", len(data))
 	}
-	return q.push(data)
+	return q.enqueue(data)
 }
 
-func (q *Queue) Pop() (*api.SequenceEvent, error) {
-	data, id, offset, err := q.pop()
+func (q *Queue) Dequeue() (*api.SequenceEvent, error) {
+	data, id, offset, err := q.dequeue()
 	if err != nil {
 		return nil, err
 	}

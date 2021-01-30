@@ -47,40 +47,40 @@ Memory:	16 GB
 System Firmware Version:	1554.60.15.0.0 (iBridge: 18.16.13030.0.0,0
 ```
 
-### push operation
+### enqueue operation
 
 ```
 goos: darwin
 goarch: amd64
 pkg: github.com/apache/skywalking-satellite/plugins/queue/mmap
-BenchmarkPush
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   45946	     28185 ns/op	    9884 B/op	       9 allocs/op
-BenchmarkPush/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
-BenchmarkPush/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   68137	     19142 ns/op	    9838 B/op	       9 allocs/op
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000-12         	   47361	     22318 ns/op	    9884 B/op	       9 allocs/op
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000-12        	   24478	     45501 ns/op	   18934 B/op	      10 allocs/op
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000
-BenchmarkPush/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000-12        	   45691	     29413 ns/op	    9884 B/op	       9 allocs/op
+BenchmarkEnqueue
+BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
+BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   45946	     28185 ns/op	    9884 B/op	       9 allocs/op
+BenchmarkEnqueue/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
+BenchmarkEnqueue/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   68137	     19142 ns/op	    9838 B/op	       9 allocs/op
+BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000
+BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000-12         	   47361	     22318 ns/op	    9884 B/op	       9 allocs/op
+BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000
+BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000-12        	   24478	     45501 ns/op	   18934 B/op	      10 allocs/op
+BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000
+BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000-12        	   45691	     29413 ns/op	    9884 B/op	       9 allocs/op
 PASS
 ```
-### push and pop operation
+### enqueue and dequeue operation
 ```
 goos: darwin
 goarch: amd64
 pkg: github.com/apache/skywalking-satellite/plugins/queue/mmap
-BenchmarkPushAndPop
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   30657	     34182 ns/op	   28725 B/op	      41 allocs/op
-BenchmarkPushAndPop/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
-BenchmarkPushAndPop/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   34617	     31619 ns/op	   28677 B/op	      41 allocs/op
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000-12         	   32440	     38439 ns/op	   28726 B/op	      41 allocs/op
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000-12        	   18554	     56840 ns/op	   54931 B/op	      42 allocs/op
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000
-BenchmarkPushAndPop/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000-12        	   27303	     40016 ns/op	   28725 B/op	      41 allocs/op
+BenchmarkEnqueueAndDequeue
+BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
+BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   30657	     34182 ns/op	   28725 B/op	      41 allocs/op
+BenchmarkEnqueueAndDequeue/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000
+BenchmarkEnqueueAndDequeue/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000-12         	   34617	     31619 ns/op	   28677 B/op	      41 allocs/op
+BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000
+BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:20_message:8KB_queueCapacity:10000-12         	   32440	     38439 ns/op	   28726 B/op	      41 allocs/op
+BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000
+BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000-12        	   18554	     56840 ns/op	   54931 B/op	      42 allocs/op
+BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000
+BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000-12        	   27303	     40016 ns/op	   28725 B/op	      41 allocs/op
 PASS
 ```
