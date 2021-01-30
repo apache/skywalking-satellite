@@ -77,6 +77,18 @@ this is a synchronization Kafka log forwarder.
 topic: "log-topic"
 ```
 # api.Queue
+## memory-queue
+### description
+this is a memory queue to buffer the input event.
+### defaultConfig
+```yaml
+# The maximum buffer event size.
+event_buffer_size: 5000
+# The discard strategy when facing the full condition.
+# There are 2 strategies, which are LOST_THE_OLDEST_ONE and LOST_THE_NEW_ONE. 
+discard_strategy: LOST_THE_OLDEST_ONE
+```
+# api.Queue
 ## mmap-queue
 ### description
 this is a memory mapped queue to provide the persistent storage.
