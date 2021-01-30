@@ -58,7 +58,7 @@ func TestQueue_Push_Strategy(t *testing.T) {
 			name: "test_lost_the_oldest_one_discard_strategy",
 			args: map[string]interface{}{
 				"event_buffer_size": num,
-				"discard_strategy":  "LOST_THE_OLDEST_ONE",
+				"discard_strategy":  discardOldest,
 			},
 			wantErr: false,
 		},
@@ -66,7 +66,7 @@ func TestQueue_Push_Strategy(t *testing.T) {
 			name: "test_lost_the_new_one_discard_strategy",
 			args: map[string]interface{}{
 				"event_buffer_size": num,
-				"discard_strategy":  "LOST_THE_NEW_ONE",
+				"discard_strategy":  discardLatest,
 			},
 			wantErr: true,
 		},
@@ -93,7 +93,7 @@ func TestQueue_Push(t *testing.T) {
 	const num = 10
 	q, err := initMemoryQueue(map[string]interface{}{
 		"event_buffer_size": num,
-		"discard_strategy":  "LOST_THE_NEW_ONE",
+		"discard_strategy":  discardLatest,
 	})
 	if err != nil {
 		t.Fatalf("cannot init the memory queue: %v", err)

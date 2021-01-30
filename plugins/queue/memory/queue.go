@@ -30,8 +30,8 @@ import (
 const (
 	Name = "memory-queue"
 	// discard strategy
-	lostOldestOne = "LOST_THE_OLDEST_ONE"
-	lostNewOne    = "LOST_THE_NEW_ONE"
+	discardOldest = "DISCARD_OLDEST"
+	discardLatest = "DISCARD_LATEST"
 )
 
 type Queue struct {
@@ -61,8 +61,8 @@ func (q *Queue) DefaultConfig() string {
 # The maximum buffer event size.
 event_buffer_size: 5000
 # The discard strategy when facing the full condition.
-# There are 2 strategies, which are LOST_THE_OLDEST_ONE and LOST_THE_NEW_ONE. 
-discard_strategy: LOST_THE_OLDEST_ONE
+# There are 2 strategies, which are DISCARD_OLDEST and DISCARD_LATEST. 
+discard_strategy: DISCARD_OLDEST
 `
 }
 
@@ -70,7 +70,7 @@ func (q *Queue) Initialize() error {
 	if q.EventBufferSize <= 0 {
 		return fmt.Errorf("the size of the memory queue must be positive")
 	}
-	if q.DiscardStrategy != lostOldestOne && q.DiscardStrategy != lostNewOne {
+	if q.DiscardStrategy != discardLatest && q.DiscardStrategy != discardOldest {
 		return fmt.Errorf("%s discard strategy is not supported in the memory queue", q.DiscardStrategy)
 	}
 	q.queue = make([]*protocol.Event, q.EventBufferSize)
@@ -80,9 +80,9 @@ func (q *Queue) Initialize() error {
 func (q *Queue) Push(e *protocol.Event) error {
 	if q.isFull() {
 		switch q.DiscardStrategy {
-		case lostNewOne:
+		case discardLatest:
 			return api.ErrFull
-		case lostOldestOne:
+		case discardOldest:
 			atomic.AddInt64(&q.readPos, 1)
 		}
 	} else {
