@@ -18,11 +18,11 @@
 package queue
 
 import (
-	"github.com/apache/skywalking-satellite/plugins/queue/memory"
 	"reflect"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
+	"github.com/apache/skywalking-satellite/plugins/queue/memory"
 	"github.com/apache/skywalking-satellite/plugins/queue/mmap"
 )
 

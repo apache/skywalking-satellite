@@ -77,7 +77,7 @@ func (q *Queue) Initialize() error {
 	return nil
 }
 
-func (q *Queue) Push(event *protocol.Event) error {
+func (q *Queue) Push(e *protocol.Event) error {
 	if q.isFull() {
 		switch q.DiscardStrategy {
 		case lostNewOne:
@@ -88,7 +88,7 @@ func (q *Queue) Push(event *protocol.Event) error {
 	} else {
 		atomic.AddInt64(&q.count, 1)
 	}
-	q.queue[q.writePos%q.count] = event
+	q.queue[q.writePos%q.count] = e
 	q.writePos++
 	return nil
 }
@@ -103,7 +103,6 @@ func (q *Queue) Pop() (*api.SequenceEvent, error) {
 	atomic.AddInt64(&q.readPos, 1)
 	atomic.AddInt64(&q.count, -1)
 	return e, nil
-
 }
 
 func (q *Queue) Close() error {
@@ -113,26 +112,10 @@ func (q *Queue) Close() error {
 func (q *Queue) Ack(_ event.Offset) {
 }
 
-func (q *Queue) addPos(pos int64) int64 {
-	if pos == q.EventBufferSize-1 {
-		return 0
-	}
-	return pos + 1
-}
-
 func (q *Queue) isEmpty() bool {
 	return q.count == 0
-
 }
 
 func (q *Queue) isFull() bool {
 	return q.count == q.EventBufferSize
-}
-
-func (q *Queue) cas(address *int64, addVal int64) {
-	for {
-		if atomic.CompareAndSwapInt64(address, *address, *address+addVal) {
-			return
-		}
-	}
 }
