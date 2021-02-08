@@ -106,7 +106,7 @@ func initData(sequence int) *logging.LogData {
 }
 
 func initClient(t *testing.T) logging.LogReportServiceClient {
-	conn, err := grpc.Dial("localhost:8000", grpc.WithInsecure(), grpc.WithBlock())
+	conn, err := grpc.Dial("localhost:11800", grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {
 		t.Fatalf("cannot init the grpc client: %v", err)
 	}

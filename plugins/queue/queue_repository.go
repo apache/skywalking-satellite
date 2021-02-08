@@ -22,6 +22,7 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
+	"github.com/apache/skywalking-satellite/plugins/queue/memory"
 	"github.com/apache/skywalking-satellite/plugins/queue/mmap"
 )
 
@@ -29,8 +30,9 @@ import (
 func RegisterQueuePlugins() {
 	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Queue)(nil)).Elem())
 	queues := []api.Queue{
-		&mmap.Queue{},
 		// Please register the queue plugins at here.
+		new(memory.Queue),
+		new(mmap.Queue),
 	}
 	for _, q := range queues {
 		plugin.RegisterPlugin(q)

@@ -75,7 +75,7 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 			case <-timeTicker.C:
 				events := f.runningFetcher.Fetch()
 				for _, e := range events {
-					err := f.runningQueue.Push(e)
+					err := f.runningQueue.Enqueue(e)
 					f.fetchCounter.WithLabelValues(f.config.PipeName, "all").Inc()
 					if err != nil {
 						f.fetchCounter.WithLabelValues(f.config.PipeName, "abandoned").Inc()
@@ -100,7 +100,7 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 				f.Shutdown()
 				return
 			default:
-				if e, err := f.runningQueue.Pop(); err == nil {
+				if e, err := f.runningQueue.Dequeue(); err == nil {
 					f.outputChannel <- e
 					f.queueOutputCounter.WithLabelValues(f.config.PipeName, "success").Inc()
 				} else if err == queue.ErrEmpty {

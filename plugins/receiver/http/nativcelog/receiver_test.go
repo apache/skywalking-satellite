@@ -66,7 +66,7 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 			t.Fatalf("cannot marshal the data: %v", err)
 		}
 		go func() {
-			resp, err := client.Post("http://localhost:8080/logging", "application/json", bytes.NewBuffer(dataBytes))
+			resp, err := client.Post("http://localhost:12800/logging", "application/json", bytes.NewBuffer(dataBytes))
 			if err != nil {
 				fmt.Printf("cannot request the http-server , error: %v", err)
 			}
@@ -111,7 +111,7 @@ func TestReceiver_http_RegisterHandler_failed(t *testing.T) {
 	if err != nil {
 		t.Fatalf("cannot marshal the data: %v", err)
 	}
-	resp, err := client.Post("http://localhost:8080/logging", "application/json", bytes.NewBuffer(dataBytes))
+	resp, err := client.Post("http://localhost:12800/logging", "application/json", bytes.NewBuffer(dataBytes))
 	if err != nil {
 		fmt.Printf("cannot request the http-server , error: %v", err)
 	}

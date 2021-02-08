@@ -77,6 +77,15 @@ this is a synchronization Kafka log forwarder.
 topic: "log-topic"
 ```
 # api.Queue
+## memory-queue
+### description
+this is a memory queue to buffer the input event.
+### defaultConfig
+```yaml
+# The maximum buffer event size.
+event_buffer_size: 5000
+```
+# api.Queue
 ## mmap-queue
 ### description
 this is a memory mapped queue to provide the persistent storage.
@@ -120,8 +129,8 @@ timeout: 5
 this is a grpc server
 ### defaultConfig
 ```yaml
-# The address of grpc server. Default value is :8000
-address: :8000
+# The address of grpc server. Default value is :11800
+address: :11800
 # The network of grpc. Default value is :tcp
 network: tcp
 # The max size of receiving log. Default value is 2M. The unit is Byte.
@@ -140,7 +149,7 @@ this is a http server.
 ### defaultConfig
 ```yaml
 # The http server address.
-address: ":8080"
+address: ":12800"
 ```
 # api.Server
 ## prometheus-server

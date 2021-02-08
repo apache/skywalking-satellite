@@ -240,5 +240,6 @@ The text of each license is also included at licenses/LICENSE-[project].txt.
 	grandecola (mmap) v0.6.0: https://github.com/grandecola/mmap MIT
     grandecola (bigqueue) v0.4.0: https://github.com/grandecola/bigqueue MIT
     Shopify (sarama) v1.27.2: https://github.com/Shopify/sarama  MIT
+    enriquebris (goconcurrentqueue) v0.6.0: https://github.com/enriquebris/goconcurrentqueue  MIT
 
 

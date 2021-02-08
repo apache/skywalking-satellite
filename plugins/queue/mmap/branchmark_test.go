@@ -50,13 +50,13 @@ func cleanBenchmarkQueue(b *testing.B, q api.Queue) {
 	}
 }
 
-func BenchmarkPush(b *testing.B) {
+func BenchmarkEnqueue(b *testing.B) {
 	for _, param := range params {
 		name := fmt.Sprintf("segmentSize: %dKB maxInMemSegments:%d message:%dKB queueCapacity:%d",
 			param.segmentSize/1024, param.maxInMemSegments, param.message, param.queueCapacity)
 		b.Run(name, func(b *testing.B) {
 			q, err := initMmapQueue(plugin.Config{
-				"queue_dir":               "BenchmarkPush",
+				"queue_dir":               "BenchmarkEnqueue",
 				"segment_size":            param.segmentSize,
 				"max_in_mem_segments":     param.maxInMemSegments,
 				"queue_capacity_segments": param.queueCapacity,
@@ -69,7 +69,7 @@ func BenchmarkPush(b *testing.B) {
 			b.ResetTimer()
 			println()
 			for i := 0; i < b.N; i++ {
-				if err := q.Push(event); err != nil {
+				if err := q.Enqueue(event); err != nil {
 					b.Fatalf("error in pushing: %v", err)
 				}
 			}
@@ -80,13 +80,13 @@ func BenchmarkPush(b *testing.B) {
 	}
 }
 
-func BenchmarkPushAndPop(b *testing.B) {
+func BenchmarkEnqueueAndDequeue(b *testing.B) {
 	for _, param := range params {
 		name := fmt.Sprintf("segmentSize: %dKB maxInMemSegments:%d message:%dKB queueCapacity:%d",
 			param.segmentSize/1024, param.maxInMemSegments, param.message, param.queueCapacity)
 		b.Run(name, func(b *testing.B) {
 			q, err := initMmapQueue(plugin.Config{
-				"queue_dir":               "BenchmarkPushAndPop",
+				"queue_dir":               "BenchmarkEnqueueAndDequeue",
 				"segment_size":            param.segmentSize,
 				"max_in_mem_segments":     param.maxInMemSegments,
 				"queue_capacity_segments": param.queueCapacity,
@@ -99,11 +99,11 @@ func BenchmarkPushAndPop(b *testing.B) {
 			b.ResetTimer()
 			println()
 			for i := 0; i < b.N; i++ {
-				if err := q.Push(event); err != nil {
-					b.Fatalf("error in pushing: %v", err)
+				if err := q.Enqueue(event); err != nil {
+					b.Fatalf("error in enqueue: %v", err)
 				}
-				if _, err := q.Pop(); err != nil {
-					b.Fatalf("error in pushing: %v", err)
+				if _, err := q.Dequeue(); err != nil {
+					b.Fatalf("error in enqueue: %v", err)
 				}
 			}
 			b.StopTimer()
