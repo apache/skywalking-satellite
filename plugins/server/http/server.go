@@ -43,7 +43,7 @@ func (s *Server) Description() string {
 func (s *Server) DefaultConfig() string {
 	return `
 # The http server address.
-address: ":8080"
+address: ":12800"
 `
 }
 

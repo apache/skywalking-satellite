@@ -20,6 +20,7 @@ package memory
 import (
 	"fmt"
 	"reflect"
+	"strconv"
 	"testing"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
@@ -47,74 +48,44 @@ func initMemoryQueue(cfg plugin.Config) (*Queue, error) {
 	return q.(*Queue), nil
 }
 
-func TestQueue_Enqueue_Strategy(t *testing.T) {
-	const num = 5
-	tests := []struct {
-		name    string
-		args    plugin.Config
-		wantErr bool
-	}{
-		{
-			name: "test_lost_the_oldest_one_discard_strategy",
-			args: map[string]interface{}{
-				"event_buffer_size": num,
-				"discard_strategy":  discardOldest,
-			},
-			wantErr: false,
-		},
-		{
-			name: "test_lost_the_new_one_discard_strategy",
-			args: map[string]interface{}{
-				"event_buffer_size": num,
-				"discard_strategy":  discardLatest,
-			},
-			wantErr: true,
-		},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			q, err := initMemoryQueue(tt.args)
-			if err != nil {
-				t.Fatalf("cannot init the memory queue: %v", err)
-			}
-			for i := 0; i < num; i++ {
-				if err := q.Enqueue(new(protocol.Event)); err != nil {
-					t.Fatalf("cannot enqueue event to the queue: %v", err)
-				}
-			}
-			if err := q.Enqueue(new(protocol.Event)); (err != nil) != tt.wantErr {
-				t.Errorf("Enqueue() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
-	}
-}
-
 func TestQueue_Enqueue(t *testing.T) {
-	const num = 10
+	const num = 100000
 	q, err := initMemoryQueue(map[string]interface{}{
 		"event_buffer_size": num,
-		"discard_strategy":  discardLatest,
 	})
 	if err != nil {
 		t.Fatalf("cannot init the memory queue: %v", err)
 	}
 
-	for i := 0; i < num; i++ {
-		if err := q.Enqueue(new(protocol.Event)); err != nil {
-			t.Fatalf("the enqueue want seuccess but failure: %v", err)
+	if _, err := q.Dequeue(); err == nil {
+		t.Fatal("the dequeue want failure but success")
+	}
+
+	// enqueue
+	for i := 0; i <= num; i++ {
+		e := &protocol.Event{
+			Name: strconv.Itoa(i),
+		}
+		if i < num {
+			if err := q.Enqueue(e); err != nil {
+				t.Fatalf("the enqueue want seuccess but failure: %v", err)
+			}
+		} else {
+			if err := q.Enqueue(e); err == nil {
+				t.Fatal("the enqueue want failure but success when facing full")
+			}
 		}
 	}
-	if err := q.Enqueue(new(protocol.Event)); err == nil {
-		t.Fatalf("the enqueue want failure but success")
-	}
+
+	// dequeue
 	for i := 0; i < num; i++ {
 		if e, err := q.Dequeue(); err != nil {
 			t.Fatalf("the dequeue want seuccess but failure: %v", err)
-		} else if e == nil {
-			t.Fatalf("the dequeue want a event but got nil")
+		} else if e.Event.Name != strconv.Itoa(i) {
+			t.Fatalf("want got %s, but got %s", strconv.Itoa(i), e.Event.Name)
 		}
 	}
 	if _, err := q.Dequeue(); err == nil {
-		t.Fatalf("the dequeue want error but success: %v", err)
+		t.Fatal("the dequeue want failure but success")
 	}
 }

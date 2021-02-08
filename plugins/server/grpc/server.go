@@ -52,8 +52,8 @@ func (s *Server) Description() string {
 
 func (s *Server) DefaultConfig() string {
 	return `
-# The address of grpc server. Default value is :8000
-address: :8000
+# The address of grpc server. Default value is :11800
+address: :11800
 # The network of grpc. Default value is :tcp
 network: tcp
 # The max size of receiving log. Default value is 2M. The unit is Byte.

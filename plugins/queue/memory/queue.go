@@ -18,10 +18,10 @@
 package memory
 
 import (
-	"fmt"
-	"sync/atomic"
+	"github.com/enriquebris/goconcurrentqueue"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
@@ -29,23 +29,15 @@ import (
 
 const (
 	Name = "memory-queue"
-	// discard strategy
-	discardOldest = "DISCARD_OLDEST"
-	discardLatest = "DISCARD_LATEST"
 )
 
 type Queue struct {
 	config.CommonFields
 	// config
-	EventBufferSize int64  `mapstructure:"event_buffer_size"` // The maximum buffer event size.
-	DiscardStrategy string `mapstructure:"discard_strategy"`  // The discard strategy.
+	EventBufferSize int `mapstructure:"event_buffer_size"` // The maximum buffer event size.
 
 	// components
-	queue []*protocol.Event
-	// The position continuously increasing, but don't worry, it can run for another 1067519911 days at 10W OPS.
-	readPos  int64
-	writePos int64
-	count    int64
+	buffer *goconcurrentqueue.FixedFIFO
 }
 
 func (q *Queue) Name() string {
@@ -60,49 +52,31 @@ func (q *Queue) DefaultConfig() string {
 	return `
 # The maximum buffer event size.
 event_buffer_size: 5000
-# The discard strategy when facing the full condition.
-# There are 2 strategies, which are DISCARD_OLDEST and DISCARD_LATEST. 
-discard_strategy: DISCARD_OLDEST
 `
 }
 
 func (q *Queue) Initialize() error {
-	if q.EventBufferSize <= 0 {
-		return fmt.Errorf("the size of the memory queue must be positive")
-	}
-	if q.DiscardStrategy != discardLatest && q.DiscardStrategy != discardOldest {
-		return fmt.Errorf("%s discard strategy is not supported in the memory queue", q.DiscardStrategy)
-	}
-	q.queue = make([]*protocol.Event, q.EventBufferSize)
+	q.buffer = goconcurrentqueue.NewFixedFIFO(q.EventBufferSize)
 	return nil
 }
 
 func (q *Queue) Enqueue(e *protocol.Event) error {
-	if q.isFull() {
-		switch q.DiscardStrategy {
-		case discardLatest:
-			return api.ErrFull
-		case discardOldest:
-			atomic.AddInt64(&q.readPos, 1)
-		}
-	} else {
-		atomic.AddInt64(&q.count, 1)
+	if err := q.buffer.Enqueue(e); err != nil {
+		log.Logger.Errorf("error in enqueue: %v", err)
+		return api.ErrFull
 	}
-	q.queue[q.writePos%q.count] = e
-	q.writePos++
 	return nil
 }
 
 func (q *Queue) Dequeue() (*api.SequenceEvent, error) {
-	if q.isEmpty() {
+	element, err := q.buffer.Dequeue()
+	if err != nil {
+		log.Logger.Errorf("error in dequeue: %v", err)
 		return nil, api.ErrEmpty
 	}
-	e := &api.SequenceEvent{
-		Event: q.queue[q.readPos],
-	}
-	atomic.AddInt64(&q.readPos, 1)
-	atomic.AddInt64(&q.count, -1)
-	return e, nil
+	return &api.SequenceEvent{
+		Event: element.(*protocol.Event),
+	}, nil
 }
 
 func (q *Queue) Close() error {
@@ -110,12 +84,4 @@ func (q *Queue) Close() error {
 }
 
 func (q *Queue) Ack(_ event.Offset) {
-}
-
-func (q *Queue) isEmpty() bool {
-	return q.count == 0
-}
-
-func (q *Queue) isFull() bool {
-	return q.count == q.EventBufferSize
 }
