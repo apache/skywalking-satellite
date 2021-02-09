@@ -20,7 +20,7 @@ If you want to try the latest features or run on the Windows, however, you can c
 
 # Compile
 As SkyWalking Satellite is using `Makefile`, compiling the project is as easy as executing a command in the root directory of the project.
-```makefile
+```shell script
 make build
 ```
 Due to system compatibility problems, some plugins of SkyWalking Satellite cannot be used in Windows system. If you need to compile SkyWalking Satellite on Windows platform, please read [the doc](docs/en/guides/compile/compile.md).
