@@ -1,6 +1,6 @@
 # How do we run Satellite on Windows?
 
-Windows is not good supported beacuse [some features](../guides/compile/compile.md) is not adaptive on the Windows. Let's take the mmap component as an example to talk how to solve the problem.
+Windows is not good supported because [some features](../guides/compile/compile.md) is not adaptive on the Windows. Let's take the mmap component as an example to talk how to solve the problem.
 
 1. Remove package dependency. Let's open the SkyWalking-Satellite/plugins/queue/queue_repository.go, and delete the pointer line.
 ```go
