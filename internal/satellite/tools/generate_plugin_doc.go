@@ -31,24 +31,30 @@ import (
 )
 
 const (
-	docDir         = "docs"
-	docName        = "plugin-description.md"
 	topLevel       = "# "
-	SecondLevel    = "## "
-	thirdLevel     = "### "
-	LF             = "\n"
+	secondLevel    = "## "
+	lf             = "\n"
 	yamlQuoteStart = "```yaml"
 	yamlQuoteEnd   = "```"
-	descStr        = "description"
-	confStr        = "defaultConfig"
+	markdownSuffix = ".md"
 )
 
 func GeneratePluginDoc(docDir string) error {
 	log.Init(&log.LoggerConfig{})
 	plugins.RegisterPlugins()
-	// the generated doc content
-	var doc string
-	// sort categories by dictionary sequence
+
+	if err := createDir(docDir); err != nil {
+		return fmt.Errorf("create docs dir error: %v", err)
+	}
+	if err := generatePluginListDoc(docDir, getSortedCategories()); err != nil {
+		return err
+	}
+	log.Logger.Info("Successfully generate documentation!")
+	return nil
+}
+
+// sort categories by dictionary sequence
+func getSortedCategories() []reflect.Type {
 	var categories []reflect.Type
 	for c := range plugin.Reg {
 		categories = append(categories, c)
@@ -56,35 +62,61 @@ func GeneratePluginDoc(docDir string) error {
 	sort.Slice(categories, func(i, j int) bool {
 		return strings.Compare(categories[i].String(), categories[j].String()) <= 0
 	})
+	return categories
+}
+
+func generatePluginListDoc(docDir string, categories []reflect.Type) error {
+	fileName := docDir + "/" + "plugin-list" + markdownSuffix
+	doc := topLevel + "Plugin List" + lf
 	for _, category := range categories {
-		mapping := plugin.Reg[category]
-		var keys []string
-		for k := range mapping {
-			keys = append(keys, k)
-		}
-		sort.Strings(keys)
-		for _, key := range keys {
-			p := plugin.Get(category, plugin.Config{plugin.NameField: key})
-			doc += topLevel + category.String() + LF
-			doc += SecondLevel + key + LF
-			doc += thirdLevel + descStr + LF + p.Description() + LF
-			doc += thirdLevel + confStr + LF + yamlQuoteStart + p.DefaultConfig() + yamlQuoteEnd + LF
+		doc += "- " + category.Name() + lf
+		pluginList := getPluginsByCategory(category)
+		for _, pluginName := range pluginList {
+			doc += "	- [" + pluginName + "](./" + getPluginDocFileName(category, pluginName) + ")" + lf
+			if err := generatePluginDoc(docDir, category, pluginName); err != nil {
+				return err
+			}
 		}
 	}
-	if err := createDir(docDir); err != nil {
-		return fmt.Errorf("create docs dir error: %v", err)
+	return writeDoc([]byte(doc), fileName)
+}
+
+func generatePluginDoc(docDir string, category reflect.Type, pluginName string) error {
+	docFileName := docDir + "/" + getPluginDocFileName(category, pluginName)
+	p := plugin.Get(category, plugin.Config{plugin.NameField: pluginName})
+	doc := topLevel + category.Name() + "/" + pluginName + lf
+	doc += secondLevel + "Description" + lf
+	doc += p.Description() + lf
+	doc += secondLevel + "DefaultConfig" + lf
+	doc += yamlQuoteStart + p.DefaultConfig() + yamlQuoteEnd + lf
+	return writeDoc([]byte(doc), docFileName)
+}
+
+func getPluginsByCategory(category reflect.Type) []string {
+	mapping := plugin.Reg[category]
+	var keys []string
+	for k := range mapping {
+		keys = append(keys, k)
 	}
-	if err := ioutil.WriteFile(docDir+"/"+docName, []byte(doc), os.ModePerm); err != nil {
+	sort.Strings(keys)
+	return keys
+}
+
+func getPluginDocFileName(category reflect.Type, pluginName string) string {
+	return strings.ToLower(category.Name() + "_" + pluginName + markdownSuffix)
+}
+
+func writeDoc(doc []byte, docFileName string) error {
+	if err := ioutil.WriteFile(docFileName, doc, os.ModePerm); err != nil {
 		return fmt.Errorf("cannot init the plugin doc: %v", err)
 	}
-	log.Logger.Info("Successfully generate documentation!")
 	return nil
 }
 
 func createDir(path string) error {
 	fileInfo, err := os.Stat(path)
 	if os.IsNotExist(err) || fileInfo.Size() == 0 {
-		return os.Mkdir(docDir, os.ModePerm)
+		return os.Mkdir(path, os.ModePerm)
 	}
 	return err
 }

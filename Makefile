@@ -44,7 +44,7 @@ ARCH = amd64
 
 SHELL = /bin/bash
 
-all: clean license deps lint test build
+all: clean license deps lint test build check
 
 .PHONY: tools
 tools:
@@ -83,7 +83,7 @@ build: deps linux darwin
 
 .PHONY: check
 check: clean
-	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=docs/en/plugins
+	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=docs/en/setup/plugins
 	$(GO) mod tidy > /dev/null
 	@if [ ! -z "`git status -s`" ]; then \
 		echo "Following files are not consistent with CI:"; \
@@ -91,6 +91,36 @@ check: clean
 		git diff; \
 		exit 1; \
 	fi
+
+release-src: clean
+	-tar -zcvf $(RELEASE_SRC).tgz \
+	--exclude bin \
+	--exclude .git \
+	--exclude .idea \
+	--exclude .DS_Store \
+	--exclude .github \
+	--exclude $(RELEASE_SRC).tgz \
+	--exclude protocol/skywalking-data-collect-protocol \
+	.
+
+release-bin: build
+	-mkdir $(RELEASE_BIN)
+	-cp -R bin $(RELEASE_BIN)
+	-cp -R dist/* $(RELEASE_BIN)
+	-cp -R CHANGES.md $(RELEASE_BIN)
+	-cp -R README.md $(RELEASE_BIN)
+	-tar -zcvf $(RELEASE_BIN).tgz $(RELEASE_BIN)
+	-rm -rf $(RELEASE_BIN)
+
+
+
+.PHONY: release
+release: verify release-src release-bin
+	gpg --batch --yes --armor --detach-sig $(RELEASE_SRC).tgz
+	shasum -a 512 $(RELEASE_SRC).tgz > $(RELEASE_SRC).tgz.sha512
+	gpg --batch --yes --armor --detach-sig $(RELEASE_BIN).tgz
+	shasum -a 512 $(RELEASE_BIN).tgz > $(RELEASE_BIN).tgz.sha512
+
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):

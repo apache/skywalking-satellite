@@ -13,7 +13,7 @@ There are some enhance features on the following when using Satellite.
 4. Provides the preprocessing functions to ensure accuracy of the metrics, such as sampling.
 
 ## Architecture
-SkyWalking Satellite is logically split into four parts: Gatherer, Processor, and Sender.
+SkyWalking Satellite is logically split into three parts: Gatherer, Processor, and Sender.
 
 <img src="https://skywalking.apache.org/blog/2020-11-25-skywalking-satellite-0.1.0-design/Satellite.png"/>
 
