@@ -32,7 +32,7 @@ import (
 
 const (
 	docDir         = "docs"
-	docPath        = docDir + "/plugin-description.md"
+	docName        = "plugin-description.md"
 	topLevel       = "# "
 	SecondLevel    = "## "
 	thirdLevel     = "### "
@@ -43,7 +43,7 @@ const (
 	confStr        = "defaultConfig"
 )
 
-func GeneratePluginDoc() error {
+func GeneratePluginDoc(docDir string) error {
 	log.Init(&log.LoggerConfig{})
 	plugins.RegisterPlugins()
 	// the generated doc content
@@ -74,7 +74,7 @@ func GeneratePluginDoc() error {
 	if err := createDir(docDir); err != nil {
 		return fmt.Errorf("create docs dir error: %v", err)
 	}
-	if err := ioutil.WriteFile(docPath, []byte(doc), os.ModePerm); err != nil {
+	if err := ioutil.WriteFile(docDir+"/"+docName, []byte(doc), os.ModePerm); err != nil {
 		return fmt.Errorf("cannot init the plugin doc: %v", err)
 	}
 	log.Logger.Info("Successfully generate documentation!")
