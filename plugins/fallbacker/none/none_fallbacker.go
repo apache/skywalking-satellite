@@ -34,7 +34,7 @@ func (f *Fallbacker) Name() string {
 }
 
 func (f *Fallbacker) Description() string {
-	return "this is a nothing to do fallbacker."
+	return "The fallbacker would nothing to do when facing failure data."
 }
 
 func (f *Fallbacker) DefaultConfig() string {

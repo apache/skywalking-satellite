@@ -1,6 +1,6 @@
 # Queue/memory-queue
 ## Description
-this is a memory queue to buffer the input event.
+This is a memory queue to buffer the input event.
 ## DefaultConfig
 ```yaml
 # The maximum buffer event size.

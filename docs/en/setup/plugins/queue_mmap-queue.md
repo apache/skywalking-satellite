@@ -1,6 +1,6 @@
 # Queue/mmap-queue
 ## Description
-this is a memory mapped queue to provide the persistent storage.
+This is a memory mapped queue to provide the persistent storage for the input event. Please note that this plugin does not support Windows platform.
 ## DefaultConfig
 ```yaml
 # The size of each segment. Default value is 128K. The unit is Byte.

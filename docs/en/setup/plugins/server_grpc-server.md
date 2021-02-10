@@ -1,6 +1,6 @@
 # Server/grpc-server
 ## Description
-this is a grpc server
+This is a sharing plugin, which would start a gRPC server.
 ## DefaultConfig
 ```yaml
 # The address of grpc server. Default value is :11800

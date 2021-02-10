@@ -1,6 +1,6 @@
 # Fallbacker/timer-fallbacker
 ## Description
-this is a timer fallback trigger when forward fails.
+This is a timer fallback trigger to process the forward failure data.
 ## DefaultConfig
 ```yaml
 max_times: 3

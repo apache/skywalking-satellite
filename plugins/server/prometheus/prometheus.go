@@ -43,7 +43,7 @@ func (s *Server) Name() string {
 }
 
 func (s *Server) Description() string {
-	return "this is a prometheus server to export the metrics in Satellite."
+	return "This is a prometheus server to export the metrics in Satellite."
 }
 
 func (s *Server) DefaultConfig() string {

@@ -1,6 +1,6 @@
 # Server/prometheus-server
 ## Description
-this is a prometheus server to export the metrics in Satellite.
+This is a prometheus server to export the metrics in Satellite.
 ## DefaultConfig
 ```yaml
 # The prometheus server address.

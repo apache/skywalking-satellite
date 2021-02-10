@@ -1,6 +1,6 @@
 # Client/kafka-client
 ## Description
-this is a sharing client to delivery the data to Kafka.
+The Kafka client is a sharing plugin to keep connection with the Kafka brokers and delivery the data to it.
 ## DefaultConfig
 ```yaml
 # The Kafka broker addresses (default localhost:9092). Multiple values are separated by commas.
