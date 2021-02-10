@@ -23,49 +23,86 @@ on:
       - main
 
 jobs:
-  build:
-    runs-on: ubuntu-18.04
+  CI:
+    runs-on: ubuntu-latest
     timeout-minutes: 90
     strategy:
       matrix:
-        go-version: [1.14, 1.15]
+        go-version: [ 1.14, 1.15 ]
       fail-fast: true
     steps:
       - name: Set up Go ${{ matrix.go-version }}
         uses: actions/setup-go@v2
         with:
           go-version: ${{ matrix.go-version }}
-
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
         with:
           submodules: true
-
       - name: Check License
         run: make license
-
       - name: Get dependencies
         run: make deps
-
       - name: Check generate
         run: make gen && make build
-
       - name: Check CI Consistency
         if: matrix.go-version == '1.15'
         run: make check
-
       - name: Lint
         run: make lint
-
       - name: Test
         run: make test
 
+  CI-Windows:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    strategy:
+      matrix:
+        go-version: [ 1.14, 1.15 ]
+      fail-fast: true
+    steps:
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Get dependencies
+        run: make deps
+      - name: Test
+        run: make test
+      - name: Build
+        run: make build
 
+  CI-MacOS:
+    runs-on: macos-latest
+    timeout-minutes: 90
+    strategy:
+      matrix:
+        go-version: [ 1.14, 1.15 ]
+      fail-fast: true
+    steps:
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Get dependencies
+        run: make deps
+      - name: Test
+        run: make test
+      - name: Build
+        run: make build
 
   result:
     runs-on: ubuntu-latest
     timeout-minutes: 90
-    needs: [build]
+    needs: [ CI ]
     steps:
       - name: Build Result
         run: echo "Just to make the GitHub merge button green"
