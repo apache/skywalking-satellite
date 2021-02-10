@@ -10,7 +10,6 @@ and also don't fit every scenario. So, we provide a lot of features for being pl
     - Use traditional deployment as a demon process to collect data.
     - Use cloud services as a sidecar, such as in the kubernetes platform.
 
-- **Interop**.   Observability is a big landscape, SkyWalking is impossible to support all, even by its community. So SkyWalking Satellite is compatible with many protocols, including: 
+- **Interop**.  Observability is a big landscape, SkyWalking is impossible to support all, even by its community. So SkyWalking Satellite is compatible with many protocols, including: 
     - SkyWalking protocol
     - (WIP) Prometheus protocol.
-
