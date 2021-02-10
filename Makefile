@@ -38,7 +38,7 @@ GO_BUILD_FLAGS = -v
 GO_BUILD_LDFLAGS = -X main.version=$(VERSION)
 GQL_GEN = $(GO_PATH)/bin/gqlgen
 
-PLATFORMS := linux darwin
+PLATFORMS := linux darwin windows
 os = $(word 1, $@)
 ARCH = amd64
 
@@ -79,7 +79,7 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: deps linux darwin
+build: deps linux darwin windows
 
 .PHONY: check
 check: clean
