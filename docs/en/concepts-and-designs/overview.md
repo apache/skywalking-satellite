@@ -18,5 +18,5 @@ SkyWalking Satellite is logically split into three parts: Gatherer, Processor, a
 <img src="https://skywalking.apache.org/blog/2020-11-25-skywalking-satellite-0.1.0-design/Satellite.png"/>
 
 - Gatherer collect data and reformat them for SkyWalking requirements.
-- Processor processes the input data to generate the new data for  Observability.
+- Processor processes the input data to generate the new data for Observability.
 - Sender would transfer the downstream data to the SkyWalking OAP with different protocols.
