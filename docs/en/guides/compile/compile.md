@@ -1,7 +1,7 @@
 # Compiling
 
 ## Platform
-Linux and MacOS are supported in SkyWalking Satellite. Windows is not due to following components. Please read [the doc](../../FAQ/running_on_windows.md).
+Linux and MacOS are supported in SkyWalking Satellite. Windows is not due to following components. 
 
 1. mmap-queue
 
