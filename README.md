@@ -27,7 +27,7 @@ git submodule init
 git submodule update
 make build
 ```
-Due to system compatibility problems, some plugins of SkyWalking Satellite cannot be used in Windows system. If you need to compile SkyWalking Satellite on Windows platform, please read [the doc](docs/en/guides/compile/compile.md).
+Due to system compatibility problems, some plugins of SkyWalking Satellite cannot be used in Windows system. Check the corresponding documentation to see whether the plugin is available on Windows.
 
 # Commands
 |  Commands| Flags   | Description  |
@@ -45,4 +45,3 @@ Due to system compatibility problems, some plugins of SkyWalking Satellite canno
 
 # License
 [Apache 2.0 License.](/LICENSE)
-
