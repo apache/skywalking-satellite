@@ -50,13 +50,13 @@ all: clean license deps lint test build check
 tools:
 	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.33.0
 	$(GO_LICENSER) -version || GO111MODULE=off $(GO_GET) -u github.com/elastic/go-licenser
-	$(PROTOC) --version || sh tools/install_protoc.sh
 
 deps: tools
 	$(GO_GET) -v -t -d ./...
 
 .PHONY: gen
 gen:
+	$(PROTOC) --version || sh tools/install_protoc.sh
 	/bin/sh tools/protocol_gen.sh
 
 .PHONY: lint

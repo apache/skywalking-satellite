@@ -23,6 +23,51 @@ on:
       - main
 
 jobs:
+  CI-Windows:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    strategy:
+      matrix:
+        go-version: [ 1.14, 1.15 ]
+      fail-fast: true
+    steps:
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
+      - name: Check out code into the Go module directory
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Get dependencies
+        run: make deps
+      - name: Test
+        run: make test
+      - name: Build
+        run: make build
+
+    CI-MacOS:
+      runs-on: macos-latest
+      timeout-minutes: 90
+      strategy:
+        matrix:
+          go-version: [ 1.14, 1.15 ]
+        fail-fast: true
+      steps:
+        - name: Set up Go ${{ matrix.go-version }}
+          uses: actions/setup-go@v2
+          with:
+            go-version: ${{ matrix.go-version }}
+        - name: Check out code into the Go module directory
+          uses: actions/checkout@v2
+          with:
+            submodules: true
+        - name: Get dependencies
+          run: make deps
+        - name: Test
+          run: make test
+        - name: Build
+          run: make build
   CI:
     runs-on: ubuntu-latest
     timeout-minutes: 90
@@ -52,52 +97,6 @@ jobs:
         run: make lint
       - name: Test
         run: make test
-
-  CI-Windows:
-    runs-on: windows-latest
-    timeout-minutes: 90
-    strategy:
-      matrix:
-        go-version: [ 1.14, 1.15 ]
-      fail-fast: true
-    steps:
-      - name: Set up Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go-version }}
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Get dependencies
-        run: make deps
-      - name: Test
-        run: make test
-      - name: Build
-        run: make build
-
-  CI-MacOS:
-    runs-on: macos-latest
-    timeout-minutes: 90
-    strategy:
-      matrix:
-        go-version: [ 1.14, 1.15 ]
-      fail-fast: true
-    steps:
-      - name: Set up Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go-version }}
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@v2
-        with:
-          submodules: true
-      - name: Get dependencies
-        run: make deps
-      - name: Test
-        run: make test
-      - name: Build
-        run: make build
 
   result:
     runs-on: ubuntu-latest
