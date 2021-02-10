@@ -79,7 +79,7 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: deps linux darwin
+build: deps linux darwin windows
 
 .PHONY: check
 check: clean

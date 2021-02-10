@@ -15,19 +15,16 @@
 // specific language governing permissions and limitations
 // under the License.
 
+// +build windows
+
 package queue
 
 import (
-	"reflect"
-
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
+	"github.com/apache/skywalking-satellite/plugins/queue/memory"
 )
 
-// RegisterQueuePlugins register the used queue plugins.
-func RegisterQueuePlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Queue)(nil)).Elem())
-	for _, q := range queues {
-		plugin.RegisterPlugin(q)
-	}
+var queues = []api.Queue{
+	// Please register the queue plugins available on Windows platform here.
+	new(memory.Queue),
 }
