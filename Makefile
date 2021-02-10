@@ -44,7 +44,7 @@ ARCH = amd64
 
 SHELL = /bin/bash
 
-all: clean license deps lint test build check
+all: deps verify build check
 
 .PHONY: tools
 tools:
@@ -64,7 +64,7 @@ lint: tools
 	$(GO_LINT) run -v ./...
 
 .PHONY: test
-test: clean lint
+test: clean
 	$(GO_TEST) ./... -coverprofile=coverage.txt -covermode=atomic
 
 .PHONY: license
