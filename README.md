@@ -21,9 +21,21 @@ If you want to try the latest features or run on the Windows, however, you can c
 # Compile
 As SkyWalking Satellite is using `Makefile`, compiling the project is as easy as executing a command in the root directory of the project.
 ```shell script
+git clone https://github.com/apache/skywalking-satellite
+cd skywalking-satellite
+git submodule init
+git submodule update
 make build
 ```
 Due to system compatibility problems, some plugins of SkyWalking Satellite cannot be used in Windows system. If you need to compile SkyWalking Satellite on Windows platform, please read [the doc](docs/en/guides/compile/compile.md).
+
+# Commands
+|  Commands| Flags   | Description  |
+|  ----  | ----  |----  |
+| start  | --config FILE | Start Satellite with the configuration FILE. (default: "configs/satellite_config.yaml" or read value from *SATELLITE_CONFIG* env).|
+| docs  | --output value | Generate Satellite plugin documentations to the output path. (default: "docs" or read value from *SATELLITE_DOC_PATH* env) |
+
+
 # Contact Us
 * Mail list: **dev@skywalking.apache.org**. Mail to `dev-subscribe@skywalking.apache.org`, follow the reply to subscribe the mail list.
 * Join `skywalking` channel at [Apache Slack](http://s.apache.org/slack-invite). If the link is not working, find the latest one at [Apache INFRA WIKI](https://cwiki.apache.org/confluence/display/INFRA/Slack+Guest+Invites).

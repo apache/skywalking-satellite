@@ -7,5 +7,9 @@ Linux and MacOS are supported in SkyWalking Satellite. Windows is not due to fol
 
 ## Command
 ```shell script
+git clone https://github.com/apache/skywalking-satellite
+cd skywalking-satellite
+git submodule init
+git submodule update
 make build
 ```

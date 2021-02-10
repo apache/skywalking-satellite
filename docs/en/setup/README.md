@@ -3,11 +3,7 @@ First and most important thing is, SkyWalking Satellite startup behaviours are d
 
 ## Startup script
 The startup script is /bin/skywalking-satellite-{version}-{plateform}-amd64. 
-1. Generate docs.
-```shell script
-./bin/skywalking-satellite-{version}-{plateform}-amd64 docs --output=./docs
-```
-2. Start SkyWalking Satellite.
+1. Start SkyWalking Satellite.
 ```shell script
 ./bin/skywalking-satellite-{version}-{plateform}-amd64 start --config=./configs/satellite_config.yaml
 ```
