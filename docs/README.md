@@ -1,7 +1,7 @@
 # Welcome
 **Here are SkyWalking Satellite official documentations. You're welcome to join us.**
 
-From here you can learn all about  **SkyWalking Satellite's** architecture, how to deploy and use SkyWalking Satellite.
+From here you can learn all about **SkyWalking Satellite's** architecture, how to deploy and use SkyWalking Satellite.
 
 - [Concepts and Designs](en/concepts-and-designs/README.md). You'll find the most important core ideas about SkyWalking Satellite. You can learn from here if you want to understand what is going on under our cool features.
 - [Set Up](en/setup/README.md). You'll find how to set up the SkyWalking Satellite.
@@ -17,4 +17,3 @@ From here you can learn all about  **SkyWalking Satellite's** architecture, how 
 We're always looking for help improving our documentation and codes, so please don’t hesitate to [file an issue](https://github.com/apache/skywalking/issues/new) 
 if you see any problem. 
 Or better yet, submit your own contributions through pull request to help make them better.
-
