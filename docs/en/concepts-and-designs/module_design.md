@@ -18,7 +18,8 @@ Each pipe has one pipeline to process the telemetry data(metrics/traces/logs). T
  ---------------------------------------------------------------------
 ```
 ## Modules
-There are 3 modules in one pipe, which are Gatherer, Processor, and Sender.
+Module is the core workers in Satellite. Module is constituted by the specific extension plugins.
+There are 3 modules in one namespace, which are Gatherer, Processor, and Sender.
 
 - The Gatherer module is responsible for fetching or receiving data and pushing the data to Queue. So there are 2 kinds of Gatherer, which are ReceiverGatherer and FetcherGatherer.
 - The Processor module is responsible for reading data from the queue and processing data by a series of filter chains.
@@ -32,6 +33,13 @@ There are 3 modules in one pipe, which are Gatherer, Processor, and Sender.
 |            ----------      -----------      --------               |
  --------------------------------------------------------------------
 ```
+
+LifeCycle
+
+- Prepare: Prepare phase is to do some preparation works, such as register the client status listener to the client in ReceiverGatherer.
+- Boot: Boot phase is to start the current module until receives a close signal.
+- ShutDown: ShutDown phase is to close the used resources.
+
 
 ## Plugins
 

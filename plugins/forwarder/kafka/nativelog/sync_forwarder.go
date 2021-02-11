@@ -44,7 +44,7 @@ func (f *Forwarder) Name() string {
 }
 
 func (f *Forwarder) Description() string {
-	return "this is a synchronization Kafka log forwarder."
+	return "This is a synchronization Kafka forwarder with the SkyWalking native log protocol."
 }
 
 func (f *Forwarder) DefaultConfig() string {

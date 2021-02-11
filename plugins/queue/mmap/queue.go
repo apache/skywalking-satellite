@@ -15,6 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
+// +build !windows
+
 package mmap
 
 import (
@@ -78,7 +80,8 @@ func (q *Queue) Name() string {
 }
 
 func (q *Queue) Description() string {
-	return "this is a memory mapped queue to provide the persistent storage."
+	return "This is a memory mapped queue to provide the persistent storage for the input event." +
+		" Please note that this plugin does not support Windows platform."
 }
 
 func (q *Queue) DefaultConfig() string {

@@ -37,7 +37,7 @@ func (s *Server) Name() string {
 }
 
 func (s *Server) Description() string {
-	return "this is a http server."
+	return "This is a sharing plugin, which would start a http server."
 }
 
 func (s *Server) DefaultConfig() string {

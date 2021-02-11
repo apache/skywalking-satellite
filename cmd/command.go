@@ -47,8 +47,17 @@ var (
 	cmdDocs = cli.Command{
 		Name:  "docs",
 		Usage: "generate satellite plugin docs",
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:    "output, o",
+				Usage:   "The output path for the plugin documentation",
+				EnvVars: []string{"SATELLITE_DOC_PATH"},
+				Value:   "docs",
+			},
+		},
 		Action: func(c *cli.Context) error {
-			return tools.GeneratePluginDoc()
+			outputPath := c.String("output")
+			return tools.GeneratePluginDoc(outputPath)
 		},
 	}
 )

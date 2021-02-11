@@ -45,7 +45,7 @@ func (q *Queue) Name() string {
 }
 
 func (q *Queue) Description() string {
-	return "this is a memory queue to buffer the input event."
+	return "This is a memory queue to buffer the input event."
 }
 
 func (q *Queue) DefaultConfig() string {

@@ -64,7 +64,7 @@ func (c *Client) Name() string {
 }
 
 func (c *Client) Description() string {
-	return "this is a sharing client to delivery the data to Kafka."
+	return "The Kafka client is a sharing plugin to keep connection with the Kafka brokers and delivery the data to it."
 }
 
 func (c *Client) DefaultConfig() string {

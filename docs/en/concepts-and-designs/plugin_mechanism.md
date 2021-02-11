@@ -28,7 +28,7 @@ Initialize processing is like the following.
 
 
 ## Plugin usage in Satellite
-Nowadays, the numbers of the Plugin categories is 2. One is the [sharing Plugin](module_design.md), and another is the other [normal Plugin](module_design.md).
+Nowadays, the numbers of the Plugin categories is 2. One is the sharing Plugin, and another is the other normal Plugin.
 
 - Extension Plugins: 
     - sharing plugins

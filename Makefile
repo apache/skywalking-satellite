@@ -44,19 +44,19 @@ ARCH = amd64
 
 SHELL = /bin/bash
 
-all: clean license deps lint test build
+all: deps verify build check
 
 .PHONY: tools
 tools:
 	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.33.0
 	$(GO_LICENSER) -version || GO111MODULE=off $(GO_GET) -u github.com/elastic/go-licenser
-	$(PROTOC) --version || sh tools/install_protoc.sh
 
 deps: tools
 	$(GO_GET) -v -t -d ./...
 
 .PHONY: gen
 gen:
+	$(PROTOC) --version || sh tools/install_protoc.sh
 	/bin/sh tools/protocol_gen.sh
 
 .PHONY: lint
@@ -64,7 +64,7 @@ lint: tools
 	$(GO_LINT) run -v ./...
 
 .PHONY: test
-test: clean lint
+test: clean
 	$(GO_TEST) ./... -coverprofile=coverage.txt -covermode=atomic
 
 .PHONY: license
@@ -83,7 +83,7 @@ build: deps linux darwin windows
 
 .PHONY: check
 check: clean
-	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs
+	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=docs/en/setup/plugins
 	$(GO) mod tidy > /dev/null
 	@if [ ! -z "`git status -s`" ]; then \
 		echo "Following files are not consistent with CI:"; \
@@ -91,6 +91,36 @@ check: clean
 		git diff; \
 		exit 1; \
 	fi
+
+release-src: clean
+	-tar -zcvf $(RELEASE_SRC).tgz \
+	--exclude bin \
+	--exclude .git \
+	--exclude .idea \
+	--exclude .DS_Store \
+	--exclude .github \
+	--exclude $(RELEASE_SRC).tgz \
+	--exclude protocol/skywalking-data-collect-protocol \
+	.
+
+release-bin: build
+	-mkdir $(RELEASE_BIN)
+	-cp -R bin $(RELEASE_BIN)
+	-cp -R dist/* $(RELEASE_BIN)
+	-cp -R CHANGES.md $(RELEASE_BIN)
+	-cp -R README.md $(RELEASE_BIN)
+	-tar -zcvf $(RELEASE_BIN).tgz $(RELEASE_BIN)
+	-rm -rf $(RELEASE_BIN)
+
+
+
+.PHONY: release
+release: verify release-src release-bin
+	gpg --batch --yes --armor --detach-sig $(RELEASE_SRC).tgz
+	shasum -a 512 $(RELEASE_SRC).tgz > $(RELEASE_SRC).tgz.sha512
+	gpg --batch --yes --armor --detach-sig $(RELEASE_BIN).tgz
+	shasum -a 512 $(RELEASE_BIN).tgz > $(RELEASE_BIN).tgz.sha512
+
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):
