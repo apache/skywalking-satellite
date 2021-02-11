@@ -1,7 +1,7 @@
 # Project Structure
 - cmd: The starter of Satellite.
 - configs: Satellite configs.
-- internal: Core, Api, and common utils.
+- internal: Core, API, and common utils.
     - internal/pkg: Sharing with Core and Plugins, such as api and utils.
     - internal/satellite: The core of Satellite.
 - plugins: Contains all plugins.
