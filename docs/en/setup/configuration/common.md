@@ -12,7 +12,7 @@ configuration and the telemetry configuration.
 ## Self Telemetry
 |  Config   |Default| Description  |
 |  ----  | ----  | ----  |
-| cluster  | default-cluster | The space concept for the deployment, such as the namespace concept in the kubernetes.|
-| service  | default-service | The group concept for the deployment, such as the service resource concept in the kubernetes.|
-| instance  | default-instance |The minimum running unit, such as the pod concept in the kubernetes.|
+| cluster  | default-cluster | The space concept for the deployment, such as the namespace concept in the Kubernetes.|
+| service  | default-service | The group concept for the deployment, such as the service resource concept in the Kubernetes.|
+| instance  | default-instance |The minimum running unit, such as the pod concept in the Kubernetes.|
 

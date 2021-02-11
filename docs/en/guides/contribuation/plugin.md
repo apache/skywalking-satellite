@@ -2,7 +2,7 @@
 If you want to add a custom plugin in SkyWalking Satellite, the following contents would guide you.
 Let's use memory-queue as an example of how to write a plugin.
 
-1. Choose the plugin category. According to the memory-queue is a queue, the plugin should be write in the **skywalking-satellite/plugins/queue** directory. So we create a new directory called memory as the plugin codes space.  
+1. Choose the plugin category. As the memory-queue is a queue, the plugin should be written in the **skywalking-satellite/plugins/queue** directory. So we create a new directory called memory as the plugin codes space.  
 
 2. Implement the interface in the **skywalking-satellite/plugins/queue/api**. Each plugin has 3 common methods, which are Name(), Description(), DefaultConfig().
     - Name() returns the unique name in the plugin category.

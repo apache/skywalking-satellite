@@ -1,5 +1,5 @@
 # Fallbacker/none-fallbacker
 ## Description
-The fallbacker would nothing to do when facing failure data.
+The fallbacker would do nothing when facing failure data.
 ## DefaultConfig
 ```yaml```
