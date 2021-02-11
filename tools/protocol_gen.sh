@@ -20,7 +20,7 @@
 # ----------------------------------------------------------------------------
 
 
-
+export PATH=$PATH:$HOME/usr/local/bin
 export PROTO_HOME=protocol/all_protocol
 export COLLECT_PROTOCOL_HOME=protocol/skywalking-data-collect-protocol
 export SATELLITE_PROTOCOL_HOME=protocol/satellite-protocol

@@ -33,7 +33,6 @@ GO_BUILD = $(GO) build
 GO_GET = $(GO) get
 GO_TEST = $(GO) test
 GO_LINT = $(GO_PATH)/bin/golangci-lint
-GO_LICENSER = $(GO_PATH)/bin/go-licenser
 GO_BUILD_FLAGS = -v
 GO_BUILD_LDFLAGS = -X main.version=$(VERSION)
 GQL_GEN = $(GO_PATH)/bin/gqlgen
@@ -49,7 +48,6 @@ all: deps verify build check
 .PHONY: tools
 tools:
 	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.33.0
-	$(GO_LICENSER) -version || GO111MODULE=off $(GO_GET) -u github.com/elastic/go-licenser
 
 deps: tools
 	$(GO_GET) -v -t -d ./...
@@ -67,12 +65,8 @@ lint: tools
 test: clean
 	$(GO_TEST) ./... -coverprofile=coverage.txt -covermode=atomic
 
-.PHONY: license
-license: clean tools
-	$(GO_LICENSER) -d -exclude=plugins/queue/mmap/queue_opreation.go -exclude=protocol/gen-codes -licensor='Apache Software Foundation (ASF)' ./
-
 .PHONY: verify
-verify: clean license lint test
+verify: clean lint test
 
 .PHONY: clean
 clean: tools
