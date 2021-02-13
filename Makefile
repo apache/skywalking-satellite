@@ -71,7 +71,6 @@ verify: clean lint test
 .PHONY: clean
 clean: tools
 	-rm -rf coverage.txt
-	-rm -rf bin
 
 .PHONY: build
 build: clean deps linux darwin windows
