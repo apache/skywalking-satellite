@@ -25,7 +25,7 @@ import (
 // GathererConfig contains all implementation fields.
 type GathererConfig struct {
 	// common config
-	config.CommonFields
+	*config.CommonFields
 	QueueConfig plugin.Config `mapstructure:"queue"` // queue plugin config
 
 	// ReceiverGatherer

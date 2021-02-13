@@ -24,7 +24,7 @@ import (
 
 // ProcessorConfig contains all implementation fields.
 type ProcessorConfig struct {
-	config.CommonFields
+	*config.CommonFields
 
 	FilterConfig []plugin.Config `mapstructure:"filters"` // filter plugins
 }

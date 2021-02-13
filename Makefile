@@ -71,9 +71,10 @@ verify: clean lint test
 .PHONY: clean
 clean: tools
 	-rm -rf coverage.txt
+	-rm -rf bin
 
 .PHONY: build
-build: deps linux darwin windows
+build: clean deps linux darwin windows
 
 .PHONY: check
 check: clean
@@ -100,6 +101,7 @@ release-src: clean
 release-bin: build
 	-mkdir $(RELEASE_BIN)
 	-cp -R bin $(RELEASE_BIN)
+	-cp -R configs $(RELEASE_BIN)
 	-cp -R dist/* $(RELEASE_BIN)
 	-cp -R CHANGES.md $(RELEASE_BIN)
 	-cp -R README.md $(RELEASE_BIN)
