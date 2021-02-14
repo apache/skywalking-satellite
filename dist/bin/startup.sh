@@ -34,6 +34,7 @@ elif uname -s | grep Linux; then
   START_UP_PROCESS=$(find "$BIN_DIR" -name "skywalking-satellite*linux*")
 else
   echo "Sorry, the official startup process does not support your system."
+  exit 1
 fi
 
 eval exec "$START_UP_PROCESS" start --config="$CONFIG_DIR"/satellite_config.yaml 1> "$LOG_FILE_LOCATION" 2>&1 &
