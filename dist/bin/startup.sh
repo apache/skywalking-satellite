@@ -25,24 +25,23 @@ CONFIG_DIR=${HOME_DIR}/configs
 LOG_FILE_LOCATION=${LOG_DIR}/satellite.log
 
 if [ ! -d "${LOG_DIR}" ]; then
-    mkdir -p "${LOG_DIR}"
+ mkdir -p "${LOG_DIR}"
 fi
 
 if uname -s | grep Darwin; then
-  START_UP_PROCESS=$(find "$BIN_DIR" -name "skywalking-satellite*darwin*")
+ START_UP_PROCESS=$(find "$BIN_DIR" -name "skywalking-satellite*darwin*")
 elif uname -s | grep Linux; then
-  START_UP_PROCESS=$(find "$BIN_DIR" -name "skywalking-satellite*linux*")
+ START_UP_PROCESS=$(find "$BIN_DIR" -name "skywalking-satellite*linux*")
 else
-  echo "Sorry, the official startup process does not support your system."
-  exit 1
+ START_UP_PROCESS=$(find "$BIN_DIR" -name "skywalking-satellite*windows*")
 fi
 
 eval exec "$START_UP_PROCESS" start --config="$CONFIG_DIR"/satellite_config.yaml 1> "$LOG_FILE_LOCATION" 2>&1 &
 
 if [ $? -eq 0 ]; then
-  sleep 1
-	echo "SkyWalking Satellite started successfully!"
+ sleep 1
+ echo "SkyWalking Satellite started successfully!"
 else
-	echo "SkyWalking Satellite started failure!"
-	exit 1
+ echo "SkyWalking Satellite started failure!"
+ exit 1
 fi
