@@ -86,6 +86,10 @@ check: clean
 		exit 1; \
 	fi
 
+.PHONY: docker
+docker: release-bin
+	/bin/sh tools/docker_build.sh $(VERSION)
+
 release-src: clean
 	-tar -zcvf $(RELEASE_SRC).tgz \
 	--exclude bin \

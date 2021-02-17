@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 #
 # Licensed to the Apache Software Foundation (ASF) under one or more
@@ -17,31 +17,25 @@
 # limitations under the License.
 #
 
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && cd .. && pwd)"
+DOCKER_DIR=$ROOT_DIR/docker
+VERSION=$1
+DIST_NAME=skywalking-satellite-$VERSION-bin
+DIST_FILE=$ROOT_DIR/$DIST_NAME.tgz
+DOCKER_DIST_FILE=$DOCKER_DIR/$DIST_NAME.tgz
 
-HOME_DIR="$(cd "$(dirname "$0")" && cd .. && pwd)"
-BIN_DIR=${HOME_DIR}/bin
-LOG_DIR=${HOME_DIR}/logs
-CONFIG_DIR=${HOME_DIR}/configs
-LOG_FILE_LOCATION=${LOG_DIR}/satellite.log
-
-if [ ! -d "${LOG_DIR}" ]; then
- mkdir -p "${LOG_DIR}"
+if [ ! -f "$DIST_FILE" ]; then
+  echo "$DIST_FILE is not exist, could not build the skywalking-satellite docker image."
+  exit 1
 fi
 
-if uname -s | grep Darwin; then
- START_UP_PROCESS=$(find "$BIN_DIR" -name "skywalking-satellite*darwin*")
-elif uname -s | grep Linux; then
- START_UP_PROCESS=$(find "$BIN_DIR" -name "skywalking-satellite*linux*")
-else
- START_UP_PROCESS=$(find "$BIN_DIR" -name "skywalking-satellite*windows*")
-fi
-
-eval exec "$START_UP_PROCESS" start --config="$CONFIG_DIR"/satellite_config.yaml 1> "$LOG_FILE_LOCATION" 2>&1 &
+rm -rf "$DOCKER_DIST_FILE"
+cp "$DIST_FILE" "$DOCKER_DIST_FILE"
+docker build --build-arg DIST_NAME="$DIST_NAME" -t skywalking-satellite:"$VERSION" --no-cache "$DOCKER_DIR"
 
 if [ $? -eq 0 ]; then
- sleep 1
- echo "SkyWalking Satellite started successfully!"
+ echo "skywalking-satellite:$VERSION docker images build success!"
 else
- echo "SkyWalking Satellite started failure!"
+ echo "skywalking-satellite:$VERSION docker images build failure!"
  exit 1
 fi

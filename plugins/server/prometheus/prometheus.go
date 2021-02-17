@@ -49,7 +49,7 @@ func (s *Server) Description() string {
 func (s *Server) DefaultConfig() string {
 	return `
 # The prometheus server address.
-address: ":9299"
+address: ":1234"
 # The prometheus server metrics endpoint.
 endpoint: "/metrics"
 `
