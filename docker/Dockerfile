@@ -14,20 +14,24 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM bash
+FROM busybox
 
 ARG DIST_NAME='skywalking-satellite-latest-bin'
+ARG HOME='/skywalking-satellite'
 
 COPY "$DIST_NAME.tgz" /
 
 RUN set -ex; \
     tar -xzf "$DIST_NAME.tgz"; \
     rm -rf "$DIST_NAME.tgz"; \
-    mkdir /skywalking-satellite; \
-    mv "$DIST_NAME"/* /skywalking-satellite;
+    ls "$DIST_NAME/bin" |grep -v linux-amd64| xargs -i echo "$DIST_NAME/bin/{}"|xargs rm -rf; \
+    mkdir "$HOME"; \
+    mv "$DIST_NAME"/* "$HOME";
+
+COPY entrypoint.sh "$HOME"/bin
 
 WORKDIR /skywalking-satellite
 
 EXPOSE 12800 11800 1234
 
-ENTRYPOINT ["/bin/sh","bin/startup.sh"]
+ENTRYPOINT ["/bin/sh","bin/entrypoint.sh"]
