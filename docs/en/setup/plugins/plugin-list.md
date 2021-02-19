@@ -14,7 +14,7 @@
 	- [mmap-queue](./queue_mmap-queue.md)
 - Receiver
 	- [grpc-nativelog-receiver](./receiver_grpc-nativelog-receiver.md)
-	- [http-log-receiver](./receiver_http-log-receiver.md)
+	- [http-nativelog-receiver](./receiver_http-nativelog-receiver.md)
 - Server
 	- [grpc-server](./server_grpc-server.md)
 	- [http-server](./server_http-server.md)

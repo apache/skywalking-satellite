@@ -15,25 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package processor
+package telemetry
 
-import (
-	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
-	"github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
-	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
-	filter "github.com/apache/skywalking-satellite/plugins/filter/api"
-)
+import "github.com/prometheus/client_golang/prometheus"
 
-// Init Processor and dependency plugins
-func NewProcessor(cfg *api.ProcessorConfig, s sender.Sender, g gatherer.Gatherer) api.Processor {
-	p := &Processor{
-		sender:         s,
-		gatherer:       g,
-		config:         cfg,
-		runningFilters: []filter.Filter{},
+// Config defines the common telemetry labels.
+type Config struct {
+	Cluster  string `mapstructure:"cluster"`  // The cluster name.
+	Service  string `mapstructure:"service"`  // The service name.
+	Instance string `mapstructure:"instance"` // The instance name.
+}
+
+// Init create the global telemetry center according to the config.
+func Init(c *Config) {
+	labels := make(map[string]string)
+	if c.Service != "" {
+		labels["service"] = c.Service
 	}
-	for _, c := range p.config.FilterConfig {
-		p.runningFilters = append(p.runningFilters, filter.GetFilter(c))
+	if c.Cluster != "" {
+		labels["cluster"] = c.Cluster
 	}
-	return p
+	if c.Instance != "" {
+		labels["instance"] = c.Instance
+	}
+	registry = prometheus.NewRegistry()
+	registerer = prometheus.WrapRegistererWith(labels, registry)
+	Gatherer = registry
+	collectorContainer = make(map[string]Collector)
 }

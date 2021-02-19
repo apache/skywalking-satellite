@@ -22,6 +22,8 @@ BINARY = skywalking-satellite
 RELEASE_BIN = skywalking-satellite-$(VERSION)-bin
 RELEASE_SRC = skywalking-satellite-$(VERSION)-src
 
+PLUGIN_DOC_DIR = docs/en/setup/plugins
+
 OSNAME := $(if $(findstring Darwin,$(shell uname)),darwin,linux)
 
 SH = sh
@@ -73,11 +75,16 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: clean deps linux darwin windows
+build: clean deps
+	rm -rf bin/*
+	make linux
+	make darwin
+	make windows
 
 .PHONY: check
 check: clean
-	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=docs/en/setup/plugins
+	rm -rf $(PLUGIN_DOC_DIR)
+	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=$(PLUGIN_DOC_DIR)
 	$(GO) mod tidy > /dev/null
 	@if [ ! -z "`git status -s`" ]; then \
 		echo "Following files are not consistent with CI:"; \

@@ -36,18 +36,19 @@ type benchmarkParam struct {
 }
 
 var params = []benchmarkParam{
-	{segmentSize: 1024 * 128, message: 8, maxInMemSegments: 10, queueCapacity: 10000},
+	{segmentSize: 1024 * 128, message: 8, maxInMemSegments: 18, queueCapacity: 10000},
 	// compare the influence of the segmentSize.
 	{segmentSize: 1024 * 256, message: 8, maxInMemSegments: 10, queueCapacity: 10000},
+	{segmentSize: 1024 * 512, message: 8, maxInMemSegments: 6, queueCapacity: 10000},
 	// compare the influence of the maxInMemSegments.
-	{segmentSize: 1024 * 128, message: 8, maxInMemSegments: 20, queueCapacity: 10000},
+	{segmentSize: 1024 * 256, message: 8, maxInMemSegments: 20, queueCapacity: 10000},
 	// compare the influence of the message size.
 	{segmentSize: 1024 * 128, message: 16, maxInMemSegments: 10, queueCapacity: 10000},
 	{segmentSize: 1024 * 128, message: 8, maxInMemSegments: 10, queueCapacity: 100000},
 }
 
 func cleanBenchmarkQueue(b *testing.B, q api.Queue) {
-	if err := os.RemoveAll(q.(*Queue).QueueDir); err != nil {
+	if err := os.RemoveAll(q.(*Queue).queueName); err != nil {
 		b.Errorf("cannot remove test queue dir, %v", err)
 	}
 }
@@ -58,7 +59,6 @@ func BenchmarkEnqueue(b *testing.B) {
 			param.segmentSize/1024, param.maxInMemSegments, param.message, param.queueCapacity)
 		b.Run(name, func(b *testing.B) {
 			q, err := initMmapQueue(plugin.Config{
-				"queue_dir":               "BenchmarkEnqueue",
 				"segment_size":            param.segmentSize,
 				"max_in_mem_segments":     param.maxInMemSegments,
 				"queue_capacity_segments": param.queueCapacity,
@@ -88,7 +88,6 @@ func BenchmarkEnqueueAndDequeue(b *testing.B) {
 			param.segmentSize/1024, param.maxInMemSegments, param.message, param.queueCapacity)
 		b.Run(name, func(b *testing.B) {
 			q, err := initMmapQueue(plugin.Config{
-				"queue_dir":               "BenchmarkEnqueueAndDequeue",
 				"segment_size":            param.segmentSize,
 				"max_in_mem_segments":     param.maxInMemSegments,
 				"queue_capacity_segments": param.queueCapacity,

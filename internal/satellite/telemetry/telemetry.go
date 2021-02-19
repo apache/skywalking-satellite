@@ -18,36 +18,37 @@
 package telemetry
 
 import (
+	"sync"
+
 	"github.com/prometheus/client_golang/prometheus"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 )
 
-// Registerer is the global metrics center for collecting the telemetry data in core modules or plugins.
+// registerer is the global metrics center for collecting the telemetry data in core modules or plugins.
 var (
-	registry   *prometheus.Registry
-	Registerer prometheus.Registerer // The register is for adding metrics to the registry.
-	Gatherer   prometheus.Gatherer   // The gatherer is for fetching metrics from the registry.
+	Gatherer           prometheus.Gatherer // The gatherer is for fetching metrics from the registry.
+	registry           *prometheus.Registry
+	registerer         prometheus.Registerer // The register is for adding metrics to the registry.
+	collectorContainer map[string]Collector
+	lock               sync.Mutex
 )
 
-// Config defines the common telemetry labels.
-type Config struct {
-	Cluster  string `mapstructure:"cluster"`  // The cluster name.
-	Service  string `mapstructure:"service"`  // The service name.
-	Instance string `mapstructure:"instance"` // The instance name.
+// register the metric meta to the registerer.
+func Register(meta ...SelfTelemetryMetaFunc) {
+	for _, telemetryMeta := range meta {
+		name, collector := telemetryMeta()
+		registerer.MustRegister(collector)
+		log.Logger.WithField("telemetry_name", name).Info("self telemetry register success")
+	}
 }
 
-// Init create the global telemetry center according to the config.
-func Init(c *Config) {
-	labels := make(map[string]string)
-	if c.Service != "" {
-		labels["service"] = c.Service
+// SelfTelemetryMetaFunc returns the metric name and the metric instance.
+type SelfTelemetryMetaFunc func() (string, prometheus.Collector)
+
+// WithMeta is used as the param of the Register function.
+func WithMeta(name string, collector prometheus.Collector) SelfTelemetryMetaFunc {
+	return func() (string, prometheus.Collector) {
+		return name, collector
 	}
-	if c.Cluster != "" {
-		labels["cluster"] = c.Cluster
-	}
-	if c.Instance != "" {
-		labels["instance"] = c.Instance
-	}
-	registry = prometheus.NewRegistry()
-	Registerer = prometheus.WrapRegistererWith(labels, registry)
-	Gatherer = registry
 }

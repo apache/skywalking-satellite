@@ -15,25 +15,8 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package processor
+package telemetry
 
-import (
-	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
-	"github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
-	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
-	filter "github.com/apache/skywalking-satellite/plugins/filter/api"
-)
-
-// Init Processor and dependency plugins
-func NewProcessor(cfg *api.ProcessorConfig, s sender.Sender, g gatherer.Gatherer) api.Processor {
-	p := &Processor{
-		sender:         s,
-		gatherer:       g,
-		config:         cfg,
-		runningFilters: []filter.Filter{},
-	}
-	for _, c := range p.config.FilterConfig {
-		p.runningFilters = append(p.runningFilters, filter.GetFilter(c))
-	}
-	return p
+// The Self-telemetry data collection interface.
+type Collector interface {
 }

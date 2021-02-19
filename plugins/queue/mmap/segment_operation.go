@@ -35,7 +35,6 @@ import (
 
 // GetSegment returns a memory mapped file at the segmentID position.
 func (q *Queue) GetSegment(segmentID int64) (*mmap.File, error) {
-	index := q.GetIndex(segmentID)
 	if q.mmapCount >= q.MaxInMemSegments {
 		q.insufficientMemChannel <- struct{}{}
 		<-q.sufficientMemChannel
@@ -43,6 +42,7 @@ func (q *Queue) GetSegment(segmentID int64) (*mmap.File, error) {
 	if err := q.mapSegment(segmentID); err != nil {
 		return nil, err
 	}
+	index := q.GetIndex(segmentID)
 	if q.segments[index] != nil {
 		return q.segments[index], nil
 	}
@@ -55,7 +55,7 @@ func (q *Queue) mapSegment(segmentID int64) error {
 	if q.segments[index] != nil {
 		return nil
 	}
-	filePath := path.Join(q.QueueDir, strconv.Itoa(index)+segment.FileSuffix)
+	filePath := path.Join(q.queueName, strconv.Itoa(index)+segment.FileSuffix)
 	file, err := segment.NewSegment(filePath, q.SegmentSize)
 	if err != nil {
 		return err
@@ -113,6 +113,8 @@ func (q *Queue) doSwap() error {
 	logicWID := wID + int64(q.QueueCapacitySegments)
 	wIndex := q.GetIndex(wID)
 	rIndex := q.GetIndex(rID)
+	//  only clear all memory-mapped file when more than 1.5 times MaxInMemSegments.
+	clearAll := (wID - rID + 1) > int64(q.MaxInMemSegments)*3/2
 	for q.mmapCount >= q.MaxInMemSegments {
 		for i := logicWID - 1; i >= 0 && i >= logicWID-int64(q.MaxInMemSegments); i-- {
 			if q.GetIndex(i) == wIndex || q.GetIndex(i) == rIndex {
@@ -123,7 +125,7 @@ func (q *Queue) doSwap() error {
 			}
 			// the writing segment and the reading segment should still in memory.
 			// q.MaxInMemSegments/2-1 means keeping half available spaces to receive new data.
-			if q.MaxInMemSegments-q.mmapCount >= q.MaxInMemSegments/2-1 {
+			if !clearAll && q.MaxInMemSegments-q.mmapCount >= q.MaxInMemSegments/2-1 {
 				return nil
 			}
 		}

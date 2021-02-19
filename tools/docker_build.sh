@@ -35,7 +35,9 @@ docker build --build-arg DIST_NAME="$DIST_NAME" -t skywalking-satellite:"$VERSIO
 
 if [ $? -eq 0 ]; then
  echo "skywalking-satellite:$VERSION docker images build success!"
+ rm -rf "$DOCKER_DIST_FILE"
 else
  echo "skywalking-satellite:$VERSION docker images build failure!"
+ rm -rf "$DOCKER_DIST_FILE"
  exit 1
 fi

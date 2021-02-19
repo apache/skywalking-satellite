@@ -178,7 +178,7 @@ func initServer(cfg plugin.Config, t *testing.T) server.Server {
 }
 
 func initReceiver(cfg plugin.Config, t *testing.T) receiver.Receiver {
-	cfg[plugin.NameField] = "http-log-receiver"
+	cfg[plugin.NameField] = Name
 	q := receiver.GetReceiver(cfg)
 	if q == nil {
 		t.Fatalf("cannot get http-log-receiver from the registry")

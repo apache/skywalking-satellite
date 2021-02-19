@@ -22,7 +22,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/prometheus/client_golang/prometheus"
+	"github.com/sirupsen/logrus"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
@@ -45,47 +45,40 @@ type ReceiverGatherer struct {
 	// self components
 	outputChannel chan *queue.SequenceEvent
 	// metrics
-	receiveCounter     *prometheus.CounterVec
-	queueOutputCounter *prometheus.CounterVec
+	receiveCounter     *telemetry.Counter
+	queueOutputCounter *telemetry.Counter
 }
 
 func (r *ReceiverGatherer) Prepare() error {
-	log.Logger.Infof("receiver gatherer module of %s namespace is preparing", r.config.PipeName)
+	log.Logger.WithField("pipe", r.config.PipeName).Info("receiver gatherer module is preparing...")
 	r.runningReceiver.RegisterHandler(r.runningServer.GetServer())
 	if err := r.runningQueue.Initialize(); err != nil {
-		log.Logger.Infof("the %s queue of %s namespace was failed to initialize", r.runningQueue.Name(), r.config.PipeName)
+		log.Logger.WithField("pipe", r.config.PipeName).Infof("the %s queue failed when initializing", r.runningQueue.Name())
 		return err
 	}
-	r.receiveCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
-		Name: "gatherer_receive_count",
-		Help: "Total number of the receiving count in the Gatherer.",
-	}, []string{"pipe", "status"})
-	r.queueOutputCounter = prometheus.NewCounterVec(prometheus.CounterOpts{
-		Subsystem: "receiver",
-		Name:      "queue_output_count",
-		Help:      "Total number of the output count in the Queue of Gatherer.",
-	}, []string{"pipe", "status"})
-	telemetry.Registerer.MustRegister(r.receiveCounter)
-	log.Logger.Infof("register receiveCounter")
-	telemetry.Registerer.MustRegister(r.queueOutputCounter)
-	log.Logger.Infof("register queueOutputCounter")
+	r.receiveCounter = telemetry.NewCounter("gatherer_receive_count", "Total number of the receiving count in the Gatherer.", "pipe", "status")
+	r.queueOutputCounter = telemetry.NewCounter("queue_output_count", "Total number of the output count in the Queue of Gatherer.", "pipe", "status")
 	return nil
 }
 
 func (r *ReceiverGatherer) Boot(ctx context.Context) {
 	var wg sync.WaitGroup
 	wg.Add(2)
+	log.Logger.WithField("pipe", r.config.PipeName).Info("receive_gatherer module is starting...")
 	go func() {
 		childCtx, cancel := context.WithCancel(ctx)
 		defer wg.Done()
 		for {
 			select {
 			case e := <-r.runningReceiver.Channel():
-				r.receiveCounter.WithLabelValues(r.config.PipeName, "all").Inc()
+				r.receiveCounter.Inc(r.config.PipeName, "all")
 				err := r.runningQueue.Enqueue(e)
 				if err != nil {
-					r.receiveCounter.WithLabelValues(r.config.PipeName, "abandoned").Inc()
-					log.Logger.Errorf("cannot put event into queue in %s namespace, error is: %v", r.config.PipeName, err)
+					r.receiveCounter.Inc(r.config.PipeName, "abandoned")
+					log.Logger.WithFields(logrus.Fields{
+						"pipe":  r.config.PipeName,
+						"queue": r.runningQueue.Name(),
+					}).Errorf("error in enqueue: %v", err)
 				}
 			case <-childCtx.Done():
 				cancel()
@@ -107,12 +100,15 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 			default:
 				if e, err := r.runningQueue.Dequeue(); err == nil {
 					r.outputChannel <- e
-					r.queueOutputCounter.WithLabelValues(r.config.PipeName, "success").Inc()
+					r.queueOutputCounter.Inc(r.config.PipeName, "success")
 				} else if err == queue.ErrEmpty {
 					time.Sleep(time.Second)
 				} else {
-					r.queueOutputCounter.WithLabelValues(r.config.PipeName, "error").Inc()
-					log.Logger.Errorf("error in popping from the queue: %v", err)
+					r.queueOutputCounter.Inc(r.config.PipeName, "error")
+					log.Logger.WithFields(logrus.Fields{
+						"pipe":  r.config.PipeName,
+						"queue": r.runningQueue.Name(),
+					}).Errorf("error in dequeue: %v", err)
 				}
 			}
 		}
@@ -121,9 +117,12 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 }
 
 func (r *ReceiverGatherer) Shutdown() {
-	log.Logger.Infof("receiver gatherer module of %s namespace is closing", r.config.PipeName)
+	log.Logger.WithField("pipe", r.config.PipeName).Infof("receiver gatherer module is closing...")
 	if err := r.runningQueue.Close(); err != nil {
-		log.Logger.Errorf("failure occurs when closing %s queue  in %s namespace, error is: %v", r.runningQueue.Name(), r.config.PipeName, err)
+		log.Logger.WithFields(logrus.Fields{
+			"pipe":  r.config.PipeName,
+			"queue": r.runningQueue.Name(),
+		}).Errorf("error in closing: %v", err)
 	}
 }
 

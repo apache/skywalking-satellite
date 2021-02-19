@@ -22,6 +22,8 @@ import (
 	"reflect"
 	"strings"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/spf13/viper"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
@@ -50,12 +52,18 @@ func RegisterPlugin(plugin Plugin) {
 	for pCategory, pReg := range Reg {
 		if v.Type().Implements(pCategory) {
 			pReg[plugin.Name()] = v
-			log.Logger.Infof("register %s %s successfully", plugin.Name(), v.Type().String())
+			log.Logger.WithFields(logrus.Fields{
+				"category":    v.Type().String(),
+				"plugin_name": plugin.Name(),
+			}).Debug("register plugin success")
 			success = true
 		}
 	}
 	if !success {
-		log.Logger.Errorf("this type of %s is not supported to register : %s", plugin.Name(), v.Type().String())
+		log.Logger.WithFields(logrus.Fields{
+			"category":    v.Type().String(),
+			"plugin_name": plugin.Name(),
+		}).Error("plugin is not allowed to register")
 	}
 }
 

@@ -1,4 +1,4 @@
-# Receiver/http-log-receiver
+# Receiver/http-nativelog-receiver
 ## Description
 This is a receiver for SkyWalking http logging format, which is defined at https://github.com/apache/skywalking-data-collect-protocol/blob/master/logging/Logging.proto.
 ## DefaultConfig

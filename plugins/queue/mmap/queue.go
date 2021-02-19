@@ -50,15 +50,16 @@ const (
 type Queue struct {
 	config.CommonFields
 	// config
-	SegmentSize           int    `mapstructure:"segment_size"`            // The size of each segment. The unit is byte.
-	MaxInMemSegments      int32  `mapstructure:"max_in_mem_segments"`     // The max num of segments in memory.
-	QueueCapacitySegments int    `mapstructure:"queue_capacity_segments"` // The capacity of Queue = segment_size * queue_capacity_segments.
-	FlushPeriod           int    `mapstructure:"flush_period"`            // The period flush time. The unit is ms.
-	FlushCeilingNum       int    `mapstructure:"flush_ceiling_num"`       // The max number in one flush time.
-	MaxEventSize          int    `mapstructure:"max_event_size"`          // The max size of the input event.
-	QueueDir              string `mapstructure:"queue_dir"`               // Contains all files in the queue.
+	SegmentSize           int   `mapstructure:"segment_size"`            // The size of each segment. The unit is byte.
+	MaxInMemSegments      int32 `mapstructure:"max_in_mem_segments"`     // The max num of segments in memory.
+	QueueCapacitySegments int   `mapstructure:"queue_capacity_segments"` // The capacity of Queue = segment_size * queue_capacity_segments.
+	FlushPeriod           int   `mapstructure:"flush_period"`            // The period flush time. The unit is ms.
+	FlushCeilingNum       int   `mapstructure:"flush_ceiling_num"`       // The max number in one flush time.
+	MaxEventSize          int   `mapstructure:"max_event_size"`          // The max size of the input event.
 
 	// running components
+	lock                   sync.Mutex
+	queueName              string         // The queue name.
 	meta                   *meta.Metadata // The metadata file.
 	segments               []*mmap.File   // The data files.
 	mmapCount              int32          // The number of the memory mapped files.
@@ -72,7 +73,6 @@ type Queue struct {
 	ctx        context.Context    // Parent ctx
 	cancel     context.CancelFunc // Parent ctx cancel function
 	showDownWg sync.WaitGroup     // The shutdown wait group.
-
 }
 
 func (q *Queue) Name() string {
@@ -87,17 +87,15 @@ func (q *Queue) Description() string {
 func (q *Queue) DefaultConfig() string {
 	return `
 # The size of each segment. Default value is 128K. The unit is Byte.
-segment_size: 131072
+segment_size: 262114
 # The max num of segments in memory. Default value is 10.
 max_in_mem_segments: 10
 # The capacity of Queue = segment_size * queue_capacity_segments.
-queue_capacity_segments: 4000
+queue_capacity_segments: 2000
 # The period flush time. The unit is ms. Default value is 1 second.
 flush_period: 1000
 # The max number in one flush time.  Default value is 10000.
 flush_ceiling_num: 10000
-# Contains all files in the queue.
-queue_dir: satellite-mmap-queue
 # The max size of the input event. Default value is 20k.
 max_event_size: 20480
 `
@@ -116,8 +114,9 @@ func (q *Queue) Initialize() error {
 	if q.MaxInMemSegments < minimumSegments {
 		q.MaxInMemSegments = minimumSegments
 	}
+	q.queueName = strings.Join([]string{q.Name(), q.PipeName}, "_")
 	// load metadata and override the reading or writing offset by the committed or watermark offset.
-	md, err := meta.NewMetaData(q.QueueDir, q.QueueCapacitySegments)
+	md, err := meta.NewMetaData(q.queueName, q.QueueCapacitySegments)
 	if err != nil {
 		return fmt.Errorf("error in creating the metadata: %v", err)
 	}
@@ -175,6 +174,8 @@ func (q *Queue) Dequeue() (*api.SequenceEvent, error) {
 }
 
 func (q *Queue) Close() error {
+	q.lock.Lock()
+	defer q.lock.Unlock()
 	q.cancel()
 	q.showDownWg.Wait()
 	for i, segment := range q.segments {

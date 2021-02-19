@@ -17,48 +17,77 @@
 
 # The logger configuration.
 logger:
+  # The log format pattern configuration.
   log_pattern: ${SATELLITE_LOGGER_LOG_PATTERN:%time [%level][%field] - %msg}
+  # The time format pattern configuration.
   time_pattern: ${SATELLITE_LOGGER_TIME_PATTERN:2006-01-02 15:04:05.000}
+  # The lowest level of printing allowed.
   level: ${SATELLITE_LOGGER_LEVEL:info}
 
 # The Satellite self telemetry configuration.
 telemetry:
-  cluster: ${SATELLITE_TELEMETRY_CLUSTER:default-cluster}
-  service: ${SATELLITE_TELEMETRY_SERVICE:default-service}
-  instance: ${SATELLITE_TELEMETRY_SERVICE:default-instance}
+  # The space concept for the deployment, such as the namespace concept in the Kubernetes.
+  cluster: ${SATELLITE_TELEMETRY_CLUSTER:satellite-cluster}
+  # The group concept for the deployment, such as the service resource concept in the Kubernetes.
+  service: ${SATELLITE_TELEMETRY_SERVICE:satellite-service}
+  # The minimum running unit, such as the pod concept in the Kubernetes.
+  instance: ${SATELLITE_TELEMETRY_SERVICE:satellite-instance}
 
 # The sharing plugins referenced by the specific plugins in the different pipes.
 sharing:
   clients:
     - plugin_name: "kafka-client"
+      # The Kafka broker addresses (default localhost:9092). Multiple values are separated by commas.
       brokers: ${SATELLITE_KAFKA_CLIENT_BROKERS:127.0.0.1:9092}
+      # The Kakfa version should follow this pattern, which is major_minor_veryMinor_patch.
       version: ${SATELLITE_KAFKA_VERSION:"2.1.1"}
+      # The TLS switch
+      enable_TLS: ${SATELLITE_KAFKA_ENABLE_TLS:false}
+      # The file path of client.pem. The config only works when opening the TLS switch.
+      client_pem_path: ${SATELLITE_KAFKA_CLIENT_PEM_PATH:"client.pem"}
+      # The file path of client.key. The config only works when opening the TLS switch.
+      client_key_path: ${SATELLITE_KAFKA_CLIENT_KEY_PATH:"client.key"}
+      # The file path oca.pem. The config only works when opening the TLS switch.
+      ca_pem_path: ${SATELLITE_KAFKA_CA_PEM_PATH:"ca.pem"}
   servers:
     - plugin_name: "grpc-server"
+      # The address of grpc server.
+      address: ${SATELLITE_GRPC_ADDRESS:":11800"}
+      # The TLS cert file path.
+      tls_cert_file: ${SATELLITE_GRPC_TLS_KEY_FILE:""}
+      # The TLS key file path.
+      tls_key_file: ${SATELLITE_GRPC_TLS_KEY_FILE:""}
     - plugin_name: "prometheus-server"
-      address: ${SATELLITE_PROMETHEUS_ADDRESS:":8090"}
-# The working pipes.
+      # The prometheus server address.
+      address: ${SATELLITE_PROMETHEUS_ADDRESS:":1234"}
+      # The prometheus server metrics endpoint.
+      endpoint: ${SATELLITE_PROMETHEUS_ENDPOINT:"/metrics"}
+
+# The working pipe configurations.
 pipes:
   - common_config:
-      pipe_name: pipe1
+      pipe_name: logpipe
     gatherer:
       server_name: "grpc-server"
       receiver:
         plugin_name: "grpc-nativelog-receiver"
       queue:
-        plugin_name: "mmap-queue"
-        segment_size: ${SATELLITE_MMAP_QUEUE_SIZE:524288}
-        max_in_mem_segments: ${SATELLITE_MMAP_QUEUE_MAX_IN_MEM_SEGMENTS:6}
-        queue_dir: "pipe1-log-grpc-receiver-queue"
+        plugin_name: "memory-queue"
+        # The maximum buffer event size.
+        event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
     processor:
       filters:
     sender:
       fallbacker:
         plugin_name: none-fallbacker
-      flush_time: ${SATELLITE_PIPE1_SENDER_FLUSH_TIME:1000}
+      # The time interval between two flush operations. And the time unit is millisecond.
+      flush_time: ${SATELLITE_LOGPIPE_SENDER_FLUSH_TIME:1000}
+      # The maximum buffer elements.
       max_buffer_size: ${SATELLITE_PIPE1_SENDER_MAX_BUFFER_SIZE:200}
+      # The minimum flush elements.
       min_flush_events: ${SATELLITE_PIPE1_SENDER_MIN_FLUSH_EVENTS:100}
       client_name: kafka-client
       forwarders:
         - plugin_name: nativelog-kafka-forwarder
+          # The remote kafka topic.
           topic: ${SATELLITE_NATIVELOG-TOPIC:log-topic}
