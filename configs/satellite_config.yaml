@@ -29,8 +29,6 @@ telemetry:
 
 # The sharing plugins referenced by the specific plugins in the different pipes.
 sharing:
-  common_config:
-    pipe_name: sharing
   clients:
     - plugin_name: "kafka-client"
       brokers: ${SATELLITE_KAFKA_CLIENT_BROKERS:127.0.0.1:9092}

@@ -23,7 +23,7 @@ import (
 )
 
 type SenderConfig struct {
-	config.CommonFields
+	*config.CommonFields
 	// plugins config
 	ForwardersConfig []plugin.Config `mapstructure:"forwarders"`  // forwarder plugins config
 	FallbackerConfig plugin.Config   `mapstructure:"fallbacker"`  // fallbacker plugins config

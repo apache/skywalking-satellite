@@ -18,6 +18,7 @@
 package main
 
 import (
+	"log"
 	"os"
 	"time"
 
@@ -39,5 +40,7 @@ func main() {
 		&cmdDocs,
 	}
 	app.Action = cli.ShowAppHelp
-	_ = app.Run(os.Args)
+	if err := app.Run(os.Args); err != nil {
+		log.Fatalln("start SkyWalking Satellite fail", err)
+	}
 }

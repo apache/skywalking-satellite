@@ -76,7 +76,7 @@ func params() *SatelliteConfig {
 			Instance: "instance1",
 		},
 		Sharing: &SharingConfig{
-			SharingCommonConfig: config.CommonFields{
+			SharingCommonConfig: &config.CommonFields{
 				PipeName: "sharing",
 			},
 			Clients: []plugin.Config{
@@ -101,13 +101,13 @@ func params() *SatelliteConfig {
 		},
 		Pipes: []*PipeConfig{
 			{
-				PipeCommonConfig: config.CommonFields{
+				PipeCommonConfig: &config.CommonFields{
 					PipeName: "pipe1",
 				},
 
 				Gatherer: &gatherer.GathererConfig{
 					ServerName: "grpc-server",
-					CommonFields: config.CommonFields{
+					CommonFields: &config.CommonFields{
 						PipeName: "pipe1",
 					},
 					ReceiverConfig: plugin.Config{
@@ -123,12 +123,12 @@ func params() *SatelliteConfig {
 					},
 				},
 				Processor: &processor.ProcessorConfig{
-					CommonFields: config.CommonFields{
+					CommonFields: &config.CommonFields{
 						PipeName: "pipe1",
 					},
 				},
 				Sender: &sender.SenderConfig{
-					CommonFields: config.CommonFields{
+					CommonFields: &config.CommonFields{
 						PipeName: "pipe1",
 					},
 					FallbackerConfig: plugin.Config{

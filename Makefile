@@ -73,7 +73,7 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: deps linux darwin windows
+build: clean deps linux darwin windows
 
 .PHONY: check
 check: clean
@@ -85,6 +85,10 @@ check: clean
 		git diff; \
 		exit 1; \
 	fi
+
+.PHONY: docker
+docker: release-bin
+	/bin/sh tools/docker_build.sh $(VERSION)
 
 release-src: clean
 	-tar -zcvf $(RELEASE_SRC).tgz \
@@ -100,6 +104,7 @@ release-src: clean
 release-bin: build
 	-mkdir $(RELEASE_BIN)
 	-cp -R bin $(RELEASE_BIN)
+	-cp -R configs $(RELEASE_BIN)
 	-cp -R dist/* $(RELEASE_BIN)
 	-cp -R CHANGES.md $(RELEASE_BIN)
 	-cp -R README.md $(RELEASE_BIN)

@@ -2,10 +2,9 @@
 First and most important thing is, SkyWalking Satellite startup behaviours are driven by configs/satellite_config.yaml. Understanding the setting file will help you to read this document.
 
 ## Startup script
-The startup script is /bin/skywalking-satellite-{version}-{plateform}-amd64. 
-1. Start SkyWalking Satellite.
+Startup Script
 ```shell script
-./bin/skywalking-satellite-{version}-{plateform}-amd64 start --config=./configs/satellite_config.yaml
+bin/startup.sh 
 ```
 ## satellite_config.yaml
 The core concept behind this setting file is, SkyWalking Satellite is based on pure modularization design. End user can switch or assemble the collector features by their own requirements.

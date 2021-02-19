@@ -62,19 +62,19 @@ func load(configPath string) (*SatelliteConfig, error) {
 	}
 	v := viper.New()
 	v.SetConfigType("yaml")
-	cfg := SatelliteConfig{}
+	cfg := NewDefaultSatelliteConfig()
 	if err := v.ReadConfig(bytes.NewReader(content)); err != nil {
 		return nil, err
 	}
 	if err := overrideConfigByEnv(v); err != nil {
 		return nil, fmt.Errorf("cannot override value by env config: %v", err)
 	}
-	if err := v.Unmarshal(&cfg); err != nil {
+	if err := v.Unmarshal(cfg); err != nil {
 		return nil, err
 	}
 	propagateCommonFieldsInSharing(cfg.Sharing)
 	propagateCommonFieldsInPipes(cfg.Pipes)
-	return &cfg, nil
+	return cfg, nil
 }
 
 // propagate the common fields to every modules and the dependency plugins.
@@ -95,7 +95,7 @@ func propagateCommonFieldsInSharing(sharing *SharingConfig) {
 }
 
 // propagate the common fields to the fields that is one of `plugin.config` or `[]plugin.config` types.
-func propagateCommonFieldsInStruct(cfg interface{}, cf config.CommonFields) {
+func propagateCommonFieldsInStruct(cfg interface{}, commonFields *config.CommonFields) {
 	v := reflect.ValueOf(cfg)
 	if v.Kind() == reflect.Ptr {
 		v = v.Elem()
@@ -104,17 +104,20 @@ func propagateCommonFieldsInStruct(cfg interface{}, cf config.CommonFields) {
 		fieldVal := v.Field(i).Interface()
 		if arr, ok := fieldVal.([]plugin.Config); arr != nil && ok {
 			for _, pc := range arr {
-				propagateCommonFields(pc, cf)
+				propagateCommonFields(pc, commonFields)
 			}
 		} else if pc, ok := fieldVal.(plugin.Config); pc != nil && ok {
-			propagateCommonFields(pc, cf)
+			propagateCommonFields(pc, commonFields)
 		}
 	}
 }
 
 // propagate the common fields to the `plugin.config`.
-func propagateCommonFields(pc plugin.Config, cf config.CommonFields) {
+func propagateCommonFields(pc plugin.Config, cf *config.CommonFields) {
 	v := reflect.ValueOf(cf)
+	if v.Kind() == reflect.Ptr {
+		v = v.Elem()
+	}
 	t := v.Type()
 	for i := 0; i < t.NumField(); i++ {
 		if tagVal := t.Field(i).Tag.Get(config.TagName); tagVal != "" {
