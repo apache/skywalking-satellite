@@ -64,6 +64,7 @@ func (s *Server) Start() error {
 }
 
 func (s *Server) Close() error {
+	log.Logger.Info("http server is closed")
 	return nil
 }
 

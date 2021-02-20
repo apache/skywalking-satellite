@@ -38,8 +38,11 @@ If you want to know more details about compiling, please read [the doc](./docs/e
 # Commands
 |  Commands| Flags   | Description  |
 |  ----  | ----  |----  |
-| start  | --config FILE | Start Satellite with the configuration FILE. (default: "configs/satellite_config.yaml" or read value from *SATELLITE_CONFIG* env).|
-| docs  | --output value | Generate Satellite plugin documentations to the output path. (default: "docs" or read value from *SATELLITE_DOC_PATH* env) |
+| start  | --config FILE, -c FILE | Load configuration from FILE. (default: "configs/satellite_config.yaml" or read value from *SATELLITE_CONFIG* env).|
+| start  | ---shutdown_hook_time TIME, -t TIME | The hook TIME for graceful shutdown, and the time unit is seconds. (default: "5" or read value from *SATELLITE_SHUTDOWN_HOOK_TIME* env).|
+| start  | --help, -h | Show help.|
+| docs  | --output PATH, -o PATH | The output PATH for the plugin documentation. (default: "docs" or read value from *SATELLITE_DOC_PATH* env) |
+| docs  | --help, -h | Show help.|
 
 
 # Contact Us

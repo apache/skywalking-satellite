@@ -12,7 +12,7 @@ max_recv_msg_size: 2097152
 # The max concurrent stream channels.
 max_concurrent_streams: 32
 # The TLS cert file path.
-tls_cert_file: 
+tls_cert_file: ""
 # The TLS key file path.
-tls_key_file: 
+tls_key_file: ""
 ```

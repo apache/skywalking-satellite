@@ -138,6 +138,7 @@ func (c *Client) Prepare() error {
 
 func (c *Client) Close() error {
 	c.cancel()
+	defer log.Logger.Info("kafka client is closed")
 	return c.client.Close()
 }
 

@@ -83,9 +83,9 @@ pipes:
       # The time interval between two flush operations. And the time unit is millisecond.
       flush_time: ${SATELLITE_LOGPIPE_SENDER_FLUSH_TIME:1000}
       # The maximum buffer elements.
-      max_buffer_size: ${SATELLITE_PIPE1_SENDER_MAX_BUFFER_SIZE:200}
+      max_buffer_size: ${SATELLITE_LOGPIPE_SENDER_MAX_BUFFER_SIZE:200}
       # The minimum flush elements.
-      min_flush_events: ${SATELLITE_PIPE1_SENDER_MIN_FLUSH_EVENTS:100}
+      min_flush_events: ${SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS:100}
       client_name: kafka-client
       forwarders:
         - plugin_name: nativelog-kafka-forwarder

@@ -29,7 +29,10 @@ import (
 	"syscall"
 	"time"
 
+	"github.com/sirupsen/logrus"
+
 	"github.com/grandecola/mmap"
+
 	"google.golang.org/protobuf/proto"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
@@ -67,7 +70,8 @@ type Queue struct {
 	flushChannel           chan struct{}  // The flushChannel channel would receive a signal when the unflushedNum reach the flush_ceiling_num.
 	insufficientMemChannel chan struct{}  // Notify when memory is insufficient
 	sufficientMemChannel   chan struct{}  // Notify when memory is sufficient
-	markReadChannel        chan int64
+	markReadChannel        chan int64     // Transfer the read segmentID to do ummap operation.
+	ready                  bool           // The status of the queue.
 
 	// control components
 	ctx        context.Context    // Parent ctx
@@ -143,10 +147,15 @@ func (q *Queue) Initialize() error {
 	q.showDownWg.Add(2)
 	go q.segmentSwapper()
 	go q.flush()
+	q.ready = true
 	return nil
 }
 
 func (q *Queue) Enqueue(e *protocol.Event) error {
+	if !q.ready {
+		log.Logger.WithField("pipe", q.CommonFields.PipeName).Warnf("the enqueue operation would be ignored because the queue was closed.")
+		return api.ErrClosed
+	}
 	data, err := proto.Marshal(e)
 	if err != nil {
 		return err
@@ -158,6 +167,10 @@ func (q *Queue) Enqueue(e *protocol.Event) error {
 }
 
 func (q *Queue) Dequeue() (*api.SequenceEvent, error) {
+	if !q.ready {
+		log.Logger.WithField("pipe", q.CommonFields.PipeName).Warnf("the dequeue operation would be ignored because the queue was closed.")
+		return nil, api.ErrClosed
+	}
 	data, id, offset, err := q.dequeue()
 	if err != nil {
 		return nil, err
@@ -180,8 +193,10 @@ func (q *Queue) Close() error {
 	q.showDownWg.Wait()
 	for i, segment := range q.segments {
 		if segment != nil {
-			err := segment.Unmap()
-			if err != nil {
+			if err := segment.Flush(syscall.MS_SYNC); err != nil {
+				log.Logger.Errorf("cannot unmap the segments: %d, %v", i, err)
+			}
+			if err := segment.Unmap(); err != nil {
 				log.Logger.Errorf("cannot unmap the segments: %d, %v", i, err)
 			}
 		}
@@ -189,10 +204,18 @@ func (q *Queue) Close() error {
 	if err := q.meta.Close(); err != nil {
 		log.Logger.Errorf("cannot unmap the metadata: %v", err)
 	}
+	q.ready = false
 	return nil
 }
 
 func (q *Queue) Ack(lastOffset event.Offset) {
+	if !q.ready {
+		log.Logger.WithFields(logrus.Fields{
+			"pipe":   q.CommonFields.PipeName,
+			"offset": lastOffset,
+		}).Warnf("the ack operation would be ignored because the queue was closed.")
+		return
+	}
 	id, offset, err := q.decodeOffset(lastOffset)
 	if err != nil {
 		log.Logger.Errorf("cannot ack queue with the offset:%s", lastOffset)
