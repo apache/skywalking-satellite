@@ -86,7 +86,7 @@ func (q *Queue) Description() string {
 
 func (q *Queue) DefaultConfig() string {
 	return `
-# The size of each segment. Default value is 128K. The unit is Byte.
+# The size of each segment. Default value is 256K. The unit is Byte.
 segment_size: 262114
 # The max num of segments in memory. Default value is 10.
 max_in_mem_segments: 10
