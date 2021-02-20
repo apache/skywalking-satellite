@@ -14,24 +14,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM busybox
+FROM golang:1.15 as build
 
-ARG DIST_NAME='skywalking-satellite-latest-bin'
-ARG HOME='/skywalking-satellite'
+ARG VERSION="latest"
 
-COPY "$DIST_NAME.tgz" /
+ENV CGO_ENABLED=0
 
-RUN set -ex; \
-    tar -xzf "$DIST_NAME.tgz"; \
-    rm -rf "$DIST_NAME.tgz"; \
-    ls "$DIST_NAME/bin" |grep -v linux-amd64| xargs -i echo "$DIST_NAME/bin/{}"|xargs rm -rf; \
-    mkdir "$HOME"; \
-    mv "$DIST_NAME"/* "$HOME";
+WORKDIR /src
 
-COPY entrypoint.sh "$HOME"/bin
+COPY . .
 
-WORKDIR /skywalking-satellite
+RUN VERSION=$VERSION make linux
+RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-amd64 /src/bin/skywalking-satellite
+
+FROM scratch
+
+VOLUME /skywalking/configs
+
+WORKDIR /skywalking
+
+COPY --from=build /src/bin/skywalking-satellite /
+COPY --from=build /src/configs /skywalking/configs
 
 EXPOSE 12800 11800 1234
 
-ENTRYPOINT ["/bin/sh","bin/entrypoint.sh"]
+CMD ["/skywalking-satellite", "start", "--config", "/skywalking/configs/satellite_config.yaml"]
