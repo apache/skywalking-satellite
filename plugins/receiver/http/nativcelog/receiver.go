@@ -36,8 +36,8 @@ import (
 )
 
 const (
-	Name      = "http-log-receiver"
-	eventName = "http-log-event"
+	Name      = "http-nativelog-receiver"
+	eventName = "http-nativelog-event"
 	success   = "success"
 	failing   = "failing"
 )

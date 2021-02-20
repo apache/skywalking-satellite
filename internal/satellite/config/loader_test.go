@@ -85,54 +85,60 @@ func params() *SatelliteConfig {
 					"brokers":                "127.0.0.1:9092",
 					"version":                "2.1.1",
 					"commonfields_pipe_name": "sharing",
+					"ca_pem_path":            "ca.pem",
+					"client_key_path":        "client.key",
+					"client_pem_path":        "client.pem",
+					"enable_TLS":             false,
 				},
 			},
 			Servers: []plugin.Config{
 				{
 					"plugin_name":            "grpc-server",
 					"commonfields_pipe_name": "sharing",
+					"address":                ":11800",
+					"tls_cert_file":          "",
+					"tls_key_file":           "",
 				},
 				{
 					"plugin_name":            "prometheus-server",
-					"address":                ":8090",
+					"address":                ":1234",
 					"commonfields_pipe_name": "sharing",
+					"endpoint":               "/metrics",
 				},
 			},
 		},
 		Pipes: []*PipeConfig{
 			{
 				PipeCommonConfig: &config.CommonFields{
-					PipeName: "pipe1",
+					PipeName: "logpipe",
 				},
 
 				Gatherer: &gatherer.GathererConfig{
 					ServerName: "grpc-server",
 					CommonFields: &config.CommonFields{
-						PipeName: "pipe1",
+						PipeName: "logpipe",
 					},
 					ReceiverConfig: plugin.Config{
 						"plugin_name":            "grpc-nativelog-receiver",
-						"commonfields_pipe_name": "pipe1",
+						"commonfields_pipe_name": "logpipe",
 					},
 					QueueConfig: plugin.Config{
-						"plugin_name":            "mmap-queue",
-						"segment_size":           524288,
-						"max_in_mem_segments":    6,
-						"queue_dir":              "pipe1-log-grpc-receiver-queue",
-						"commonfields_pipe_name": "pipe1",
+						"commonfields_pipe_name": "logpipe",
+						"plugin_name":            "memory-queue",
+						"event_buffer_size":      5000,
 					},
 				},
 				Processor: &processor.ProcessorConfig{
 					CommonFields: &config.CommonFields{
-						PipeName: "pipe1",
+						PipeName: "logpipe",
 					},
 				},
 				Sender: &sender.SenderConfig{
 					CommonFields: &config.CommonFields{
-						PipeName: "pipe1",
+						PipeName: "logpipe",
 					},
 					FallbackerConfig: plugin.Config{
-						"commonfields_pipe_name": "pipe1",
+						"commonfields_pipe_name": "logpipe",
 						"plugin_name":            "none-fallbacker",
 					},
 					FlushTime:      1000,
@@ -143,7 +149,7 @@ func params() *SatelliteConfig {
 						{
 							"plugin_name":            "nativelog-kafka-forwarder",
 							"topic":                  "log-topic",
-							"commonfields_pipe_name": "pipe1",
+							"commonfields_pipe_name": "logpipe",
 						},
 					},
 				},

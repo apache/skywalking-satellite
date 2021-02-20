@@ -18,7 +18,6 @@
 package sender
 
 import (
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/buffer"
 	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
@@ -31,7 +30,6 @@ import (
 
 // NewSender crate a Sender.
 func NewSender(cfg *api.SenderConfig, g gatherer.Gatherer) api.Sender {
-	log.Logger.Infof("sender module of %s namespace is being initialized", cfg.PipeName)
 	s := &Sender{
 		config:            cfg,
 		runningForwarders: []forwarder.Forwarder{},

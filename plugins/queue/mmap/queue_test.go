@@ -48,6 +48,7 @@ func initMmapQueue(cfg plugin.Config) (*Queue, error) {
 		config[k] = v
 	}
 	q := api.GetQueue(config)
+	q.(*Queue).PipeName = "test-pipe"
 	if q == nil {
 		return nil, fmt.Errorf("cannot get a default config mmap queue from the registry")
 	}
@@ -58,7 +59,7 @@ func initMmapQueue(cfg plugin.Config) (*Queue, error) {
 }
 
 func cleanTestQueue(t *testing.T, q api.Queue) {
-	if err := os.RemoveAll(q.(*Queue).QueueDir); err != nil {
+	if err := os.RemoveAll(q.(*Queue).queueName); err != nil {
 		t.Errorf("cannot remove test queue dir, %v", err)
 	}
 }
@@ -148,9 +149,7 @@ func getLargeEvent(n int) *protocol.Event {
 }
 
 func TestQueue_Normal(t *testing.T) {
-	q, err := initMmapQueue(plugin.Config{
-		"queue_dir": "TestQueue_Normal",
-	})
+	q, err := initMmapQueue(plugin.Config{})
 	defer cleanTestQueue(t, q)
 	if err != nil {
 		t.Fatalf("error in initializing the mmap queue: %v", err)
@@ -173,7 +172,6 @@ func TestQueue_Normal(t *testing.T) {
 
 func TestQueue_ReadHistory(t *testing.T) {
 	cfg := plugin.Config{
-		"queue_dir":    "TestQueue_ReadHistory",
 		"segment_size": 10240,
 	}
 
@@ -236,7 +234,6 @@ func TestQueue_ReadHistory(t *testing.T) {
 
 func TestQueue_PushOverCeilingMsg(t *testing.T) {
 	cfg := plugin.Config{
-		"queue_dir":      "TestQueue_PushOverCeilingMsg",
 		"segment_size":   10240,
 		"max_event_size": 1024 * 8,
 	}
@@ -256,7 +253,6 @@ func TestQueue_PushOverCeilingMsg(t *testing.T) {
 
 func TestQueue_FlushWhenReachNum(t *testing.T) {
 	cfg := plugin.Config{
-		"queue_dir":         "TestQueue_FlushWhenReachNum",
 		"segment_size":      10240,
 		"flush_ceiling_num": 5,
 		"flush_period":      1000 * 60,
@@ -284,7 +280,6 @@ func TestQueue_FlushWhenReachNum(t *testing.T) {
 
 func TestQueue_FlushPeriod(t *testing.T) {
 	cfg := plugin.Config{
-		"queue_dir":         "TestQueue_FlushPeriod",
 		"segment_size":      10240,
 		"flush_ceiling_num": 50,
 		"flush_period":      1000 * 1,
@@ -312,7 +307,6 @@ func TestQueue_FlushPeriod(t *testing.T) {
 
 func TestQueue_MemCost(t *testing.T) {
 	cfg := plugin.Config{
-		"queue_dir":           "TestQueue_MemCost",
 		"segment_size":        1024 * 4,
 		"max_in_mem_segments": 8,
 	}
@@ -340,7 +334,6 @@ func TestQueue_MemCost(t *testing.T) {
 
 func TestQueue_OverSegmentEvent(t *testing.T) {
 	cfg := plugin.Config{
-		"queue_dir":    "TestQueue_OverSegmentEvent",
 		"segment_size": 1024 * 4,
 	}
 	q, err := initMmapQueue(cfg)
@@ -363,7 +356,6 @@ func TestQueue_OverSegmentEvent(t *testing.T) {
 
 func TestQueue_ReusingFiles(t *testing.T) {
 	cfg := plugin.Config{
-		"queue_dir":               "TestQueue_ReusingFiles",
 		"segment_size":            1024 * 4,
 		"queue_capacity_segments": 5,
 		"max_event_size":          1024 * 3,
@@ -394,7 +386,6 @@ func TestQueue_ReusingFiles(t *testing.T) {
 
 func TestQueue_Empty(t *testing.T) {
 	cfg := plugin.Config{
-		"queue_dir":               "TestQueue_ReusingFiles",
 		"segment_size":            1024 * 4,
 		"queue_capacity_segments": 10,
 	}
@@ -422,7 +413,6 @@ func TestQueue_Empty(t *testing.T) {
 
 func TestQueue_Full(t *testing.T) {
 	cfg := plugin.Config{
-		"queue_dir":               "TestQueue_ReusingFiles",
 		"segment_size":            1024 * 4,
 		"queue_capacity_segments": 10,
 	}

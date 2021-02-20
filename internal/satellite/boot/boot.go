@@ -22,11 +22,12 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"os/signal"
 	"reflect"
 	"sync"
 	"syscall"
 
-	"os/signal"
+	"github.com/sirupsen/logrus"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/config"
@@ -114,7 +115,10 @@ func prepareModules(container ModuleContainer) error {
 				for _, preparedModule := range preparedModules {
 					preparedModule.Shutdown()
 				}
-				log.Logger.Errorf("%s module of %s namespace is error in preparing stage, error is %v", reflect.TypeOf(m).String(), ns, err)
+				log.Logger.WithFields(logrus.Fields{
+					"pipe":   ns,
+					"module": reflect.TypeOf(m).String(),
+				}).Errorf("error in preparing stage: %v", err)
 				return err
 			}
 		}
@@ -125,7 +129,6 @@ func prepareModules(container ModuleContainer) error {
 // bootModules boot all modules.
 func bootModules(ctx context.Context, container ModuleContainer) {
 	log.Logger.Infof("satellite is starting...")
-
 	var wg sync.WaitGroup
 	for _, modules := range container {
 		wg.Add(len(modules))

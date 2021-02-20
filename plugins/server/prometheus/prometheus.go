@@ -62,14 +62,15 @@ func (s *Server) Prepare() error {
 
 func (s *Server) Start() error {
 	// add go info metrics.
-	telemetry.Registerer.MustRegister(prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{}))
-	telemetry.Registerer.MustRegister(prometheus.NewGoCollector())
+	telemetry.Register(telemetry.WithMeta("processor_collector", prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{})),
+		telemetry.WithMeta("go_collector", prometheus.NewGoCollector()))
 	// register prometheus metrics exporter handler.
 	s.server.Handle(s.Endpoint, promhttp.HandlerFor(telemetry.Gatherer, promhttp.HandlerOpts{ErrorLog: log.Logger}))
 	go func() {
+		log.Logger.WithField("address", s.Address).Info("prometheus server is starting...")
 		err := http.ListenAndServe(s.Address, s.server)
 		if err != nil {
-			log.Logger.Errorf("start prometheus http server error: %v", err)
+			log.Logger.WithField("address", s.Address).Infof("prometheus server has failure when starting: %v", err)
 		}
 	}()
 	return nil

@@ -22,6 +22,8 @@ BINARY = skywalking-satellite
 RELEASE_BIN = skywalking-satellite-$(VERSION)-bin
 RELEASE_SRC = skywalking-satellite-$(VERSION)-src
 
+PLUGIN_DOC_DIR = docs/en/setup/plugins
+
 OSNAME := $(if $(findstring Darwin,$(shell uname)),darwin,linux)
 
 SH = sh
@@ -43,7 +45,7 @@ ARCH = amd64
 
 SHELL = /bin/bash
 
-all: deps verify build check
+all: deps verify build gen-docs check
 
 .PHONY: tools
 tools:
@@ -52,14 +54,19 @@ tools:
 deps: tools
 	$(GO_GET) -v -t -d ./...
 
-.PHONY: gen
-gen:
+.PHONY: gen-codes
+gen-codes:
 	$(PROTOC) --version || sh tools/install_protoc.sh
 	/bin/sh tools/protocol_gen.sh
 
+.PHONY: gen-docs
+gen-docs: build
+	rm -rf $(PLUGIN_DOC_DIR)
+	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=$(PLUGIN_DOC_DIR)
+
 .PHONY: lint
 lint: tools
-	$(GO_LINT) run -v ./...
+	$(GO_LINT) run -v --timeout 5m ./...
 
 .PHONY: test
 test: clean
@@ -73,11 +80,10 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: clean deps linux darwin windows
+build: clean deps gen-codes linux darwin windows
 
 .PHONY: check
 check: clean
-	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=docs/en/setup/plugins
 	$(GO) mod tidy > /dev/null
 	@if [ ! -z "`git status -s`" ]; then \
 		echo "Following files are not consistent with CI:"; \
@@ -111,15 +117,12 @@ release-bin: build
 	-tar -zcvf $(RELEASE_BIN).tgz $(RELEASE_BIN)
 	-rm -rf $(RELEASE_BIN)
 
-
-
 .PHONY: release
 release: verify release-src release-bin
 	gpg --batch --yes --armor --detach-sig $(RELEASE_SRC).tgz
 	shasum -a 512 $(RELEASE_SRC).tgz > $(RELEASE_SRC).tgz.sha512
 	gpg --batch --yes --armor --detach-sig $(RELEASE_BIN).tgz
 	shasum -a 512 $(RELEASE_BIN).tgz > $(RELEASE_BIN).tgz.sha512
-
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):

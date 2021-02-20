@@ -71,11 +71,12 @@ func (q *Queue) Enqueue(e *protocol.Event) error {
 func (q *Queue) Dequeue() (*api.SequenceEvent, error) {
 	element, err := q.buffer.Dequeue()
 	if err != nil {
-		log.Logger.Errorf("error in dequeue: %v", err)
+		log.Logger.Debugf("error in dequeue: %v", err)
 		return nil, api.ErrEmpty
 	}
 	return &api.SequenceEvent{
-		Event: element.(*protocol.Event),
+		Event:  element.(*protocol.Event),
+		Offset: "no_offset_in_memory_queue",
 	}, nil
 }
 

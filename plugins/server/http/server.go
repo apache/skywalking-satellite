@@ -53,10 +53,11 @@ func (s *Server) Prepare() error {
 }
 
 func (s *Server) Start() error {
+	log.Logger.WithField("address", s.Address).Info("http server is starting...")
 	go func() {
 		err := http.ListenAndServe(s.Address, s.Server)
 		if err != nil {
-			log.Logger.Errorf("start http server error: %v", err)
+			log.Logger.WithField("address", s.Address).Infof("http server has failure when starting: %v", err)
 		}
 	}()
 	return nil

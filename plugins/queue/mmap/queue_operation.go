@@ -43,6 +43,8 @@ const uInt64Size = 8
 // enqueue writes the data into the file system. It first writes the length of the data,
 // then the data itself. It means the whole data may not exist in the one segments.
 func (q *Queue) enqueue(bytes []byte) error {
+	q.lock.Lock()
+	defer q.lock.Unlock()
 	if q.isFull() {
 		return api.ErrFull
 	}
@@ -67,6 +69,8 @@ func (q *Queue) enqueue(bytes []byte) error {
 // dequeue reads the data from the file system. It first reads the length of the data,
 // then the data itself. It means the whole data may not exist in the one segments.
 func (q *Queue) dequeue() (data []byte, rid, roffset int64, err error) {
+	q.lock.Lock()
+	defer q.lock.Unlock()
 	if q.isEmpty() {
 		return nil, 0, 0, api.ErrEmpty
 	}

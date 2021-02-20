@@ -90,8 +90,9 @@ func (s *Server) Prepare() error {
 
 func (s *Server) Start() error {
 	go func() {
+		log.Logger.WithField("address", s.Address).Info("grpc server is starting...")
 		if err := s.server.Serve(s.listener); err != nil {
-			log.Logger.Fatalf("failed to open a grpc serve: %v", err)
+			log.Logger.WithField("address", s.Address).Infof("grpc server has failure when starting: %v", err)
 		}
 	}()
 	return nil
