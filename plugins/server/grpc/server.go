@@ -61,9 +61,9 @@ max_recv_msg_size: 2097152
 # The max concurrent stream channels.
 max_concurrent_streams: 32
 # The TLS cert file path.
-tls_cert_file: 
+tls_cert_file: ""
 # The TLS key file path.
-tls_key_file: 
+tls_key_file: ""
 `
 }
 
@@ -99,7 +99,8 @@ func (s *Server) Start() error {
 }
 
 func (s *Server) Close() error {
-	s.server.GracefulStop()
+	s.server.Stop()
+	log.Logger.Info("grpc server is closed")
 	return nil
 }
 

@@ -19,9 +19,12 @@ package api
 
 import (
 	"context"
+	"time"
 )
 
-// TODO add metrics func
+// ShutdownHookTime is the global shutdown hook time.
+var ShutdownHookTime = time.Second * 5
+
 // Module id a custom plugin interface, which defines the processing.
 type Module interface {
 

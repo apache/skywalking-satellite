@@ -26,6 +26,7 @@ import (
 	"reflect"
 	"sync"
 	"syscall"
+	"time"
 
 	"github.com/sirupsen/logrus"
 
@@ -44,10 +45,11 @@ import (
 type ModuleContainer map[string][]api.Module
 
 // Start Satellite.
-func Start(cfg *config.SatelliteConfig) error {
+func Start(cfg *config.SatelliteConfig, shutdownHookTime time.Duration) error {
 	// Init the global components.
 	log.Init(cfg.Logger)
 	telemetry.Init(cfg.Telemetry)
+	api.ShutdownHookTime = shutdownHookTime
 	// register the supported plugin types to the registry
 	plugins.RegisterPlugins()
 	// use context to receive the external signal.

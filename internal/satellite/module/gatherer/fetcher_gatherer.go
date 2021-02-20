@@ -24,6 +24,7 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
@@ -74,7 +75,6 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 				}
 			case <-childCtx.Done():
 				cancel()
-				f.Shutdown()
 				return
 			}
 		}
@@ -107,6 +107,7 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 
 func (f *FetcherGatherer) Shutdown() {
 	log.Logger.Infof("fetcher gatherer module of %s namespace is closing", f.config.PipeName)
+	time.Sleep(module.ShutdownHookTime)
 	if err := f.runningQueue.Close(); err != nil {
 		log.Logger.Errorf("failure occurs when closing %s queue  in %s namespace :%v", f.runningQueue.Name(), f.config.PipeName, err)
 	}

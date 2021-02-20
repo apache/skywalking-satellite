@@ -26,6 +26,7 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
@@ -82,7 +83,6 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 				}
 			case <-childCtx.Done():
 				cancel()
-				r.Shutdown()
 				return
 			}
 		}
@@ -118,6 +118,7 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 
 func (r *ReceiverGatherer) Shutdown() {
 	log.Logger.WithField("pipe", r.config.PipeName).Infof("receiver gatherer module is closing...")
+	time.Sleep(module.ShutdownHookTime)
 	if err := r.runningQueue.Close(); err != nil {
 		log.Logger.WithFields(logrus.Fields{
 			"pipe":  r.config.PipeName,

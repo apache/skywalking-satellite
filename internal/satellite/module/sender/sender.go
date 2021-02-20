@@ -26,6 +26,7 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/buffer"
 	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
@@ -91,10 +92,10 @@ func (s *Sender) Boot(ctx context.Context) {
 			case status := <-s.listener:
 				switch status {
 				case client.Connected:
-					log.Logger.Infof("sender module of %s namespace is notified the connection connected", s.config.PipeName)
+					log.Logger.WithField("pipe", s.config.PipeName).Info("the client connection of the sender module is connected")
 					s.logicInput = s.physicalInput
 				case client.Disconnect:
-					log.Logger.Infof("sender module of %s namespace is notified the connection disconnected", s.config.PipeName)
+					log.Logger.WithField("pipe", s.config.PipeName).Info("the client connection of the sender module is disconnected")
 					s.logicInput = nil
 				}
 			case <-timeTicker.C:
@@ -136,16 +137,24 @@ func (s *Sender) Boot(ctx context.Context) {
 // Shutdown closes the channels and tries to force forward the events in the buffer.
 func (s *Sender) Shutdown() {
 	log.Logger.WithField("pipe", s.config.PipeName).Info("sender module is closing")
-	close(s.logicInput)
-	for buf := range s.flushChannel {
-		s.consume(buf)
+	close(s.physicalInput)
+	ticker := time.NewTicker(module.ShutdownHookTime)
+	for {
+		select {
+		case <-ticker.C:
+			s.consume(s.buffer)
+			return
+		case b := <-s.flushChannel:
+			s.consume(b)
+		}
 	}
-	s.consume(s.buffer)
-	close(s.flushChannel)
 }
 
 // consume would forward the events by type and ack this batch.
 func (s *Sender) consume(batch *buffer.BatchBuffer) {
+	if batch.Len() == 0 {
+		return
+	}
 	log.Logger.WithFields(logrus.Fields{
 		"pipe":   s.config.PipeName,
 		"offset": batch.Last(),
