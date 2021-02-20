@@ -14,6 +14,6 @@ From here you can learn all about **SkyWalking Satellite's** architecture, how t
 
 - [FAQs](en/FAQ/README.md). A manifest of already known setup problems, secondary developments experiments. When you are facing a problem, check here first.
 
-We're always looking for help improving our documentation and codes, so please don’t hesitate to [file an issue](https://github.com/apache/skywalking/issues/new) 
+We're always looking for help improve our documentation and codes, so please don’t hesitate to [file an issue](https://github.com/apache/skywalking/issues/new) 
 if you see any problem. 
 Or better yet, submit your own contributions through pull request to help make them better.

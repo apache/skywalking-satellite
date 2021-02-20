@@ -36,7 +36,7 @@ GO_GET = $(GO) get
 GO_TEST = $(GO) test
 GO_LINT = $(GO_PATH)/bin/golangci-lint
 GO_BUILD_FLAGS = -v
-GO_BUILD_LDFLAGS = -X main.version=$(VERSION)
+GO_BUILD_LDFLAGS = -X main.version=$(VERSION) -w -s
 GQL_GEN = $(GO_PATH)/bin/gqlgen
 
 PLATFORMS := linux darwin windows
@@ -94,8 +94,8 @@ check: clean
 	fi
 
 .PHONY: docker
-docker: release-bin
-	/bin/sh tools/docker_build.sh $(VERSION)
+docker:
+	docker build --build-arg VERSION=$(VERSION) -t apache/skywalking-satellite:$(VERSION) --no-cache . -f docker/Dockerfile
 
 release-src: clean
 	-tar -zcvf $(RELEASE_SRC).tgz \
