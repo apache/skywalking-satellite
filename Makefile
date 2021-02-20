@@ -45,7 +45,7 @@ ARCH = amd64
 
 SHELL = /bin/bash
 
-all: deps verify build check
+all: deps verify build gen-docs check
 
 .PHONY: tools
 tools:
@@ -54,10 +54,15 @@ tools:
 deps: tools
 	$(GO_GET) -v -t -d ./...
 
-.PHONY: gen
-gen:
+.PHONY: gen-codes
+gen-codes:
 	$(PROTOC) --version || sh tools/install_protoc.sh
 	/bin/sh tools/protocol_gen.sh
+
+.PHONY: gen-docs
+gen-docs: build
+	rm -rf $(PLUGIN_DOC_DIR)
+	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=$(PLUGIN_DOC_DIR)
 
 .PHONY: lint
 lint: tools
@@ -75,16 +80,10 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: clean deps
-	rm -rf bin/*
-	make linux
-	make darwin
-	make windows
+build: clean deps gen-codes linux darwin windows
 
 .PHONY: check
 check: clean
-	rm -rf $(PLUGIN_DOC_DIR)
-	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=$(PLUGIN_DOC_DIR)
 	$(GO) mod tidy > /dev/null
 	@if [ ! -z "`git status -s`" ]; then \
 		echo "Following files are not consistent with CI:"; \
@@ -118,15 +117,12 @@ release-bin: build
 	-tar -zcvf $(RELEASE_BIN).tgz $(RELEASE_BIN)
 	-rm -rf $(RELEASE_BIN)
 
-
-
 .PHONY: release
 release: verify release-src release-bin
 	gpg --batch --yes --armor --detach-sig $(RELEASE_SRC).tgz
 	shasum -a 512 $(RELEASE_SRC).tgz > $(RELEASE_SRC).tgz.sha512
 	gpg --batch --yes --armor --detach-sig $(RELEASE_BIN).tgz
 	shasum -a 512 $(RELEASE_BIN).tgz > $(RELEASE_BIN).tgz.sha512
-
 
 .PHONY: $(PLATFORMS)
 $(PLATFORMS):
