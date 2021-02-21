@@ -25,16 +25,18 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
-// Fallbacker is a timer fallbacker when forward fails. `latencyFactor` is the standard retry duration,
-// and the time for each retry is expanded by 2 times until the number of retries reaches the maximum.
+const Name = "timer-fallbacker"
+
+// Fallbacker is a timer fallbacker when forward fails.
 type Fallbacker struct {
 	config.CommonFields
-	maxTimes      int `mapstructure:"max_times"`
-	latencyFactor int `mapstructure:"latency_factor"`
+	MaxTimes       int `mapstructure:"max_times"`
+	LatencyFactor  int `mapstructure:"latency_factor"`
+	MaxLatencyTIme int `mapstructure:"max_latency_time"`
 }
 
 func (t *Fallbacker) Name() string {
-	return "timer-fallbacker"
+	return Name
 }
 
 func (t *Fallbacker) Description() string {
@@ -43,17 +45,25 @@ func (t *Fallbacker) Description() string {
 
 func (t *Fallbacker) DefaultConfig() string {
 	return `
+# The forwarder max retry times.
 max_times: 3
+# The latency_factor is the standard retry duration, and the time for each retry is expanded by 2 times until the number 
+# of retries reaches the maximum.(Time unit is millisecond.)
 latency_factor: 2000
+# The max retry latency time.(Time unit is millisecond.)
+max_latency_time: 5000
 `
 }
 
 func (t *Fallbacker) FallBack(batch event.BatchEvents, forward api.ForwardFunc) bool {
-	currentLatency := t.latencyFactor
-	for i := 1; i < t.maxTimes; i++ {
+	currentLatency := t.LatencyFactor
+	for i := 1; i < t.MaxTimes; i++ {
 		time.Sleep(time.Duration(currentLatency) * time.Millisecond)
 		if err := forward(batch); err != nil {
 			currentLatency *= 2
+			if currentLatency > t.MaxLatencyTIme {
+				currentLatency = t.MaxLatencyTIme
+			}
 		} else {
 			return true
 		}
