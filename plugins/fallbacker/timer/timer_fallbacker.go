@@ -32,7 +32,7 @@ type Fallbacker struct {
 	config.CommonFields
 	MaxAttempts        int `mapstructure:"max_attempts"`
 	ExponentialBackoff int `mapstructure:"exponential_backoff"`
-	MaxLatencyTime     int `mapstructure:"max_latency_time"`
+	MaxBackoff         int `mapstructure:"max_backoff"`
 }
 
 func (t *Fallbacker) Name() string {
@@ -50,9 +50,9 @@ max_attempts: 3
 # The exponential_backoff is the standard retry duration, and the time for each retry is expanded
 # by 2 times until the number of retries reaches the maximum.(Time unit is millisecond.)
 exponential_backoff: 2000
-# The max latency time used in retrying, which would override the latency time when the latency time
+# The max backoff time used in retrying, which would override the latency time when the latency time
 # with exponential increasing larger than it.(Time unit is millisecond.)
-max_latency_time: 5000
+max_backoff: 5000
 `
 }
 
@@ -62,8 +62,8 @@ func (t *Fallbacker) FallBack(batch event.BatchEvents, forward api.ForwardFunc) 
 		time.Sleep(time.Duration(currentLatency) * time.Millisecond)
 		if err := forward(batch); err != nil {
 			currentLatency *= 2
-			if currentLatency > t.MaxLatencyTime {
-				currentLatency = t.MaxLatencyTime
+			if currentLatency > t.MaxBackoff {
+				currentLatency = t.MaxBackoff
 			}
 		} else {
 			return true

@@ -67,7 +67,7 @@ func TestFallbacker_FallBack1(t1 *testing.T) {
 			args: plugin.Config{
 				"max_attempts":        5,
 				"exponential_backoff": 200,
-				"max_latency_time":    3000,
+				"max_backoff":         3000,
 			},
 			want:      true,
 			wantCount: 4,
@@ -77,7 +77,7 @@ func TestFallbacker_FallBack1(t1 *testing.T) {
 			args: plugin.Config{
 				"max_attempts":        10,
 				"exponential_backoff": 20,
-				"max_latency_time":    30000000,
+				"max_backoff":         30000000,
 			},
 			want:      true,
 			wantCount: 4,
