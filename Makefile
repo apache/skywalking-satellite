@@ -80,7 +80,7 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: clean deps gen-codes linux darwin windows
+build: clean gen-codes deps linux darwin windows
 
 .PHONY: check
 check: clean
@@ -104,7 +104,7 @@ release-src: clean
 	--exclude .DS_Store \
 	--exclude .github \
 	--exclude $(RELEASE_SRC).tgz \
-	--exclude protocol/skywalking-data-collect-protocol \
+	--exclude protocol/gen-codes \
 	.
 
 release-bin: build
