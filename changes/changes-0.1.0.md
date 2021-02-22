@@ -23,4 +23,4 @@ Release Notes.
 
 #### Issues and PR
 - All issues  are [here](https://github.com/apache/skywalking/milestone/64?closed=1)  
-- All and pull requests are [here](https://github.com/apache/skywalking-satellite/pulls?q=is%3Aopen+is%3Apr+milestone%3A0.1.0)
+- All pull requests are [here](https://github.com/apache/skywalking-satellite/pulls?q=is%3Aopen+is%3Apr+milestone%3A0.1.0)
