@@ -24,7 +24,7 @@ export VERSION=<the version to release>
 git clone --recurse-submodules git@github.com:apache/skywalking-satellite && cd skywalking-satellite
 git tag -a "$VERSION" -m "Release Apache SkyWalking-Satellite $VERSION"
 git push --tags
-make clean && make release
+make release
 ```
 
 **In total, six files should be automatically generated in the directory**: `skywalking-satellite-${VERSION}-bin.tgz`, `skywalking-satellite-${VERSION}-src.tgz`, and their corresponding `asc`, `sha512` files.
