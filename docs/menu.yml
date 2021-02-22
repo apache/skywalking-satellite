@@ -1,0 +1,116 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+
+catalog:
+  - name: "Welcome"
+    path: "/readme"
+  - name: "Concepts and Designs"
+    path: "/en/concepts-and-designs/readme"
+    catalog:
+      - name: "What is SkyWalking Satellite?"
+        catalog:
+          - name: "Overview and Core concepts"
+            path: "/en/concepts-and-designs/overview"
+          - name: "Project Goals"
+            path: "/en/concepts-and-designs/project-goals"
+      - name: "Design"
+        catalog:
+          - name: "Module Design"
+            path: "/en/concepts-and-designs/module_design"
+          - name: "Plugin mechanism"
+            path: "/en/concepts-and-designs/plugin_mechanism"
+          - name: "Project Structure"
+            path: "/en/concepts-and-designs/project_structue"
+          - name: "The design of the memory mapped queue"
+            path: "/en/concepts-and-designs/mmap-queue"
+
+  - name: "Setup"
+    path: "/en/setup/readme"
+    catalog:
+      - name: "Configuration"
+        catalog:
+          - name: "Common Configuration"
+            path: "/en/setup/configuration/common"
+          - name: "Sharing Configuration"
+            path: "/en/setup/configuration/sharing-plugins"
+          - name: "Pipe Configuration"
+            path: "/en/setup/configuration/pipe-plugins"
+          - name: "Override Configuration"
+            path: "/en/setup/configuration/override-settings"
+
+      - name: "Plugins"
+        path: "/en/setup/plugins/plugin-list"
+        catalog:
+          - name: "client"
+            catalog:
+              - name: "kafka-client"
+                path: "/en/setup/plugins/client_kafka-client"
+          - name: "fallbacker"
+            catalog:
+              - name: "none-fallbacker"
+                path: "/en/setup/plugins/fallbacker_none-fallbacker"
+              - name: "timer-fallbacker"
+                path: "/en/setup/plugins/fallbacker_timer-fallbacker"
+          - name: "forwarder"
+            catalog:
+              - name: "nativelog-kafka-forwarder"
+                path: "/en/setup/plugins/forwarder_nativelog-kafka-forwarder"
+          - name: "queue"
+            catalog:
+              - name: "memory-queue"
+                path: "/en/setup/plugins/queue_memory-queue"
+              - name: "mmap-queue"
+                path: "/en/setup/plugins/queue_mmap-queue"
+          - name: "receiver"
+            catalog:
+              - name: "grpc-nativelog-receiver"
+                path: "/en/setup/plugins/receiver_grpc-nativelog-receiver"
+              - name: "http-nativelog-receiver"
+                path: "/en/setup/plugins/receiver_http-nativelog-receiver"
+          - name: "server"
+            catalog:
+              - name: "grpc-server"
+                path: "/en/setup/plugins/server_grpc-server"
+              - name: "http-server"
+                path: "/en/setup/plugins/server_http-server"
+              - name: "prometheus-server"
+                path: "/en/setup/plugins/server_http-server"
+
+  - name: "Guides"
+    path: "/en/guides/readme"
+    catalog:
+      - name: "Contribution"
+        catalog:
+          - name: "How to write a plugin"
+            path: "/en/guides/contribution/How-to-write-plugin"
+          - name: "How to release"
+            path: "/en/guides/contribution/How-to-release"
+      - name: "Test"
+        catalog:
+          - name: "How to do unit test"
+            path: "/en/guides/test/How-to-unit-test"
+      - name: "Compile"
+        catalog:
+          - name: "How to compile SkyWalking Satellite"
+            path: "/en/guides/compile/How-to-compile"
+  - name: "FAQs"
+    path: "/en/FAQ/readme"
+
+
+
+
+
