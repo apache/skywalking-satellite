@@ -64,9 +64,11 @@ cd ..
 tar -zcvf ${PRODUCT_NAME}-src.tgz \
 	--exclude bin \
 	--exclude .git \
-	--exclude .idea \
 	--exclude .DS_Store \
 	--exclude .github \
+	--exclude .gitignore \
+	--exclude .gitmodules \
+	--exclude .gitattributes \
 	--exclude ${PRODUCT_NAME}-src.tgz \
 	--exclude protocol/gen-codes \
 	${PRODUCT_NAME}
