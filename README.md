@@ -32,7 +32,7 @@ git submodule init
 git submodule update
 make build
 ```
-If you want to know more details about compiling, please read [the doc](./docs/en/guides/compile/compile.md).
+If you want to know more details about compiling, please read [the doc](docs/en/guides/compile/How-to-compile.md).
 
 
 # Commands
