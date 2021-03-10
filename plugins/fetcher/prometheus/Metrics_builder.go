@@ -144,6 +144,7 @@ func (b *metricBuilder) AddDataPoint(ls labels.Labels, t int64, v float64) error
 
 	b.hasData = true
 
+	// check if the same metric_family
 	if b.currentMf != nil && !b.currentMf.IsSameFamily(metricName) {
 		m, ts, dts := b.currentMf.ToMetric()
 		b.numTimeseries += ts
