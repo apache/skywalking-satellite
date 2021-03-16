@@ -21,7 +21,6 @@ package prometheus
 
 import (
 	"errors"
-	"fmt"
 	"regexp"
 	"strings"
 
@@ -31,7 +30,6 @@ import (
 	"github.com/prometheus/prometheus/pkg/textparse"
 
 	metricspb "github.com/census-instrumentation/opencensus-proto/gen-go/metrics/v1"
-	"go.uber.org/zap"
 )
 
 const (
@@ -60,14 +58,13 @@ type metricBuilder struct {
 	useStartTimeMetric   bool
 	startTimeMetricRegex *regexp.Regexp
 	startTime            float64
-	logger               *zap.Logger
 	currentMf            MetricFamily
 }
 
 // newMetricBuilder creates a MetricBuilder which is allowed to feed all the datapoints from a single prometheus
 // scraped page by calling its AddDataPoint function, and turn them into an opencensus data.MetricsData object
 // by calling its Build function
-func newMetricBuilder(mc MetadataCache, useStartTimeMetric bool, startTimeMetricRegex string, logger *zap.Logger) *metricBuilder {
+func newMetricBuilder(mc MetadataCache, useStartTimeMetric bool, startTimeMetricRegex string) *metricBuilder {
 	var regex *regexp.Regexp
 	if startTimeMetricRegex != "" {
 		regex, _ = regexp.Compile(startTimeMetricRegex)
@@ -75,7 +72,6 @@ func newMetricBuilder(mc MetadataCache, useStartTimeMetric bool, startTimeMetric
 	return &metricBuilder{
 		mc:                   mc,
 		metrics:              make([]*metricspb.Metric, 0),
-		logger:               logger,
 		numTimeseries:        0,
 		droppedTimeseries:    0,
 		useStartTimeMetric:   useStartTimeMetric,
@@ -127,14 +123,14 @@ func (b *metricBuilder) AddDataPoint(ls labels.Labels, t int64, v float64) error
 		// up: 1 if the instance is healthy, i.e. reachable, or 0 if the scrape failed.
 		if metricName == scrapeUpMetricName && v != 1.0 {
 			if v == 0.0 {
-				b.logger.Warn("Failed to scrape Prometheus endpoint",
-					zap.Int64("scrape_timestamp", t),
-					zap.String("target_labels", fmt.Sprintf("%v", lm)))
+				//b.logger.Warn("Failed to scrape Prometheus endpoint",
+				//	zap.Int64("scrape_timestamp", t),
+				//	zap.String("target_labels", fmt.Sprintf("%v", lm)))
 			} else {
-				b.logger.Warn("The 'up' metric contains invalid value",
-					zap.Float64("value", v),
-					zap.Int64("scrape_timestamp", t),
-					zap.String("target_labels", fmt.Sprintf("%v", lm)))
+				//b.logger.Warn("The 'up' metric contains invalid value",
+				//	zap.Float64("value", v),
+				//	zap.Int64("scrape_timestamp", t),
+				//	zap.String("target_labels", fmt.Sprintf("%v", lm)))
 			}
 		}
 		return nil

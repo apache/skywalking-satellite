@@ -21,10 +21,15 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/prometheus/prometheus/discovery"
+	"github.com/prometheus/prometheus/scrape"
+
+	"github.com/ghodss/yaml"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	promConfig "github.com/prometheus/prometheus/config"
+	"github.com/prometheus/prometheus/discovery"
+	sd_config "github.com/prometheus/prometheus/discovery/config"
 )
 
 const (
@@ -41,6 +46,10 @@ type Fetcher struct {
 	Configs []MetricsConfig
 	// components
 	OutputEvents event.BatchEvents
+}
+
+type OriginPrometheus struct {
+	promConfig *promConfig.Config
 }
 
 // MetricsConfig is the struct for Prometheus fetcher
@@ -62,6 +71,10 @@ func (f Fetcher) Description() string {
 func (f Fetcher) DefaultConfig() string {
 	return `
 ## some config here
+scrape_configs:
+ - job_name: 'prometheus'
+   static_configs:
+   - targets: ["foo:9090", "bar:9090"]
 `
 }
 
@@ -70,11 +83,46 @@ func (f Fetcher) Prepare() {
 }
 
 func (f Fetcher) Fetch() event.BatchEvents {
-	// fetch metrics from prometheus endpoints
-	ctx, _ := context.WithCancel(context.Background())
+	// config
+	cfg := &promConfig.Config{}
+	sc := f.DefaultConfig()
+	if err := yaml.Unmarshal([]byte(sc), cfg); err != nil {
+		fmt.Errorf(err.Error())
+	}
+	// manage config
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 	manager := discovery.NewManager(ctx, nil)
 	fmt.Print(manager)
-	// translate to OTLP
+	c := make(map[string]sd_config.ServiceDiscoveryConfig)
+	for _, v := range cfg.ScrapeConfigs {
+		c[v.JobName] = v.ServiceDiscoveryConfig
+	}
+
+	if err := manager.ApplyConfig(c); err != nil {
+		// log err
+	}
+	go func() {
+		if err := manager.Run(); err != nil {
+			// logger.Error("Discovery manager failed", zap.Error(err))
+			// report error
+		}
+	}()
+
+	// fetch metrics from prometheus endpoints && translate to OTLP
+	//var jobsMap *JobsMap
+	qs := &QueueStore{}
+	scrapeManager := scrape.NewManager(nil, qs)
+	if err := scrapeManager.ApplyConfig(cfg); err != nil {
+		// report err and return
+	}
+
+	go func() {
+		if err := scrapeManager.Run(manager.SyncCh()); err != nil {
+			// logger.Error("Scrape manager failed", zap.Error(err))
+			//report error
+		}
+	}()
 
 	// Add to queue
 

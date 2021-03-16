@@ -40,9 +40,13 @@ import (
 type MetricFamily interface {
 	Add(metricName string, ls labels.Labels, t int64, v float64) error
 	IsSameFamily(metricName string) bool
+	// to OTLP metrics
+	// will return 1. metricspb.Metric with timeseries 2. counter all of timeseries 3. count dropped timeseries
 	ToMetric() (*metricspb.Metric, int, int)
 }
 
+// metricFamily
+// mtype metric types in OTLP pb
 type metricFamily struct {
 	name              string
 	mtype             metricspb.MetricDescriptor_Type
@@ -244,11 +248,10 @@ func getBoundary(metricType metricspb.MetricDescriptor_Type, labels labels.Label
 func (mf *metricFamily) ToMetric() (*metricspb.Metric, int, int) {
 	timeseries := make([]*metricspb.TimeSeries, 0, len(mf.groups))
 	switch mf.mtype {
-	// not supported currently
-	// case metricspb.MetricDescriptor_GAUGE_DISTRIBUTION:
-	//	return nil
+	// only cumulative metrics will be processed here
 	case metricspb.MetricDescriptor_CUMULATIVE_DISTRIBUTION:
 		for _, mg := range mf.getGroups() {
+			// translate to oc distribution in order (part of histogram)
 			tss := mg.toDistributionTimeSeries(mf.labelKeysOrdered)
 			if tss != nil {
 				timeseries = append(timeseries, tss)
