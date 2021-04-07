@@ -22,6 +22,7 @@ package meta
 import (
 	"fmt"
 	"path/filepath"
+	"sync"
 	"syscall"
 
 	"github.com/grandecola/mmap"
@@ -60,6 +61,7 @@ type Metadata struct {
 	name     string
 	size     int
 	capacity int
+	lock     sync.RWMutex
 }
 
 // NewMetaData read or create a Metadata with supported metaVersion
@@ -92,76 +94,104 @@ func NewMetaData(metaDir string, capacity int) (*Metadata, error) {
 
 // GetVersion returns the meta version.
 func (m *Metadata) GetVersion() int {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
 	return int(m.metaFile.ReadUint64At(versionPos))
 }
 
 // PutVersion put the version into the memory mapped file.
 func (m *Metadata) PutVersion(version int64) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
 	m.metaFile.WriteUint64At(uint64(version), versionPos)
 }
 
 // GetWritingOffset returns the writing offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetWritingOffset() (segmentID, offset int64) {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
 	return int64(m.metaFile.ReadUint64At(widPos)), int64(m.metaFile.ReadUint64At(woffsetPos))
 }
 
 // PutWritingOffset put the segment ID and the offset of the segment into the writing offset.
 func (m *Metadata) PutWritingOffset(segmentID, offset int64) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
 	m.metaFile.WriteUint64At(uint64(segmentID), widPos)
 	m.metaFile.WriteUint64At(uint64(offset), woffsetPos)
 }
 
 // GetWatermarkOffset returns the watermark offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetWatermarkOffset() (segmentID, offset int64) {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
 	return int64(m.metaFile.ReadUint64At(wmidPos)), int64(m.metaFile.ReadUint64At(wmoffsetPos))
 }
 
 // PutWatermarkOffset put the segment ID and the offset of the segment into the watermark offset.
 func (m *Metadata) PutWatermarkOffset(segmentID, offset int64) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
 	m.metaFile.WriteUint64At(uint64(segmentID), wmidPos)
 	m.metaFile.WriteUint64At(uint64(offset), wmoffsetPos)
 }
 
 // GetCommittedOffset returns the committed offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetCommittedOffset() (segmentID, offset int64) {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
 	return int64(m.metaFile.ReadUint64At(cidPos)), int64(m.metaFile.ReadUint64At(coffsetPos))
 }
 
 // PutCommittedOffset put the segment ID and the offset of the segment into the committed offset.
 func (m *Metadata) PutCommittedOffset(segmentID, offset int64) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
 	m.metaFile.WriteUint64At(uint64(segmentID), cidPos)
 	m.metaFile.WriteUint64At(uint64(offset), coffsetPos)
 }
 
 // GetReadingOffset returns the reading offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetReadingOffset() (segmentID, offset int64) {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
 	return int64(m.metaFile.ReadUint64At(ridPos)), int64(m.metaFile.ReadUint64At(roffsetPos))
 }
 
 // PutReadingOffset put the segment ID and the offset of the segment into the reading offset.
 func (m *Metadata) PutReadingOffset(segmentID, offset int64) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
 	m.metaFile.WriteUint64At(uint64(segmentID), ridPos)
 	m.metaFile.WriteUint64At(uint64(offset), roffsetPos)
 }
 
 // GetCapacity returns the capacity of the queue.
 func (m *Metadata) GetCapacity() int {
+	m.lock.RLock()
+	defer m.lock.RUnlock()
 	return int(m.metaFile.ReadUint64At(capacityPos))
 }
 
 // PutCapacity put the capacity into the memory mapped file.
 func (m *Metadata) PutCapacity(version int64) {
+	m.lock.Lock()
+	defer m.lock.Unlock()
 	m.metaFile.WriteUint64At(uint64(version), capacityPos)
 }
 
 // Flush the memory mapped file to the disk.
 func (m *Metadata) Flush() error {
+	m.lock.Lock()
+	defer m.lock.Unlock()
 	return m.metaFile.Flush(syscall.MS_SYNC)
 }
 
 // Close do Flush operation and unmap the memory mapped file.
 func (m *Metadata) Close() error {
-	if err := m.Flush(); err != nil {
+	m.lock.Lock()
+	defer m.lock.Unlock()
+	if err := m.metaFile.Flush(syscall.MS_SYNC); err != nil {
 		return err
 	}
 	return m.metaFile.Unmap()

@@ -28,8 +28,10 @@ export GEN_CODE_PATH=protocol/gen-codes
 
 export COLLECT_PROTOCOL_MODULE=skywalking/network
 
-go get -u google.golang.org/protobuf/cmd/protoc-gen-go@v1.25.0
-go get -u google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1.0
+export GO111MODULE=on
+go get google.golang.org/protobuf/cmd/protoc-gen-go@v1.26.0
+go get google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.1.0
+export PATH="$PATH:$(go env GOPATH)/bin"
 
 # generate codes by merged proto files
 rm -rf $GEN_CODE_PATH && rm -rf $PROTO_HOME

@@ -20,6 +20,7 @@ package sender
 import (
 	"context"
 	"sync"
+	"sync/atomic"
 	"time"
 
 	"github.com/sirupsen/logrus"
@@ -51,11 +52,11 @@ type Sender struct {
 	gatherer gatherer.Gatherer
 
 	// self components
-	logicInput    chan *event.OutputEventContext // logic input channel
-	physicalInput chan *event.OutputEventContext // physical input channel
-	listener      chan client.ClientStatus       // client status listener
-	flushChannel  chan *buffer.BatchBuffer       // forwarder flush channel
-	buffer        *buffer.BatchBuffer            // cache the downstream input data
+	input        chan *event.OutputEventContext // physical input channel
+	listener     chan client.ClientStatus       // client status listener
+	flushChannel chan *buffer.BatchBuffer       // forwarder flush channel
+	buffer       *buffer.BatchBuffer            // cache the downstream input data
+	blocking     int32                          // the status of input channel
 
 	// metrics
 	sendCounter *telemetry.Counter
@@ -65,7 +66,6 @@ type Sender struct {
 func (s *Sender) Prepare() error {
 	log.Logger.WithField("pipe", s.config.PipeName).Info("sender module is preparing...")
 	s.runningClient.RegisterListener(s.listener)
-	s.logicInput = s.physicalInput
 	for _, runningForwarder := range s.runningForwarders {
 		err := runningForwarder.Prepare(s.runningClient.GetConnectedClient())
 		if err != nil {
@@ -80,64 +80,90 @@ func (s *Sender) Prepare() error {
 func (s *Sender) Boot(ctx context.Context) {
 	log.Logger.WithField("pipe", s.config.PipeName).Info("sender module is starting...")
 	var wg sync.WaitGroup
-	wg.Add(2)
-	// 1. keep fetching the downstream data when client connected, and put it into BatchBuffer.
-	// 2. When reaches the buffer limit or receives a timer flush signal, and put BatchBuffer into flushChannel.
-	go func() {
-		defer wg.Done()
-		childCtx, cancel := context.WithCancel(ctx)
-		timeTicker := time.NewTicker(time.Duration(s.config.FlushTime) * time.Millisecond)
-		for {
-			select {
-			case status := <-s.listener:
-				switch status {
-				case client.Connected:
-					log.Logger.WithField("pipe", s.config.PipeName).Info("the client connection of the sender module is connected")
-					s.logicInput = s.physicalInput
-				case client.Disconnect:
-					log.Logger.WithField("pipe", s.config.PipeName).Info("the client connection of the sender module is disconnected")
-					s.logicInput = nil
-				}
-			case <-timeTicker.C:
-				if s.buffer.Len() > s.config.MinFlushEvents {
-					s.flushChannel <- s.buffer
-					s.buffer = buffer.NewBatchBuffer(s.config.MaxBufferSize)
-				}
-			case e := <-s.logicInput:
-				s.buffer.Add(e)
-				if s.buffer.Len() == s.config.MaxBufferSize {
-					s.flushChannel <- s.buffer
-					s.buffer = buffer.NewBatchBuffer(s.config.MaxBufferSize)
-				}
-			case <-childCtx.Done():
-				cancel()
-				s.logicInput = nil
-				return
-			}
-		}
-	}()
-	// Keep fetching BatchBuffer to forward.
-	go func() {
-		defer wg.Done()
-		childCtx, cancel := context.WithCancel(ctx)
-		for {
-			select {
-			case b := <-s.flushChannel:
-				s.consume(b)
-			case <-childCtx.Done():
-				cancel()
-				s.Shutdown()
-				return
-			}
-		}
-	}()
+	wg.Add(3)
+	go s.store(ctx, &wg)
+	go s.listen(ctx, &wg)
+	go s.flush(ctx, &wg)
 	wg.Wait()
+}
+
+// store data.
+// 1. keep fetching the downstream data when client connected, and put it into BatchBuffer.
+// 2. When reaches the buffer limit or receives a timer flush signal, and put BatchBuffer into flushChannel.
+func (s *Sender) store(ctx context.Context, wg *sync.WaitGroup) {
+	defer wg.Done()
+	defer log.Logger.WithField("pipe", s.config.PipeName).Infof("store routine closed")
+	childCtx, _ := context.WithCancel(ctx) // nolint
+	timeTicker := time.NewTicker(time.Duration(s.config.FlushTime) * time.Millisecond)
+	for {
+		// blocking output when disconnecting.
+		if atomic.LoadInt32(&s.blocking) == 1 {
+			time.Sleep(100 * time.Millisecond)
+			continue
+		}
+		select {
+		case <-childCtx.Done():
+			return
+		case <-timeTicker.C:
+			if s.buffer.Len() > s.config.MinFlushEvents {
+				s.flushChannel <- s.buffer
+				s.buffer = buffer.NewBatchBuffer(s.config.MaxBufferSize)
+			}
+		case e := <-s.input:
+			if e == nil {
+				continue
+			}
+			s.buffer.Add(e)
+			if s.buffer.Len() == s.config.MaxBufferSize {
+				s.flushChannel <- s.buffer
+				s.buffer = buffer.NewBatchBuffer(s.config.MaxBufferSize)
+			}
+		}
+	}
+}
+
+// Listen the client status.
+func (s *Sender) listen(ctx context.Context, wg *sync.WaitGroup) {
+	defer wg.Done()
+	defer log.Logger.WithField("pipe", s.config.PipeName).Infof("listen routine closed")
+	childCtx, _ := context.WithCancel(ctx) // nolint
+	for {
+		select {
+		case <-childCtx.Done():
+			return
+		case status := <-s.listener:
+			switch status {
+			case client.Connected:
+				log.Logger.WithField("pipe", s.config.PipeName).Info("the client connection of the sender module connected")
+				atomic.StoreInt32(&s.blocking, 0)
+			case client.Disconnect:
+				log.Logger.WithField("pipe", s.config.PipeName).Info("the client connection of the sender module disconnected")
+				atomic.StoreInt32(&s.blocking, 1)
+			}
+		}
+	}
+}
+
+// Keep fetching BatchBuffer to forward.
+func (s *Sender) flush(ctx context.Context, wg *sync.WaitGroup) {
+	defer wg.Done()
+	defer log.Logger.WithField("pipe", s.config.PipeName).Infof("flush routine closed")
+	childCtx, _ := context.WithCancel(ctx) // nolint
+	for {
+		select {
+		case <-childCtx.Done():
+			s.Shutdown()
+			return
+		case b := <-s.flushChannel:
+			s.consume(b)
+		}
+	}
 }
 
 // Shutdown closes the channels and tries to force forward the events in the buffer.
 func (s *Sender) Shutdown() {
 	log.Logger.WithField("pipe", s.config.PipeName).Info("sender module is closing")
-	close(s.physicalInput)
+	close(s.input)
 	ticker := time.NewTicker(module.ShutdownHookTime)
 	for {
 		select {
@@ -187,5 +213,5 @@ func (s *Sender) consume(batch *buffer.BatchBuffer) {
 }
 
 func (s *Sender) InputDataChannel() chan<- *event.OutputEventContext {
-	return s.logicInput
+	return s.input
 }

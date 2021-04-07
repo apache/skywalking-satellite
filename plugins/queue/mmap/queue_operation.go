@@ -43,8 +43,6 @@ const uInt64Size = 8
 // enqueue writes the data into the file system. It first writes the length of the data,
 // then the data itself. It means the whole data may not exist in the one segments.
 func (q *Queue) enqueue(bytes []byte) error {
-	q.lock.Lock()
-	defer q.lock.Unlock()
 	if q.isFull() {
 		return api.ErrFull
 	}
@@ -69,8 +67,6 @@ func (q *Queue) enqueue(bytes []byte) error {
 // dequeue reads the data from the file system. It first reads the length of the data,
 // then the data itself. It means the whole data may not exist in the one segments.
 func (q *Queue) dequeue() (data []byte, rid, roffset int64, err error) {
-	q.lock.Lock()
-	defer q.lock.Unlock()
 	if q.isEmpty() {
 		return nil, 0, 0, api.ErrEmpty
 	}
@@ -95,11 +91,13 @@ func (q *Queue) readBytes(id, offset int64, length int) (data []byte, newID, new
 	counter := 0
 	res := make([]byte, length)
 	for {
+		q.lock(id)
 		segment, err := q.GetSegment(id)
 		if err != nil {
 			return nil, 0, 0, err
 		}
 		readBytes, err := segment.ReadAt(res[counter:], offset)
+		q.unlock(id)
 		if err != nil {
 			return nil, 0, 0, err
 		}
@@ -120,11 +118,13 @@ func (q *Queue) readLength(id, offset int64) (newID, newOffset int64, length int
 	if offset+uInt64Size > int64(q.SegmentSize) {
 		id, offset = id+1, 0
 	}
+	q.lock(id)
 	segment, err := q.GetSegment(id)
 	if err != nil {
 		return 0, 0, 0, err
 	}
 	num := segment.ReadUint64At(offset)
+	q.unlock(id)
 	offset += uInt64Size
 	if offset == int64(q.SegmentSize) {
 		id, offset = id+1, 0
@@ -137,11 +137,13 @@ func (q *Queue) writeLength(length int, id, offset int64) (newID, newOffset int6
 	if offset+uInt64Size > int64(q.SegmentSize) {
 		id, offset = id+1, 0
 	}
+	q.lock(id)
 	segment, err := q.GetSegment(id)
 	if err != nil {
 		return 0, 0, err
 	}
 	segment.WriteUint64At(uint64(length), offset)
+	q.unlock(id)
 	offset += uInt64Size
 	if offset == int64(q.SegmentSize) {
 		id, offset = id+1, 0
@@ -153,13 +155,14 @@ func (q *Queue) writeLength(length int, id, offset int64) (newID, newOffset int6
 func (q *Queue) writeBytes(bytes []byte, id, offset int64) (newID, newOffset int64, err error) {
 	counter := 0
 	length := len(bytes)
-
 	for {
+		q.lock(id)
 		segment, err := q.GetSegment(id)
 		if err != nil {
 			return 0, 0, err
 		}
 		writtenBytes, err := segment.WriteAt(bytes[counter:], offset)
+		q.unlock(id)
 		if err != nil {
 			return 0, 0, err
 		}

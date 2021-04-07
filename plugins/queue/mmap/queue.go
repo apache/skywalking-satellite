@@ -61,7 +61,6 @@ type Queue struct {
 	MaxEventSize          int   `mapstructure:"max_event_size"`          // The max size of the input event.
 
 	// running components
-	lock                   sync.Mutex
 	queueName              string         // The queue name.
 	meta                   *meta.Metadata // The metadata file.
 	segments               []*mmap.File   // The data files.
@@ -72,6 +71,7 @@ type Queue struct {
 	sufficientMemChannel   chan struct{}  // Notify when memory is sufficient
 	markReadChannel        chan int64     // Transfer the read segmentID to do ummap operation.
 	ready                  bool           // The status of the queue.
+	locker                 []int32        // locker
 
 	// control components
 	ctx        context.Context    // Parent ctx
@@ -145,6 +145,7 @@ func (q *Queue) Initialize() error {
 	q.ctx, q.cancel = context.WithCancel(context.Background())
 	// async supported processes.
 	q.showDownWg.Add(2)
+	q.locker = make([]int32, q.QueueCapacitySegments)
 	go q.segmentSwapper()
 	go q.flush()
 	q.ready = true
@@ -187,8 +188,7 @@ func (q *Queue) Dequeue() (*api.SequenceEvent, error) {
 }
 
 func (q *Queue) Close() error {
-	q.lock.Lock()
-	defer q.lock.Unlock()
+	q.ready = false
 	q.cancel()
 	q.showDownWg.Wait()
 	for i, segment := range q.segments {
@@ -204,7 +204,6 @@ func (q *Queue) Close() error {
 	if err := q.meta.Close(); err != nil {
 		log.Logger.Errorf("cannot unmap the metadata: %v", err)
 	}
-	q.ready = false
 	return nil
 }
 
@@ -226,8 +225,7 @@ func (q *Queue) Ack(lastOffset event.Offset) {
 // flush control the flush operation by timer or counter.
 func (q *Queue) flush() {
 	defer q.showDownWg.Done()
-	ctx, cancel := context.WithCancel(q.ctx)
-	defer cancel()
+	ctx, _ := context.WithCancel(q.ctx) // nolint
 	for {
 		timer := time.NewTimer(time.Duration(q.FlushPeriod) * time.Millisecond)
 		select {
@@ -245,13 +243,16 @@ func (q *Queue) flush() {
 
 // doFlush flush the segment and meta files to the disk.
 func (q *Queue) doFlush() {
-	for _, segment := range q.segments {
-		if segment == nil {
+	for i := range q.segments {
+		q.lockByIndex(i)
+		if q.segments[i] == nil {
+			q.unlockByIndex(i)
 			continue
 		}
-		if err := segment.Flush(syscall.MS_SYNC); err != nil {
+		if err := q.segments[i].Flush(syscall.MS_SYNC); err != nil {
 			log.Logger.Errorf("cannot flush segment file: %v", err)
 		}
+		q.unlockByIndex(i)
 	}
 	wid, woffset := q.meta.GetWritingOffset()
 	q.meta.PutWatermarkOffset(wid, woffset)
