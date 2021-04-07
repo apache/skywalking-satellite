@@ -5,7 +5,7 @@ Release Notes.
 0.2.0
 ------------------
 #### Features
-
+Update protoc-gen-go version to 1.26.0.
 
 #### Bug Fixes
 Fix the data race in mmap queue.
