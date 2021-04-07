@@ -5,7 +5,7 @@ This documentation guides the release manager to release the SkyWalking Satellit
 ## Prerequisites
 
 1. Close(if finished, or move to next milestone otherwise) all issues in the current milestone from [skywalking-satellite](https://github.com/apache/skywalking-satellite/milestones) and [skywalking](https://github.com/apache/skywalking/milestones), create a new milestone if needed.
-2. Update [CHANGES.md](../../../../CHANGES.md).
+2. Update [CHANGES.md](../CHANGES.md).
 
 
 ## Add your GPG public key to Apache svn
@@ -152,7 +152,7 @@ are in `https://dist.apache.org/repos/dist/dev/skywalking/satellite/$VERSION` wi
 1. `LICENSE` and `NOTICE` are in source codes and distribution package.
 1. Check `shasum -c skywalking-satellite-$VERSION-{src,bin}.tgz.sha512`.
 1. Check `gpg --verify skywalking-satellite-$VERSION-{src,bin}.tgz.asc skywalking-satellite-$VERSION-{src,bin}.tgz`.
-1. Build distribution from source code package by following this command, `make build`.
+1. Build distribution from source code package by following this [the build guide](#build-and-sign-the-source-code-package).
 1. Licenses check, `make license`.
 
 Vote result should follow these:

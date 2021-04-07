@@ -41,12 +41,12 @@ goos: darwin
 goarch: amd64
 pkg: github.com/apache/skywalking-satellite/plugins/queue/mmap
 BenchmarkEnqueue
-BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:18_message:8KB_queueCapacity:10000         	   10000	    106520 ns/op	    9888 B/op	       9 allocs/op
-BenchmarkEnqueue/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000         	   18536	     54331 ns/op	    9839 B/op	       9 allocs/op
-BenchmarkEnqueue/segmentSize:_512KB_maxInMemSegments:6_message:8KB_queueCapacity:10000          	   27859	     43251 ns/op	    9815 B/op	       9 allocs/op
-BenchmarkEnqueue/segmentSize:_256KB_maxInMemSegments:20_message:8KB_queueCapacity:10000         	   23673	     45910 ns/op	    9839 B/op	       9 allocs/op
-BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000        	   10000	    131686 ns/op	   18941 B/op	      10 allocs/op
-BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000        	   23011	     47101 ns/op	    9887 B/op	       9 allocs/op
+BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:18_message:8KB_queueCapacity:10000         	   27585	     43559 ns/op	    9889 B/op	       9 allocs/op
+BenchmarkEnqueue/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000         	   39326	     31773 ns/op	    9840 B/op	       9 allocs/op
+BenchmarkEnqueue/segmentSize:_512KB_maxInMemSegments:6_message:8KB_queueCapacity:10000          	   56770	     22990 ns/op	    9816 B/op	       9 allocs/op
+BenchmarkEnqueue/segmentSize:_256KB_maxInMemSegments:20_message:8KB_queueCapacity:10000         	   43803	     29778 ns/op	    9840 B/op	       9 allocs/op
+BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000        	   16870	     80576 ns/op	   18944 B/op	      10 allocs/op
+BenchmarkEnqueue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000        	   36922	     39085 ns/op	    9889 B/op	       9 allocs/op
 PASS
 ```
 ### push and pop operation
@@ -55,11 +55,11 @@ goos: darwin
 goarch: amd64
 pkg: github.com/apache/skywalking-satellite/plugins/queue/mmap
 BenchmarkEnqueueAndDequeue
-BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:18_message:8KB_queueCapacity:10000         	   18895	     53056 ns/op	   28773 B/op	      42 allocs/op
-BenchmarkEnqueueAndDequeue/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000         	   24104	    117128 ns/op	   28725 B/op	      42 allocs/op
-BenchmarkEnqueueAndDequeue/segmentSize:_512KB_maxInMemSegments:6_message:8KB_queueCapacity:10000          	   23733	     71632 ns/op	   28699 B/op	      41 allocs/op
-BenchmarkEnqueueAndDequeue/segmentSize:_256KB_maxInMemSegments:20_message:8KB_queueCapacity:10000         	   26286	     64377 ns/op	   28725 B/op	      42 allocs/op
-BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000        	   10000	    118004 ns/op	   54978 B/op	      43 allocs/op
-BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000        	   16489	     64400 ns/op	   28772 B/op	      42 allocs/op
+BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:18_message:8KB_queueCapacity:10000         	   21030	     60728 ns/op	   28774 B/op	      42 allocs/op
+BenchmarkEnqueueAndDequeue/segmentSize:_256KB_maxInMemSegments:10_message:8KB_queueCapacity:10000         	   30327	     41274 ns/op	   28726 B/op	      42 allocs/op
+BenchmarkEnqueueAndDequeue/segmentSize:_512KB_maxInMemSegments:6_message:8KB_queueCapacity:10000          	   32738	     37923 ns/op	   28700 B/op	      42 allocs/op
+BenchmarkEnqueueAndDequeue/segmentSize:_256KB_maxInMemSegments:20_message:8KB_queueCapacity:10000         	   28209	     41169 ns/op	   28726 B/op	      42 allocs/op
+BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:10_message:16KB_queueCapacity:10000        	   14677	     89637 ns/op	   54981 B/op	      43 allocs/op
+BenchmarkEnqueueAndDequeue/segmentSize:_128KB_maxInMemSegments:10_message:8KB_queueCapacity:100000        	   22228	     54963 ns/op	   28774 B/op	      42 allocs/op
 PASS
 ```

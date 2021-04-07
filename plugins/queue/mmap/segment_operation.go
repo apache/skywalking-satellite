@@ -35,7 +35,7 @@ import (
 
 // GetSegment returns a memory mapped file at the segmentID position.
 func (q *Queue) GetSegment(segmentID int64) (*mmap.File, error) {
-	if q.mmapCount >= q.MaxInMemSegments {
+	if atomic.LoadInt32(&q.mmapCount) >= q.MaxInMemSegments {
 		q.insufficientMemChannel <- struct{}{}
 		<-q.sufficientMemChannel
 	}
@@ -85,14 +85,15 @@ func (q *Queue) unmapSegment(segmentID int64) error {
 // segmentSwapper run with a go routine to ensure the memory cost.
 func (q *Queue) segmentSwapper() {
 	defer q.showDownWg.Done()
-	ctx, cancel := context.WithCancel(q.ctx)
-	defer cancel()
+	ctx, _ := context.WithCancel(q.ctx) // nolint
 	for {
 		select {
 		case id := <-q.markReadChannel:
+			q.lock(id)
 			if q.unmapSegment(id) != nil {
 				log.Logger.Errorf("cannot unmap the markread segment: %d", id)
 			}
+			q.unlock(id)
 		case <-q.insufficientMemChannel:
 			if q.mmapCount >= q.MaxInMemSegments {
 				if q.doSwap() != nil {
