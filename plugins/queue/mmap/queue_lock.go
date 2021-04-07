@@ -15,40 +15,28 @@
 // specific language governing permissions and limitations
 // under the License.
 
+// +build !windows
+
 package mmap
 
 import "sync/atomic"
 
 func (q *Queue) lock(segmentID int64) {
 	index := q.GetIndex(segmentID)
-	for {
-		if atomic.CompareAndSwapInt32(&q.locker[index], 0, 1) {
-			return
-		}
-	}
+	q.lockByIndex(index)
 }
 
 func (q *Queue) unlock(segmentID int64) {
 	index := q.GetIndex(segmentID)
-	for {
-		if atomic.CompareAndSwapInt32(&q.locker[index], 1, 0) {
-			return
-		}
-	}
+	q.unlockByIndex(index)
 }
 
 func (q *Queue) lockByIndex(index int) {
-	for {
-		if atomic.CompareAndSwapInt32(&q.locker[index], 0, 1) {
-			return
-		}
+	for !atomic.CompareAndSwapInt32(&q.locker[index], 0, 1) {
 	}
 }
 
 func (q *Queue) unlockByIndex(index int) {
-	for {
-		if atomic.CompareAndSwapInt32(&q.locker[index], 1, 0) {
-			return
-		}
+	for !atomic.CompareAndSwapInt32(&q.locker[index], 1, 0) {
 	}
 }
