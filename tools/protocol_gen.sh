@@ -44,7 +44,11 @@ rm -rf ${PROTO_HOME}
 # init  go modules
 cd ${GEN_CODE_PATH}/${COLLECT_PROTOCOL_MODULE}||exit 1
 go mod init ${COLLECT_PROTOCOL_MODULE}
+go mod edit -replace=google.golang.org/grpc=github.com/grpc/grpc-go@v1.36.1
+go mod edit -replace=google.golang.org/protobuf=github.com/golang/protobuf@v1.4.3
 go mod tidy
+go mod vendor
+go build -mod=vendor
 cd -|| exit 1
 
 
