@@ -14,6 +14,7 @@ require (
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/viper v1.7.1
 	github.com/urfave/cli/v2 v2.3.0
+	go.uber.org/automaxprocs v1.4.0
 	google.golang.org/grpc v1.36.1
 	google.golang.org/protobuf v1.26.0
 	skywalking/network v1.0.0
