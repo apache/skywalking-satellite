@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/urfave/cli/v2"
+	_ "go.uber.org/automaxprocs"
 )
 
 // version will be initialized when building
