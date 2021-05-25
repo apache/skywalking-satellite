@@ -26,6 +26,7 @@ import (
 	"github.com/ghodss/yaml"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	promConfig "github.com/prometheus/prometheus/config"
 	"github.com/prometheus/prometheus/discovery"
@@ -42,21 +43,12 @@ const (
 // Fetcher is the struct for Prometheus fetcher
 type Fetcher struct {
 	config.CommonFields
-	// config
-	Configs []MetricsConfig
 	// components
 	OutputEvents event.BatchEvents
 }
 
 type OriginPrometheus struct {
 	promConfig *promConfig.Config
-}
-
-// MetricsConfig is the struct for Prometheus fetcher
-type MetricsConfig struct {
-	Endpoint string   `json:"endpoint" yaml:"endpoint"`
-	TLS      bool     `json:"tls" yaml:"tls"`
-	Metrics  []string `json:"metrics" yaml:"metrics"`
 }
 
 func (f Fetcher) Name() string {
@@ -104,15 +96,15 @@ func (f Fetcher) Fetch() event.BatchEvents {
 	}
 	go func() {
 		if err := manager.Run(); err != nil {
-			// logger.Error("Discovery manager failed", zap.Error(err))
-			// report error
+			log.Logger.Errorf(err.Error())
 		}
 	}()
 
 	// fetch metrics from prometheus endpoints && translate to OTLP
 	//var jobsMap *JobsMap
-	qs := &QueueStore{}
+	qs := NewQueueStore(ctx, true, "", Name)
 	scrapeManager := scrape.NewManager(nil, qs)
+	qs.SetScrapeManager(scrapeManager)
 	if err := scrapeManager.ApplyConfig(cfg); err != nil {
 		// report err and return
 	}
@@ -123,9 +115,6 @@ func (f Fetcher) Fetch() event.BatchEvents {
 			//report error
 		}
 	}()
-
-	// Add to queue
-
 	events := event.BatchEvents{}
 	return events
 }
