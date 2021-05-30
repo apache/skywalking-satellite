@@ -61,7 +61,7 @@ func (f Fetcher) Name() string {
 
 func (f Fetcher) Description() string {
 	return "This is a fetcher for Skywalking prometheus metrics format, " +
-		"which will translate Prometheus metrics to OpenTelemetry struct."
+		"which will translate Prometheus metrics to Skywalking meter system."
 }
 
 func (f Fetcher) DefaultConfig() string {
