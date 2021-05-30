@@ -18,20 +18,50 @@ package prometheus
 
 import (
 	"context"
+	"fmt"
+	"math"
+	"time"
 
+	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+
+	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/storage"
 )
 
 // QueueAppender todo appender with queue
 type QueueAppender struct {
-	Ctx context.Context
-	Ms  *metadataService
+	Ctx                context.Context
+	Ms                 *metadataService
+	isNew              bool
+	job                string
+	instance           string
+	metricBuilder      *metricBuilder
+	useStartTimeMetric bool
+	OutputChannel      chan *protocol.Event
 }
 
 // NewQueueAppender construct QueueAppender
-func NewQueueAppender(ctx context.Context, ms *metadataService) *QueueAppender {
-	return &QueueAppender{Ctx: ctx, Ms: ms}
+func NewQueueAppender(ctx context.Context, ms *metadataService, oc chan *protocol.Event) *QueueAppender {
+	return &QueueAppender{Ctx: ctx, Ms: ms, OutputChannel: oc}
+}
+
+func (qa *QueueAppender) initAppender(ls labels.Labels) error {
+	job, instance := ls.Get(model.JobLabel), ls.Get(model.InstanceLabel)
+	if job == "" || instance == "" {
+		// errNoJobInstance
+		return fmt.Errorf("errNoJobInstance")
+	}
+	// discover the binding target when this method is called for the first time during a transaction
+	mc, err := qa.Ms.Get(job, instance)
+	if err != nil {
+		return err
+	}
+	qa.job = job
+	qa.instance = instance
+	qa.metricBuilder = newMetricBuilder(mc, qa.useStartTimeMetric)
+	qa.isNew = false
+	return nil
 }
 
 var _ storage.Appender = (*QueueAppender)(nil)
@@ -39,7 +69,21 @@ var _ storage.Appender = (*QueueAppender)(nil)
 // always returns 0 to disable label caching
 func (qa *QueueAppender) Add(ls labels.Labels, t int64, v float64) (uint64, error) {
 	// todo add metrics
-	return 0, nil
+	if math.IsNaN(v) {
+		return 0, nil
+	}
+	select {
+	case <-qa.Ctx.Done():
+		return 0, fmt.Errorf("errTransactionAborted")
+	default:
+	}
+	if qa.isNew {
+		if err := qa.initAppender(ls); err != nil {
+			return 0, err
+		}
+	}
+
+	return 0, qa.metricBuilder.AddDataPoint(ls, t, v)
 }
 
 // always returns error since we do not cache
@@ -49,7 +93,26 @@ func (qa *QueueAppender) AddFast(_ labels.Labels, _ uint64, _ int64, _ float64) 
 
 // submit metrics data to consumers
 func (qa *QueueAppender) Commit() error {
-	// todo send metrics to queue
+	// 1. convert to meter
+	meterCollection, _, _ := qa.metricBuilder.Build()
+	for _, meterData := range meterCollection.GetMeterData() {
+		meterData.Service = qa.job
+		meterData.ServiceInstance = qa.instance
+	}
+	// 2. send metrics to queue
+	for _, md := range meterCollection.MeterData {
+		e := &protocol.Event{
+			Name:      eventName,
+			Timestamp: time.Now().UnixNano() / 1e6,
+			Meta:      nil,
+			Type:      protocol.EventType_MeterType,
+			Remote:    true,
+			Data: &protocol.Event_Meter{
+				Meter: md,
+			},
+		}
+		qa.OutputChannel <- e
+	}
 	return nil
 }
 

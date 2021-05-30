@@ -20,6 +20,8 @@ package prometheus
 import (
 	"context"
 
+	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+
 	"github.com/prometheus/prometheus/scrape"
 
 	"go.uber.org/zap"
@@ -43,8 +45,10 @@ type Fetcher struct {
 	config.CommonFields
 	// config is the top level configuration of prometheus
 	ScrapeConfigs []*promConfig.ScrapeConfig `mapstructure:"scrape_configs"`
-	// components
+	// events
 	OutputEvents event.BatchEvents
+	// outputChannel
+	OutputChannel chan *protocol.Event
 }
 
 type OriginPrometheus struct {
@@ -93,7 +97,7 @@ func (f Fetcher) Fetch() event.BatchEvents {
 		}
 	}()
 	// queue store
-	qs := NewQueueStore(ctx, true, Name)
+	qs := NewQueueStore(ctx, true, Name, f.OutputChannel)
 	scrapeManager := scrape.NewManager(nil, qs)
 	qs.SetScrapeManager(scrapeManager)
 	cfg := &promConfig.Config{ScrapeConfigs: f.ScrapeConfigs}
@@ -108,4 +112,8 @@ func (f Fetcher) Fetch() event.BatchEvents {
 	}()
 	// do not need to return events
 	return nil
+}
+
+func (f Fetcher) Channel() <-chan *protocol.Event {
+	return f.OutputChannel
 }

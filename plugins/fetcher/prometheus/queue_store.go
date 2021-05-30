@@ -20,6 +20,8 @@ import (
 	"context"
 	"errors"
 
+	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/scrape"
 	"github.com/prometheus/prometheus/storage"
@@ -32,14 +34,16 @@ type QueueStore struct {
 	mc                 *metadataService
 	useStartTimeMetric bool
 	receiverName       string
+	OutputChannel      chan *protocol.Event
 }
 
 // NewQueueStore construct QueueStore
-func NewQueueStore(ctx context.Context, useStartTimeMetric bool, receiverName string) *QueueStore {
+func NewQueueStore(ctx context.Context, useStartTimeMetric bool, receiverName string, oc chan *protocol.Event) *QueueStore {
 	return &QueueStore{
 		ctx:                ctx,
 		useStartTimeMetric: useStartTimeMetric,
 		receiverName:       receiverName,
+		OutputChannel:      oc,
 	}
 }
 
@@ -50,7 +54,7 @@ func (qs *QueueStore) SetScrapeManager(scrapeManager *scrape.Manager) {
 }
 
 func (qs *QueueStore) Appender() (storage.Appender, error) {
-	return NewQueueAppender(qs.ctx, qs.mc), nil
+	return NewQueueAppender(qs.ctx, qs.mc, qs.OutputChannel), nil
 }
 
 func (qs *QueueStore) Close() error {

@@ -60,18 +60,14 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 	go func() {
 		defer wg.Done()
 		childCtx, cancel := context.WithCancel(ctx)
-		timeTicker := time.NewTicker(time.Duration(f.config.FetchInterval) * time.Millisecond)
 		for {
 			select {
-			case <-timeTicker.C:
-				events := f.runningFetcher.Fetch()
-				for _, e := range events {
-					err := f.runningQueue.Enqueue(e)
-					f.fetchCounter.Inc(f.config.PipeName, "all")
-					if err != nil {
-						f.fetchCounter.Inc(f.config.PipeName, "abandoned")
-						log.Logger.Errorf("cannot put event into queue in %s namespace, %v", f.config.PipeName, err)
-					}
+			case e := <-f.runningFetcher.Channel():
+				err := f.runningQueue.Enqueue(e)
+				f.fetchCounter.Inc(f.config.PipeName, "all")
+				if err != nil {
+					f.fetchCounter.Inc(f.config.PipeName, "abandoned")
+					log.Logger.Errorf("cannot put event into queue in %s namespace, %v", f.config.PipeName, err)
 				}
 			case <-childCtx.Done():
 				cancel()
