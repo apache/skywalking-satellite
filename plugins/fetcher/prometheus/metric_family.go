@@ -160,7 +160,17 @@ func (mf *metricFamily) ToMetric() []*v3.MeterData {
 	result := make([]*v3.MeterData, 0)
 	switch mf.mtype {
 	case textparse.MetricTypeSummary:
-		// todo fixme
+		for _, mg := range mf.getGroups() {
+			msv := &v3.MeterSingleValue{
+				Name:   mf.name,
+				Labels: mf.convertLabels(mg),
+				Value:  mg.value,
+			}
+			result = append(result, &v3.MeterData{
+				Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
+				Timestamp: mg.ts,
+			})
+		}
 	case textparse.MetricTypeHistogram:
 		for _, mg := range mf.getGroups() {
 			bucketMap := make(map[float64]float64)
@@ -287,7 +297,7 @@ func isUsefulLabel(mType textparse.MetricType, labelKey string) bool {
 	case model.BucketLabel: // histogram le
 		return mType != textparse.MetricTypeHistogram
 	case model.QuantileLabel: // summary quantile
-		return mType != textparse.MetricTypeSummary
+		return true
 	default:
 		result = true
 	}

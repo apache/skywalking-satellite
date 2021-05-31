@@ -68,7 +68,6 @@ var _ storage.Appender = (*QueueAppender)(nil)
 
 // always returns 0 to disable label caching
 func (qa *QueueAppender) Add(ls labels.Labels, t int64, v float64) (uint64, error) {
-	// todo add metrics
 	if math.IsNaN(v) {
 		return 0, nil
 	}
