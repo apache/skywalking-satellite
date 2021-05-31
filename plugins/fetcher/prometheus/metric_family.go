@@ -54,9 +54,7 @@ type metricGroup struct {
 	family       *metricFamily
 	ts           int64
 	ls           labels.Labels
-	count        float64
 	hasCount     bool
-	sum          float64
 	hasSum       bool
 	value        float64
 	complexValue []*dataPoint
@@ -137,7 +135,7 @@ func (mf *metricFamily) Add(metricName string, ls labels.Labels, t int64, v floa
 	return nil
 }
 
-func getBoundary(metricType textparse.MetricType, labels labels.Labels) (float64, error) {
+func getBoundary(metricType textparse.MetricType, lbs labels.Labels) (float64, error) {
 	labelName := ""
 	switch metricType {
 	case textparse.MetricTypeHistogram:
@@ -148,7 +146,7 @@ func getBoundary(metricType textparse.MetricType, labels labels.Labels) (float64
 		return 0, fmt.Errorf("errNoBoundaryLabel")
 	}
 
-	v := labels.Get(labelName)
+	v := lbs.Get(labelName)
 	if v == "" {
 		return 0, fmt.Errorf("errEmptyBoundaryLabel")
 	}

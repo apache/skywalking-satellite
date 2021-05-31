@@ -86,7 +86,7 @@ func (qa *QueueAppender) Add(ls labels.Labels, t int64, v float64) (uint64, erro
 }
 
 // always returns error since we do not cache
-func (qa *QueueAppender) AddFast(_ labels.Labels, _ uint64, _ int64, _ float64) error {
+func (qa *QueueAppender) AddFast(_ uint64, _ int64, _ float64) error {
 	return storage.ErrNotFound
 }
 

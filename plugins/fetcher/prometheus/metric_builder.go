@@ -78,9 +78,7 @@ func (b *metricBuilder) AddDataPoint(ls labels.Labels, t int64, v float64) error
 	if b.currentMf != nil && !b.currentMf.IsSameFamily(metricName) {
 		m := b.currentMf.ToMetric()
 		if m != nil {
-			for _, mv := range m {
-				b.metrics = append(b.metrics, mv)
-			}
+			b.metrics = append(b.metrics, m...)
 		}
 		b.currentMf = newMetricFamily(metricName, b.mc)
 	} else if b.currentMf == nil {
@@ -113,9 +111,7 @@ func (b *metricBuilder) Build() (*v3.MeterDataCollection, int, error) {
 	if b.currentMf != nil {
 		m := b.currentMf.ToMetric()
 		if m != nil {
-			for _, v := range m {
-				b.metrics = append(b.metrics, v)
-			}
+			b.metrics = append(b.metrics, m...)
 		}
 		b.currentMf = nil
 	}

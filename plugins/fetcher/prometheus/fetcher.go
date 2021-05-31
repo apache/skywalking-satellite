@@ -20,19 +20,17 @@ package prometheus
 import (
 	"context"
 
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 
 	"github.com/prometheus/prometheus/scrape"
 
 	"go.uber.org/zap"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
-
-	"github.com/apache/skywalking-satellite/internal/pkg/config"
-	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	promConfig "github.com/prometheus/prometheus/config"
 	"github.com/prometheus/prometheus/discovery"
-	sd_config "github.com/prometheus/prometheus/discovery/config"
 )
 
 const (
@@ -49,10 +47,6 @@ type Fetcher struct {
 	OutputEvents event.BatchEvents
 	// outputChannel
 	OutputChannel chan *protocol.Event
-}
-
-type OriginPrometheus struct {
-	promConfig *promConfig.Config
 }
 
 func (f Fetcher) Name() string {
@@ -78,9 +72,9 @@ func (f Fetcher) Prepare() {}
 
 func (f Fetcher) Fetch() event.BatchEvents {
 	// config of scraper
-	c := make(map[string]sd_config.ServiceDiscoveryConfig)
+	c := make(map[string]discovery.Configs)
 	for _, v := range f.ScrapeConfigs {
-		c[v.JobName] = v.ServiceDiscoveryConfig
+		c[v.JobName] = v.ServiceDiscoveryConfigs
 	}
 
 	// manager

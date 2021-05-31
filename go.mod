@@ -2,7 +2,10 @@ module github.com/apache/skywalking-satellite
 
 go 1.14
 
-replace skywalking/network v1.0.0 => ./protocol/gen-codes/skywalking/network
+replace (
+skywalking/network v1.0.0 => ./protocol/gen-codes/skywalking/network
+github.com/prometheus/prometheus v2.5.0+incompatible => github.com/prometheus/prometheus v1.8.2-0.20201105135750-00f16d1ac3a4
+)
 
 require (
 	github.com/Azure/go-autorest/autorest v0.11.18 // indirect

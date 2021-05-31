@@ -18,16 +18,12 @@ package prometheus
 
 import (
 	"context"
-	"errors"
 
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 
-	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/scrape"
 	"github.com/prometheus/prometheus/storage"
 )
-
-var noop = &noopAppender{}
 
 type QueueStore struct {
 	ctx                context.Context
@@ -53,29 +49,10 @@ func (qs *QueueStore) SetScrapeManager(scrapeManager *scrape.Manager) {
 	}
 }
 
-func (qs *QueueStore) Appender() (storage.Appender, error) {
-	return NewQueueAppender(qs.ctx, qs.mc, qs.OutputChannel), nil
+func (qs *QueueStore) Appender(ctx context.Context) storage.Appender {
+	return NewQueueAppender(ctx, qs.mc, qs.OutputChannel)
 }
 
 func (qs *QueueStore) Close() error {
-	return nil
-}
-
-// noopAppender, always return error on any operations
-type noopAppender struct{}
-
-func (*noopAppender) Add(labels.Labels, int64, float64) (uint64, error) {
-	return 0, errors.New("already stopped")
-}
-
-func (*noopAppender) AddFast(labels.Labels, uint64, int64, float64) error {
-	return errors.New("already stopped")
-}
-
-func (*noopAppender) Commit() error {
-	return errors.New("already stopped")
-}
-
-func (*noopAppender) Rollback() error {
 	return nil
 }
