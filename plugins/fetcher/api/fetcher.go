@@ -18,6 +18,8 @@
 package api
 
 import (
+	"context"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
@@ -32,4 +34,6 @@ type Fetcher interface {
 	Fetch() event.BatchEvents
 	// Channel would be put a data when the receiver receives an APM data.
 	Channel() <-chan *protocol.Event
+	// Shutdown shutdown the fetcher
+	Shutdown(context.Context) error
 }

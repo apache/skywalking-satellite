@@ -50,7 +50,7 @@ func (qs *QueueStore) SetScrapeManager(scrapeManager *scrape.Manager) {
 }
 
 func (qs *QueueStore) Appender(ctx context.Context) storage.Appender {
-	return NewQueueAppender(ctx, qs.mc, qs.OutputChannel)
+	return NewQueueAppender(ctx, qs.mc, qs.OutputChannel, qs.useStartTimeMetric)
 }
 
 func (qs *QueueStore) Close() error {

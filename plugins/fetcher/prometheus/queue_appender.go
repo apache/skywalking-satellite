@@ -42,8 +42,8 @@ type QueueAppender struct {
 }
 
 // NewQueueAppender construct QueueAppender
-func NewQueueAppender(ctx context.Context, ms *metadataService, oc chan *protocol.Event) *QueueAppender {
-	return &QueueAppender{Ctx: ctx, Ms: ms, OutputChannel: oc}
+func NewQueueAppender(ctx context.Context, ms *metadataService, oc chan *protocol.Event, useStartTimeMetric bool) *QueueAppender {
+	return &QueueAppender{Ctx: ctx, Ms: ms, OutputChannel: oc, isNew: true, useStartTimeMetric: useStartTimeMetric}
 }
 
 func (qa *QueueAppender) initAppender(ls labels.Labels) error {
@@ -94,12 +94,10 @@ func (qa *QueueAppender) AddFast(_ uint64, _ int64, _ float64) error {
 func (qa *QueueAppender) Commit() error {
 	// 1. convert to meter
 	meterCollection, _, _ := qa.metricBuilder.Build()
+	// 2. send metrics to queue
 	for _, meterData := range meterCollection.GetMeterData() {
 		meterData.Service = qa.job
 		meterData.ServiceInstance = qa.instance
-	}
-	// 2. send metrics to queue
-	for _, md := range meterCollection.MeterData {
 		e := &protocol.Event{
 			Name:      eventName,
 			Timestamp: time.Now().UnixNano() / 1e6,
@@ -107,7 +105,7 @@ func (qa *QueueAppender) Commit() error {
 			Type:      protocol.EventType_MeterType,
 			Remote:    true,
 			Data: &protocol.Event_Meter{
-				Meter: md,
+				Meter: meterData,
 			},
 		}
 		qa.OutputChannel <- e

@@ -19,18 +19,21 @@ package prometheus
 
 import (
 	"context"
+	"time"
+
+	"go.uber.org/zap"
+
+	"github.com/prometheus/prometheus/discovery"
+	"github.com/prometheus/prometheus/scrape"
+
+	yaml "gopkg.in/yaml.v3"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 
-	"github.com/prometheus/prometheus/scrape"
-
-	"go.uber.org/zap"
-
 	promConfig "github.com/prometheus/prometheus/config"
-	"github.com/prometheus/prometheus/discovery"
 )
 
 const (
@@ -38,48 +41,86 @@ const (
 	eventName = "prometheus-metrics-event"
 )
 
+type scrapeConfig struct {
+	JobName        string                   `yaml:"job_name" mapstructure:"job_name"`
+	ScrapeInterval time.Duration            `yaml:"scrape_interval,omitempty" mapstructure:"scrape_interval,omitempty"`
+	StaticConfigs  []map[string]interface{} `yaml:"static_configs" mapstructure:"static_configs"`
+	MetricsPath    string                   `yaml:"metrics_path,omitempty" mapstructure:"metrics_path,omitempty"`
+}
+
 // Fetcher is the struct for Prometheus fetcher
 type Fetcher struct {
 	config.CommonFields
-	// config is the top level configuration of prometheus
-	ScrapeConfigs []*promConfig.ScrapeConfig `mapstructure:"scrape_configs"`
+	// config is the top level configuratScrapeConfigsMapion of prometheus
+	ScrapeConfigsMap []*scrapeConfig `mapstructure:"scrape_configs" yaml:"scrape_configs"`
+
+	ScrapeConfigs []*promConfig.ScrapeConfig
 	// events
 	OutputEvents event.BatchEvents
 	// outputChannel
 	OutputChannel chan *protocol.Event
+
+	cancelFunc context.CancelFunc
 }
 
-func (f Fetcher) Name() string {
+func (f *Fetcher) Name() string {
 	return Name
 }
 
-func (f Fetcher) Description() string {
+func (f *Fetcher) Description() string {
 	return "This is a fetcher for Skywalking prometheus metrics format, " +
 		"which will translate Prometheus metrics to Skywalking meter system."
 }
 
-func (f Fetcher) DefaultConfig() string {
+func (f *Fetcher) DefaultConfig() string {
 	return `
 ## some config here
 scrape_configs:
  - job_name: 'prometheus'
+   metrics_path: '/metrics'
+   scrape_interval: 10s
    static_configs:
-   - targets: ["foo:9090", "bar:9090"]
+   - targets: ['127.0.0.1:2020']
 `
 }
 
-func (f Fetcher) Prepare() {}
+func (f *Fetcher) Prepare() {}
 
-func (f Fetcher) Fetch() event.BatchEvents {
+func (f *Fetcher) Fetch() event.BatchEvents {
+	ctx, cancel := context.WithCancel(context.Background())
+	f.cancelFunc = cancel
+	// yaml
+	configDeclare := make(map[string]interface{})
+	configDeclare["scrape_configs"] = f.ScrapeConfigsMap
+	configBytes, err := yaml.Marshal(configDeclare)
+	if err != nil {
+		log.Logger.Fatal("prometheus fetcher configure failed", err.Error())
+	}
+	log.Logger.Debug(string(configBytes))
+	configStruct, err := promConfig.Load(string(configBytes))
+	if err != nil {
+		log.Logger.Fatal("prometheus fetcher configure load failed", err.Error())
+	}
+	f.ScrapeConfigs = configStruct.ScrapeConfigs
+	return fetch(ctx, f.ScrapeConfigs, f.OutputChannel)
+}
+
+func (f *Fetcher) Channel() <-chan *protocol.Event {
+	return f.OutputChannel
+}
+
+func (f *Fetcher) Shutdown(context.Context) error {
+	f.cancelFunc()
+	return nil
+}
+
+func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, outputChannel chan *protocol.Event) event.BatchEvents {
 	// config of scraper
 	c := make(map[string]discovery.Configs)
-	for _, v := range f.ScrapeConfigs {
+	for _, v := range scrapeConfigs {
 		c[v.JobName] = v.ServiceDiscoveryConfigs
 	}
-
 	// manager
-	ctx, cancel := context.WithCancel(context.Background())
-	defer cancel()
 	manager := discovery.NewManager(ctx, nil)
 	if err := manager.ApplyConfig(c); err != nil {
 		log.Logger.Error("prometheus discovery config error", zap.Error(err))
@@ -91,10 +132,10 @@ func (f Fetcher) Fetch() event.BatchEvents {
 		}
 	}()
 	// queue store
-	qs := NewQueueStore(ctx, true, Name, f.OutputChannel)
+	qs := NewQueueStore(ctx, true, Name, outputChannel)
 	scrapeManager := scrape.NewManager(nil, qs)
 	qs.SetScrapeManager(scrapeManager)
-	cfg := &promConfig.Config{ScrapeConfigs: f.ScrapeConfigs}
+	cfg := &promConfig.Config{ScrapeConfigs: scrapeConfigs}
 	if err := scrapeManager.ApplyConfig(cfg); err != nil {
 		log.Logger.Error("scrape failed", zap.Error(err))
 	}
@@ -106,8 +147,4 @@ func (f Fetcher) Fetch() event.BatchEvents {
 	}()
 	// do not need to return events
 	return nil
-}
-
-func (f Fetcher) Channel() <-chan *protocol.Event {
-	return f.OutputChannel
 }

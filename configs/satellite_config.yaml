@@ -71,6 +71,8 @@ pipes:
       server_name: "grpc-server"
       receiver:
         plugin_name: "grpc-nativelog-receiver"
+      fetcher:
+        plugin_name: "prometheus-metrics-fetcher"
       queue:
         plugin_name: "memory-queue"
         # The maximum buffer event size.

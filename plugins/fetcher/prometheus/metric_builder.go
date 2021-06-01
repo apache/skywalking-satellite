@@ -67,6 +67,7 @@ func (b *metricBuilder) AddDataPoint(ls labels.Labels, t int64, v float64) error
 		return fmt.Errorf("errMetricNameNotFound")
 	case isInternalMetric(metricName):
 		// ignore internal metrics
+		b.hasInternalMetric = true
 		return nil
 	case b.useStartTimeMetric && b.matchStartTimeMetric(metricName):
 		b.startTime = v
