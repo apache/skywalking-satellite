@@ -266,13 +266,13 @@ func verifyTarget1(t *testing.T, em *protocol.Event) {
 		"http_request_duration_seconds_count",
 	}
 	singleValues := map[string][]float64{
-		"go_threads":                          []float64{19, 18},
-		"http_requests_total":                 []float64{100, 5, 199, 12},
-		"http_request_duration_seconds_sum":   []float64{5000, 5050},
-		"http_request_duration_seconds_count": []float64{2500, 2600},
-		"rpc_duration_seconds":                []float64{1, 5, 6, 8},
-		"rpc_duration_seconds_sum":            []float64{5000, 5002},
-		"rpc_duration_seconds_count":          []float64{1000, 1001},
+		"go_threads":                          {19, 18},
+		"http_requests_total":                 {100, 5, 199, 12},
+		"http_request_duration_seconds_sum":   {5000, 5050},
+		"http_request_duration_seconds_count": {2500, 2600},
+		"rpc_duration_seconds":                {1, 5, 6, 8},
+		"rpc_duration_seconds_sum":            {5000, 5002},
+		"rpc_duration_seconds_count":          {1000, 1001},
 	}
 	histogramElems := []string{"http_request_duration_seconds"}
 	if em.GetMeter().GetSingleValue() != nil {

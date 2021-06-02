@@ -171,40 +171,36 @@ func getBoundary(metricType textparse.MetricType, lbs labels.Labels) (float64, e
 	return strconv.ParseFloat(v, 64)
 }
 
+func (mf *metricFamily) toMeterSingleValue(mg *metricGroup) *v3.MeterSingleValue {
+	result := &v3.MeterSingleValue{}
+	if mg.hasCount {
+		result = &v3.MeterSingleValue{
+			Name:   mg.name,
+			Labels: mf.convertLabels(mg),
+			Value:  mg.count,
+		}
+	} else if mg.hasSum {
+		result = &v3.MeterSingleValue{
+			Name:   mg.name,
+			Labels: mf.convertLabels(mg),
+			Value:  mg.sum,
+		}
+	} else {
+		result = &v3.MeterSingleValue{
+			Name:   mg.name,
+			Labels: mf.convertLabels(mg),
+			Value:  mg.value,
+		}
+	}
+	return result
+}
+
 func (mf *metricFamily) ToMetric() []*v3.MeterData {
 	result := make([]*v3.MeterData, 0)
 	switch mf.mtype {
 	case textparse.MetricTypeSummary:
 		for _, mg := range mf.getGroups() {
-			if mg.hasCount {
-				msv := &v3.MeterSingleValue{
-					Name:   mg.name,
-					Labels: mf.convertLabels(mg),
-					Value:  mg.count,
-				}
-				result = append(result, &v3.MeterData{
-					Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
-					Timestamp: mg.ts,
-				})
-				continue
-			}
-			if mg.hasSum {
-				msv := &v3.MeterSingleValue{
-					Name:   mg.name,
-					Labels: mf.convertLabels(mg),
-					Value:  mg.sum,
-				}
-				result = append(result, &v3.MeterData{
-					Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
-					Timestamp: mg.ts,
-				})
-				continue
-			}
-			msv := &v3.MeterSingleValue{
-				Name:   mg.name,
-				Labels: mf.convertLabels(mg),
-				Value:  mg.value,
-			}
+			msv := mf.toMeterSingleValue(mg)
 			result = append(result, &v3.MeterData{
 				Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
 				Timestamp: mg.ts,
