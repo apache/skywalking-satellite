@@ -32,6 +32,7 @@ import (
 	"time"
 
 	"gotest.tools/assert"
+	is "gotest.tools/assert/cmp"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
@@ -215,7 +216,7 @@ rpc_duration_seconds_count 1001
 `
 
 func TestEndToEnd(t *testing.T) {
-	ctx, cancel := context.WithTimeout(context.Background(), 60*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 	Init()
 	initFetcher(t, make(plugin.Config))
@@ -242,15 +243,45 @@ func testEndToEnd(ctx context.Context, t *testing.T, targets []*testData) {
 	defer mp.Close()
 	t.Log(cfg)
 	fetch(ctx, cfg.ScrapeConfigs, outputChannel)
-	select {
-	case e := <-outputChannel:
-		t.Log(e.GetData())
-		targets[0].validateFunc(t, e)
-	case <-ctx.Done():
-		return
+	for {
+		select {
+		case e := <-outputChannel:
+			targets[0].validateFunc(t, e)
+		case <-ctx.Done():
+			return
+		}
 	}
 }
 
 func verifyTarget1(t *testing.T, em *protocol.Event) {
-	assert.Assert(t, em.GetMeter().Service, "prometheus")
+	assert.Equal(t, em.GetMeter().Service, "target1", "Get meter service error")
+
+	singleElems := []string{
+		"go_threads",
+		"http_requests_total",
+		"rpc_duration_seconds",
+		"rpc_duration_seconds_count",
+		"rpc_duration_seconds_sum",
+		"http_request_duration_seconds_sum",
+		"http_request_duration_seconds_count",
+	}
+	singleValues := map[string][]float64{
+		"go_threads":                          []float64{19, 18},
+		"http_requests_total":                 []float64{100, 5, 199, 12},
+		"http_request_duration_seconds_sum":   []float64{5000, 5050},
+		"http_request_duration_seconds_count": []float64{2500, 2600},
+		"rpc_duration_seconds":                []float64{1, 5, 6, 8},
+		"rpc_duration_seconds_sum":            []float64{5000, 5002},
+		"rpc_duration_seconds_count":          []float64{1000, 1001},
+	}
+	histogramElems := []string{"http_request_duration_seconds"}
+	if em.GetMeter().GetSingleValue() != nil {
+		single := em.GetMeter().GetSingleValue()
+		t.Log(single.GetName())
+		assert.Assert(t, is.Contains(singleElems, single.GetName()), "Mismatch single meter name")
+		assert.Assert(t, is.Contains(singleValues[single.GetName()], single.GetValue()), "Mismatch single meter value")
+	} else {
+		histogram := em.GetMeter().GetHistogram()
+		assert.Assert(t, is.Contains(histogramElems, histogram.GetName()), "Mismatch histogram meter")
+	}
 }

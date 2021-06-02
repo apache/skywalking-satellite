@@ -52,10 +52,13 @@ type metricFamily struct {
 
 type metricGroup struct {
 	family       *metricFamily
+	name         string
 	ts           int64
 	ls           labels.Labels
 	hasCount     bool
+	count        float64
 	hasSum       bool
+	sum          float64
 	value        float64
 	complexValue []*dataPoint
 }
@@ -112,25 +115,39 @@ func (mf *metricFamily) Add(metricName string, ls labels.Labels, t int64, v floa
 	case textparse.MetricTypeGauge:
 		mg.value = v
 	case textparse.MetricTypeHistogram:
-		mg.hasCount = true
-		mg.hasSum = true
-		mg.ts = t
-		boundary, err := getBoundary(mf.mtype, ls)
-		if err != nil {
-			return err
+		if strings.HasSuffix(metricName, metricsSuffixCount) {
+			mg.hasCount = true
+			mg.count = v
+			mg.name = metricName
+		} else if strings.HasSuffix(metricName, metricsSuffixSum) {
+			mg.hasSum = true
+			mg.sum = v
+			mg.name = metricName
+		} else if strings.HasSuffix(metricName, metricsSuffixBucket) {
+			boundary, err := getBoundary(mf.mtype, ls)
+			if err != nil {
+				return err
+			}
+			mg.complexValue = append(mg.complexValue, &dataPoint{value: v, boundary: boundary})
 		}
-		mg.complexValue = append(mg.complexValue, &dataPoint{value: v, boundary: boundary})
+		mg.ts = t
 	case textparse.MetricTypeSummary:
-		mg.hasCount = true
-		mg.hasSum = true
-		mg.ts = t
-		boundary, err := getBoundary(mf.mtype, ls)
-		if err != nil {
-			return err
+		if strings.HasSuffix(metricName, metricsSuffixCount) {
+			mg.hasCount = true
+			mg.count = v
+			mg.name = metricName
+		} else if strings.HasSuffix(metricName, metricsSuffixSum) {
+			mg.hasSum = true
+			mg.sum = v
+			mg.name = metricName
+		} else {
+			mg.value = v
+			mg.name = metricName
 		}
-		mg.complexValue = append(mg.complexValue, &dataPoint{value: v, boundary: boundary})
+		mg.ts = t
 	default:
 		mg.value = v
+		mg.name = metricName
 	}
 	return nil
 }
@@ -159,8 +176,32 @@ func (mf *metricFamily) ToMetric() []*v3.MeterData {
 	switch mf.mtype {
 	case textparse.MetricTypeSummary:
 		for _, mg := range mf.getGroups() {
+			if mg.hasCount {
+				msv := &v3.MeterSingleValue{
+					Name:   mg.name,
+					Labels: mf.convertLabels(mg),
+					Value:  mg.count,
+				}
+				result = append(result, &v3.MeterData{
+					Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
+					Timestamp: mg.ts,
+				})
+				continue
+			}
+			if mg.hasSum {
+				msv := &v3.MeterSingleValue{
+					Name:   mg.name,
+					Labels: mf.convertLabels(mg),
+					Value:  mg.sum,
+				}
+				result = append(result, &v3.MeterData{
+					Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
+					Timestamp: mg.ts,
+				})
+				continue
+			}
 			msv := &v3.MeterSingleValue{
-				Name:   mf.name,
+				Name:   mg.name,
 				Labels: mf.convertLabels(mg),
 				Value:  mg.value,
 			}
@@ -171,6 +212,31 @@ func (mf *metricFamily) ToMetric() []*v3.MeterData {
 		}
 	case textparse.MetricTypeHistogram:
 		for _, mg := range mf.getGroups() {
+			if mg.hasCount {
+				msv := &v3.MeterSingleValue{
+					Name:   mg.name,
+					Labels: mf.convertLabels(mg),
+					Value:  mg.count,
+				}
+				result = append(result, &v3.MeterData{
+					Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
+					Timestamp: mg.ts,
+				})
+				continue
+			}
+			if mg.hasSum {
+				msv := &v3.MeterSingleValue{
+					Name:   mg.name,
+					Labels: mf.convertLabels(mg),
+					Value:  mg.sum,
+				}
+				result = append(result, &v3.MeterData{
+					Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
+					Timestamp: mg.ts,
+				})
+				continue
+			}
+
 			bucketMap := make(map[float64]float64)
 			for _, dp := range mg.complexValue {
 				bucketMap[dp.boundary] = dp.value
