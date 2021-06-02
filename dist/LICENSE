@@ -216,6 +216,8 @@ The following components are provided under the Apache License. See project link
 The text of each license is the standard Apache 2.0 license.
     client_golang (prometheus) v1.9.0: https://github.com/prometheus/client_golang Apache 2.0
     grpc-go (grpc) v1.36.1: https://github.com/grpc/grpc-go Apache 2.0
+    prometheus (prometheus) v1.8.2: http://github.com/prometheus/prometheus Apache 2.0
+    go-yaml (yaml) v2: https://github.com/go-yaml/yaml Apache 2.0
 
 ========================================================================
 BSD licenses
@@ -241,4 +243,5 @@ The text of each license is also included at licenses/LICENSE-[project].txt.
     Shopify (sarama) v1.27.2: https://github.com/Shopify/sarama  MIT
     enriquebris (goconcurrentqueue) v0.6.0: https://github.com/enriquebris/goconcurrentqueue  MIT
     go.uber.org (automaxprocs) v1.4.0: https://go.uber.org/automaxprocs MIT
-
+    go.uber.org (zap) v1.13.0: https://github.com/uber-go/zap MIT
+    stretchr (testify) v1.6.1: https://github.com/stretchr/testify MIT

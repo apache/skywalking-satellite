@@ -26,7 +26,7 @@ import (
 	"github.com/prometheus/prometheus/discovery"
 	"github.com/prometheus/prometheus/scrape"
 
-	yaml "gopkg.in/yaml.v3"
+	yaml "gopkg.in/yaml.v2"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
