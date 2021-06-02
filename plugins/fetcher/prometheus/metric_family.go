@@ -172,7 +172,7 @@ func getBoundary(metricType textparse.MetricType, lbs labels.Labels) (float64, e
 }
 
 func (mf *metricFamily) toMeterSingleValue(mg *metricGroup) *v3.MeterSingleValue {
-	result := &v3.MeterSingleValue{}
+	var result *v3.MeterSingleValue
 	if mg.hasCount {
 		result = &v3.MeterSingleValue{
 			Name:   mg.name,
