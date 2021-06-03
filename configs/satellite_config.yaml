@@ -93,3 +93,4 @@ pipes:
       client_name: grpc-client
       forwarders:
         - plugin_name: nativelog-grpc-forwarder
+        - plugin_name: meter-grpc-forwarder

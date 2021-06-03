@@ -20,6 +20,7 @@ package forwarder
 import (
 	"reflect"
 
+	grpc_meter "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/meter"
 	grpc_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativelog"
 	kafka_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativelog"
 
@@ -34,6 +35,7 @@ func RegisterForwarderPlugins() {
 		// Please register the forwarder plugins at here.
 		new(kafka_nativelog.Forwarder),
 		new(grpc_nativelog.Forwarder),
+		new(grpc_meter.Forwarder),
 	}
 	for _, forwarder := range forwarders {
 		plugin.RegisterPlugin(forwarder)
