@@ -75,82 +75,103 @@ func params() *SatelliteConfig {
 			Service:  "service1",
 			Instance: "instance1",
 		},
-		Sharing: &SharingConfig{
-			SharingCommonConfig: &config.CommonFields{
-				PipeName: "sharing",
+		Sharing: sharding(),
+		Pipes:   pipes(),
+	}
+}
+
+func sharding() *SharingConfig {
+	return &SharingConfig{
+		SharingCommonConfig: &config.CommonFields{
+			PipeName: "sharing",
+		},
+		Clients: []plugin.Config{
+			{
+				"plugin_name":            "kafka-client",
+				"brokers":                "127.0.0.1:9092",
+				"version":                "2.1.1",
+				"commonfields_pipe_name": "sharing",
+				"ca_pem_path":            "ca.pem",
+				"client_key_path":        "client.key",
+				"client_pem_path":        "client.pem",
+				"enable_TLS":             false,
+				"insecure_skip_verify":   false,
 			},
-			Clients: []plugin.Config{
-				{
-					"plugin_name":            "kafka-client",
-					"brokers":                "127.0.0.1:9092",
-					"version":                "2.1.1",
-					"commonfields_pipe_name": "sharing",
-					"ca_pem_path":            "ca.pem",
-					"client_key_path":        "client.key",
-					"client_pem_path":        "client.pem",
-					"enable_TLS":             false,
-				},
-			},
-			Servers: []plugin.Config{
-				{
-					"plugin_name":            "grpc-server",
-					"commonfields_pipe_name": "sharing",
-					"address":                ":11800",
-					"tls_cert_file":          "",
-					"tls_key_file":           "",
-				},
-				{
-					"plugin_name":            "prometheus-server",
-					"address":                ":1234",
-					"commonfields_pipe_name": "sharing",
-					"endpoint":               "/metrics",
-				},
+			{
+				"plugin_name":            "grpc-client",
+				"server_addr":            "127.0.0.1:11800",
+				"commonfields_pipe_name": "sharing",
+				"ca_pem_path":            "ca.pem",
+				"client_key_path":        "client.key",
+				"client_pem_path":        "client.pem",
+				"enable_TLS":             false,
+				"insecure_skip_verify":   false,
+				"check_period":           5,
+				"authentication":         "",
 			},
 		},
-		Pipes: []*PipeConfig{
+		Servers: []plugin.Config{
 			{
-				PipeCommonConfig: &config.CommonFields{
+				"plugin_name":            "grpc-server",
+				"commonfields_pipe_name": "sharing",
+				"address":                ":11800",
+				"tls_cert_file":          "",
+				"tls_key_file":           "",
+			},
+			{
+				"plugin_name":            "prometheus-server",
+				"address":                ":1234",
+				"commonfields_pipe_name": "sharing",
+				"endpoint":               "/metrics",
+			},
+		},
+	}
+}
+
+func pipes() []*PipeConfig {
+	return []*PipeConfig{
+		{
+			PipeCommonConfig: &config.CommonFields{
+				PipeName: "logpipe",
+			},
+
+			Gatherer: &gatherer.GathererConfig{
+				ServerName: "grpc-server",
+				CommonFields: &config.CommonFields{
 					PipeName: "logpipe",
 				},
-
-				Gatherer: &gatherer.GathererConfig{
-					ServerName: "grpc-server",
-					CommonFields: &config.CommonFields{
-						PipeName: "logpipe",
-					},
-					ReceiverConfig: plugin.Config{
-						"plugin_name":            "grpc-nativelog-receiver",
-						"commonfields_pipe_name": "logpipe",
-					},
-					QueueConfig: plugin.Config{
-						"commonfields_pipe_name": "logpipe",
-						"plugin_name":            "memory-queue",
-						"event_buffer_size":      5000,
-					},
+				ReceiverConfig: plugin.Config{
+					"plugin_name":            "grpc-nativelog-receiver",
+					"commonfields_pipe_name": "logpipe",
 				},
-				Processor: &processor.ProcessorConfig{
-					CommonFields: &config.CommonFields{
-						PipeName: "logpipe",
-					},
+				QueueConfig: plugin.Config{
+					"commonfields_pipe_name": "logpipe",
+					"plugin_name":            "memory-queue",
+					"event_buffer_size":      5000,
 				},
-				Sender: &sender.SenderConfig{
-					CommonFields: &config.CommonFields{
-						PipeName: "logpipe",
-					},
-					FallbackerConfig: plugin.Config{
+			},
+			Processor: &processor.ProcessorConfig{
+				CommonFields: &config.CommonFields{
+					PipeName: "logpipe",
+				},
+			},
+			Sender: &sender.SenderConfig{
+				CommonFields: &config.CommonFields{
+					PipeName: "logpipe",
+				},
+				FallbackerConfig: plugin.Config{
+					"commonfields_pipe_name": "logpipe",
+					"plugin_name":            "none-fallbacker",
+				},
+				FlushTime:      1000,
+				MaxBufferSize:  200,
+				MinFlushEvents: 100,
+				ClientName:     "kafka-client",
+				ForwardersConfig: []plugin.Config{
+					{
+						"plugin_name":            "nativelog-kafka-forwarder",
+						"topic":                  "log-topic",
 						"commonfields_pipe_name": "logpipe",
-						"plugin_name":            "none-fallbacker",
-					},
-					FlushTime:      1000,
-					MaxBufferSize:  200,
-					MinFlushEvents: 100,
-					ClientName:     "kafka-client",
-					ForwardersConfig: []plugin.Config{
-						{
-							"plugin_name":            "nativelog-kafka-forwarder",
-							"topic":                  "log-topic",
-							"commonfields_pipe_name": "logpipe",
-						},
 					},
 				},
 			},

@@ -49,6 +49,25 @@ sharing:
       client_key_path: ${SATELLITE_KAFKA_CLIENT_KEY_PATH:"client.key"}
       # The file path oca.pem. The config only works when opening the TLS switch.
       ca_pem_path: ${SATELLITE_KAFKA_CA_PEM_PATH:"ca.pem"}
+      # InsecureSkipVerify controls whether a client verifies the server's certificate chain and host name.
+      insecure_skip_verify: ${SATELLITE_KAFKA_INSECURE_SKIP_VERIFY:false}
+    - plugin_name: "grpc-client"
+      # The gRPC server address (default localhost:11800).
+      server_addr: ${SATELLITE_GRPC_CLIENT:127.0.0.1:11800}
+      # The TLS switch
+      enable_TLS: ${SATELLITE_GRPC_ENABLE_TLS:false}
+      # The file path of client.pem. The config only works when opening the TLS switch.
+      client_pem_path: ${SATELLITE_GRPC_CLIENT_PEM_PATH:"client.pem"}
+      # The file path of client.key. The config only works when opening the TLS switch.
+      client_key_path: ${SATELLITE_GRPC_CLIENT_KEY_PATH:"client.key"}
+      # InsecureSkipVerify controls whether a client verifies the server's certificate chain and host name.
+      insecure_skip_verify: ${SATELLITE_GRPC_INSECURE_SKIP_VERIFY:false}
+      # The file path oca.pem. The config only works when opening the TLS switch.
+      ca_pem_path: ${SATELLITE_grpc_CA_PEM_PATH:"ca.pem"}
+      # How frequently to check the connection
+      check_period: ${SATELLITE_GRPC_CHECK_PERIOD:5}
+      # The auth value when send request
+      authentication: ${SATELLITE_GRPC_AUTHENTICATION:""}
   servers:
     - plugin_name: "grpc-server"
       # The address of grpc server.

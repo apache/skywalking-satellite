@@ -5,7 +5,9 @@ Release Notes.
 0.2.0
 ------------------
 #### Features
-Update protoc-gen-go version to 1.26.0.
+* Update protoc-gen-go version to 1.26.0.
+* Add grpc client plugin.
+* Add nativelog-grpc-forwarder plugin.
 
 #### Bug Fixes
 Fix the data race in mmap queue.
