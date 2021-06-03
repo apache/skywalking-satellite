@@ -1,6 +1,6 @@
 # Client/grpc-client
 ## Description
-The gRPC client is a sharding plugin to keep connection with the gRPC server and delivery the data to it.
+The gRPC client is a sharing plugin to keep connection with the gRPC server and delivery the data to it.
 ## DefaultConfig
 ```yaml
 # The gRPC server address (default localhost:11800). 

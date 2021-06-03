@@ -75,12 +75,12 @@ func params() *SatelliteConfig {
 			Service:  "service1",
 			Instance: "instance1",
 		},
-		Sharing: sharding(),
+		Sharing: sharing(),
 		Pipes:   pipes(),
 	}
 }
 
-func sharding() *SharingConfig {
+func sharing() *SharingConfig {
 	return &SharingConfig{
 		SharingCommonConfig: &config.CommonFields{
 			PipeName: "sharing",

@@ -57,7 +57,7 @@ func (c *Client) Name() string {
 }
 
 func (c *Client) Description() string {
-	return "The gRPC client is a sharding plugin to keep connection with the gRPC server and delivery the data to it."
+	return "The gRPC client is a sharing plugin to keep connection with the gRPC server and delivery the data to it."
 }
 
 func (c *Client) DefaultConfig() string {
