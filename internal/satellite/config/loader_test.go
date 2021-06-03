@@ -87,17 +87,6 @@ func sharing() *SharingConfig {
 		},
 		Clients: []plugin.Config{
 			{
-				"plugin_name":            "kafka-client",
-				"brokers":                "127.0.0.1:9092",
-				"version":                "2.1.1",
-				"commonfields_pipe_name": "sharing",
-				"ca_pem_path":            "ca.pem",
-				"client_key_path":        "client.key",
-				"client_pem_path":        "client.pem",
-				"enable_TLS":             false,
-				"insecure_skip_verify":   false,
-			},
-			{
 				"plugin_name":            "grpc-client",
 				"server_addr":            "127.0.0.1:11800",
 				"commonfields_pipe_name": "sharing",
@@ -166,11 +155,10 @@ func pipes() []*PipeConfig {
 				FlushTime:      1000,
 				MaxBufferSize:  200,
 				MinFlushEvents: 100,
-				ClientName:     "kafka-client",
+				ClientName:     "grpc-client",
 				ForwardersConfig: []plugin.Config{
 					{
-						"plugin_name":            "nativelog-kafka-forwarder",
-						"topic":                  "log-topic",
+						"plugin_name":            "nativelog-grpc-forwarder",
 						"commonfields_pipe_name": "logpipe",
 					},
 				},
