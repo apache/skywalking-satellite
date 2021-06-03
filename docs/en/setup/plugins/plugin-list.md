@@ -5,6 +5,7 @@
 	- [none-fallbacker](./fallbacker_none-fallbacker.md)
 	- [timer-fallbacker](./fallbacker_timer-fallbacker.md)
 - Fetcher
+    - [prometheus-fetcher](./fetcher_prometheus_fetcher.md)
 - Filter
 - Forwarder
 	- [nativelog-kafka-forwarder](./forwarder_nativelog-kafka-forwarder.md)
