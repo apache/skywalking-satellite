@@ -20,9 +20,11 @@ package forwarder
 import (
 	"reflect"
 
+	grpc_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativelog"
+	kafka_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativelog"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativelog"
 )
 
 // RegisterForwarderPlugins register the used filter plugins.
@@ -30,7 +32,8 @@ func RegisterForwarderPlugins() {
 	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Forwarder)(nil)).Elem())
 	forwarders := []api.Forwarder{
 		// Please register the forwarder plugins at here.
-		new(nativelog.Forwarder),
+		new(kafka_nativelog.Forwarder),
+		new(grpc_nativelog.Forwarder),
 	}
 	for _, forwarder := range forwarders {
 		plugin.RegisterPlugin(forwarder)
