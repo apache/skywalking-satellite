@@ -21,12 +21,13 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/config"
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
-	"github.com/apache/skywalking-satellite/plugins/client/api"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/grpclog"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/plugins/client/api"
 )
 
 const Name = "grpc-client"
