@@ -55,7 +55,7 @@ jobs:
         run: make build
       - name: Check CI Consistency
         if: matrix.go-version == '1.15' && matrix.runner == 'ubuntu'
-        run: make gen-docs && make check
+        run: make check
       - name: Build Docker
         if: matrix.runner == 'ubuntu'
         run: make docker
