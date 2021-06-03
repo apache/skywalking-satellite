@@ -27,7 +27,7 @@ import (
 
 	"google.golang.org/grpc"
 
-	"skywalking/network/language/agent/v3"
+	v3 "skywalking/network/language/agent/v3"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
