@@ -26,6 +26,7 @@ require (
 	go.uber.org/automaxprocs v1.4.0
 	go.uber.org/zap v1.13.0
 	google.golang.org/grpc v1.36.1
+	google.golang.org/grpc/cmd/protoc-gen-go-grpc v1.1.0 // indirect
 	google.golang.org/protobuf v1.26.0
 	gopkg.in/yaml.v2 v2.4.0
 	gotest.tools v2.2.0+incompatible
