@@ -45,7 +45,7 @@ ARCH = amd64
 
 SHELL = /bin/bash
 
-all: deps verify build gen-docs check
+all: deps verify build check
 
 .PHONY: tools
 tools:
@@ -54,15 +54,6 @@ tools:
 deps: tools
 	$(GO_GET) -v -t -d ./...
 
-.PHONY: gen-codes
-gen-codes:
-	$(PROTOC) --version || sh tools/install_protoc.sh
-	/bin/sh tools/protocol_gen.sh
-
-.PHONY: gen-docs
-gen-docs: build
-	rm -rf $(PLUGIN_DOC_DIR)
-	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=$(PLUGIN_DOC_DIR)
 
 .PHONY: lint
 lint: tools
@@ -80,7 +71,7 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: clean gen-codes deps linux darwin windows
+build: clean deps linux darwin windows
 
 .PHONY: check
 check: clean
