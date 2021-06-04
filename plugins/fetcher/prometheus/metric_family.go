@@ -345,7 +345,6 @@ func (mf *metricFamily) updateLabelKeys(ls labels.Labels) {
 	}
 }
 
-// todo
 func isUsefulLabel(mType textparse.MetricType, labelKey string) bool {
 	result := false
 	switch labelKey {

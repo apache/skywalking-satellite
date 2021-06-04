@@ -28,7 +28,7 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-// QueueAppender todo appender with queue
+// QueueAppender appender with queue
 type QueueAppender struct {
 	Ctx                context.Context
 	Ms                 *metadataService
