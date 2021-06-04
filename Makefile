@@ -45,7 +45,7 @@ ARCH = amd64
 
 SHELL = /bin/bash
 
-all: deps verify build check
+all: deps verify build gen-docs check
 
 .PHONY: tools
 tools:
@@ -75,7 +75,7 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: clean gen-docs deps linux darwin windows
+build: clean deps linux darwin windows
 
 .PHONY: check
 check: clean
