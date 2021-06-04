@@ -53,7 +53,6 @@ catalog:
             path: "/en/setup/configuration/override-settings"
 
       - name: "Plugins"
-        path: "/en/setup/plugins/plugin-list"
         catalog:
           - name: "client"
             catalog:
