@@ -21,19 +21,16 @@ import (
 	"context"
 	"time"
 
-	"go.uber.org/zap"
-
-	"github.com/prometheus/prometheus/discovery"
-	"github.com/prometheus/prometheus/scrape"
-
-	yaml "gopkg.in/yaml.v2"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
-	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	promConfig "github.com/prometheus/prometheus/config"
+	"github.com/prometheus/prometheus/discovery"
+	"github.com/prometheus/prometheus/scrape"
+	"go.uber.org/zap"
+	yaml "gopkg.in/yaml.v2"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 const (

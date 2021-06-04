@@ -31,31 +31,29 @@ import (
 	"testing"
 	"time"
 
-	"gotest.tools/assert"
-	is "gotest.tools/assert/cmp"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
-	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
-	"github.com/stretchr/testify/require"
-	yaml "gopkg.in/yaml.v2"
-	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
-
-	"go.uber.org/zap"
+	"github.com/apache/skywalking-satellite/plugins/fetcher/api"
 
 	promcfg "github.com/prometheus/prometheus/config"
+	"github.com/stretchr/testify/require"
+	"go.uber.org/zap"
+	yaml "gopkg.in/yaml.v2"
+	"gotest.tools/assert"
+	is "gotest.tools/assert/cmp"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 var logger = zap.NewNop()
 
 func Init() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*fetcher.Fetcher)(nil)).Elem())
+	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Fetcher)(nil)).Elem())
 	plugin.RegisterPlugin(new(Fetcher))
 }
 
-func initFetcher(t *testing.T, cfg plugin.Config) fetcher.Fetcher {
+func initFetcher(t *testing.T, cfg plugin.Config) api.Fetcher {
 	cfg[plugin.NameField] = Name
-	q := fetcher.GetFetcher(cfg)
+	q := api.GetFetcher(cfg)
 	if q == nil {
 		t.Fatalf("cannot get prometheus-metrics-fetcher from the registry")
 	}
