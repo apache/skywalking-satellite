@@ -21,16 +21,15 @@ import (
 	"io"
 	"time"
 
-	common "skywalking/network/common/v3"
-	logging "skywalking/network/logging/v3"
-
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+	common "skywalking.apache.org/repo/goapi/collect/common/v3"
+	logging "skywalking.apache.org/repo/goapi/collect/logging/v3"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 const eventName = "grpc-log-event"
 
 type LogReportService struct {
-	receiveChannel chan *protocol.Event
+	receiveChannel chan *v1.SniffData
 	logging.UnimplementedLogReportServiceServer
 }
 
@@ -43,13 +42,13 @@ func (s *LogReportService) Collect(stream logging.LogReportService_CollectServer
 		if err != nil {
 			return err
 		}
-		e := &protocol.Event{
+		e := &v1.SniffData{
 			Name:      eventName,
 			Timestamp: time.Now().UnixNano() / 1e6,
 			Meta:      nil,
-			Type:      protocol.EventType_Logging,
+			Type:      v1.SniffType_Logging,
 			Remote:    true,
-			Data: &protocol.Event_Log{
+			Data: &v1.SniffData_Log{
 				Log: logData,
 			},
 		}

@@ -19,12 +19,12 @@ package prometheus
 import (
 	"fmt"
 	"math"
-	v3 "skywalking/network/language/agent/v3"
 	"sort"
 	"strconv"
 	"strings"
 
 	"github.com/prometheus/common/model"
+	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/pkg/textparse"

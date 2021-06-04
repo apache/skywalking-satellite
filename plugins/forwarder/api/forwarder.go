@@ -20,9 +20,10 @@ package api
 import (
 	"reflect"
 
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 // Forwarder is a plugin interface, that defines new forwarders.
@@ -33,7 +34,7 @@ type Forwarder interface {
 	// Forward the batch events to the external services, such as Kafka MQ and SkyWalking OAP cluster.
 	Forward(batch event.BatchEvents) error
 	// ForwardType returns the supported event type.
-	ForwardType() protocol.EventType
+	ForwardType() v1.SniffType
 }
 
 // ForwardFunc represent the Forward() in Forwarder

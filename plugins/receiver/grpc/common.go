@@ -23,12 +23,12 @@ import (
 
 	"google.golang.org/grpc"
 
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 type CommonGRPCReceiverFields struct {
 	Server        *grpc.Server
-	OutputChannel chan *protocol.Event // The channel is to bridge the LogReportService and the Gatherer to delivery the data.
+	OutputChannel chan *v1.SniffData // The channel is to bridge the LogReportService and the Gatherer to delivery the data.
 }
 
 // InitCommonGRPCReceiverFields init the common fields for gRPC receivers.
@@ -39,6 +39,6 @@ func InitCommonGRPCReceiverFields(server interface{}) *CommonGRPCReceiverFields 
 	}
 	return &CommonGRPCReceiverFields{
 		Server:        s,
-		OutputChannel: make(chan *protocol.Event),
+		OutputChannel: make(chan *v1.SniffData),
 	}
 }

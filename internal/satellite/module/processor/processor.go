@@ -27,7 +27,8 @@ import (
 	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
 	filter "github.com/apache/skywalking-satellite/plugins/filter/api"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 // Processor is the processing module in Satellite.
@@ -61,7 +62,7 @@ func (p *Processor) Boot(ctx context.Context) {
 			case e := <-p.gatherer.OutputDataChannel():
 				c := &event.OutputEventContext{
 					Offset:  e.Offset,
-					Context: make(map[string]*protocol.Event),
+					Context: make(map[string]*v1.SniffData),
 				}
 				c.Put(e.Event)
 				// processing the event with filters, that put the necessary events to OutputEventContext.

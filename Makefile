@@ -54,11 +54,6 @@ tools:
 deps: tools
 	$(GO_GET) -v -t -d ./...
 
-.PHONY: gen-codes
-gen-codes:
-	$(PROTOC) --version || sh tools/install_protoc.sh
-	/bin/sh tools/protocol_gen.sh
-
 .PHONY: gen-docs
 gen-docs: build
 	rm -rf $(PLUGIN_DOC_DIR)
@@ -80,7 +75,7 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: clean gen-codes deps linux darwin windows
+build: clean deps linux darwin windows
 
 .PHONY: check
 check: clean

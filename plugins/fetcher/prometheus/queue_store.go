@@ -19,10 +19,9 @@ package prometheus
 import (
 	"context"
 
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
-
 	"github.com/prometheus/prometheus/scrape"
 	"github.com/prometheus/prometheus/storage"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 type QueueStore struct {
@@ -30,11 +29,11 @@ type QueueStore struct {
 	mc                 *metadataService
 	useStartTimeMetric bool
 	receiverName       string
-	OutputChannel      chan *protocol.Event
+	OutputChannel      chan *v1.SniffData
 }
 
 // NewQueueStore construct QueueStore
-func NewQueueStore(ctx context.Context, useStartTimeMetric bool, receiverName string, oc chan *protocol.Event) *QueueStore {
+func NewQueueStore(ctx context.Context, useStartTimeMetric bool, receiverName string, oc chan *v1.SniffData) *QueueStore {
 	return &QueueStore{
 		ctx:                ctx,
 		useStartTimeMetric: useStartTimeMetric,

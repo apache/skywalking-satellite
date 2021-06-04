@@ -27,8 +27,9 @@ import (
 	"testing"
 	"time"
 
-	common "skywalking/network/common/v3"
-	logging "skywalking/network/logging/v3"
+	common "skywalking.apache.org/repo/goapi/collect/common/v3"
+	logging "skywalking.apache.org/repo/goapi/collect/logging/v3"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/google/go-cmp/cmp"
 	"google.golang.org/protobuf/proto"
@@ -40,7 +41,6 @@ import (
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 	httpserver "github.com/apache/skywalking-satellite/plugins/server/http"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 func TestReceiver_http_RegisterHandler(t *testing.T) {
@@ -83,7 +83,7 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 		}()
 
 		newData := <-r.Channel()
-		if !cmp.Equal(newData.Data.(*protocol.Event_Log).Log.String(), data.String()) {
+		if !cmp.Equal(newData.Data.(*v1.SniffData_Log).Log.String(), data.String()) {
 			t.Fatalf("the sent data is not equal to the received data\n, "+
 				"want data %s\n, but got %s\n", data.String(), newData.String())
 		}

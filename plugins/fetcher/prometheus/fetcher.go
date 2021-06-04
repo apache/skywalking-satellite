@@ -31,7 +31,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	promConfig "github.com/prometheus/prometheus/config"
 )
@@ -58,7 +58,7 @@ type Fetcher struct {
 	// events
 	OutputEvents event.BatchEvents
 	// outputChannel
-	OutputChannel chan *protocol.Event
+	OutputChannel chan *v1.SniffData
 
 	cancelFunc context.CancelFunc
 }
@@ -105,7 +105,7 @@ func (f *Fetcher) Fetch() event.BatchEvents {
 	return fetch(ctx, f.ScrapeConfigs, f.OutputChannel)
 }
 
-func (f *Fetcher) Channel() <-chan *protocol.Event {
+func (f *Fetcher) Channel() <-chan *v1.SniffData {
 	return f.OutputChannel
 }
 
@@ -114,7 +114,7 @@ func (f *Fetcher) Shutdown(context.Context) error {
 	return nil
 }
 
-func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, outputChannel chan *protocol.Event) event.BatchEvents {
+func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, outputChannel chan *v1.SniffData) event.BatchEvents {
 	// config of scraper
 	c := make(map[string]discovery.Configs)
 	for _, v := range scrapeConfigs {

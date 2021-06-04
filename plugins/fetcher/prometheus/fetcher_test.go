@@ -37,10 +37,9 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
-
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v2"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"go.uber.org/zap"
 
@@ -123,7 +122,7 @@ type testData struct {
 	name         string
 	pages        []mockPrometheusResponse
 	ScrapeConfig *scrapeConfig
-	validateFunc func(t *testing.T, em *protocol.Event)
+	validateFunc func(t *testing.T, em *v1.SniffData)
 }
 
 func setupMockPrometheus(tds ...*testData) (*mockPrometheus, *promcfg.Config, error) {
@@ -236,7 +235,7 @@ func TestEndToEnd(t *testing.T) {
 }
 
 func testEndToEnd(ctx context.Context, t *testing.T, targets []*testData) {
-	outputChannel := make(chan *protocol.Event)
+	outputChannel := make(chan *v1.SniffData)
 	// 1. setup mock server
 	mp, cfg, err := setupMockPrometheus(targets...)
 	require.Nilf(t, err, "Failed to create Promtheus config: %v", err)
@@ -253,7 +252,7 @@ func testEndToEnd(ctx context.Context, t *testing.T, targets []*testData) {
 	}
 }
 
-func verifyTarget1(t *testing.T, em *protocol.Event) {
+func verifyTarget1(t *testing.T, em *v1.SniffData) {
 	assert.Equal(t, em.GetMeter().Service, "target1", "Get meter service error")
 
 	singleElems := []string{

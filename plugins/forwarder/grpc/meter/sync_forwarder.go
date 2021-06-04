@@ -15,29 +15,29 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package nativelog
+package meter
 
 import (
+	"context"
 	"fmt"
+	"io"
 	"reflect"
 
-	"google.golang.org/protobuf/proto"
+	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
-	"github.com/Shopify/sarama"
+	"google.golang.org/grpc"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
-
-	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-const Name = "nativelog-kafka-forwarder"
+const Name = "meter-grpc-forwarder"
 
 type Forwarder struct {
 	config.CommonFields
-	Topic    string `mapstructure:"topic"` // The forwarder topic.
-	producer sarama.SyncProducer
+	meterClient v3.MeterReportServiceClient
 }
 
 func (f *Forwarder) Name() string {
@@ -45,50 +45,55 @@ func (f *Forwarder) Name() string {
 }
 
 func (f *Forwarder) Description() string {
-	return "This is a synchronization Kafka forwarder with the SkyWalking native log protocol."
+	return "This is a synchronization meter grpc forwarder with the SkyWalking meter protocol."
 }
 
 func (f *Forwarder) DefaultConfig() string {
-	return `
-# The remote topic. 
-topic: "log-topic"
-`
+	return ``
 }
 
 func (f *Forwarder) Prepare(connection interface{}) error {
-	client, ok := connection.(sarama.Client)
+	client, ok := connection.(*grpc.ClientConn)
 	if !ok {
-		return fmt.Errorf("the %s is only accepet the kafka client, but receive a %s",
+		return fmt.Errorf("the %s is only accepet the grpc client, but receive a %s",
 			f.Name(), reflect.TypeOf(connection).String())
 	}
-	producer, err := sarama.NewSyncProducerFromClient(client)
-	if err != nil {
-		return err
-	}
-	f.producer = producer
+	f.meterClient = v3.NewMeterReportServiceClient(client)
 	return nil
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-	var message []*sarama.ProducerMessage
+	stream, err := f.meterClient.Collect(context.Background())
+	if err != nil {
+		log.Logger.Errorf("open grpc stream error %v", err)
+		return err
+	}
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_Log)
+		data, ok := e.GetData().(*v1.SniffData_Meter)
 		if !ok {
 			continue
 		}
-		bytes, err := proto.Marshal(data.Log)
+		err := stream.Send(data.Meter)
 		if err != nil {
-			log.Logger.Errorf("%s serialize the logData fail: %v", f.Name(), err)
-			continue
+			log.Logger.Errorf("%s send meter data error: %v", f.Name(), err)
+			err = closeStream(stream)
+			if err != nil {
+				log.Logger.Errorf("%s close stream error: %v", f.Name(), err)
+			}
+			return err
 		}
-		message = append(message, &sarama.ProducerMessage{
-			Topic: f.Topic,
-			Value: sarama.ByteEncoder(bytes),
-		})
 	}
-	return f.producer.SendMessages(message)
+	return closeStream(stream)
+}
+
+func closeStream(stream v3.MeterReportService_CollectClient) error {
+	_, err := stream.CloseAndRecv()
+	if err != nil && err != io.EOF {
+		return err
+	}
+	return nil
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {
-	return v1.SniffType_Logging
+	return v1.SniffType_MeterType
 }

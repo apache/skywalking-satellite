@@ -18,11 +18,11 @@
 package nativelog
 
 import (
-	logging "skywalking/network/logging/v3"
+	v3 "skywalking.apache.org/repo/goapi/collect/logging/v3"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	grpcreceiver "github.com/apache/skywalking-satellite/plugins/receiver/grpc"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 const Name = "grpc-nativelog-receiver"
@@ -49,9 +49,9 @@ func (r *Receiver) DefaultConfig() string {
 func (r *Receiver) RegisterHandler(server interface{}) {
 	r.CommonGRPCReceiverFields = *grpcreceiver.InitCommonGRPCReceiverFields(server)
 	r.service = &LogReportService{receiveChannel: r.OutputChannel}
-	logging.RegisterLogReportServiceServer(r.Server, r.service)
+	v3.RegisterLogReportServiceServer(r.Server, r.service)
 }
 
-func (r *Receiver) Channel() <-chan *protocol.Event {
+func (r *Receiver) Channel() <-chan *v1.SniffData {
 	return r.OutputChannel
 }

@@ -22,7 +22,7 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 // Fetcher is a plugin interface, that defines new fetchers.
@@ -33,7 +33,7 @@ type Fetcher interface {
 	// Fetch would fetch some APM data.
 	Fetch() event.BatchEvents
 	// Channel would be put a data when the receiver receives an APM data.
-	Channel() <-chan *protocol.Event
+	Channel() <-chan *v1.SniffData
 	// Shutdown shutdown the fetcher
 	Shutdown(context.Context) error
 }

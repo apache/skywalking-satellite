@@ -28,8 +28,6 @@ As SkyWalking Satellite is using `Makefile`, compiling the project is as easy as
 ```shell script
 git clone https://github.com/apache/skywalking-satellite
 cd skywalking-satellite
-git submodule init
-git submodule update
 make build
 ```
 If you want to know more details about compiling, please read [the doc](./docs/en/guides/compile/How-to-compile.md).

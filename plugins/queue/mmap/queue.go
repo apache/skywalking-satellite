@@ -40,7 +40,8 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
 	"github.com/apache/skywalking-satellite/plugins/queue/mmap/meta"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 const (
@@ -152,7 +153,7 @@ func (q *Queue) Initialize() error {
 	return nil
 }
 
-func (q *Queue) Enqueue(e *protocol.Event) error {
+func (q *Queue) Enqueue(e *v1.SniffData) error {
 	if !q.ready {
 		log.Logger.WithField("pipe", q.CommonFields.PipeName).Warnf("the enqueue operation would be ignored because the queue was closed.")
 		return api.ErrClosed
@@ -176,7 +177,7 @@ func (q *Queue) Dequeue() (*api.SequenceEvent, error) {
 	if err != nil {
 		return nil, err
 	}
-	e := &protocol.Event{}
+	e := &v1.SniffData{}
 	err = proto.Unmarshal(data, e)
 	if err != nil {
 		return nil, err

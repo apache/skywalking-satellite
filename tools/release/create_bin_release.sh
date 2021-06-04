@@ -56,9 +56,6 @@ fi
 
 git checkout ${TAG_NAME}
 
-git submodule init
-git submodule update
-
 make build
 
 cd ..

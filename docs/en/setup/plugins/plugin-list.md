@@ -1,5 +1,6 @@
 # Plugin List
 - Client
+	- [grpc-client](./client_grpc-client.md)
 	- [kafka-client](./client_kafka-client.md)
 - Fallbacker
 	- [none-fallbacker](./fallbacker_none-fallbacker.md)
@@ -8,6 +9,8 @@
     - [prometheus-fetcher](./fetcher_prometheus_fetcher.md)
 - Filter
 - Forwarder
+	- [meter-grpc-forwarder](./forwarder_meter-grpc-forwarder.md)
+	- [nativelog-grpc-forwarder](./forwarder_nativelog-grpc-forwarder.md)
 	- [nativelog-kafka-forwarder](./forwarder_nativelog-kafka-forwarder.md)
 - Parser
 - Queue

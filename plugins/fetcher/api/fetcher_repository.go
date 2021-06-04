@@ -20,6 +20,8 @@ package api
 import (
 	"reflect"
 
+	"github.com/apache/skywalking-satellite/plugins/fetcher/prometheus"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
@@ -32,7 +34,7 @@ func GetFetcher(config plugin.Config) Fetcher {
 func RegisterFetcherPlugins() {
 	plugin.RegisterPluginCategory(reflect.TypeOf((*Fetcher)(nil)).Elem())
 	fetchers := []Fetcher{
-		// Please register the fetcher plugins at here.
+		new(prometheus.Fetcher),
 	}
 	for _, fetcher := range fetchers {
 		plugin.RegisterPlugin(fetcher)

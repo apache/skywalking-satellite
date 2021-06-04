@@ -19,8 +19,9 @@ package prometheus
 
 import (
 	"fmt"
-	v3 "skywalking/network/language/agent/v3"
 	"strings"
+
+	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 
 	"github.com/prometheus/common/model"
 

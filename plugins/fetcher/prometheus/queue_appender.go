@@ -22,11 +22,10 @@ import (
 	"math"
 	"time"
 
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
-
 	"github.com/prometheus/common/model"
 	"github.com/prometheus/prometheus/pkg/labels"
 	"github.com/prometheus/prometheus/storage"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 // QueueAppender todo appender with queue
@@ -38,11 +37,11 @@ type QueueAppender struct {
 	instance           string
 	metricBuilder      *metricBuilder
 	useStartTimeMetric bool
-	OutputChannel      chan *protocol.Event
+	OutputChannel      chan *v1.SniffData
 }
 
 // NewQueueAppender construct QueueAppender
-func NewQueueAppender(ctx context.Context, ms *metadataService, oc chan *protocol.Event, useStartTimeMetric bool) *QueueAppender {
+func NewQueueAppender(ctx context.Context, ms *metadataService, oc chan *v1.SniffData, useStartTimeMetric bool) *QueueAppender {
 	return &QueueAppender{Ctx: ctx, Ms: ms, OutputChannel: oc, isNew: true, useStartTimeMetric: useStartTimeMetric}
 }
 
@@ -98,13 +97,13 @@ func (qa *QueueAppender) Commit() error {
 	for _, meterData := range meterCollection.GetMeterData() {
 		meterData.Service = qa.job
 		meterData.ServiceInstance = qa.instance
-		e := &protocol.Event{
+		e := &v1.SniffData{
 			Name:      eventName,
 			Timestamp: time.Now().UnixNano() / 1e6,
 			Meta:      nil,
-			Type:      protocol.EventType_MeterType,
+			Type:      v1.SniffType_MeterType,
 			Remote:    true,
-			Data: &protocol.Event_Meter{
+			Data: &v1.SniffData_Meter{
 				Meter: meterData,
 			},
 		}

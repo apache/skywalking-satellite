@@ -5,7 +5,6 @@ go 1.14
 replace (
 	github.com/prometheus/prometheus v2.5.0+incompatible => github.com/prometheus/prometheus v1.8.2-0.20201105135750-00f16d1ac3a4
 	k8s.io/api v0.21.1 => k8s.io/api v0.19.2
-	skywalking/network v1.0.0 => ./protocol/gen-codes/skywalking/network
 )
 
 require (
@@ -25,10 +24,10 @@ require (
 	github.com/urfave/cli/v2 v2.3.0
 	go.uber.org/automaxprocs v1.4.0
 	go.uber.org/zap v1.13.0
-	google.golang.org/grpc v1.36.1
+	google.golang.org/grpc v1.38.0
 	google.golang.org/protobuf v1.26.0
 	gopkg.in/yaml.v2 v2.4.0
 	gotest.tools v2.2.0+incompatible
 	k8s.io/api v0.21.1 // indirect
-	skywalking/network v1.0.0
+	skywalking.apache.org/repo/goapi v0.0.0-20210604033701-af17f1bab1a2
 )
