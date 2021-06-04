@@ -39,7 +39,9 @@ If you want to know more details about compiling, please read [the doc](./docs/e
 | start  | --config FILE, -c FILE | Load configuration from FILE. (default: "configs/satellite_config.yaml" or read value from *SATELLITE_CONFIG* env).|
 | start  | ---shutdown_hook_time TIME, -t TIME | The hook TIME for graceful shutdown, and the time unit is seconds. (default: "5" or read value from *SATELLITE_SHUTDOWN_HOOK_TIME* env).|
 | start  | --help, -h | Show help.|
-| docs  | --output PATH, -o PATH | The output PATH for the plugin documentation. (default: "docs" or read value from *SATELLITE_DOC_PATH* env) |
+| docs  | --output PATH, -o PATH | The document output root path. (default: "docs" or read value from *SATELLITE_DOC_PATH* env) |
+| docs  | --menu PATH, -m PATH | The menu file path. (default: "/menu.yml" or read value from *SATELLITE_MENU_PATH* env) |
+| docs  | --plugins PATH, -p PATH | The plugin list dir. (default: "/plugins" or read value from *SATELLITE_PLUGIN_PATH* env) |
 | docs  | --help, -h | Show help.|
 
 

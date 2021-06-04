@@ -35,7 +35,7 @@ Let's use memory-queue as an example of how to write a plugin.
 3. Add [unit test](../test/How-to-unit-test.md).
 4. Generate the plugin docs.
 ```shell script
-make check
+make gen-docs
 ```
 
 
