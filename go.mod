@@ -2,8 +2,6 @@ module github.com/apache/skywalking-satellite
 
 go 1.14
 
-replace skywalking/network v1.0.0 => ./protocol/gen-codes/skywalking/network
-
 require (
 	github.com/Shopify/sarama v1.27.2
 	github.com/enriquebris/goconcurrentqueue v0.6.0
@@ -15,7 +13,7 @@ require (
 	github.com/spf13/viper v1.7.1
 	github.com/urfave/cli/v2 v2.3.0
 	go.uber.org/automaxprocs v1.4.0
-	google.golang.org/grpc v1.36.1
+	google.golang.org/grpc v1.38.0
 	google.golang.org/protobuf v1.26.0
-	skywalking/network v1.0.0
+	skywalking.apache.org/repo/goapi v0.0.0-20210604033701-af17f1bab1a2
 )

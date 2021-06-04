@@ -45,7 +45,7 @@ ARCH = amd64
 
 SHELL = /bin/bash
 
-all: deps verify build check
+all: deps verify build gen-docs check
 
 .PHONY: tools
 tools:
@@ -54,6 +54,10 @@ tools:
 deps: tools
 	$(GO_GET) -v -t -d ./...
 
+.PHONY: gen-docs
+gen-docs: build
+	rm -rf $(PLUGIN_DOC_DIR)
+	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=$(PLUGIN_DOC_DIR)
 
 .PHONY: lint
 lint: tools

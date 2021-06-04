@@ -28,7 +28,8 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 const Name = "nativelog-kafka-forwarder"
@@ -71,7 +72,7 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
-		data, ok := e.GetData().(*protocol.Event_Log)
+		data, ok := e.GetData().(*v1.SniffData_Log)
 		if !ok {
 			continue
 		}
@@ -88,6 +89,6 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	return f.producer.SendMessages(message)
 }
 
-func (f *Forwarder) ForwardType() protocol.EventType {
-	return protocol.EventType_Logging
+func (f *Forwarder) ForwardType() v1.SniffType {
+	return v1.SniffType_Logging
 }

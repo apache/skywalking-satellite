@@ -18,21 +18,20 @@
 package nativcelog
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"time"
 
-	logging "skywalking/network/logging/v3"
-
 	"google.golang.org/protobuf/proto"
-
-	"encoding/json"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	http_server "github.com/apache/skywalking-satellite/plugins/server/http"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+
+	logging "skywalking.apache.org/repo/goapi/collect/logging/v3"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 const (
@@ -49,7 +48,7 @@ type Receiver struct {
 	Timeout int    `mapstructure:"timeout"`
 	// components
 	Server        *http_server.Server
-	OutputChannel chan *protocol.Event
+	OutputChannel chan *v1.SniffData
 }
 
 type Response struct {
@@ -77,7 +76,7 @@ timeout: 5
 
 func (r *Receiver) RegisterHandler(server interface{}) {
 	r.Server = server.(*http_server.Server)
-	r.OutputChannel = make(chan *protocol.Event)
+	r.OutputChannel = make(chan *v1.SniffData)
 	r.Server.Server.Handle(r.URI, r.httpHandler())
 }
 
@@ -103,13 +102,13 @@ func (r *Receiver) httpHandler() http.Handler {
 			ResponseWithJSON(rsp, response, http.StatusInternalServerError)
 			return
 		}
-		e := &protocol.Event{
+		e := &v1.SniffData{
 			Name:      eventName,
 			Timestamp: time.Now().UnixNano() / 1e6,
 			Meta:      nil,
-			Type:      protocol.EventType_Logging,
+			Type:      v1.SniffType_Logging,
 			Remote:    true,
-			Data: &protocol.Event_Log{
+			Data: &v1.SniffData_Log{
 				Log: &data,
 			},
 		}
@@ -120,6 +119,6 @@ func (r *Receiver) httpHandler() http.Handler {
 	return http.TimeoutHandler(h, time.Duration(r.Timeout)*time.Second, fmt.Sprintf("Exceeded configured timeout of %d seconds", r.Timeout))
 }
 
-func (r *Receiver) Channel() <-chan *protocol.Event {
+func (r *Receiver) Channel() <-chan *v1.SniffData {
 	return r.OutputChannel
 }

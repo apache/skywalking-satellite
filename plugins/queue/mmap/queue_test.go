@@ -23,19 +23,20 @@ import (
 	"fmt"
 	"os"
 	"reflect"
-	v3 "skywalking/network/common/v3"
-	logging "skywalking/network/logging/v3"
 	"strconv"
 	"strings"
 	"testing"
 	"time"
+
+	common "skywalking.apache.org/repo/goapi/collect/common/v3"
+	logging "skywalking.apache.org/repo/goapi/collect/logging/v3"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/google/go-cmp/cmp"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 func initMmapQueue(cfg plugin.Config) (*Queue, error) {
@@ -64,18 +65,18 @@ func cleanTestQueue(t *testing.T, q api.Queue) {
 	}
 }
 
-func getBatchEvents(count int) []*protocol.Event {
-	var slice []*protocol.Event
+func getBatchEvents(count int) []*v1.SniffData {
+	var slice []*v1.SniffData
 	for i := 0; i < count; i++ {
-		slice = append(slice, &protocol.Event{
+		slice = append(slice, &v1.SniffData{
 			Name:      "event" + strconv.Itoa(i),
 			Timestamp: time.Now().Unix(),
 			Meta: map[string]string{
 				"meta": "mval" + strconv.Itoa(i),
 			},
-			Type:   protocol.EventType_Logging,
+			Type:   v1.SniffType_Logging,
 			Remote: true,
-			Data: &protocol.Event_Log{
+			Data: &v1.SniffData_Log{
 				Log: &logging.LogData{
 					Service:         "mock-service",
 					ServiceInstance: "mock-serviceInstance",
@@ -107,23 +108,23 @@ func getNKData(n int) string {
 	return strings.Repeat("a", n*1024)
 }
 
-func getLargeEvent(n int) *protocol.Event {
-	return &protocol.Event{
+func getLargeEvent(n int) *v1.SniffData {
+	return &v1.SniffData{
 		Name:      "largeEvent",
 		Timestamp: time.Now().Unix(),
 		Meta: map[string]string{
 			"meta": "largeEvent",
 		},
-		Type:   protocol.EventType_Logging,
+		Type:   v1.SniffType_Logging,
 		Remote: true,
-		Data: &protocol.Event_Log{
+		Data: &v1.SniffData_Log{
 			Log: &logging.LogData{
 				Service:         "mock-service",
 				ServiceInstance: "mock-serviceInstance",
 				Timestamp:       time.Date(2020, 12, 20, 12, 12, 12, 0, time.UTC).Unix(),
 				Endpoint:        "mock-endpoint",
 				Tags: &logging.LogTags{
-					Data: []*v3.KeyStringValuePair{
+					Data: []*common.KeyStringValuePair{
 						{
 							Key:   "tags-key",
 							Value: "tags-val",
