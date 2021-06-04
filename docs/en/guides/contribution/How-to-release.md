@@ -21,7 +21,7 @@ This documentation guides the release manager to release the SkyWalking Satellit
 
 ```shell
 export VERSION=<the version to release>
-git clone --recurse-submodules git@github.com:apache/skywalking-satellite && cd skywalking-satellite
+git clone git@github.com:apache/skywalking-satellite && cd skywalking-satellite
 git tag -a "$VERSION" -m "Release Apache SkyWalking-Satellite $VERSION"
 git push --tags
 make release
