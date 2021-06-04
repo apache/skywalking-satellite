@@ -8,7 +8,5 @@ Linux, MacOS and Windows are supported in SkyWalking Satellite. However, some co
 ```shell script
 git clone https://github.com/apache/skywalking-satellite
 cd skywalking-satellite
-git submodule init
-git submodule update
 make build
 ```
