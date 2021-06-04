@@ -20,8 +20,9 @@ package api
 import (
 	"reflect"
 
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 // Receiver is a plugin interface, that defines new collectors.
@@ -32,7 +33,7 @@ type Receiver interface {
 	RegisterHandler(server interface{})
 
 	// Channel would be put a data when the receiver receives an APM data.
-	Channel() <-chan *protocol.Event
+	Channel() <-chan *v1.SniffData
 }
 
 // Get an initialized receiver plugin.

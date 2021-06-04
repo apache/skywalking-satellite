@@ -26,7 +26,8 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 func initMemoryQueue(cfg plugin.Config) (*Queue, error) {
@@ -63,7 +64,7 @@ func TestQueue_Enqueue(t *testing.T) {
 
 	// enqueue
 	for i := 0; i <= num; i++ {
-		e := &protocol.Event{
+		e := &v1.SniffData{
 			Name: strconv.Itoa(i),
 		}
 		if i < num {

@@ -25,6 +25,8 @@ import (
 
 	"github.com/sirupsen/logrus"
 
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
@@ -35,7 +37,6 @@ import (
 	client "github.com/apache/skywalking-satellite/plugins/client/api"
 	fallbacker "github.com/apache/skywalking-satellite/plugins/fallbacker/api"
 	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 // Sender is the forward module in Satellite.
@@ -186,7 +187,7 @@ func (s *Sender) consume(batch *buffer.BatchBuffer) {
 		"offset": batch.Last(),
 		"size":   batch.Len(),
 	}).Info("sender module is flushing a new batch buffer.")
-	var events = make(map[protocol.EventType]event.BatchEvents)
+	var events = make(map[v1.SniffType]event.BatchEvents)
 	for i := 0; i < batch.Len(); i++ {
 		eventContext := batch.Buf()[i]
 		for _, e := range eventContext.Context {

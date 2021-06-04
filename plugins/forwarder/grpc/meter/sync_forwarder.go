@@ -23,11 +23,10 @@ import (
 	"io"
 	"reflect"
 
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"google.golang.org/grpc"
-
-	v3 "skywalking/network/language/agent/v3"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
@@ -70,7 +69,7 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		return err
 	}
 	for _, e := range batch {
-		data, ok := e.GetData().(*protocol.Event_Meter)
+		data, ok := e.GetData().(*v1.SniffData_Meter)
 		if !ok {
 			continue
 		}
@@ -95,6 +94,6 @@ func closeStream(stream v3.MeterReportService_CollectClient) error {
 	return nil
 }
 
-func (f *Forwarder) ForwardType() protocol.EventType {
-	return protocol.EventType_MeterType
+func (f *Forwarder) ForwardType() v1.SniffType {
+	return v1.SniffType_MeterType
 }

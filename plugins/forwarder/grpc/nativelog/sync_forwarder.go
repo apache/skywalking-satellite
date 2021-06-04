@@ -23,11 +23,10 @@ import (
 	"io"
 	"reflect"
 
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
-
 	"google.golang.org/grpc"
 
-	loggingv3 "skywalking/network/logging/v3"
+	logging "skywalking.apache.org/repo/goapi/collect/logging/v3"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
@@ -39,7 +38,7 @@ const Name = "nativelog-grpc-forwarder"
 type Forwarder struct {
 	config.CommonFields
 
-	logClient loggingv3.LogReportServiceClient
+	logClient logging.LogReportServiceClient
 }
 
 func (f *Forwarder) Name() string {
@@ -60,7 +59,7 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 		return fmt.Errorf("the %s is only accepet the grpc client, but receive a %s",
 			f.Name(), reflect.TypeOf(connection).String())
 	}
-	f.logClient = loggingv3.NewLogReportServiceClient(client)
+	f.logClient = logging.NewLogReportServiceClient(client)
 	return nil
 }
 
@@ -71,7 +70,7 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		return err
 	}
 	for _, e := range batch {
-		data, ok := e.GetData().(*protocol.Event_Log)
+		data, ok := e.GetData().(*v1.SniffData_Log)
 		if !ok {
 			continue
 		}
@@ -88,7 +87,7 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	return closeStream(stream)
 }
 
-func closeStream(stream loggingv3.LogReportService_CollectClient) error {
+func closeStream(stream logging.LogReportService_CollectClient) error {
 	_, err := stream.CloseAndRecv()
 	if err != nil && err != io.EOF {
 		return err
@@ -96,6 +95,6 @@ func closeStream(stream loggingv3.LogReportService_CollectClient) error {
 	return nil
 }
 
-func (f *Forwarder) ForwardType() protocol.EventType {
-	return protocol.EventType_Logging
+func (f *Forwarder) ForwardType() v1.SniffType {
+	return v1.SniffType_Logging
 }

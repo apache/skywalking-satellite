@@ -28,15 +28,15 @@ import (
 
 	"google.golang.org/grpc"
 
-	common "skywalking/network/common/v3"
-	logging "skywalking/network/logging/v3"
+	common "skywalking.apache.org/repo/goapi/collect/common/v3"
+	logging "skywalking.apache.org/repo/goapi/collect/logging/v3"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 	grpcserver "github.com/apache/skywalking-satellite/plugins/server/grpc"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
 )
 
 func TestReceiver_RegisterHandler(t *testing.T) {
@@ -66,7 +66,7 @@ func TestReceiver_RegisterHandler(t *testing.T) {
 			t.Fatalf("cannot close the stream mode: %v", err)
 		}
 		newData := <-r.Channel()
-		if !cmp.Equal(newData.Data.(*protocol.Event_Log).Log.String(), data.String()) {
+		if !cmp.Equal(newData.Data.(*v1.SniffData_Log).Log.String(), data.String()) {
 			t.Fatalf("the sent data is not equal to the received data\n, "+
 				"want data %s\n, but got %s\n", data.String(), newData.String())
 		}

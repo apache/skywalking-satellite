@@ -54,6 +54,10 @@ tools:
 deps: tools
 	$(GO_GET) -v -t -d ./...
 
+.PHONY: gen-docs
+gen-docs: build
+	rm -rf $(PLUGIN_DOC_DIR)
+	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=$(PLUGIN_DOC_DIR)
 
 .PHONY: lint
 lint: tools
@@ -71,7 +75,7 @@ clean: tools
 	-rm -rf coverage.txt
 
 .PHONY: build
-build: clean deps linux darwin windows
+build: clean gen-docs deps linux darwin windows
 
 .PHONY: check
 check: clean

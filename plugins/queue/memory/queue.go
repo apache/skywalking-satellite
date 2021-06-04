@@ -24,7 +24,8 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
-	"github.com/apache/skywalking-satellite/protocol/gen-codes/satellite/protocol"
+
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 const (
@@ -60,7 +61,7 @@ func (q *Queue) Initialize() error {
 	return nil
 }
 
-func (q *Queue) Enqueue(e *protocol.Event) error {
+func (q *Queue) Enqueue(e *v1.SniffData) error {
 	if err := q.buffer.Enqueue(e); err != nil {
 		log.Logger.Errorf("error in enqueue: %v", err)
 		return api.ErrFull
@@ -75,7 +76,7 @@ func (q *Queue) Dequeue() (*api.SequenceEvent, error) {
 		return nil, api.ErrEmpty
 	}
 	return &api.SequenceEvent{
-		Event:  element.(*protocol.Event),
+		Event:  element.(*v1.SniffData),
 		Offset: "no_offset_in_memory_queue",
 	}, nil
 }
