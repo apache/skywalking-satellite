@@ -22,7 +22,9 @@ BINARY = skywalking-satellite
 RELEASE_BIN = skywalking-satellite-$(VERSION)-bin
 RELEASE_SRC = skywalking-satellite-$(VERSION)-src
 
-PLUGIN_DOC_DIR = docs/en/setup/plugins
+PLUGIN_DOC_BASE_DIR = docs
+PLUGIN_DOC_PLUGIN_DIR = /en/setup/plugins
+PLUGIN_DOC_MENU = /menu.yml
 
 OSNAME := $(if $(findstring Darwin,$(shell uname)),darwin,linux)
 
@@ -56,8 +58,7 @@ deps: tools
 
 .PHONY: gen-docs
 gen-docs: build
-	rm -rf $(PLUGIN_DOC_DIR)
-	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs --output=$(PLUGIN_DOC_DIR)
+	$(OUT_DIR)/$(BINARY)-$(VERSION)-$(OSNAME)-$(ARCH) docs -output=$(PLUGIN_DOC_BASE_DIR) -menu=$(PLUGIN_DOC_MENU) -plugins=$(PLUGIN_DOC_PLUGIN_DIR)
 
 .PHONY: lint
 lint: tools

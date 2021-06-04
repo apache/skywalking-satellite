@@ -62,14 +62,30 @@ var (
 			&cli.StringFlag{
 				Name:    "output",
 				Aliases: []string{"o"},
-				Usage:   "The output `PATH` for the plugin documentation",
+				Usage:   "The document output root path",
 				EnvVars: []string{"SATELLITE_DOC_PATH"},
 				Value:   "docs",
 			},
+			&cli.StringFlag{
+				Name:    "menu",
+				Aliases: []string{"mp"},
+				Usage:   "The menu file path",
+				EnvVars: []string{"SATELLITE_DOC_PATH"},
+				Value:   "menu.yml",
+			},
+			&cli.StringFlag{
+				Name:    "plugins",
+				Aliases: []string{"pp"},
+				Usage:   "The plugin list dir",
+				EnvVars: []string{"SATELLITE_MENU_FILE_PATH"},
+				Value:   "plugins",
+			},
 		},
 		Action: func(c *cli.Context) error {
-			outputPath := c.String("output")
-			return tools.GeneratePluginDoc(outputPath)
+			outputRootPath := c.String("output")
+			menuFilePath := c.String("menu")
+			pluginFilePath := c.String("plugins")
+			return tools.GeneratePluginDoc(outputRootPath, menuFilePath, pluginFilePath)
 		},
 	}
 )
