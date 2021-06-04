@@ -83,7 +83,7 @@ func updateMenuPluginListDoc(outputRootPath, menuFilePath, pluginFilePath string
 	}
 
 	// rebuild all plugins
-	var plugins []*Catalog
+	var allPlugins []*Catalog
 	for _, category := range categories {
 		// plugin
 		implements := []*Catalog{}
@@ -102,10 +102,10 @@ func updateMenuPluginListDoc(outputRootPath, menuFilePath, pluginFilePath string
 		curPlugin.Catalog = implements
 
 		if len(implements) > 0 {
-			plugins = append(plugins, curPlugin)
+			allPlugins = append(allPlugins, curPlugin)
 		}
 	}
-	pluginCatalog.Catalog = plugins
+	pluginCatalog.Catalog = allPlugins
 
 	return menu.Save(menuFile)
 }
