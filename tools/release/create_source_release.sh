@@ -70,7 +70,6 @@ tar -zcvf ${PRODUCT_NAME}-src.tgz \
 	--exclude .gitmodules \
 	--exclude .gitattributes \
 	--exclude ${PRODUCT_NAME}-src.tgz \
-	--exclude protocol/gen-codes \
 	${PRODUCT_NAME}
 
 gpg --batch --yes --armor --detach-sig ${PRODUCT_NAME}-src.tgz
