@@ -2,8 +2,6 @@ module github.com/apache/skywalking-satellite
 
 go 1.14
 
-replace k8s.io/api v0.21.1 => k8s.io/api v0.19.2
-
 require (
 	github.com/Azure/go-autorest/autorest v0.11.18 // indirect
 	github.com/Shopify/sarama v1.27.2
@@ -25,6 +23,5 @@ require (
 	google.golang.org/protobuf v1.26.0
 	gopkg.in/yaml.v2 v2.4.0
 	gotest.tools v2.2.0+incompatible
-	k8s.io/api v0.21.1 // indirect
 	skywalking.apache.org/repo/goapi v0.0.0-20210604033701-af17f1bab1a2
 )
