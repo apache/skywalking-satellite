@@ -68,17 +68,17 @@ var (
 			},
 			&cli.StringFlag{
 				Name:    "menu",
-				Aliases: []string{"mp"},
+				Aliases: []string{"m"},
 				Usage:   "The menu file path",
-				EnvVars: []string{"SATELLITE_DOC_PATH"},
-				Value:   "menu.yml",
+				EnvVars: []string{"SATELLITE_MENU_PATH"},
+				Value:   "/menu.yml",
 			},
 			&cli.StringFlag{
 				Name:    "plugins",
-				Aliases: []string{"pp"},
+				Aliases: []string{"p"},
 				Usage:   "The plugin list dir",
-				EnvVars: []string{"SATELLITE_MENU_FILE_PATH"},
-				Value:   "plugins",
+				EnvVars: []string{"SATELLITE_PLUGIN_PATH"},
+				Value:   "/plugins",
 			},
 		},
 		Action: func(c *cli.Context) error {
