@@ -28,7 +28,7 @@ import (
 	promConfig "github.com/prometheus/prometheus/config"
 	"github.com/prometheus/prometheus/discovery"
 	"github.com/prometheus/prometheus/scrape"
-	yaml "gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 

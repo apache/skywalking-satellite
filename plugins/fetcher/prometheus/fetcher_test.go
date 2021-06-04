@@ -39,7 +39,7 @@ import (
 
 	promcfg "github.com/prometheus/prometheus/config"
 	"github.com/stretchr/testify/require"
-	yaml "gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v3"
 	"gotest.tools/assert"
 	is "gotest.tools/assert/cmp"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
