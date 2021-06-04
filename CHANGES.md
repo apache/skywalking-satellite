@@ -8,6 +8,7 @@ Release Notes.
 * Update protoc-gen-go version to 1.26.0.
 * Add grpc client plugin.
 * Add nativelog-grpc-forwarder plugin.
+* Add meter-grpc-forwarder plugin.
 
 #### Bug Fixes
 Fix the data race in mmap queue.

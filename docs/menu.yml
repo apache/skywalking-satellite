@@ -57,6 +57,8 @@ catalog:
         catalog:
           - name: "client"
             catalog:
+              - name: "grpc-client"
+                path: "/en/setup/plugins/client_grpc-client"
               - name: "kafka-client"
                 path: "/en/setup/plugins/client_kafka-client"
           - name: "fallbacker"
@@ -67,8 +69,12 @@ catalog:
                 path: "/en/setup/plugins/fallbacker_timer-fallbacker"
           - name: "forwarder"
             catalog:
+              - name: "nativelog-grpc-forwarder"
+                path: "/en/setup/plugins/forwarder_nativelog-grpc-forwarder"
               - name: "nativelog-kafka-forwarder"
                 path: "/en/setup/plugins/forwarder_nativelog-kafka-forwarder"
+              - name: "meter-grpc-forwarder"
+                path: "/en/setup/plugins/forwarder_meter-grpc-forwarder"
           - name: "queue"
             catalog:
               - name: "memory-queue"
