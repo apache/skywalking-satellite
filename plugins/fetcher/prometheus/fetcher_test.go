@@ -31,20 +31,19 @@ import (
 	"testing"
 	"time"
 
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	"github.com/apache/skywalking-satellite/plugins/fetcher/api"
 
 	promcfg "github.com/prometheus/prometheus/config"
 	"github.com/stretchr/testify/require"
-	"go.uber.org/zap"
 	yaml "gopkg.in/yaml.v2"
 	"gotest.tools/assert"
 	is "gotest.tools/assert/cmp"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
-
-var logger = zap.NewNop()
 
 func Init() {
 	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Fetcher)(nil)).Elem())
@@ -138,7 +137,7 @@ func setupMockPrometheus(tds ...*testData) (*mockPrometheus, *promcfg.Config, er
 	}
 
 	if len(jobs) != len(tds) {
-		logger.Fatal("len(jobs) != len(targets), make sure job names are unique")
+		log.Logger.Fatal("len(jobs) != len(targets), make sure job names are unique")
 	}
 	config := make(map[string]interface{})
 	config["scrape_configs"] = jobs

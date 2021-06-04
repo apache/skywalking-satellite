@@ -28,7 +28,6 @@ import (
 	promConfig "github.com/prometheus/prometheus/config"
 	"github.com/prometheus/prometheus/discovery"
 	"github.com/prometheus/prometheus/scrape"
-	"go.uber.org/zap"
 	yaml "gopkg.in/yaml.v2"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
@@ -120,12 +119,12 @@ func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, output
 	// manager
 	manager := discovery.NewManager(ctx, nil)
 	if err := manager.ApplyConfig(c); err != nil {
-		log.Logger.Error("prometheus discovery config error", zap.Error(err))
+		log.Logger.Errorf("prometheus discovery config error %s", err.Error())
 	}
 	// manager start
 	go func() {
 		if err := manager.Run(); err != nil {
-			log.Logger.Error("Discovery manager run failed", zap.Error(err))
+			log.Logger.Error("Discovery manager run failed, error %s", err.Error())
 		}
 	}()
 	// queue store
@@ -134,12 +133,12 @@ func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, output
 	qs.SetScrapeManager(scrapeManager)
 	cfg := &promConfig.Config{ScrapeConfigs: scrapeConfigs}
 	if err := scrapeManager.ApplyConfig(cfg); err != nil {
-		log.Logger.Error("scrape failed", zap.Error(err))
+		log.Logger.Error("scrape failed, error: %s", err.Error())
 	}
 	// stop scrape
 	go func() {
 		if err := scrapeManager.Run(manager.SyncCh()); err != nil {
-			log.Logger.Error("scrape failed", zap.Error(err))
+			log.Logger.Error("scrape failed, error: %s", err.Error())
 		}
 	}()
 	// do not need to return events

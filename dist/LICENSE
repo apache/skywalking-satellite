@@ -243,5 +243,4 @@ The text of each license is also included at licenses/LICENSE-[project].txt.
     Shopify (sarama) v1.27.2: https://github.com/Shopify/sarama  MIT
     enriquebris (goconcurrentqueue) v0.6.0: https://github.com/enriquebris/goconcurrentqueue  MIT
     go.uber.org (automaxprocs) v1.4.0: https://go.uber.org/automaxprocs MIT
-    go.uber.org (zap) v1.13.0: https://github.com/uber-go/zap MIT
     stretchr (testify) v1.6.1: https://github.com/stretchr/testify MIT
