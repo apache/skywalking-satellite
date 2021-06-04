@@ -2,10 +2,7 @@ module github.com/apache/skywalking-satellite
 
 go 1.14
 
-replace (
-	github.com/prometheus/prometheus v2.5.0+incompatible => github.com/prometheus/prometheus v1.8.2-0.20201105135750-00f16d1ac3a4
-	k8s.io/api v0.21.1 => k8s.io/api v0.19.2
-)
+replace k8s.io/api v0.21.1 => k8s.io/api v0.19.2
 
 require (
 	github.com/Azure/go-autorest/autorest v0.11.18 // indirect
@@ -17,7 +14,7 @@ require (
 	github.com/grandecola/mmap v0.6.0
 	github.com/prometheus/client_golang v1.9.0
 	github.com/prometheus/common v0.15.0
-	github.com/prometheus/prometheus v2.5.0+incompatible
+	github.com/prometheus/prometheus v1.8.2-0.20201105135750-00f16d1ac3a4
 	github.com/sirupsen/logrus v1.7.0
 	github.com/spf13/viper v1.7.1
 	github.com/stretchr/testify v1.6.1
