@@ -39,14 +39,18 @@ const (
 	markdownSuffix = ".md"
 )
 
-func GeneratePluginDoc(docDir string) error {
+func GeneratePluginDoc(outputRootPath, menuFilePath, pluginFilePath string) error {
 	log.Init(&log.LoggerConfig{})
 	plugins.RegisterPlugins()
 
-	if err := createDir(docDir); err != nil {
+	pluginPath := fmt.Sprintf("%s%s", outputRootPath, pluginFilePath)
+	if err := createDir(pluginPath); err != nil {
 		return fmt.Errorf("create docs dir error: %v", err)
 	}
-	if err := generatePluginListDoc(docDir, getSortedCategories()); err != nil {
+	if err := generatePluginListDoc(pluginPath, getSortedCategories()); err != nil {
+		return err
+	}
+	if err := updateMenuPluginListDoc(outputRootPath, menuFilePath, pluginFilePath, getSortedCategories()); err != nil {
 		return err
 	}
 	log.Logger.Info("Successfully generate documentation!")
@@ -63,6 +67,50 @@ func getSortedCategories() []reflect.Type {
 		return strings.Compare(categories[i].String(), categories[j].String()) <= 0
 	})
 	return categories
+}
+
+func updateMenuPluginListDoc(outputRootPath, menuFilePath, pluginFilePath string, categories []reflect.Type) error {
+	menuFile := fmt.Sprintf("%s%s", outputRootPath, menuFilePath)
+	menu, err := LoadCatalog(menuFile)
+	if err != nil {
+		return err
+	}
+
+	// find plugin Catalog
+	pluginCatalog := menu.Find("Setup", "Plugins")
+	if pluginCatalog == nil {
+		return fmt.Errorf("cannot find plugins Catalog")
+	}
+
+	// remove path
+	pluginCatalog.Path = ""
+
+	// rebuild all plugins
+	var allPlugins []*Catalog
+	for _, category := range categories {
+		// plugin
+		implements := []*Catalog{}
+		curPlugin := &Catalog{
+			Name: strings.ToLower(category.Name()),
+		}
+
+		// all implements
+		pluginList := getPluginsByCategory(category)
+		for _, pluginName := range pluginList {
+			implements = append(implements, &Catalog{
+				Name: pluginName,
+				Path: strings.TrimRight(fmt.Sprintf("%s/%s", pluginFilePath, getPluginDocFileName(category, pluginName)), markdownSuffix),
+			})
+		}
+		curPlugin.Catalog = implements
+
+		if len(implements) > 0 {
+			allPlugins = append(allPlugins, curPlugin)
+		}
+	}
+	pluginCatalog.Catalog = allPlugins
+
+	return menu.Save(menuFile)
 }
 
 func generatePluginListDoc(docDir string, categories []reflect.Type) error {
