@@ -65,7 +65,7 @@ func (qa *QueueAppender) initAppender(ls labels.Labels) error {
 
 var _ storage.Appender = (*QueueAppender)(nil)
 
-// always returns 0 to disable label caching
+// Add always returns 0 to disable label caching
 func (qa *QueueAppender) Add(ls labels.Labels, t int64, v float64) (uint64, error) {
 	if math.IsNaN(v) {
 		return 0, nil
@@ -84,12 +84,12 @@ func (qa *QueueAppender) Add(ls labels.Labels, t int64, v float64) (uint64, erro
 	return 0, qa.metricBuilder.AddDataPoint(ls, t, v)
 }
 
-// always returns error since we do not cache
+// AddFast always returns error since we do not cache
 func (qa *QueueAppender) AddFast(_ uint64, _ int64, _ float64) error {
 	return storage.ErrNotFound
 }
 
-// submit metrics data to consumers
+// Commit submit metrics data to consumers
 func (qa *QueueAppender) Commit() error {
 	// 1. convert to meter
 	meterCollection, _, _ := qa.metricBuilder.Build()

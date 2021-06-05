@@ -55,7 +55,7 @@ func (s *metadataService) Get(job, instance string) (MetadataCache, error) {
 	return nil, errors.New("unable to find a target with job=" + job + ", and instance=" + instance)
 }
 
-// adapter to get metadata from scrape.Target
+// mCache as an adapter to get metadata from scrape.Target
 type mCache struct {
 	t *scrape.Target
 }
