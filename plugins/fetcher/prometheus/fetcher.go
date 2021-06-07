@@ -120,6 +120,7 @@ func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, output
 	manager := discovery.NewManager(ctx, nil)
 	if err := manager.ApplyConfig(c); err != nil {
 		log.Logger.Errorf("prometheus discovery config error %s", err.Error())
+		return nil
 	}
 	// manager start
 	go func() {
@@ -134,6 +135,7 @@ func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, output
 	cfg := &promConfig.Config{ScrapeConfigs: scrapeConfigs}
 	if err := scrapeManager.ApplyConfig(cfg); err != nil {
 		log.Logger.Errorf("scrape failed, error: %s", err.Error())
+		return nil
 	}
 	// stop scrape
 	go func() {
