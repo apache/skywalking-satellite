@@ -24,7 +24,6 @@ import (
 	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 
 	"github.com/prometheus/common/model"
-
 	"github.com/prometheus/prometheus/pkg/labels"
 )
 
