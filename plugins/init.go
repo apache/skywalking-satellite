@@ -20,7 +20,7 @@ package plugins
 import (
 	"github.com/apache/skywalking-satellite/plugins/client"
 	"github.com/apache/skywalking-satellite/plugins/fallbacker"
-	fetcher2 "github.com/apache/skywalking-satellite/plugins/fetcher"
+	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher"
 	filter "github.com/apache/skywalking-satellite/plugins/filter/api"
 	"github.com/apache/skywalking-satellite/plugins/forwarder"
 	parser "github.com/apache/skywalking-satellite/plugins/parser/api"
@@ -37,7 +37,7 @@ func RegisterPlugins() {
 	parser.RegisterParserPlugins()
 	queue.RegisterQueuePlugins()
 	receiver.RegisterReceiverPlugins()
-	fetcher2.RegisterFetcherPlugins()
+	fetcher.RegisterFetcherPlugins()
 	fallbacker.RegisterFallbackerPlugins()
 	// sharing plugins
 	server.RegisterServerPlugins()
