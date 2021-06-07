@@ -60,6 +60,7 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 	go func() {
 		defer wg.Done()
 		childCtx, cancel := context.WithCancel(ctx)
+		f.runningFetcher.Fetch()
 		for {
 			select {
 			case e := <-f.runningFetcher.Channel():
