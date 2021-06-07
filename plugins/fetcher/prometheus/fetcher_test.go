@@ -32,7 +32,6 @@ import (
 	"time"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	"github.com/apache/skywalking-satellite/plugins/fetcher/api"
