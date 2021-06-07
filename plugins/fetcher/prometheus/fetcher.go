@@ -55,8 +55,6 @@ type Fetcher struct {
 	OutputEvents event.BatchEvents
 	// outputChannel
 	OutputChannel chan *v1.SniffData
-
-	cancelFunc context.CancelFunc
 }
 
 func (f *Fetcher) Name() string {
@@ -82,9 +80,7 @@ scrape_configs:
 
 func (f *Fetcher) Prepare() {}
 
-func (f *Fetcher) Fetch() event.BatchEvents {
-	ctx, cancel := context.WithCancel(context.Background())
-	f.cancelFunc = cancel
+func (f *Fetcher) Fetch(ctx context.Context) {
 	// yaml
 	configDeclare := make(map[string]interface{})
 	configDeclare["scrape_configs"] = f.ScrapeConfigsMap
@@ -98,19 +94,19 @@ func (f *Fetcher) Fetch() event.BatchEvents {
 		log.Logger.Fatal("prometheus fetcher configure load failed", err.Error())
 	}
 	f.ScrapeConfigs = configStruct.ScrapeConfigs
-	return fetch(ctx, f.ScrapeConfigs, f.OutputChannel)
+	fetch(ctx, f.ScrapeConfigs, f.OutputChannel)
 }
 
 func (f *Fetcher) Channel() <-chan *v1.SniffData {
 	return f.OutputChannel
 }
 
-func (f *Fetcher) Shutdown(context.Context) error {
-	f.cancelFunc()
+func (f *Fetcher) Shutdown(ctx context.Context) error {
+	ctx.Done()
 	return nil
 }
 
-func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, outputChannel chan *v1.SniffData) event.BatchEvents {
+func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, outputChannel chan *v1.SniffData) {
 	// config of scraper
 	c := make(map[string]discovery.Configs)
 	for _, v := range scrapeConfigs {
@@ -141,6 +137,4 @@ func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, output
 			log.Logger.Errorf("scrape failed, error: %s", err.Error())
 		}
 	}()
-	// do not need to return events
-	return nil
 }
