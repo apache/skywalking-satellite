@@ -82,6 +82,9 @@ func updateMenuPluginListDoc(outputRootPath, menuFilePath, pluginFilePath string
 		return fmt.Errorf("cannot find plugins Catalog")
 	}
 
+	// remove path
+	pluginCatalog.Path = ""
+
 	// rebuild all plugins
 	var allPlugins []*Catalog
 	for _, category := range categories {

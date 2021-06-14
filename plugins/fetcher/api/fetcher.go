@@ -18,8 +18,12 @@
 package api
 
 import (
+	"context"
+	"reflect"
+
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
 // Fetcher is a plugin interface, that defines new fetchers.
@@ -28,5 +32,14 @@ type Fetcher interface {
 
 	Prepare()
 	// Fetch would fetch some APM data.
-	Fetch() event.BatchEvents
+	Fetch(ctx context.Context)
+	// Channel would be put a data when the receiver receives an APM data.
+	Channel() <-chan *v1.SniffData
+	// Shutdown shutdown the fetcher
+	Shutdown(context.Context) error
+}
+
+// Get an initialized fetcher plugin.
+func GetFetcher(config plugin.Config) Fetcher {
+	return plugin.Get(reflect.TypeOf((*Fetcher)(nil)).Elem(), config).(Fetcher)
 }

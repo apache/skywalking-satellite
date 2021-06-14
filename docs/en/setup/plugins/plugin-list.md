@@ -6,6 +6,7 @@
 	- [none-fallbacker](./fallbacker_none-fallbacker.md)
 	- [timer-fallbacker](./fallbacker_timer-fallbacker.md)
 - Fetcher
+    - [prometheus-fetcher](./fetcher_prometheus_fetcher.md)
 - Filter
 - Forwarder
 	- [meter-grpc-forwarder](./forwarder_meter-grpc-forwarder.md)
