@@ -15,71 +15,60 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package nativelog
+package nativemanagement
 
 import (
 	"context"
-	"strconv"
+	"fmt"
 	"testing"
-	"time"
 
 	"google.golang.org/grpc"
 
 	common "skywalking.apache.org/repo/goapi/collect/common/v3"
-	logging "skywalking.apache.org/repo/goapi/collect/logging/v3"
+	management "skywalking.apache.org/repo/goapi/collect/management/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
 	receiver_grpc "github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 )
 
-func TestReceiver_RegisterHandler(t *testing.T) {
+func TestReceiver_RegisterHandler_ReportInstance(t *testing.T) {
 	receiver_grpc.TestReceiver(new(Receiver), func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string {
-		client := logging.NewLogReportServiceClient(conn)
-		data := initData(sequence)
-		collect, err := client.Collect(ctx)
-		if err != nil {
-			t.Fatalf("cannot open the stream send mode: %v", err)
+		client := management.NewManagementServiceClient(conn)
+		properties := &management.InstanceProperties{
+			Service:         fmt.Sprintf("service_%d", sequence),
+			ServiceInstance: fmt.Sprintf("instance_%d", sequence),
+			Properties:      []*common.KeyStringValuePair{},
 		}
-		if err := collect.Send(data); err != nil {
+		commands, err := client.ReportInstanceProperties(ctx, properties)
+		if err != nil {
 			t.Fatalf("cannot send the data to the server: %v", err)
 		}
-		if err := collect.CloseSend(); err != nil {
-			t.Fatalf("cannot close the stream mode: %v", err)
+		if commands == nil {
+			t.Fatalf("report instance result is nil")
 		}
-		return data.String()
+		return properties.String()
 	}, func(data *v1.SniffData) string {
-		return data.GetLog().String()
+		return data.GetInstance().String()
 	}, t)
 }
 
-func initData(sequence int) *logging.LogData {
-	seq := strconv.Itoa(sequence)
-	return &logging.LogData{
-		Timestamp:       time.Now().Unix(),
-		Service:         "demo-service" + seq,
-		ServiceInstance: "demo-instance" + seq,
-		Endpoint:        "demo-endpoint" + seq,
-		TraceContext: &logging.TraceContext{
-			TraceSegmentId: "mock-segmentId" + seq,
-			TraceId:        "mock-traceId" + seq,
-			SpanId:         1,
-		},
-		Tags: &logging.LogTags{
-			Data: []*common.KeyStringValuePair{
-				{
-					Key:   "mock-key" + seq,
-					Value: "mock-value" + seq,
-				},
-			},
-		},
-		Body: &logging.LogDataBody{
-			Type: "mock-type" + seq,
-			Content: &logging.LogDataBody_Text{
-				Text: &logging.TextLog{
-					Text: "this is a mock text mock log" + seq,
-				},
-			},
-		},
-	}
+func TestReceiver_RegisterHandler_InstancePing(t *testing.T) {
+	receiver_grpc.TestReceiver(new(Receiver), func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string {
+		client := management.NewManagementServiceClient(conn)
+		instancePing := &management.InstancePingPkg{
+			Service:         fmt.Sprintf("service_%d", sequence),
+			ServiceInstance: fmt.Sprintf("instance_%d", sequence),
+		}
+		commands, err := client.KeepAlive(ctx, instancePing)
+		if err != nil {
+			t.Fatalf("cannot send the data to the server: %v", err)
+		}
+		if commands == nil {
+			t.Fatalf("instance ping result is nil")
+		}
+		return instancePing.String()
+	}, func(data *v1.SniffData) string {
+		return data.GetInstancePing().String()
+	}, t)
 }

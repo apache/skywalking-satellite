@@ -22,6 +22,7 @@ import (
 
 	grpc_meter "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/meter"
 	grpc_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativelog"
+	grpc_nativemanagement "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativemanagement"
 	kafka_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativelog"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
@@ -36,6 +37,7 @@ func RegisterForwarderPlugins() {
 		new(kafka_nativelog.Forwarder),
 		new(grpc_nativelog.Forwarder),
 		new(grpc_meter.Forwarder),
+		new(grpc_nativemanagement.Forwarder),
 	}
 	for _, forwarder := range forwarders {
 		plugin.RegisterPlugin(forwarder)
