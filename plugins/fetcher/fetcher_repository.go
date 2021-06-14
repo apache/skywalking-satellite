@@ -15,24 +15,23 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package api
+package fetcher
 
 import (
 	"reflect"
 
+	"github.com/apache/skywalking-satellite/plugins/fetcher/api"
+
+	"github.com/apache/skywalking-satellite/plugins/fetcher/prometheus"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-// Get an initialized fetcher plugin.
-func GetFetcher(config plugin.Config) Fetcher {
-	return plugin.Get(reflect.TypeOf((*Fetcher)(nil)).Elem(), config).(Fetcher)
-}
-
-// RegisterFallbackerPlugins register the used fetcher plugins.
+// RegisterFetcherPlugins register the used fetcher plugins.
 func RegisterFetcherPlugins() {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*Fetcher)(nil)).Elem())
-	fetchers := []Fetcher{
-		// Please register the fetcher plugins at here.
+	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Fetcher)(nil)).Elem())
+	fetchers := []api.Fetcher{
+		new(prometheus.Fetcher),
 	}
 	for _, fetcher := range fetchers {
 		plugin.RegisterPlugin(fetcher)

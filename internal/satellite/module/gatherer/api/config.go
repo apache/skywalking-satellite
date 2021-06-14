@@ -33,6 +33,5 @@ type GathererConfig struct {
 	ServerName     string        `mapstructure:"server_name"` // depends on which server
 
 	// FetcherGatherer
-	FetcherConfig plugin.Config `mapstructure:"fetcher"`        // fetcher plugin config
-	FetchInterval int           `mapstructure:"fetch_interval"` // fetch interval, the time unit is millisecond
+	FetcherConfig plugin.Config `mapstructure:"fetcher"` // fetcher plugin config
 }

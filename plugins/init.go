@@ -20,7 +20,7 @@ package plugins
 import (
 	"github.com/apache/skywalking-satellite/plugins/client"
 	"github.com/apache/skywalking-satellite/plugins/fallbacker"
-	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
+	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher"
 	filter "github.com/apache/skywalking-satellite/plugins/filter/api"
 	"github.com/apache/skywalking-satellite/plugins/forwarder"
 	parser "github.com/apache/skywalking-satellite/plugins/parser/api"
