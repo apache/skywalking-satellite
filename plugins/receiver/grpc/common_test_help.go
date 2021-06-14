@@ -26,11 +26,12 @@ import (
 	"testing"
 	"time"
 
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 	grpc_server "github.com/apache/skywalking-satellite/plugins/server/grpc"
-	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/google/go-cmp/cmp"
 	"google.golang.org/grpc"
