@@ -106,7 +106,7 @@ func (s *Sender) store(ctx context.Context, wg *sync.WaitGroup) {
 		case <-childCtx.Done():
 			return
 		case <-timeTicker.C:
-			if s.buffer.Len() > s.config.MinFlushEvents {
+			if s.buffer.Len() >= s.config.MinFlushEvents {
 				s.flushChannel <- s.buffer
 				s.buffer = buffer.NewBatchBuffer(s.config.MaxBufferSize)
 			}
