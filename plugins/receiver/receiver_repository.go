@@ -24,6 +24,7 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/receiver/api"
 	grpcnavtivelog "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativelog"
 	grpcnativemanagement "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativemanagement"
+	grpcnativetracing "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativetracing"
 	httpnavtivelog "github.com/apache/skywalking-satellite/plugins/receiver/http/nativcelog"
 )
 
@@ -34,6 +35,7 @@ func RegisterReceiverPlugins() {
 		// Please register the receiver plugins at here.
 		new(grpcnavtivelog.Receiver),
 		new(grpcnativemanagement.Receiver),
+		new(grpcnativetracing.Receiver),
 		new(httpnavtivelog.Receiver),
 	}
 	for _, receiver := range receivers {

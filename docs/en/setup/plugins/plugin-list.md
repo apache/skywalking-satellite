@@ -6,18 +6,22 @@
 	- [none-fallbacker](./fallbacker_none-fallbacker.md)
 	- [timer-fallbacker](./fallbacker_timer-fallbacker.md)
 - Fetcher
-    - [prometheus-fetcher](./fetcher_prometheus_fetcher.md)
+	- [prometheus-metrics-fetcher](./fetcher_prometheus-metrics-fetcher.md)
 - Filter
 - Forwarder
 	- [meter-grpc-forwarder](./forwarder_meter-grpc-forwarder.md)
 	- [nativelog-grpc-forwarder](./forwarder_nativelog-grpc-forwarder.md)
 	- [nativelog-kafka-forwarder](./forwarder_nativelog-kafka-forwarder.md)
+	- [nativemanagement-grpc-forwarder](./forwarder_nativemanagement-grpc-forwarder.md)
+	- [nativetracing-grpc-forwarder](./forwarder_nativetracing-grpc-forwarder.md)
 - Parser
 - Queue
 	- [memory-queue](./queue_memory-queue.md)
 	- [mmap-queue](./queue_mmap-queue.md)
 - Receiver
 	- [grpc-nativelog-receiver](./receiver_grpc-nativelog-receiver.md)
+	- [grpc-nativemanagement-receiver](./receiver_grpc-nativemanagement-receiver.md)
+	- [grpc-nativetracing-receiver](./receiver_grpc-nativetracing-receiver.md)
 	- [http-nativelog-receiver](./receiver_http-nativelog-receiver.md)
 - Server
 	- [grpc-server](./server_grpc-server.md)

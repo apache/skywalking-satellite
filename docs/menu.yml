@@ -63,6 +63,10 @@ catalog:
                   path: /en/setup/plugins/fallbacker_none-fallbacker
                 - name: timer-fallbacker
                   path: /en/setup/plugins/fallbacker_timer-fallbacker
+            - name: fetcher
+              catalog:
+                - name: prometheus-metrics-fetcher
+                  path: /en/setup/plugins/fetcher_prometheus-metrics-fetcher
             - name: forwarder
               catalog:
                 - name: meter-grpc-forwarder
@@ -71,6 +75,10 @@ catalog:
                   path: /en/setup/plugins/forwarder_nativelog-grpc-forwarder
                 - name: nativelog-kafka-forwarder
                   path: /en/setup/plugins/forwarder_nativelog-kafka-forwarder
+                - name: nativemanagement-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_nativemanagement-grpc-forwarder
+                - name: nativetracing-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_nativetracing-grpc-forwarder
             - name: queue
               catalog:
                 - name: memory-queue
@@ -81,6 +89,10 @@ catalog:
               catalog:
                 - name: grpc-nativelog-receiver
                   path: /en/setup/plugins/receiver_grpc-nativelog-receiver
+                - name: grpc-nativemanagement-receiver
+                  path: /en/setup/plugins/receiver_grpc-nativemanagement-receiver
+                - name: grpc-nativetracing-receiver
+                  path: /en/setup/plugins/receiver_grpc-nativetracing-receiver
                 - name: http-nativelog-receiver
                   path: /en/setup/plugins/receiver_http-nativelog-receiver
             - name: server
