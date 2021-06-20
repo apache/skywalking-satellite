@@ -19,6 +19,7 @@ package sender
 
 import (
 	"context"
+	"fmt"
 	"sync"
 	"sync/atomic"
 	"time"
@@ -215,4 +216,13 @@ func (s *Sender) consume(batch *buffer.BatchBuffer) {
 
 func (s *Sender) InputDataChannel() chan<- *event.OutputEventContext {
 	return s.input
+}
+
+func (s *Sender) SyncProcess(data *v1.SniffData) (*v1.SniffData, error) {
+	if len(s.runningForwarders) > 1 {
+		return nil, fmt.Errorf("only support single forwarder")
+	} else if len(s.runningForwarders) == 0 {
+		return nil, fmt.Errorf("could not found forwarder")
+	}
+	return s.runningForwarders[0].SyncForward(data)
 }

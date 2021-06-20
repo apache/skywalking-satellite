@@ -77,6 +77,8 @@ catalog:
                   path: /en/setup/plugins/forwarder_nativelog-kafka-forwarder
                 - name: nativemanagement-grpc-forwarder
                   path: /en/setup/plugins/forwarder_nativemanagement-grpc-forwarder
+                - name: nativeprofile-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_nativeprofile-grpc-forwarder
                 - name: nativetracing-grpc-forwarder
                   path: /en/setup/plugins/forwarder_nativetracing-grpc-forwarder
             - name: queue
@@ -91,6 +93,8 @@ catalog:
                   path: /en/setup/plugins/receiver_grpc-nativelog-receiver
                 - name: grpc-nativemanagement-receiver
                   path: /en/setup/plugins/receiver_grpc-nativemanagement-receiver
+                - name: grpc-nativeprofile-receiver
+                  path: /en/setup/plugins/receiver_grpc-nativeprofile-receiver
                 - name: grpc-nativetracing-receiver
                   path: /en/setup/plugins/receiver_grpc-nativetracing-receiver
                 - name: http-nativelog-receiver

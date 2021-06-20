@@ -98,3 +98,7 @@ func closeStream(stream logging.LogReportService_CollectClient) error {
 func (f *Forwarder) ForwardType() v1.SniffType {
 	return v1.SniffType_Logging
 }
+
+func (f *Forwarder) SyncForward(*v1.SniffData) (*v1.SniffData, error) {
+	return nil, fmt.Errorf("unsupport sync forward")
+}

@@ -20,6 +20,8 @@ package api
 import (
 	"reflect"
 
+	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
@@ -31,6 +33,9 @@ type Receiver interface {
 
 	// RegisterHandler register  a handler to the server, such as to handle a gRPC or an HTTP request
 	RegisterHandler(server interface{})
+
+	// RegisterSyncProcessor register the sync processor, receive event and sync process to sender
+	RegisterSyncProcessor(processor api.SyncProcessor)
 
 	// Channel would be put a data when the receiver receives an APM data.
 	Channel() <-chan *v1.SniffData

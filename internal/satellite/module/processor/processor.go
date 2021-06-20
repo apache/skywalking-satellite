@@ -45,6 +45,7 @@ type Processor struct {
 }
 
 func (p *Processor) Prepare() error {
+	p.gatherer.RegisterSyncProcessor(p.syncProcessor)
 	return nil
 }
 
@@ -82,4 +83,19 @@ func (p *Processor) Boot(ctx context.Context) {
 }
 
 func (p *Processor) Shutdown() {
+}
+
+func (p *Processor) syncProcessor(e *v1.SniffData) (*v1.SniffData, error) {
+	// build contest
+	c := &event.OutputEventContext{
+		Offset:  "",
+		Context: make(map[string]*v1.SniffData),
+	}
+	c.Put(e)
+	// processing the event with filters, that put the necessary events to OutputEventContext.
+	for _, f := range p.runningFilters {
+		f.Process(c)
+	}
+	// direct send data to sender
+	return p.sender.SyncProcess(c.Context[e.GetName()])
 }

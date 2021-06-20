@@ -20,6 +20,8 @@ package api
 import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
+
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 type Sender interface {
@@ -27,4 +29,7 @@ type Sender interface {
 
 	// InputDataChannel is a blocking channel to receive the apm data from the downstream processor module.
 	InputDataChannel() chan<- *event.OutputEventContext
+
+	// SyncProcess is synchronized process data
+	SyncProcess(data *v1.SniffData) (*v1.SniffData, error)
 }

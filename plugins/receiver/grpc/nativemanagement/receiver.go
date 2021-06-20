@@ -19,6 +19,7 @@ package nativemanagement
 
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 
 	v3 "skywalking.apache.org/repo/goapi/collect/management/v3"
@@ -50,6 +51,9 @@ func (r *Receiver) RegisterHandler(server interface{}) {
 	r.CommonGRPCReceiverFields = *grpc.InitCommonGRPCReceiverFields(server)
 	r.service = &ManagementReportService{receiveChannel: r.OutputChannel}
 	v3.RegisterManagementServiceServer(r.Server, r.service)
+}
+
+func (r *Receiver) RegisterSyncProcessor(_ api.SyncProcessor) {
 }
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {

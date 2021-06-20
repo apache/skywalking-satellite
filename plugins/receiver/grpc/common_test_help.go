@@ -76,6 +76,44 @@ func TestReceiver(rec receiver.Receiver,
 	}
 }
 
+// TestReceiver help to testing grpc receiver
+func TestReceiverWithSync(rec receiver.Receiver,
+	dataGenerator func(t *testing.T, sequence int, conn *grpc.ClientConn, sendData *string, ctx context.Context),
+	snifferConvertor func(data *v1.SniffData) string, mockResp *v1.SniffData, t *testing.T) {
+	Init(rec)
+	grpcPort := randomGrpcPort()
+	r := initReceiver(make(plugin.Config), t, rec)
+	s := initServer(make(plugin.Config), grpcPort, t)
+	r.RegisterHandler(s.GetServer())
+	time.Sleep(time.Second)
+	defer func() {
+		if err := s.Close(); err != nil {
+			t.Fatalf("cannot close the sever: %v", err)
+		}
+	}()
+	_ = s.Start()
+
+	var data, errorMsg string
+	var a = func(event *v1.SniffData) (*v1.SniffData, error) {
+		// await data content
+		time.Sleep(time.Millisecond * 100)
+		if !cmp.Equal(snifferConvertor(event), data) {
+			errorMsg = fmt.Sprintf("the sent data is not equal to the received data\n, "+
+				"want data %s\n, but got %s\n", data, event.String())
+			return nil, nil
+		}
+		return mockResp, nil
+	}
+	r.RegisterSyncProcessor(a)
+	conn := initConnection(grpcPort, t)
+	for i := 0; i < 10; i++ {
+		dataGenerator(t, i, conn, &data, context.Background())
+		if errorMsg != "" {
+			t.Fatalf(errorMsg)
+		}
+	}
+}
+
 func initConnection(grpcPort int, t *testing.T) *grpc.ClientConn {
 	conn, err := grpc.Dial(fmt.Sprintf("localhost:%d", grpcPort), grpc.WithInsecure(), grpc.WithBlock())
 	if err != nil {

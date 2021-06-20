@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package nativetracing
+package nativeprofile
 
 import (
 	"context"
@@ -24,21 +24,21 @@ import (
 	"reflect"
 
 	"google.golang.org/grpc"
+	profile "skywalking.apache.org/repo/goapi/collect/language/profile/v3"
+
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
-
-	agent "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
-	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-const Name = "nativetracing-grpc-forwarder"
+const Name = "nativeprofile-grpc-forwarder"
 
 type Forwarder struct {
 	config.CommonFields
 
-	tracingClient agent.TraceSegmentReportServiceClient
+	profileClient profile.ProfileTaskClient
 }
 
 func (f *Forwarder) Name() string {
@@ -46,7 +46,7 @@ func (f *Forwarder) Name() string {
 }
 
 func (f *Forwarder) Description() string {
-	return "This is a synchronization grpc forwarder with the SkyWalking native tracing protocol."
+	return "This is a synchronization grpc forwarder with the SkyWalking native log protocol."
 }
 
 func (f *Forwarder) DefaultConfig() string {
@@ -59,22 +59,22 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 		return fmt.Errorf("the %s is only accepet the grpc client, but receive a %s",
 			f.Name(), reflect.TypeOf(connection).String())
 	}
-	f.tracingClient = agent.NewTraceSegmentReportServiceClient(client)
+	f.profileClient = profile.NewProfileTaskClient(client)
 	return nil
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-	stream, err := f.tracingClient.Collect(context.Background())
+	stream, err := f.profileClient.CollectSnapshot(context.Background())
 	if err != nil {
 		log.Logger.Errorf("open grpc stream error %v", err)
 		return err
 	}
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_Segment)
+		data, ok := e.GetData().(*v1.SniffData_Profile)
 		if !ok {
 			continue
 		}
-		err := stream.Send(data.Segment)
+		err := stream.Send(data.Profile)
 		if err != nil {
 			log.Logger.Errorf("%s send log data error: %v", f.Name(), err)
 			err = closeStream(stream)
@@ -87,7 +87,7 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	return closeStream(stream)
 }
 
-func closeStream(stream agent.TraceSegmentReportService_CollectClient) error {
+func closeStream(stream profile.ProfileTask_CollectSnapshotClient) error {
 	_, err := stream.CloseAndRecv()
 	if err != nil && err != io.EOF {
 		return err
@@ -96,9 +96,27 @@ func closeStream(stream agent.TraceSegmentReportService_CollectClient) error {
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {
-	return v1.SniffType_TracingType
+	return v1.SniffType_ProfileType
 }
 
-func (f *Forwarder) SyncForward(_ *v1.SniffData) (*v1.SniffData, error) {
-	return nil, fmt.Errorf("unsupport sync forward")
+func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, error) {
+	query := e.GetProfileTaskQuery()
+	if query != nil {
+		commands, err := f.profileClient.GetProfileTaskCommands(context.Background(), query)
+		if err != nil {
+			return nil, err
+		}
+		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil
+	}
+
+	finish := e.GetProfileTaskFinish()
+	if finish != nil {
+		commands, err := f.profileClient.ReportTaskFinish(context.Background(), finish)
+		if err != nil {
+			return nil, err
+		}
+		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil
+	}
+
+	return nil, fmt.Errorf("unsupport data")
 }

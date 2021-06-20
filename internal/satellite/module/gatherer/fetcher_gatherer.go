@@ -45,6 +45,9 @@ type FetcherGatherer struct {
 	// metrics
 	fetchCounter       *telemetry.Counter
 	queueOutputCounter *telemetry.Counter
+
+	// sync processor
+	syncProcessor *api.SyncProcessor
 }
 
 func (f *FetcherGatherer) Prepare() error {
@@ -116,4 +119,8 @@ func (f *FetcherGatherer) OutputDataChannel() <-chan *queue.SequenceEvent {
 
 func (f *FetcherGatherer) Ack(lastOffset event.Offset) {
 	f.runningQueue.Ack(lastOffset)
+}
+
+func (f *FetcherGatherer) RegisterSyncProcessor(processor api.SyncProcessor) {
+	f.syncProcessor = &processor
 }
