@@ -34,8 +34,8 @@ type Receiver interface {
 	// RegisterHandler register  a handler to the server, such as to handle a gRPC or an HTTP request
 	RegisterHandler(server interface{})
 
-	// RegisterSyncProcessor register the sync processor, receive event and sync process to sender
-	RegisterSyncProcessor(processor api.SyncProcessor)
+	// RegisterSyncInvoker register the sync invoker, receive event and sync invoke to sender
+	RegisterSyncInvoker(processor api.SyncInvoker)
 
 	// Channel would be put a data when the receiver receives an APM data.
 	Channel() <-chan *v1.SniffData

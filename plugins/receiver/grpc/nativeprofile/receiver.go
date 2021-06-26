@@ -53,8 +53,8 @@ func (r *Receiver) RegisterHandler(server interface{}) {
 	v3.RegisterProfileTaskServer(r.Server, r.service)
 }
 
-func (r *Receiver) RegisterSyncProcessor(processor api.SyncProcessor) {
-	r.service.SyncProcessor = processor
+func (r *Receiver) RegisterSyncInvoker(invoker api.SyncInvoker) {
+	r.service.SyncInvoker = invoker
 }
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {

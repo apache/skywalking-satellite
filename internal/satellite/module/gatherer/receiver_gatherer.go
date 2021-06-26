@@ -49,8 +49,8 @@ type ReceiverGatherer struct {
 	receiveCounter     *telemetry.Counter
 	queueOutputCounter *telemetry.Counter
 
-	// sync processor
-	syncProcessor api.SyncProcessor
+	// sync invoker
+	syncInvoker api.SyncInvoker
 }
 
 func (r *ReceiverGatherer) Prepare() error {
@@ -66,8 +66,8 @@ func (r *ReceiverGatherer) Prepare() error {
 }
 
 func (r *ReceiverGatherer) Boot(ctx context.Context) {
-	// register the sync processor to receiver
-	r.runningReceiver.RegisterSyncProcessor(r.syncProcessor)
+	// register the sync invoker to receiver
+	r.runningReceiver.RegisterSyncInvoker(r.syncInvoker)
 	var wg sync.WaitGroup
 	wg.Add(2)
 	log.Logger.WithField("pipe", r.config.PipeName).Info("receive_gatherer module is starting...")
@@ -140,6 +140,6 @@ func (r *ReceiverGatherer) Ack(lastOffset event.Offset) {
 	r.runningQueue.Ack(lastOffset)
 }
 
-func (r *ReceiverGatherer) RegisterSyncProcessor(processor api.SyncProcessor) {
-	r.syncProcessor = processor
+func (r *ReceiverGatherer) RegisterSyncInvoker(invoker api.SyncInvoker) {
+	r.syncInvoker = invoker
 }

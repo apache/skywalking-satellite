@@ -25,7 +25,7 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-type SyncProcessor func(event *v1.SniffData) (*v1.SniffData, error)
+type SyncInvoker func(event *v1.SniffData) (*v1.SniffData, error)
 
 // Gatherer is the APM data collection module in Satellite.
 type Gatherer interface {
@@ -35,6 +35,6 @@ type Gatherer interface {
 
 	Ack(lastOffset event.Offset)
 
-	// RegisterSyncProcessor is register the sync process when none queue process
-	RegisterSyncProcessor(processor SyncProcessor)
+	// RegisterSyncInvoker is register the sync invoker when none queue process
+	RegisterSyncInvoker(processor SyncInvoker)
 }

@@ -46,8 +46,8 @@ type FetcherGatherer struct {
 	fetchCounter       *telemetry.Counter
 	queueOutputCounter *telemetry.Counter
 
-	// sync processor
-	syncProcessor *api.SyncProcessor
+	// sync incvoker
+	syncInvoker *api.SyncInvoker
 }
 
 func (f *FetcherGatherer) Prepare() error {
@@ -121,6 +121,6 @@ func (f *FetcherGatherer) Ack(lastOffset event.Offset) {
 	f.runningQueue.Ack(lastOffset)
 }
 
-func (f *FetcherGatherer) RegisterSyncProcessor(processor api.SyncProcessor) {
-	f.syncProcessor = &processor
+func (f *FetcherGatherer) RegisterSyncInvoker(invoker api.SyncInvoker) {
+	f.syncInvoker = &invoker
 }

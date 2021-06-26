@@ -45,7 +45,7 @@ type Processor struct {
 }
 
 func (p *Processor) Prepare() error {
-	p.gatherer.RegisterSyncProcessor(p.syncProcessor)
+	p.gatherer.RegisterSyncInvoker(p.syncProcessor)
 	return nil
 }
 

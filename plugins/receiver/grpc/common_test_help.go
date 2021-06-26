@@ -104,7 +104,7 @@ func TestReceiverWithSync(rec receiver.Receiver,
 		}
 		return mockResp, nil
 	}
-	r.RegisterSyncProcessor(a)
+	r.RegisterSyncInvoker(a)
 	conn := initConnection(grpcPort, t)
 	for i := 0; i < 10; i++ {
 		dataGenerator(t, i, conn, &data, context.Background())
