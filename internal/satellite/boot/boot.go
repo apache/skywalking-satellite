@@ -100,9 +100,15 @@ func initModules(cfg *config.SatelliteConfig) (ModuleContainer, error) {
 		g := gatherer.NewGatherer(aCfg.Gatherer)
 		s := sender.NewSender(aCfg.Sender)
 		p := processor.NewProcessor(aCfg.Processor)
-		g.DependencyInjection(p)
-		p.DependencyInjection(s, g)
-		s.DependencyInjection(g)
+		if err := g.DependencyInjection(p); err != nil {
+			return nil, err
+		}
+		if err := p.DependencyInjection(s, g); err != nil {
+			return nil, err
+		}
+		if err := s.DependencyInjection(g); err != nil {
+			return nil, err
+		}
 		modules = append(modules, g, s, p)
 		container[aCfg.PipeCommonConfig.PipeName] = modules
 	}

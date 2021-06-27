@@ -19,6 +19,7 @@ package processor
 
 import (
 	"context"
+	"errors"
 	"sync"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
@@ -90,7 +91,7 @@ func (p *Processor) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
 	return p.sender.SyncInvoke(d)
 }
 
-func (p *Processor) DependencyInjection(modules ...module.Module) {
+func (p *Processor) DependencyInjection(modules ...module.Module) error {
 	for _, m := range modules {
 		switch t := m.(type) {
 		case gatherer.Gatherer:
@@ -98,5 +99,14 @@ func (p *Processor) DependencyInjection(modules ...module.Module) {
 		case sender.Sender:
 			p.sender = t
 		}
+	}
+
+	switch {
+	case p.gatherer == nil:
+		return errors.New("the processor depends on the gatherer module but is not found")
+	case p.sender == nil:
+		return errors.New("the processor depends on the sender module but is not found")
+	default:
+		return nil
 	}
 }

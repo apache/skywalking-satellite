@@ -26,7 +26,6 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
-	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
 	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
@@ -46,9 +45,6 @@ type FetcherGatherer struct {
 	// metrics
 	fetchCounter       *telemetry.Counter
 	queueOutputCounter *telemetry.Counter
-
-	// dependency modules
-	processor processor.Processor
 }
 
 func (f *FetcherGatherer) Prepare() error {
@@ -122,6 +118,6 @@ func (f *FetcherGatherer) Ack(lastOffset event.Offset) {
 	f.runningQueue.Ack(lastOffset)
 }
 
-func (f *FetcherGatherer) DependencyInjection(modules ...module.Module) {
-	f.processor = modules[0].(processor.Processor)
+func (f *FetcherGatherer) DependencyInjection(_ ...module.Module) error {
+	return nil
 }

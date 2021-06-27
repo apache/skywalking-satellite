@@ -19,6 +19,7 @@ package gatherer
 
 import (
 	"context"
+	"errors"
 	"sync"
 	"time"
 
@@ -146,6 +147,17 @@ func (r *ReceiverGatherer) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
 	return r.processor.SyncInvoke(d)
 }
 
-func (r *ReceiverGatherer) DependencyInjection(modules ...module.Module) {
-	r.processor = modules[0].(processor.Processor)
+func (r *ReceiverGatherer) DependencyInjection(modules ...module.Module) error {
+	for _, m := range modules {
+		if p, ok := m.(processor.Processor); ok {
+			r.processor = p
+		}
+	}
+
+	switch {
+	case r.processor == nil:
+		return errors.New("the fetcher_gatherer depends on the processor module but is not found")
+	default:
+		return nil
+	}
 }
