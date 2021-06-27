@@ -37,6 +37,8 @@ type Forwarder interface {
 	SyncForward(event *v1.SniffData) (*v1.SniffData, error)
 	// ForwardType returns the supported event type.
 	ForwardType() v1.SniffType
+	// SupportedSyncInvoke return is support SyncForward
+	SupportedSyncInvoke() bool
 }
 
 // ForwardFunc represent the Forward() in Forwarder

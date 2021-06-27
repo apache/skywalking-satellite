@@ -120,3 +120,7 @@ func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, error) {
 
 	return nil, fmt.Errorf("unsupport data")
 }
+
+func (f *Forwarder) SupportedSyncInvoke() bool {
+	return true
+}
