@@ -15,21 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package processor
+package api
 
-import (
-	"github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
-	filter "github.com/apache/skywalking-satellite/plugins/filter/api"
-)
+import v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
-// Init Processor and dependency plugins
-func NewProcessor(cfg *api.ProcessorConfig) api.Processor {
-	p := &Processor{
-		config:         cfg,
-		runningFilters: []filter.Filter{},
-	}
-	for _, c := range p.config.FilterConfig {
-		p.runningFilters = append(p.runningFilters, filter.GetFilter(c))
-	}
-	return p
+type SyncInvoker interface {
+	// SyncInvoke means synchronized process event
+	SyncInvoke(d *v1.SniffData) (*v1.SniffData, error)
 }

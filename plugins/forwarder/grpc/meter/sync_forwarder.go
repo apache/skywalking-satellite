@@ -97,3 +97,11 @@ func closeStream(stream v3.MeterReportService_CollectClient) error {
 func (f *Forwarder) ForwardType() v1.SniffType {
 	return v1.SniffType_MeterType
 }
+
+func (f *Forwarder) SyncForward(_ *v1.SniffData) (*v1.SniffData, error) {
+	return nil, fmt.Errorf("unsupport sync forward")
+}
+
+func (f *Forwarder) SupportedSyncInvoke() bool {
+	return false
+}

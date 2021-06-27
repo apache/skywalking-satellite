@@ -117,3 +117,7 @@ func (f *FetcherGatherer) OutputDataChannel() <-chan *queue.SequenceEvent {
 func (f *FetcherGatherer) Ack(lastOffset event.Offset) {
 	f.runningQueue.Ack(lastOffset)
 }
+
+func (f *FetcherGatherer) SetProcessor(_ module.Module) error {
+	return nil
+}

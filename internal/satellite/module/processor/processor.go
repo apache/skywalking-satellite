@@ -19,10 +19,12 @@ package processor
 
 import (
 	"context"
+	"errors"
 	"sync"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
@@ -82,4 +84,27 @@ func (p *Processor) Boot(ctx context.Context) {
 }
 
 func (p *Processor) Shutdown() {
+}
+
+func (p *Processor) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
+	// direct send data to sender
+	return p.sender.SyncInvoke(d)
+}
+
+func (p *Processor) SetGatherer(m api.Module) error {
+	if g, ok := m.(gatherer.Gatherer); ok {
+		p.gatherer = g
+		return nil
+	}
+
+	return errors.New("set gatherer only supports to inject gatherer module")
+}
+
+func (p *Processor) SetSender(m api.Module) error {
+	if s, ok := m.(sender.Sender); ok {
+		p.sender = s
+		return nil
+	}
+
+	return errors.New("set sender only supports to inject sender module")
 }

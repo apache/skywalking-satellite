@@ -15,23 +15,23 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package nativetracing
+package nativeprofile
 
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 
-	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
+	v3 "skywalking.apache.org/repo/goapi/collect/language/profile/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-const Name = "grpc-nativetracing-receiver"
+const Name = "grpc-nativeprofile-receiver"
 
 type Receiver struct {
 	config.CommonFields
 	grpc.CommonGRPCReceiverFields
-	service *TraceSegmentReportService
+	service *ProfileService
 }
 
 func (r *Receiver) Name() string {
@@ -39,8 +39,8 @@ func (r *Receiver) Name() string {
 }
 
 func (r *Receiver) Description() string {
-	return "This is a receiver for SkyWalking native tracing format, " +
-		"which is defined at https://github.com/apache/skywalking-data-collect-protocol/blob/master/language-agent/Tracing.proto."
+	return "This is a receiver for SkyWalking native profile format, " +
+		"which is defined at https://github.com/apache/skywalking-data-collect-protocol/blob/master/profile/Profile.proto."
 }
 
 func (r *Receiver) DefaultConfig() string {
@@ -49,11 +49,12 @@ func (r *Receiver) DefaultConfig() string {
 
 func (r *Receiver) RegisterHandler(server interface{}) {
 	r.CommonGRPCReceiverFields = *grpc.InitCommonGRPCReceiverFields(server)
-	r.service = &TraceSegmentReportService{receiveChannel: r.OutputChannel}
-	v3.RegisterTraceSegmentReportServiceServer(r.Server, r.service)
+	r.service = &ProfileService{receiveChannel: r.OutputChannel}
+	v3.RegisterProfileTaskServer(r.Server, r.service)
 }
 
-func (r *Receiver) RegisterSyncInvoker(_ module.SyncInvoker) {
+func (r *Receiver) RegisterSyncInvoker(invoker module.SyncInvoker) {
+	r.service.SyncInvoker = invoker
 }
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {

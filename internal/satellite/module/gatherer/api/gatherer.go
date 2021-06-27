@@ -28,6 +28,8 @@ type Gatherer interface {
 	api.Module
 	// DataChannel is a blocking channel to transfer the apm data to the upstream processor module.
 	OutputDataChannel() <-chan *queue.SequenceEvent
-
+	// Ack the sent offset.
 	Ack(lastOffset event.Offset)
+	// Inject the Processor module.
+	SetProcessor(processor api.Module) error
 }

@@ -33,8 +33,12 @@ type Forwarder interface {
 	Prepare(connection interface{}) error
 	// Forward the batch events to the external services, such as Kafka MQ and SkyWalking OAP cluster.
 	Forward(batch event.BatchEvents) error
+	// SyncForward the single event to the external service with sync forward
+	SyncForward(event *v1.SniffData) (*v1.SniffData, error)
 	// ForwardType returns the supported event type.
 	ForwardType() v1.SniffType
+	// SupportedSyncInvoke return is support SyncForward
+	SupportedSyncInvoke() bool
 }
 
 // ForwardFunc represent the Forward() in Forwarder
