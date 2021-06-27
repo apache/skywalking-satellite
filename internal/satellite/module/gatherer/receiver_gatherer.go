@@ -147,4 +147,5 @@ func (r *ReceiverGatherer) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
 }
 
 func (r *ReceiverGatherer) DependencyInjection(modules ...module.Module) {
+	r.processor = modules[0].(processor.Processor)
 }

@@ -89,6 +89,7 @@ func (p *Processor) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
 	// direct send data to sender
 	return p.sender.SyncInvoke(d)
 }
+
 func (p *Processor) DependencyInjection(modules ...module.Module) {
 	for _, m := range modules {
 		switch t := m.(type) {
