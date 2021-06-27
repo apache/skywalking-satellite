@@ -147,17 +147,11 @@ func (r *ReceiverGatherer) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
 	return r.processor.SyncInvoke(d)
 }
 
-func (r *ReceiverGatherer) DependencyInjection(modules ...module.Module) error {
-	for _, m := range modules {
-		if p, ok := m.(processor.Processor); ok {
-			r.processor = p
-		}
-	}
-
-	switch {
-	case r.processor == nil:
-		return errors.New("the fetcher_gatherer depends on the processor module but is not found")
-	default:
+func (r *ReceiverGatherer) SetProcessor(m module.Module) error {
+	if p, ok := m.(processor.Processor); ok {
+		r.processor = p
 		return nil
 	}
+
+	return errors.New("set processor only supports to inject processor module")
 }

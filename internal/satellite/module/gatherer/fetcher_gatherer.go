@@ -118,6 +118,6 @@ func (f *FetcherGatherer) Ack(lastOffset event.Offset) {
 	f.runningQueue.Ack(lastOffset)
 }
 
-func (f *FetcherGatherer) DependencyInjection(_ ...module.Module) error {
+func (f *FetcherGatherer) SetProcessor(_ module.Module) error {
 	return nil
 }

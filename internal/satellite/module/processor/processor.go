@@ -24,7 +24,7 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
-	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
@@ -91,22 +91,20 @@ func (p *Processor) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
 	return p.sender.SyncInvoke(d)
 }
 
-func (p *Processor) DependencyInjection(modules ...module.Module) error {
-	for _, m := range modules {
-		switch t := m.(type) {
-		case gatherer.Gatherer:
-			p.gatherer = t
-		case sender.Sender:
-			p.sender = t
-		}
-	}
-
-	switch {
-	case p.gatherer == nil:
-		return errors.New("the processor depends on the gatherer module but is not found")
-	case p.sender == nil:
-		return errors.New("the processor depends on the sender module but is not found")
-	default:
+func (p *Processor) SetGatherer(m api.Module) error {
+	if g, ok := m.(gatherer.Gatherer); ok {
+		p.gatherer = g
 		return nil
 	}
+
+	return errors.New("set gatherer only supports to inject gatherer module")
+}
+
+func (p *Processor) SetSender(m api.Module) error {
+	if s, ok := m.(sender.Sender); ok {
+		p.sender = s
+		return nil
+	}
+
+	return errors.New("set sender only supports to inject sender module")
 }

@@ -100,13 +100,16 @@ func initModules(cfg *config.SatelliteConfig) (ModuleContainer, error) {
 		g := gatherer.NewGatherer(aCfg.Gatherer)
 		s := sender.NewSender(aCfg.Sender)
 		p := processor.NewProcessor(aCfg.Processor)
-		if err := g.DependencyInjection(p); err != nil {
+		if err := g.SetProcessor(p); err != nil {
 			return nil, err
 		}
-		if err := p.DependencyInjection(s, g); err != nil {
+		if err := p.SetGatherer(g); err != nil {
 			return nil, err
 		}
-		if err := s.DependencyInjection(g); err != nil {
+		if err := p.SetSender(s); err != nil {
+			return nil, err
+		}
+		if err := s.SetGatherer(g); err != nil {
 			return nil, err
 		}
 		modules = append(modules, g, s, p)

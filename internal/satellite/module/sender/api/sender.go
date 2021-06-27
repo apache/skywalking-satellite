@@ -28,4 +28,7 @@ type Sender interface {
 
 	// InputDataChannel is a blocking channel to receive the apm data from the downstream processor module.
 	InputDataChannel() chan<- *event.OutputEventContext
+
+	// Inject the gatherer module.
+	SetGatherer(g api.Module) error
 }

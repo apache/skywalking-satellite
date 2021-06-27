@@ -234,17 +234,11 @@ func (s *Sender) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
 	return supportSyncInvoke[0].SyncForward(d)
 }
 
-func (s *Sender) DependencyInjection(modules ...module.Module) error {
-	for _, m := range modules {
-		if g, ok := m.(gatherer.Gatherer); ok {
-			s.gatherer = g
-		}
-	}
-
-	switch {
-	case s.gatherer == nil:
-		return errors.New("the sender depends on the gatherer module but is not found")
-	default:
+func (s *Sender) SetGatherer(m module.Module) error {
+	if g, ok := m.(gatherer.Gatherer); ok {
+		s.gatherer = g
 		return nil
 	}
+
+	return errors.New("set gatherer only supports to inject gatherer module")
 }
