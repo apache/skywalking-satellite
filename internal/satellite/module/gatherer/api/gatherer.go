@@ -30,7 +30,4 @@ type Gatherer interface {
 	OutputDataChannel() <-chan *queue.SequenceEvent
 
 	Ack(lastOffset event.Offset)
-
-	// RegisterSyncInvoker is register the sync invoker when none queue process
-	RegisterSyncInvoker(processor api.SyncInvoker)
 }

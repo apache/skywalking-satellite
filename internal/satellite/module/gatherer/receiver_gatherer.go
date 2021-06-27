@@ -28,10 +28,13 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
+
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 type ReceiverGatherer struct {
@@ -50,7 +53,7 @@ type ReceiverGatherer struct {
 	queueOutputCounter *telemetry.Counter
 
 	// sync invoker
-	syncInvoker module.SyncInvoker
+	processor processor.Processor
 }
 
 func (r *ReceiverGatherer) Prepare() error {
@@ -66,7 +69,7 @@ func (r *ReceiverGatherer) Prepare() error {
 }
 
 func (r *ReceiverGatherer) Boot(ctx context.Context) {
-	r.runningReceiver.RegisterSyncInvoker(r.syncInvoker)
+	r.runningReceiver.RegisterSyncInvoker(r)
 	var wg sync.WaitGroup
 	wg.Add(2)
 	log.Logger.WithField("pipe", r.config.PipeName).Info("receive_gatherer module is starting...")
@@ -139,6 +142,9 @@ func (r *ReceiverGatherer) Ack(lastOffset event.Offset) {
 	r.runningQueue.Ack(lastOffset)
 }
 
-func (r *ReceiverGatherer) RegisterSyncInvoker(invoker module.SyncInvoker) {
-	r.syncInvoker = invoker
+func (r *ReceiverGatherer) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
+	return r.processor.SyncInvoke(d)
+}
+
+func (r *ReceiverGatherer) DependencyInjection(modules ...module.Module) {
 }

@@ -23,6 +23,7 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
@@ -45,7 +46,6 @@ type Processor struct {
 }
 
 func (p *Processor) Prepare() error {
-	p.gatherer.RegisterSyncInvoker(p)
 	return nil
 }
 
@@ -85,7 +85,17 @@ func (p *Processor) Boot(ctx context.Context) {
 func (p *Processor) Shutdown() {
 }
 
-func (p *Processor) SyncInvoke(e *v1.SniffData) (*v1.SniffData, error) {
+func (p *Processor) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
 	// direct send data to sender
-	return p.sender.SyncInvoke(e)
+	return p.sender.SyncInvoke(d)
+}
+func (p *Processor) DependencyInjection(modules ...module.Module) {
+	for _, m := range modules {
+		switch t := m.(type) {
+		case gatherer.Gatherer:
+			p.gatherer = t
+		case sender.Sender:
+			p.sender = t
+		}
+	}
 }

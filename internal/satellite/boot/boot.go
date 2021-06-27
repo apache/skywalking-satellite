@@ -98,8 +98,11 @@ func initModules(cfg *config.SatelliteConfig) (ModuleContainer, error) {
 		// the added sequence should follow gather, sender and processor to purpose the booting sequence.
 		var modules []api.Module
 		g := gatherer.NewGatherer(aCfg.Gatherer)
-		s := sender.NewSender(aCfg.Sender, g)
-		p := processor.NewProcessor(aCfg.Processor, s, g)
+		s := sender.NewSender(aCfg.Sender)
+		p := processor.NewProcessor(aCfg.Processor)
+		g.DependencyInjection(p)
+		p.DependencyInjection(s, g)
+		s.DependencyInjection(g)
 		modules = append(modules, g, s, p)
 		container[aCfg.PipeCommonConfig.PipeName] = modules
 	}

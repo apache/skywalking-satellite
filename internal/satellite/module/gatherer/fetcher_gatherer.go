@@ -26,6 +26,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
 	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
@@ -46,8 +47,8 @@ type FetcherGatherer struct {
 	fetchCounter       *telemetry.Counter
 	queueOutputCounter *telemetry.Counter
 
-	// sync invoker
-	syncInvoker module.SyncInvoker
+	// dependency modules
+	processor processor.Processor
 }
 
 func (f *FetcherGatherer) Prepare() error {
@@ -121,7 +122,6 @@ func (f *FetcherGatherer) Ack(lastOffset event.Offset) {
 	f.runningQueue.Ack(lastOffset)
 }
 
-// RegisterSyncInvoker is register the sync invoker when none queue process
-func (f *FetcherGatherer) RegisterSyncInvoker(invoker module.SyncInvoker) {
-	f.syncInvoker = invoker
+func (f *FetcherGatherer) DependencyInjection(modules ...module.Module) {
+	f.processor = modules[0].(processor.Processor)
 }

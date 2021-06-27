@@ -218,7 +218,7 @@ func (s *Sender) InputDataChannel() chan<- *event.OutputEventContext {
 	return s.input
 }
 
-func (s *Sender) SyncInvoke(data *v1.SniffData) (*v1.SniffData, error) {
+func (s *Sender) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
 	supportSyncInvoke := make([]forwarder.Forwarder, 0)
 	for inx := range s.runningForwarders {
 		if s.runningForwarders[inx].SupportedSyncInvoke() {
@@ -230,5 +230,9 @@ func (s *Sender) SyncInvoke(data *v1.SniffData) (*v1.SniffData, error) {
 	} else if len(supportSyncInvoke) == 0 {
 		return nil, fmt.Errorf("could not found forwarder")
 	}
-	return supportSyncInvoke[0].SyncForward(data)
+	return supportSyncInvoke[0].SyncForward(d)
+}
+
+func (s *Sender) DependencyInjection(modules ...module.Module) {
+	s.gatherer = modules[0].(gatherer.Gatherer)
 }

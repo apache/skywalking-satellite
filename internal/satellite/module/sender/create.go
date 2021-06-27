@@ -20,7 +20,6 @@ package sender
 import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/buffer"
-	gatherer "github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/sharing"
 	client "github.com/apache/skywalking-satellite/plugins/client/api"
@@ -29,13 +28,12 @@ import (
 )
 
 // NewSender crate a Sender.
-func NewSender(cfg *api.SenderConfig, g gatherer.Gatherer) api.Sender {
+func NewSender(cfg *api.SenderConfig) api.Sender {
 	s := &Sender{
 		config:            cfg,
 		runningForwarders: []forwarder.Forwarder{},
 		runningFallbacker: fallbacker.GetFallbacker(cfg.FallbackerConfig),
 		runningClient:     sharing.Manager[cfg.ClientName].(client.Client),
-		gatherer:          g,
 		input:             make(chan *event.OutputEventContext),
 		listener:          make(chan client.ClientStatus),
 		flushChannel:      make(chan *buffer.BatchBuffer, 1),

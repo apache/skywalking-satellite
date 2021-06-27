@@ -34,7 +34,7 @@ type Receiver interface {
 	RegisterHandler(server interface{})
 
 	// RegisterSyncInvoker register the sync invoker, receive event and sync invoke to sender
-	RegisterSyncInvoker(processor module.SyncInvoker)
+	RegisterSyncInvoker(invoker module.SyncInvoker)
 
 	// Channel would be put a data when the receiver receives an APM data.
 	Channel() <-chan *v1.SniffData
