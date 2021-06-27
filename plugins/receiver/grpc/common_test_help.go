@@ -93,25 +93,34 @@ func TestReceiverWithSync(rec receiver.Receiver,
 	}()
 	_ = s.Start()
 
-	var data, errorMsg string
-	var a = func(event *v1.SniffData) (*v1.SniffData, error) {
-		// await data content
-		time.Sleep(time.Millisecond * 100)
-		if !cmp.Equal(snifferConvertor(event), data) {
-			errorMsg = fmt.Sprintf("the sent data is not equal to the received data\n, "+
-				"want data %s\n, but got %s\n", data, event.String())
-			return nil, nil
-		}
-		return mockResp, nil
-	}
-	r.RegisterSyncInvoker(a)
+	var data string
+	invoker := syncInvoker{snifferConvertor: snifferConvertor, mockResp: mockResp, data: &data}
+	r.RegisterSyncInvoker(&invoker)
 	conn := initConnection(grpcPort, t)
 	for i := 0; i < 10; i++ {
 		dataGenerator(t, i, conn, &data, context.Background())
-		if errorMsg != "" {
-			t.Fatalf(errorMsg)
+		if invoker.errorMsg != "" {
+			t.Fatalf(invoker.errorMsg)
 		}
 	}
+}
+
+type syncInvoker struct {
+	snifferConvertor func(data *v1.SniffData) string
+	mockResp         *v1.SniffData
+	data             *string
+	errorMsg         string
+}
+
+func (s *syncInvoker) SyncInvoke(event *v1.SniffData) (*v1.SniffData, error) {
+	// await data content
+	time.Sleep(time.Millisecond * 100)
+	if !cmp.Equal(s.snifferConvertor(event), *s.data) {
+		s.errorMsg = fmt.Sprintf("the sent data is not equal to the received data\n, "+
+			"want data %s\n, but got %s\n", *s.data, event.String())
+		return nil, nil
+	}
+	return s.mockResp, nil
 }
 
 func initConnection(grpcPort int, t *testing.T) *grpc.ClientConn {

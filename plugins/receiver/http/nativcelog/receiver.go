@@ -24,7 +24,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 
 	"google.golang.org/protobuf/proto"
 
@@ -82,7 +82,7 @@ func (r *Receiver) RegisterHandler(server interface{}) {
 	r.Server.Server.Handle(r.URI, r.httpHandler())
 }
 
-func (r *Receiver) RegisterSyncInvoker(_ api.SyncInvoker) {
+func (r *Receiver) RegisterSyncInvoker(_ module.SyncInvoker) {
 }
 
 func ResponseWithJSON(rsp http.ResponseWriter, response *Response, code int) {

@@ -22,7 +22,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 
 	sniffer "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
@@ -35,7 +35,7 @@ const eventName = "grpc-profile-event"
 type ProfileService struct {
 	receiveChannel chan *sniffer.SniffData
 
-	api.SyncInvoker
+	module.SyncInvoker
 	profile.UnimplementedProfileTaskServer
 }
 
@@ -45,7 +45,7 @@ func (p *ProfileService) GetProfileTaskCommands(_ context.Context, q *profile.Pr
 			ProfileTaskQuery: q,
 		},
 	}
-	data, err := p.SyncInvoker(event)
+	data, err := p.SyncInvoker.SyncInvoke(event)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (p *ProfileService) ReportTaskFinish(_ context.Context, report *profile.Pro
 			ProfileTaskFinish: report,
 		},
 	}
-	data, err := p.SyncInvoker(event)
+	data, err := p.SyncInvoker.SyncInvoke(event)
 	if err != nil {
 		return nil, err
 	}

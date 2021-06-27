@@ -20,11 +20,10 @@ package api
 import (
 	"reflect"
 
-	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
-
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 )
 
 // Receiver is a plugin interface, that defines new collectors.
@@ -35,7 +34,7 @@ type Receiver interface {
 	RegisterHandler(server interface{})
 
 	// RegisterSyncInvoker register the sync invoker, receive event and sync invoke to sender
-	RegisterSyncInvoker(processor api.SyncInvoker)
+	RegisterSyncInvoker(processor module.SyncInvoker)
 
 	// Channel would be put a data when the receiver receives an APM data.
 	Channel() <-chan *v1.SniffData

@@ -50,7 +50,7 @@ type ReceiverGatherer struct {
 	queueOutputCounter *telemetry.Counter
 
 	// sync invoker
-	syncInvoker api.SyncInvoker
+	syncInvoker module.SyncInvoker
 }
 
 func (r *ReceiverGatherer) Prepare() error {
@@ -66,7 +66,6 @@ func (r *ReceiverGatherer) Prepare() error {
 }
 
 func (r *ReceiverGatherer) Boot(ctx context.Context) {
-	// register the sync invoker to receiver
 	r.runningReceiver.RegisterSyncInvoker(r.syncInvoker)
 	var wg sync.WaitGroup
 	wg.Add(2)
@@ -140,6 +139,6 @@ func (r *ReceiverGatherer) Ack(lastOffset event.Offset) {
 	r.runningQueue.Ack(lastOffset)
 }
 
-func (r *ReceiverGatherer) RegisterSyncInvoker(invoker api.SyncInvoker) {
+func (r *ReceiverGatherer) RegisterSyncInvoker(invoker module.SyncInvoker) {
 	r.syncInvoker = invoker
 }

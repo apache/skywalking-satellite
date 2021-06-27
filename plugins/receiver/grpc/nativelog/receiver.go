@@ -22,7 +22,7 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
-	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	grpcreceiver "github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 )
 
@@ -53,7 +53,7 @@ func (r *Receiver) RegisterHandler(server interface{}) {
 	v3.RegisterLogReportServiceServer(r.Server, r.service)
 }
 
-func (r *Receiver) RegisterSyncInvoker(_ api.SyncInvoker) {
+func (r *Receiver) RegisterSyncInvoker(_ module.SyncInvoker) {
 }
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {

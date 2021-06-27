@@ -22,4 +22,5 @@ import "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 // Processor is the APM data processing module in Satellite.
 type Processor interface {
 	api.Module
+	api.SyncInvoker
 }

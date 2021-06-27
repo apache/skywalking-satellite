@@ -17,15 +17,9 @@
 
 package api
 
-import (
-	"github.com/apache/skywalking-satellite/internal/satellite/event"
-	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
-)
+import v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
-type Sender interface {
-	api.Module
-	api.SyncInvoker
-
-	// InputDataChannel is a blocking channel to receive the apm data from the downstream processor module.
-	InputDataChannel() chan<- *event.OutputEventContext
+type SyncInvoker interface {
+	// SyncInvoke means synchronized process event
+	SyncInvoke(event *v1.SniffData) (*v1.SniffData, error)
 }

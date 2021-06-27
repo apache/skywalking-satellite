@@ -19,7 +19,7 @@ package nativeprofile
 
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
-	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 
 	v3 "skywalking.apache.org/repo/goapi/collect/language/profile/v3"
@@ -53,7 +53,7 @@ func (r *Receiver) RegisterHandler(server interface{}) {
 	v3.RegisterProfileTaskServer(r.Server, r.service)
 }
 
-func (r *Receiver) RegisterSyncInvoker(invoker api.SyncInvoker) {
+func (r *Receiver) RegisterSyncInvoker(invoker module.SyncInvoker) {
 	r.service.SyncInvoker = invoker
 }
 

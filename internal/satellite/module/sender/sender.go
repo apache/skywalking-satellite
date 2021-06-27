@@ -218,7 +218,7 @@ func (s *Sender) InputDataChannel() chan<- *event.OutputEventContext {
 	return s.input
 }
 
-func (s *Sender) SyncProcess(data *v1.SniffData) (*v1.SniffData, error) {
+func (s *Sender) SyncInvoke(data *v1.SniffData) (*v1.SniffData, error) {
 	supportSyncInvoke := make([]forwarder.Forwarder, 0)
 	for inx := range s.runningForwarders {
 		if s.runningForwarders[inx].SupportedSyncInvoke() {
