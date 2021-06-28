@@ -41,6 +41,8 @@ import (
 	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
+var defaultSenderFlushTime = 1000
+
 // Sender is the forward module in Satellite.
 type Sender struct {
 	// config
@@ -97,7 +99,11 @@ func (s *Sender) store(ctx context.Context, wg *sync.WaitGroup) {
 	defer wg.Done()
 	defer log.Logger.WithField("pipe", s.config.PipeName).Infof("store routine closed")
 	childCtx, _ := context.WithCancel(ctx) // nolint
-	timeTicker := time.NewTicker(time.Duration(s.config.FlushTime) * time.Millisecond)
+	flushTime := s.config.FlushTime
+	if flushTime <= 0 {
+		flushTime = defaultSenderFlushTime
+	}
+	timeTicker := time.NewTicker(time.Duration(flushTime) * time.Millisecond)
 	for {
 		// blocking output when disconnecting.
 		if atomic.LoadInt32(&s.blocking) == 1 {

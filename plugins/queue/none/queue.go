@@ -15,20 +15,51 @@
 // specific language governing permissions and limitations
 // under the License.
 
-// +build !windows
-
-package queue
+package none
 
 import (
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
-	"github.com/apache/skywalking-satellite/plugins/queue/memory"
-	"github.com/apache/skywalking-satellite/plugins/queue/mmap"
-	"github.com/apache/skywalking-satellite/plugins/queue/none"
+
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-var queues = []api.Queue{
-	// Please register the queue plugins available on Linux, MacOS here.
-	new(memory.Queue),
-	new(mmap.Queue),
-	new(none.Queue),
+const (
+	Name = "none-queue"
+)
+
+type Queue struct {
+	config.CommonFields
+}
+
+func (q *Queue) Name() string {
+	return Name
+}
+
+func (q *Queue) Description() string {
+	return "This is an empty queue for direct connection protocols, such as SkyWalking native configuration discovery service protocol."
+}
+
+func (q *Queue) DefaultConfig() string {
+	return ``
+}
+
+func (q *Queue) Initialize() error {
+	return nil
+}
+
+func (q *Queue) Enqueue(e *v1.SniffData) error {
+	return api.ErrFull
+}
+
+func (q *Queue) Dequeue() (*api.SequenceEvent, error) {
+	return nil, api.ErrEmpty
+}
+
+func (q *Queue) Close() error {
+	return nil
+}
+
+func (q *Queue) Ack(_ event.Offset) {
 }
