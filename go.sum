@@ -1300,8 +1300,6 @@ sigs.k8s.io/structured-merge-diff/v4 v4.0.1/go.mod h1:bJZC9H9iH24zzfZ/41RGcq60oK
 sigs.k8s.io/yaml v1.1.0/go.mod h1:UJmg0vDUVViEyp3mgSv9WPwZCDxu4rQW1olrI1uml+o=
 sigs.k8s.io/yaml v1.2.0 h1:kr/MCeFWJWTwyaHoR9c8EjH9OumOmoF9YGiZd7lFm/Q=
 sigs.k8s.io/yaml v1.2.0/go.mod h1:yfXDCHCao9+ENCvLSE62v9VSji2MKu5jeNfTrofGhJc=
-skywalking.apache.org/repo/goapi v0.0.0-20210618233359-7d98bf9a358e h1:PqRnyRP6R7nRrKbfdN+Cn4P4BMduOETEeqjk2QdmIdI=
-skywalking.apache.org/repo/goapi v0.0.0-20210618233359-7d98bf9a358e/go.mod h1:wm5inQxMxXggTPgEk1iTzZ7EqA/VqbsByywT1dWrCww=
 skywalking.apache.org/repo/goapi v0.0.0-20210628073857-a95ba03d3c7a h1:O3nG1yp5zO2TMWx6ZryMZhlQ+LBM7C9iYIHju2A4Yqg=
 skywalking.apache.org/repo/goapi v0.0.0-20210628073857-a95ba03d3c7a/go.mod h1:wmVce2yQsna9boVCkJP4oROZVnOCobmwUiOTsDIzWmQ=
 sourcegraph.com/sourcegraph/appdash v0.0.0-20190731080439-ebfcffb1b5c0/go.mod h1:hI742Nqp5OhwiqlzhgfbWU4mW4yO10fP+LoT9WOswdU=

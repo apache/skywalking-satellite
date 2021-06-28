@@ -226,7 +226,7 @@ BSD licenses
 The following components are provided under a BSD license. See project link for details.
 The text of each license is also included at licenses/LICENSE-[project].txt.
     google (go-cmp) v0.5.4 https://github.com/google/go-cmp BSD
-    golang(protobuf) v1.4.3   https://github.com/golang/protobuf BSD
+    golang(protobuf) v1.27.0   https://github.com/golang/protobuf BSD
 
 ========================================================================
 MIT licenses
