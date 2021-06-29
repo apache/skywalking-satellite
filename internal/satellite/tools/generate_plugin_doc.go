@@ -162,6 +162,10 @@ func writeDoc(doc []byte, docFileName string) error {
 }
 
 func createDir(path string) error {
+	err := os.RemoveAll(path)
+	if err != nil {
+		return err
+	}
 	fileInfo, err := os.Stat(path)
 	if os.IsNotExist(err) || fileInfo.Size() == 0 {
 		return os.Mkdir(path, os.ModePerm)
