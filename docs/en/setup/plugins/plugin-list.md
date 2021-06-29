@@ -11,6 +11,7 @@
 - Forwarder
 	- [meter-grpc-forwarder](./forwarder_meter-grpc-forwarder.md)
 	- [nativecds-grpc-forwarder](./forwarder_nativecds-grpc-forwarder.md)
+	- [nativejvm-grpc-forwarder](./forwarder_nativejvm-grpc-forwarder.md)
 	- [nativelog-grpc-forwarder](./forwarder_nativelog-grpc-forwarder.md)
 	- [nativelog-kafka-forwarder](./forwarder_nativelog-kafka-forwarder.md)
 	- [nativemanagement-grpc-forwarder](./forwarder_nativemanagement-grpc-forwarder.md)
@@ -23,6 +24,7 @@
 	- [none-queue](./queue_none-queue.md)
 - Receiver
 	- [grpc-nativecds-receiver](./receiver_grpc-nativecds-receiver.md)
+	- [grpc-nativejvm-receiver](./receiver_grpc-nativejvm-receiver.md)
 	- [grpc-nativelog-receiver](./receiver_grpc-nativelog-receiver.md)
 	- [grpc-nativemanagement-receiver](./receiver_grpc-nativemanagement-receiver.md)
 	- [grpc-nativeprofile-receiver](./receiver_grpc-nativeprofile-receiver.md)
