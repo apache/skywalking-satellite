@@ -9,11 +9,11 @@
 	- [prometheus-metrics-fetcher](./fetcher_prometheus-metrics-fetcher.md)
 - Filter
 - Forwarder
-	- [meter-grpc-forwarder](./forwarder_meter-grpc-forwarder.md)
 	- [nativecds-grpc-forwarder](./forwarder_nativecds-grpc-forwarder.md)
 	- [nativelog-grpc-forwarder](./forwarder_nativelog-grpc-forwarder.md)
 	- [nativelog-kafka-forwarder](./forwarder_nativelog-kafka-forwarder.md)
 	- [nativemanagement-grpc-forwarder](./forwarder_nativemanagement-grpc-forwarder.md)
+	- [nativemeter-grpc-forwarder](./forwarder_nativemeter-grpc-forwarder.md)
 	- [nativeprofile-grpc-forwarder](./forwarder_nativeprofile-grpc-forwarder.md)
 	- [nativetracing-grpc-forwarder](./forwarder_nativetracing-grpc-forwarder.md)
 - Parser
@@ -25,6 +25,7 @@
 	- [grpc-nativecds-receiver](./receiver_grpc-nativecds-receiver.md)
 	- [grpc-nativelog-receiver](./receiver_grpc-nativelog-receiver.md)
 	- [grpc-nativemanagement-receiver](./receiver_grpc-nativemanagement-receiver.md)
+	- [grpc-nativemeter-receiver](./receiver_grpc-nativemeter-receiver.md)
 	- [grpc-nativeprofile-receiver](./receiver_grpc-nativeprofile-receiver.md)
 	- [grpc-nativetracing-receiver](./receiver_grpc-nativetracing-receiver.md)
 	- [http-nativelog-receiver](./receiver_http-nativelog-receiver.md)

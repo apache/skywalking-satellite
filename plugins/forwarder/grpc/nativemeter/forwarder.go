@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package meter
+package nativemeter
 
 import (
 	"context"
@@ -33,7 +33,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
-const Name = "meter-grpc-forwarder"
+const Name = "nativemeter-grpc-forwarder"
 
 type Forwarder struct {
 	config.CommonFields
