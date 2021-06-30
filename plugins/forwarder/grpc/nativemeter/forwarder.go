@@ -68,7 +68,7 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		for _, stream := range streamMap {
 			err := closeStream(stream)
 			if err != nil {
-				log.Logger.Warn("%s close stream error: %v", f.Name(), err)
+				log.Logger.Warnf("%s close stream error: %v", f.Name(), err)
 			}
 		}
 	}()
