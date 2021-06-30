@@ -21,6 +21,7 @@ import (
 	"reflect"
 
 	grpc_nativecds "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativecds"
+	grpc_nativeevent "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeevent"
 	grpc_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativelog"
 	grpc_nativemanagement "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativemanagement"
 	grpc_meter "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativemeter"
@@ -44,6 +45,7 @@ func RegisterForwarderPlugins() {
 		new(grpc_nativetracing.Forwarder),
 		new(grpc_nativeprofile.Forwarder),
 		new(grpc_nativecds.Forwarder),
+		new(grpc_nativeevent.Forwarder),
 	}
 	for _, forwarder := range forwarders {
 		plugin.RegisterPlugin(forwarder)

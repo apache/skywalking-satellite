@@ -10,6 +10,7 @@
 - Filter
 - Forwarder
 	- [nativecds-grpc-forwarder](./forwarder_nativecds-grpc-forwarder.md)
+	- [nativeevent-grpc-forwarder](./forwarder_nativeevent-grpc-forwarder.md)
 	- [nativelog-grpc-forwarder](./forwarder_nativelog-grpc-forwarder.md)
 	- [nativelog-kafka-forwarder](./forwarder_nativelog-kafka-forwarder.md)
 	- [nativemanagement-grpc-forwarder](./forwarder_nativemanagement-grpc-forwarder.md)
@@ -23,6 +24,7 @@
 	- [none-queue](./queue_none-queue.md)
 - Receiver
 	- [grpc-nativecds-receiver](./receiver_grpc-nativecds-receiver.md)
+	- [grpc-nativeevent-receiver](./receiver_grpc-nativeevent-receiver.md)
 	- [grpc-nativelog-receiver](./receiver_grpc-nativelog-receiver.md)
 	- [grpc-nativemanagement-receiver](./receiver_grpc-nativemanagement-receiver.md)
 	- [grpc-nativemeter-receiver](./receiver_grpc-nativemeter-receiver.md)
