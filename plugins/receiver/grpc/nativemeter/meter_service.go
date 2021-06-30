@@ -34,6 +34,7 @@ type MeterService struct {
 }
 
 func (m *MeterService) Collect(stream meter.MeterReportService_CollectServer) error {
+	var service, instance string
 	for {
 		item, err := stream.Recv()
 		if err == io.EOF {
@@ -42,6 +43,16 @@ func (m *MeterService) Collect(stream meter.MeterReportService_CollectServer) er
 		if err != nil {
 			return err
 		}
+		// only first item has service and service instance property
+		// need correlate information to each item
+		if item.Service != "" {
+			service = item.Service
+		}
+		if item.ServiceInstance != "" {
+			instance = item.ServiceInstance
+		}
+		item.Service = service
+		item.ServiceInstance = instance
 		d := &v1.SniffData{
 			Name:      eventName,
 			Timestamp: time.Now().UnixNano() / 1e6,
