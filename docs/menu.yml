@@ -99,10 +99,10 @@ catalog:
               catalog:
                 - name: grpc-nativecds-receiver
                   path: /en/setup/plugins/receiver_grpc-nativecds-receiver
-                - name: grpc-nativejvm-receiver
-                  path: /en/setup/plugins/receiver_grpc-nativejvm-receiver
                 - name: grpc-nativeevent-receiver
                   path: /en/setup/plugins/receiver_grpc-nativeevent-receiver
+                - name: grpc-nativejvm-receiver
+                  path: /en/setup/plugins/receiver_grpc-nativejvm-receiver
                 - name: grpc-nativelog-receiver
                   path: /en/setup/plugins/receiver_grpc-nativelog-receiver
                 - name: grpc-nativemanagement-receiver
