@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package meter
+package nativemeter
 
 import (
 	"context"
@@ -33,7 +33,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
-const Name = "meter-grpc-forwarder"
+const Name = "nativemeter-grpc-forwarder"
 
 type Forwarder struct {
 	config.CommonFields
@@ -63,27 +63,39 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-	stream, err := f.meterClient.Collect(context.Background())
-	if err != nil {
-		log.Logger.Errorf("open grpc stream error %v", err)
-		return err
-	}
+	streamMap := make(map[string]v3.MeterReportService_CollectClient)
+	defer func() {
+		for _, stream := range streamMap {
+			err := closeStream(stream)
+			if err != nil {
+				log.Logger.Warnf("%s close stream error: %v", f.Name(), err)
+			}
+		}
+	}()
 	for _, e := range batch {
 		data, ok := e.GetData().(*v1.SniffData_Meter)
 		if !ok {
 			continue
 		}
+		streamName := fmt.Sprintf("%s_%s", data.Meter.Service, data.Meter.ServiceInstance)
+		stream := streamMap[streamName]
+		if stream == nil {
+			curStream, err := f.meterClient.Collect(context.Background())
+			if err != nil {
+				log.Logger.Errorf("open grpc stream error %v", err)
+				return err
+			}
+			streamMap[streamName] = curStream
+			stream = curStream
+		}
+
 		err := stream.Send(data.Meter)
 		if err != nil {
 			log.Logger.Errorf("%s send meter data error: %v", f.Name(), err)
-			err = closeStream(stream)
-			if err != nil {
-				log.Logger.Errorf("%s close stream error: %v", f.Name(), err)
-			}
 			return err
 		}
 	}
-	return closeStream(stream)
+	return nil
 }
 
 func closeStream(stream v3.MeterReportService_CollectClient) error {

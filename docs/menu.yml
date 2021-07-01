@@ -69,8 +69,6 @@ catalog:
                   path: /en/setup/plugins/fetcher_prometheus-metrics-fetcher
             - name: forwarder
               catalog:
-                - name: meter-grpc-forwarder
-                  path: /en/setup/plugins/forwarder_meter-grpc-forwarder
                 - name: nativecds-grpc-forwarder
                   path: /en/setup/plugins/forwarder_nativecds-grpc-forwarder
                 - name: nativeevent-grpc-forwarder
@@ -83,6 +81,8 @@ catalog:
                   path: /en/setup/plugins/forwarder_nativelog-kafka-forwarder
                 - name: nativemanagement-grpc-forwarder
                   path: /en/setup/plugins/forwarder_nativemanagement-grpc-forwarder
+                - name: nativemeter-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_nativemeter-grpc-forwarder
                 - name: nativeprofile-grpc-forwarder
                   path: /en/setup/plugins/forwarder_nativeprofile-grpc-forwarder
                 - name: nativetracing-grpc-forwarder
@@ -107,6 +107,8 @@ catalog:
                   path: /en/setup/plugins/receiver_grpc-nativelog-receiver
                 - name: grpc-nativemanagement-receiver
                   path: /en/setup/plugins/receiver_grpc-nativemanagement-receiver
+                - name: grpc-nativemeter-receiver
+                  path: /en/setup/plugins/receiver_grpc-nativemeter-receiver
                 - name: grpc-nativeprofile-receiver
                   path: /en/setup/plugins/receiver_grpc-nativeprofile-receiver
                 - name: grpc-nativetracing-receiver
