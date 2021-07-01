@@ -75,6 +75,8 @@ catalog:
                   path: /en/setup/plugins/forwarder_nativecds-grpc-forwarder
                 - name: nativeevent-grpc-forwarder
                   path: /en/setup/plugins/forwarder_nativeevent-grpc-forwarder
+                - name: nativejvm-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_nativejvm-grpc-forwarder
                 - name: nativelog-grpc-forwarder
                   path: /en/setup/plugins/forwarder_nativelog-grpc-forwarder
                 - name: nativelog-kafka-forwarder
@@ -99,6 +101,8 @@ catalog:
                   path: /en/setup/plugins/receiver_grpc-nativecds-receiver
                 - name: grpc-nativeevent-receiver
                   path: /en/setup/plugins/receiver_grpc-nativeevent-receiver
+                - name: grpc-nativejvm-receiver
+                  path: /en/setup/plugins/receiver_grpc-nativejvm-receiver
                 - name: grpc-nativelog-receiver
                   path: /en/setup/plugins/receiver_grpc-nativelog-receiver
                 - name: grpc-nativemanagement-receiver
