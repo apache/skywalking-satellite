@@ -19,7 +19,7 @@ services:
   oap:
     build:
       context: ../oap
-      dockerfile: ../oap/Dockerfile.oap
+      dockerfile: Dockerfile.oap
     expose:
       - 11800
       - 12800
@@ -44,7 +44,7 @@ services:
   provider:
     build:
       context: ../provider
-      dockerfile: ../provider/Dockerfile.provider
+      dockerfile: Dockerfile.provider
     expose:
       - 8080
     networks:
@@ -58,7 +58,7 @@ services:
   consumer:
     build:
       context: ../consumer
-      dockerfile: ../consumer/Dockerfile.consumer
+      dockerfile: Dockerfile.consumer
     expose:
       - 8080
     networks:
