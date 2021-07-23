@@ -31,4 +31,4 @@ jobs:
           submodules: true
       - uses: apache/skywalking-infra-e2e@main
         with:
-          e2e-file: test/e2e/test/java-agent/e2e.yaml
+          e2e-file: test/e2e/case/java-agent/e2e.yaml
