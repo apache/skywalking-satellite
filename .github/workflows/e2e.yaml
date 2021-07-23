@@ -22,7 +22,7 @@ on:
       - main
 
 jobs:
-  JAvaAgentE2E:
+  JavaAgentE2E:
     name: Java Agent E2E
     runs-on: ubuntu-latest
     steps:
