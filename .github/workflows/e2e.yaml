@@ -22,8 +22,8 @@ on:
       - main
 
 jobs:
-  NativeTracingE2E:
-    name: Native Tracing E2E
+  JAvaAgentE2E:
+    name: Java Agent E2E
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -31,4 +31,4 @@ jobs:
           submodules: true
       - uses: apache/skywalking-infra-e2e@main
         with:
-          e2e-file: test/e2e/test/native-tracing/e2e.yaml
+          e2e-file: test/e2e/test/java-agent/e2e.yaml
