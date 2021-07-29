@@ -297,8 +297,4 @@ func TestFetcher_ScrapeConfig(t *testing.T) {
 	if err := v.MergeConfigMap(cfg); err != nil {
 		assert.NilError(t, err, "config merge error")
 	}
-	// yaml
-	scs := make([]*scrapeConfig, 0)
-	err = yaml.Unmarshal([]byte(configYaml), scs)
-	assert.NilError(t, err, "ScrapeConfig unmarshal error")
 }
