@@ -37,6 +37,7 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/fetcher/api"
 
 	promcfg "github.com/prometheus/prometheus/config"
+	"github.com/spf13/viper"
 	"github.com/stretchr/testify/require"
 	yaml "gopkg.in/yaml.v3"
 	"gotest.tools/assert"
@@ -279,4 +280,25 @@ func verifyTarget1(t *testing.T, em *v1.SniffData) {
 		histogram := em.GetMeter().GetHistogram()
 		assert.Assert(t, is.Contains(histogramElems, histogram.GetName()), "Mismatch histogram meter")
 	}
+}
+
+type Config map[string]interface{}
+
+func TestFetcher_ScrapeConfig(t *testing.T) {
+	f := &Fetcher{}
+	configYaml := f.DefaultConfig()
+	t.Log(configYaml)
+	// viper
+	v := viper.New()
+	v.SetConfigType("yaml")
+	err := v.ReadConfig(strings.NewReader(configYaml))
+	assert.NilError(t, err, "cannot read default config in the fetcher plugin")
+	cfg := Config{}
+	if err := v.MergeConfigMap(cfg); err != nil {
+		assert.NilError(t, err, "config merge error")
+	}
+	// yaml
+	scs := make([]*scrapeConfig, 0)
+	err = yaml.Unmarshal([]byte(configYaml), scs)
+	assert.NilError(t, err, "ScrapeConfig unmarshal error")
 }

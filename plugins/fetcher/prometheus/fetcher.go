@@ -27,6 +27,7 @@ import (
 
 	promConfig "github.com/prometheus/prometheus/config"
 	"github.com/prometheus/prometheus/discovery"
+	_ "github.com/prometheus/prometheus/discovery/install"
 	"github.com/prometheus/prometheus/scrape"
 	yaml "gopkg.in/yaml.v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
@@ -38,10 +39,39 @@ const (
 )
 
 type scrapeConfig struct {
-	JobName        string                   `yaml:"job_name" mapstructure:"job_name"`
-	ScrapeInterval time.Duration            `yaml:"scrape_interval,omitempty" mapstructure:"scrape_interval,omitempty"`
-	StaticConfigs  []map[string]interface{} `yaml:"static_configs" mapstructure:"static_configs"`
-	MetricsPath    string                   `yaml:"metrics_path,omitempty" mapstructure:"metrics_path,omitempty"`
+	JobName             string                   `yaml:"job_name" mapstructure:"job_name"`
+	ScrapeInterval      time.Duration            `yaml:"scrape_interval,omitempty" mapstructure:"scrape_interval,omitempty"`
+	StaticConfigs       []map[string]interface{} `yaml:"static_configs,omitempty" mapstructure:"static_configs,omitempty"`
+	MetricsPath         string                   `yaml:"metrics_path,omitempty" mapstructure:"metrics_path,omitempty"`
+	TlsConfig           tlsConfig                `yaml:"tls_config,omitempty" mapstructure:"tls_config,omitempty"`
+	BearerTokenFile     string                   `yaml:"bearer_token_file,omitempty" mapstructure:"bearer_token_file,omitempty"`
+	KubernetesSdConfigs []kubernetesSdConfig     `yaml:"kubernetes_sd_configs,omitempty" mapstructure:"kubernetes_sd_configs,omitempty"`
+	RelabelConfigs      []relabelConfig          `yaml:"relabel_configs,omitempty" mapstructure:"relabel_configs,omitempty"`
+}
+
+type tlsConfig struct {
+	CaFile string `yaml:"ca_file" mapstructure:"ca_file"`
+}
+
+// kubernetes_sd_configs []kubernetesSdConfig
+type kubernetesSdConfig struct {
+	Role      string     `yaml:"role,omitempty" mapstructure:"role,omitempty"`
+	Selectors []selector `yaml:"selectors,omitempty" mapstructure:"selectors,omitempty"`
+}
+
+// relabel_configs []relabelConfig
+type relabelConfig struct {
+	SourceLabels []string `yaml:"source_labels,omitempty" mapstructure:"source_labels,omitempty"`
+	Separator    string   `yaml:"separator,omitempty" mapstructure:"separator,omitempty"`
+	Regex        string   `yaml:"regex,omitempty" mapstructure:"regex,omitempty"`
+	TargetLabel  string   `yaml:"target_label,omitempty" mapstructure:"target_label,omitempty"`
+	Replacement  string   `yaml:"replacement,omitempty" mapstructure:"replacement,omitempty"`
+	Action       string   `yaml:"action,omitempty" mapstructure:"action,omitempty"`
+}
+
+type selector struct {
+	Role  string `yaml:"role,omitempty" mapstructure:"role,omitempty"`
+	Label string `yaml:"label,omitempty" mapstructure:"label,omitempty"`
 }
 
 // Fetcher is the struct for Prometheus fetcher
@@ -68,21 +98,27 @@ func (f *Fetcher) Description() string {
 
 func (f *Fetcher) DefaultConfig() string {
 	return `
-## some config here
 scrape_configs:
  - job_name: 'prometheus'
    metrics_path: '/metrics'
    scrape_interval: 10s
    static_configs:
-   - targets: ['127.0.0.1:2020']
+   - targets: ['127.0.0.1:9100']
 `
 }
 
 func (f *Fetcher) Prepare() {}
 
 func (f *Fetcher) Fetch(ctx context.Context) {
+	f.OutputChannel = make(chan *v1.SniffData, 100)
+	f.ScrapeConfig(ctx)
+	fetch(ctx, f.ScrapeConfigs, f.OutputChannel)
+}
+
+func (f *Fetcher) ScrapeConfig(ctx context.Context) {
 	// yaml
 	configDeclare := make(map[string]interface{})
+	log.Logger.Info(f.ScrapeConfigs)
 	configDeclare["scrape_configs"] = f.ScrapeConfigsMap
 	configBytes, err := yaml.Marshal(configDeclare)
 	if err != nil {
@@ -91,10 +127,9 @@ func (f *Fetcher) Fetch(ctx context.Context) {
 	log.Logger.Debug(string(configBytes))
 	configStruct, err := promConfig.Load(string(configBytes))
 	if err != nil {
-		log.Logger.Fatal("prometheus fetcher configure load failed", err.Error())
+		log.Logger.Fatal("prometheus fetcher configure load failed ", err.Error())
 	}
 	f.ScrapeConfigs = configStruct.ScrapeConfigs
-	fetch(ctx, f.ScrapeConfigs, f.OutputChannel)
 }
 
 func (f *Fetcher) Channel() <-chan *v1.SniffData {
