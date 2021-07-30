@@ -43,7 +43,7 @@ type scrapeConfig struct {
 	ScrapeInterval      time.Duration            `yaml:"scrape_interval,omitempty" mapstructure:"scrape_interval,omitempty"`
 	StaticConfigs       []map[string]interface{} `yaml:"static_configs,omitempty" mapstructure:"static_configs,omitempty"`
 	MetricsPath         string                   `yaml:"metrics_path,omitempty" mapstructure:"metrics_path,omitempty"`
-	TlsConfig           tlsConfig                `yaml:"tls_config,omitempty" mapstructure:"tls_config,omitempty"`
+	TLSConfig           tlsConfig                `yaml:"tls_config,omitempty" mapstructure:"tls_config,omitempty"`
 	BearerTokenFile     string                   `yaml:"bearer_token_file,omitempty" mapstructure:"bearer_token_file,omitempty"`
 	KubernetesSdConfigs []kubernetesSdConfig     `yaml:"kubernetes_sd_configs,omitempty" mapstructure:"kubernetes_sd_configs,omitempty"`
 	RelabelConfigs      []relabelConfig          `yaml:"relabel_configs,omitempty" mapstructure:"relabel_configs,omitempty"`
