@@ -27,7 +27,7 @@ import (
 
 	promConfig "github.com/prometheus/prometheus/config"
 	"github.com/prometheus/prometheus/discovery"
-	_ "github.com/prometheus/prometheus/discovery/install"
+	_ "github.com/prometheus/prometheus/discovery/install" // Need the init() func in this package to register service discovery implement.
 	"github.com/prometheus/prometheus/scrape"
 	yaml "gopkg.in/yaml.v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
