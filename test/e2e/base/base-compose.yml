@@ -41,7 +41,7 @@ services:
       retries: 120
 
   oap:
-    image: ghcr.io/apache/skywalking/oap:9a05ad4b423a380c8da711e2a2b856ee93bc9422-es6
+    image: ghcr.io/apache/skywalking/oap:902b6c540bd0e027c28f6fb8834d88a66a62143a-es6
     expose:
       - 11800
       - 12800

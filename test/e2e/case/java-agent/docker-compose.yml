@@ -22,7 +22,7 @@ services:
       file: ../../base/base-compose.yml
       service: etcd
     ports:
-      - 2379:2379
+      - 2379
 
   oap:
     extends:
@@ -34,8 +34,7 @@ services:
     volumes:
       - ./lal.yaml:/skywalking/config/lal/test.yaml
     ports:
-      - 12800:12800
-      - 5005:5005
+      - 12800
     depends_on:
       etcd:
         condition: service_healthy
@@ -56,7 +55,6 @@ services:
       service: provider
     ports:
       - 9090
-      - 5006:5005
     depends_on:
       satellite:
         condition: service_healthy
