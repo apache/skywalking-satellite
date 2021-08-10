@@ -249,49 +249,49 @@ pipes:
         - plugin_name: nativemeter-grpc-forwarder
   - common_config:
       pipe_name: prometheus-fetcher
-      gatherer:
-        fetcher:
-          plugin_name: "prometheus-metrics-fetcher"
-          scrape_configs:
-            - job_name: 'prometheus'
-              metrics_path: '/metrics'
-              scrape_interval: 10s
-              static_configs:
-                - targets:
-                    - "127.0.0.1:9100"
-            - job_name: 'prometheus-k8s'
-              metrics_path: '/metrics'
-              scrape_interval: 10s
-              tls_config:
-                ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
-              bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
-              kubernetes_sd_configs:
-                - role: pod
-                  selectors:
-                    - role: pod
-                      label: "app=prometheus"
-              relabel_configs:
-                - source_labels: [ __meta_kubernetes_pod_name ]
-                  separator: ;
-                  regex: (.*)
-                  target_label: pod
-                  replacement: $1
-                  action: replace
-        queue:
-          plugin_name: "memory-queue"
-          # The maximum buffer event size.
-          event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
-      processor:
-        filters:
-      sender:
-        fallbacker:
-          plugin_name: none-fallbacker
-        # The time interval between two flush operations. And the time unit is millisecond.
-        flush_time: ${SATELLITE_LOGPIPE_SENDER_FLUSH_TIME:1000}
-        # The maximum buffer elements.
-        max_buffer_size: ${SATELLITE_LOGPIPE_SENDER_MAX_BUFFER_SIZE:200}
-        # The minimum flush elements.
-        min_flush_events: ${SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS:1}
-        client_name: grpc-client
-        forwarders:
-          - plugin_name: nativecds-grpc-forwarder
+    gatherer:
+      fetcher:
+        plugin_name: "prometheus-metrics-fetcher"
+        scrape_configs:
+          - job_name: 'prometheus'
+            metrics_path: '/metrics'
+            scrape_interval: 10s
+            static_configs:
+              - targets:
+                  - "127.0.0.1:9100"
+          - job_name: 'prometheus-k8s'
+            metrics_path: '/metrics'
+            scrape_interval: 10s
+            tls_config:
+              ca_file: /var/run/secrets/kubernetes.io/serviceaccount/ca.crt
+            bearer_token_file: /var/run/secrets/kubernetes.io/serviceaccount/token
+            kubernetes_sd_configs:
+              - role: pod
+                selectors:
+                  - role: pod
+                    label: "app=prometheus"
+            relabel_configs:
+              - source_labels: [ __meta_kubernetes_pod_name ]
+                separator: ;
+                regex: (.*)
+                target_label: pod
+                replacement: $1
+                action: replace
+      queue:
+        plugin_name: "memory-queue"
+        # The maximum buffer event size.
+        event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+    processor:
+      filters:
+    sender:
+      fallbacker:
+        plugin_name: none-fallbacker
+      # The time interval between two flush operations. And the time unit is millisecond.
+      flush_time: ${SATELLITE_LOGPIPE_SENDER_FLUSH_TIME:1000}
+      # The maximum buffer elements.
+      max_buffer_size: ${SATELLITE_LOGPIPE_SENDER_MAX_BUFFER_SIZE:200}
+      # The minimum flush elements.
+      min_flush_events: ${SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS:1}
+      client_name: grpc-client
+      forwarders:
+        - plugin_name: nativecds-grpc-forwarder
