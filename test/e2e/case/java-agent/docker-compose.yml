@@ -17,13 +17,28 @@ version: '2.1'
 
 services:
 
+  etcd:
+    extends:
+      file: ../../base/base-compose.yml
+      service: etcd
+    ports:
+      - 2379:2379
+
   oap:
     extends:
       file: ../../base/base-compose.yml
       service: oap
+    environment:
+      SW_LOG_LAL_FILES: test
+      SW_CLUSTER: etcd
+    volumes:
+      - ./lal.yaml:/skywalking/config/lal/test.yaml
     ports:
-      - 12800
+      - 12800:12800
       - 5005:5005
+    depends_on:
+      etcd:
+        condition: service_healthy
 
   satellite:
     extends:
@@ -41,6 +56,7 @@ services:
       service: provider
     ports:
       - 9090
+      - 5006:5005
     depends_on:
       satellite:
         condition: service_healthy

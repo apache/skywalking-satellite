@@ -25,6 +25,7 @@ import org.apache.skywalking.e2e.UserRepo;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.LoggerFactory;
 
 import java.util.Random;
 
@@ -32,6 +33,8 @@ import java.util.Random;
 @RequiredArgsConstructor
 @SuppressWarnings("SameReturnValue")
 public class UserController {
+    private static final org.slf4j.Logger LOGBACK_LOGGER = LoggerFactory.getLogger(UserController.class);
+
     private final UserRepo userRepo;
     private final int sleepMin = 500;
     private final int sleepMax = 1000;
@@ -39,13 +42,14 @@ public class UserController {
     @PostMapping("/info")
     public String info() throws InterruptedException {
         Thread.sleep(randomSleepLong(sleepMin, sleepMax));
+        LOGBACK_LOGGER.info("logback message==> now: {}", System.currentTimeMillis());
         return "whatever";
     }
 
     @PostMapping("/users")
-    public User createAuthor(@RequestBody final User user) throws InterruptedException {
+    public User createAuthor() throws InterruptedException {
         Thread.sleep(randomSleepLong(sleepMin, sleepMax));
-        return userRepo.save(user);
+        return userRepo.save(User.builder().name("").build());
     }
 
     @PostMapping("/correlation")

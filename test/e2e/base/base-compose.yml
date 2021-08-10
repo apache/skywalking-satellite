@@ -16,8 +16,32 @@
 version: '2.1'
 
 services:
+
+  etcd:
+    hostname: etcd
+    image: gcr.io/etcd-development/etcd:v3.5.0
+    ports:
+      - 2379
+    networks:
+      - e2e
+    volumes:
+      - ./etcd-check.sh:/tmp/etcd-check.sh
+    environment:
+      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
+      ETCD_ADVERTISE_CLIENT_URLS: http://0.0.0.0:2379
+      ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
+      ETCD_INITIAL_ADVERTISE_PEER_URLS: http://0.0.0.0:2380
+      ETCD_INITIAL_CLUSTER: s1=http://0.0.0.0:2380
+      ETCD_NAME: s1
+      ETCD_DATA_DIR: /etcd-data
+    healthcheck:
+      test: ["CMD", "sh", "-c", "/tmp/etcd-check.sh" ]
+      interval: 5s
+      timeout: 60s
+      retries: 120
+
   oap:
-    image: ghcr.io/apache/skywalking/oap:902b6c540bd0e027c28f6fb8834d88a66a62143a-es6
+    image: ghcr.io/apache/skywalking/oap:9a05ad4b423a380c8da711e2a2b856ee93bc9422-es6
     expose:
       - 11800
       - 12800
@@ -33,6 +57,11 @@ services:
       SW_JDBC_URL: jdbc:mysql://mysql:3306/swtest
       SW_STORAGE_INFLUXDB_URL: http://influxdb:8086
       SW_METER_ANALYZER_ACTIVE_FILES: spring-sleuth
+      SW_CLUSTER_ETCD_ENDPOINTS: http://etcd:2379
+      SW_SCLUSTER_ETCD_ERVICE_NAME: s1
+      SW_CONFIGURATION: etcd
+      SW_CONFIG_ETCD_PERIOD: 1
+      SW_CONFIG_ETCD_ENDPOINTS: http://etcd:2379
       JAVA_OPTS: >-
         -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
     healthcheck:
@@ -51,8 +80,13 @@ services:
       - e2e
     environment:
       SW_AGENT_COLLECTOR_BACKEND_SERVICES: satellite:11800
+      SW_GRPC_LOG_SERVER_HOST: satellite
+      SW_GRPC_LOG_SERVER_PORT: 11800
+      SW_COLLECTOR_GET_PROFILE_TASK_INTERVAL: 1
       SW_AGENT_NAME: e2e-service-provider
-      JAVA_OPTS: -javaagent:/skywalking/agent/skywalking-agent.jar=logging.output=CONSOLE,agent.instance_name=provider1
+      JAVA_OPTS: >-
+        -javaagent:/skywalking/agent/skywalking-agent.jar=logging.output=CONSOLE,agent.instance_name=provider1
+        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
     healthcheck:
       test: [ "CMD", "sh", "-c", "nc -zn 127.0.0.1 9090"]
       interval: 5s
@@ -69,6 +103,8 @@ services:
       - e2e
     environment:
       SW_AGENT_COLLECTOR_BACKEND_SERVICES: satellite:11800
+      SW_GRPC_LOG_SERVER_HOST: satellite
+      SW_GRPC_LOG_SERVER_PORT: 11800
       PROVIDER_URL: http://provider:9090
       SW_AGENT_NAME: e2e-service-consumer
       JAVA_OPTS: -javaagent:/skywalking/agent/skywalking-agent.jar=logging.output=CONSOLE,agent.instance_name=consumer1
@@ -86,6 +122,7 @@ services:
       - 11800
     environment:
       SATELLITE_GRPC_CLIENT: oap:11800
+      SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS: 1
     networks:
       - e2e
     healthcheck:

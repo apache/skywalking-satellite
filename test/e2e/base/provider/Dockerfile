@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG AGENT_TAG=902b6c540bd0e027c28f6fb8834d88a66a62143a-es6
+ARG AGENT_TAG=9a05ad4b423a380c8da711e2a2b856ee93bc9422-es6
 ARG SW_VERSION=8.6.0
 
 FROM maven:3.8.1-jdk-8 as builder
@@ -30,5 +30,9 @@ VOLUME /services
 COPY --from=builder /provider_code/target/e2e-service-provider.jar /services/
 
 ENV JAVA_OPTS=""
+
+RUN echo 'plugin.toolkit.log.grpc.reporter.server_host=${SW_GRPC_LOG_SERVER_HOST:satellite}' >> /skywalking/agent/config/agent.config
+RUN echo 'plugin.toolkit.log.grpc.reporter.server_port=${SW_GRPC_LOG_SERVER_PORT:11800}' >> /skywalking/agent/config/agent.config
+RUN echo 'collector.get_profile_task_interval=${SW_COLLECTOR_GET_PROFILE_TASK_INTERVAL:1}' >> /skywalking/agent/config/agent.config
 
 CMD ["sh", "-c", "java $JAVA_OPTS -jar /services/e2e-service-provider.jar"]

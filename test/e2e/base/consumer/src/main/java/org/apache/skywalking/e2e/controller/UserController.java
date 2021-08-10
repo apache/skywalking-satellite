@@ -61,11 +61,11 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public Object createAuthor(@RequestBody final User user) throws InterruptedException {
+    public Object createAuthor() throws InterruptedException {
         Thread.sleep(randomSleepLong(sleepMin, sleepMax));
 
         return Stream.of(Strings.nullToEmpty(configuration.getProviderBaseUrl()).split(","))
-                     .map(baseUrl -> restTemplate.postForEntity(baseUrl + "/users", user, User.class))
+                     .map(baseUrl -> restTemplate.postForEntity(baseUrl + "/users", null, User.class))
                      .collect(Collectors.toList());
     }
 

@@ -13,7 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG AGENT_TAG=902b6c540bd0e027c28f6fb8834d88a66a62143a-es6
+ARG AGENT_TAG=9a05ad4b423a380c8da711e2a2b856ee93bc9422-es6
 ARG SW_VERSION=8.6.0
 
 FROM maven:3.8.1-jdk-8 as builder

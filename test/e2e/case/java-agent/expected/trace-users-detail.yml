@@ -17,39 +17,17 @@ spans:
   {{- range .spans}}
   - traceid: {{ notEmpty .traceid }}
     segmentid: {{ notEmpty .segmentid }}
-    spanid: {{ .spanid }}
-    parentspanid: {{ .parentspanid }}
-    refs:
-      {{- if eq .servicecode "e2e-service-provider" }}
-      {{- range .refs }}
-        - traceid: {{ notEmpty .traceid }}
-          parentsegmentid: {{ notEmpty .parentsegmentid }}
-          parentspanid: 1
-          type: CROSS_PROCESS
-      {{- end }}
-      {{- end }}
-      {{- if eq .servicecode "e2e-service-consumer" }}
-        []
-      {{- end }}
+    spanid: 0
+    parentspanid: -1
+    refs: []
     servicecode: {{ notEmpty .servicecode }}
     serviceinstancename: {{ notEmpty .serviceinstancename }}
     starttime: {{ gt .starttime 0 }}
     endtime: {{ gt .endtime 0 }}
-    endpointname: /info
-    type: {{ notEmpty .type }}
-    peer:
-    {{- if eq .type "Exit" }}
-      provider:9090
-    {{ else }}
-      ""
-    {{- end }}
-    component:
-    {{- if eq .type "Exit" }}
-      SpringRestTemplate
-    {{- end }}
-    {{- if eq .type "Entry" }}
-      Tomcat
-    {{- end }}
+    endpointname: /users
+    type: Entry
+    peer: ""
+    component: Tomcat
     iserror: false
     layer: Http
     tags:
