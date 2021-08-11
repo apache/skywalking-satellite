@@ -24,8 +24,8 @@ setup:
       command: |
         if ! type "yq" > /dev/null; then
           mkdir -p /tmp/skywalking-infra-e2e/bin && cd /tmp/skywalking-infra-e2e
-          mkdir yq && cd yq
-          wget -O yq.tar.gz https://github.com/mikefarah/yq/archive/v4.11.1.tar.gz
+          mkdir -p yq && cd yq
+          curl -kLo yq.tar.gz https://github.com/mikefarah/yq/archive/v4.11.1.tar.gz
           tar -zxf yq.tar.gz --strip=1
           go install && go build -ldflags -s && mv yq ../bin/yq
           export PATH="$PATH:/tmp/skywalking-infra-e2e/bin"
@@ -35,7 +35,7 @@ setup:
       command: |
         if ! type "etcdctl" > /dev/null; then
           mkdir -p /tmp/skywalking-infra-e2e/bin && cd /tmp/skywalking-infra-e2e
-          mkdir etcdctl && cd etcdctl
+          mkdir -p etcdctl && cd etcdctl
           utype=$(uname | awk '{print tolower($0)}')
           suffix=
           if [ $utype = "darwin" ]
@@ -44,7 +44,7 @@ setup:
           else
               suffix="tar.gz"
           fi
-          wget -O etcdctl.$suffix https://github.com/coreos/etcd/releases/download/v3.5.0/etcd-v3.5.0-$utype-amd64.$suffix
+          curl -kLo etcdctl.$suffix https://github.com/coreos/etcd/releases/download/v3.5.0/etcd-v3.5.0-$utype-amd64.$suffix
           tar -zxf etcdctl.$suffix --strip=1
           cp etcdctl ../bin/
           export PATH="$PATH:/tmp/skywalking-infra-e2e/bin"
