@@ -19,6 +19,7 @@ package gatherer
 
 import (
 	"context"
+	"errors"
 	"sync"
 	"time"
 
@@ -26,6 +27,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
+	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
 	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
@@ -45,9 +47,17 @@ type FetcherGatherer struct {
 	// metrics
 	fetchCounter       *telemetry.Counter
 	queueOutputCounter *telemetry.Counter
+
+	// sync invoker
+	processor processor.Processor
 }
 
 func (f *FetcherGatherer) Prepare() error {
+	log.Logger.WithField("pipe", f.config.PipeName).Info("fetcher gatherer module is preparing...")
+	if err := f.runningQueue.Initialize(); err != nil {
+		log.Logger.WithField("pipe", f.config.PipeName).Infof("the %s queue failed when initializing", f.runningQueue.Name())
+		return err
+	}
 	f.fetchCounter = telemetry.NewCounter("gatherer_fetch_count", "Total number of the receiving count in the Gatherer.", "pipe", "status")
 	f.queueOutputCounter = telemetry.NewCounter("queue_output_count", "Total number of the output count in the Queue of Gatherer.", "pipe", "status")
 	return nil
@@ -118,6 +128,10 @@ func (f *FetcherGatherer) Ack(lastOffset event.Offset) {
 	f.runningQueue.Ack(lastOffset)
 }
 
-func (f *FetcherGatherer) SetProcessor(_ module.Module) error {
-	return nil
+func (f *FetcherGatherer) SetProcessor(m module.Module) error {
+	if p, ok := m.(processor.Processor); ok {
+		f.processor = p
+		return nil
+	}
+	return errors.New("set processor only supports to inject processor module")
 }
