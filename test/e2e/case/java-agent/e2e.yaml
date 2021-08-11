@@ -66,7 +66,7 @@ verify:
   # verify with retry strategy
   retry:
     # max retry count
-    count: 10
+    count: 20
     # the interval between two retries, in millisecond.
     interval: 10000
   cases:
@@ -135,9 +135,11 @@ verify:
 
     # native CDS: using etcdctl to update trace span limit, "/users" should have more than one span because it need DB save
     - query: |
-        etcdctl --endpoints "http://127.0.0.1:{etcd_2379}/" put /skywalking/configuration-discovery.default.agentConfigurations 'configurations:
-         e2e-service-provider:
-           agent.span_limit_per_segment: 1' > /dev/null;
+        etcdctl --endpoints http://127.0.0.1:${etcd_2379}/ put /skywalking/configuration-discovery.default.agentConfigurations 'configurations:
+               e2e-service-provider:
+                 agent.span_limit_per_segment: 1' | yq e '{"message": .}' -
+      expected: expected/etcd-put.yml
+    - query: |
         sleep 5;
         curl -X POST http://127.0.0.1:${provider_9090}/users > /dev/null;
         sleep 5;
