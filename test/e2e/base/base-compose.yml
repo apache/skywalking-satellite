@@ -19,7 +19,7 @@ services:
 
   etcd:
     hostname: etcd
-    image: gcr.io/etcd-development/etcd:v3.5.0
+    image: quay.io/coreos/etcd:v3.5.0
     ports:
       - 2379
     networks:
@@ -46,7 +46,6 @@ services:
       - 11800
       - 12800
       - 10051
-      - 5005
     networks:
       - e2e
     restart: on-failure
@@ -62,8 +61,6 @@ services:
       SW_CONFIGURATION: etcd
       SW_CONFIG_ETCD_PERIOD: 1
       SW_CONFIG_ETCD_ENDPOINTS: http://etcd:2379
-      JAVA_OPTS: >-
-        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
     healthcheck:
       test: ["CMD", "sh", "-c", "nc -zn 127.0.0.1 11800"]
       interval: 5s
@@ -87,7 +84,6 @@ services:
       SW_AGENT_NAME: e2e-service-provider
       JAVA_OPTS: >-
         -javaagent:/skywalking/agent/skywalking-agent.jar=logging.output=CONSOLE,agent.instance_name=provider1
-        -agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005
     healthcheck:
       test: [ "CMD", "sh", "-c", "nc -zn 127.0.0.1 9090"]
       interval: 5s
