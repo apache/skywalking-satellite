@@ -34,5 +34,6 @@ ENV JAVA_OPTS=""
 RUN echo 'plugin.toolkit.log.grpc.reporter.server_host=${SW_GRPC_LOG_SERVER_HOST:satellite}' >> /skywalking/agent/config/agent.config
 RUN echo 'plugin.toolkit.log.grpc.reporter.server_port=${SW_GRPC_LOG_SERVER_PORT:11800}' >> /skywalking/agent/config/agent.config
 RUN echo 'collector.get_profile_task_interval=${SW_COLLECTOR_GET_PROFILE_TASK_INTERVAL:1}' >> /skywalking/agent/config/agent.config
+RUN echo 'collector.get_agent_dynamic_config_interval=${SW_GET_AGENT_DYNAMIC_CONFIG_INTERVAL:1}' >> /skywalking/agent/config/agent.config
 
 CMD ["sh", "-c", "java $JAVA_OPTS -jar /services/e2e-service-provider.jar"]
