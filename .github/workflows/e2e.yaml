@@ -22,7 +22,7 @@ on:
       - main
 
 jobs:
-  JavaAgentE2E:
+  NativeProtocolsE2E:
     name: Native Management/JVM/Tracing/Meter/Event/Log/Profile/CDS
     runs-on: ubuntu-latest
     steps:
