@@ -23,7 +23,7 @@ on:
 
 jobs:
   JavaAgentE2E:
-    name: Native Protocols(Management/JVM/Tracing/Meter/Event/Log/Profile/CDS)
+    name: Native Management/JVM/Tracing/Meter/Event/Log/Profile/CDS
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
