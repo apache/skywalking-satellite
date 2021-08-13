@@ -31,4 +31,7 @@ COPY --from=builder /consumer_code/target/e2e-service-consumer.jar /services/
 
 ENV JAVA_OPTS=""
 
+RUN echo 'agent.instance_name=${SW_INSTANCE_NAME:consumer}' >> /skywalking/agent/config/agent.config
+RUN echo 'logging.output=${SW_LOGGING_OUTPUT:CONSOLE}' >> /skywalking/agent/config/agent.config
+
 CMD ["sh", "-c", "java $JAVA_OPTS -jar /services/e2e-service-consumer.jar"]

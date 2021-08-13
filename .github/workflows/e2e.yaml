@@ -26,14 +26,9 @@ jobs:
     name: Native Management/JVM/Tracing/Meter/Event/Log/Profile/CDS
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.16
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.16
-        id: go
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - uses: apache/skywalking-infra-e2e@main
+      - uses: apache/skywalking-infra-e2e@de5be41596f27867a15ab75dbad97ea538d863b8
         with:
           e2e-file: test/e2e/case/native-protocols/e2e.yaml
