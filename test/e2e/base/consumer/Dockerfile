@@ -21,7 +21,7 @@ FROM maven:3.8.1-jdk-8 as builder
 ADD . /consumer_code
 
 WORKDIR /consumer_code
-RUN mvn clean package -Dsw.version=8.6.0
+RUN mvn clean package -B -Dsw.version=8.6.0
 
 FROM ghcr.io/apache/skywalking/agent:${AGENT_TAG}
 

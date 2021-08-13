@@ -35,7 +35,7 @@ services:
       ETCD_NAME: s1
       ETCD_DATA_DIR: /etcd-data
     healthcheck:
-      test: ["CMD", "sh", "-c", "/tmp/etcd-check.sh" ]
+      test: ["CMD", "sh", "-c", "etcdctl endpoint health" ]
       interval: 5s
       timeout: 60s
       retries: 120
