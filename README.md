@@ -9,7 +9,7 @@ Apache SkyWalking Satellite
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=for-the-badge&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
 
 # Documentation
-- [Official documentation](https://skywalking.apache.org/docs/)
+- [Official documentation](https://skywalking.apache.org/docs/#SkyWalkingSatellite)
 - [Blog](https://skywalking.apache.org/blog/2020-11-25-skywalking-satellite-0.1.0-design/) about the design of Satellite 0.1.0.
 
 NOTICE, SkyWalking Satellite uses [v3 protocols](https://github.com/apache/skywalking/blob/master/docs/en/protocols/README.md). They are incompatible with previous SkyWalking releases before SkyWalking 8.0.
