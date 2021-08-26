@@ -348,6 +348,7 @@ func isUsefulLabel(mType textparse.MetricType, labelKey string) bool {
 	switch labelKey {
 	case model.MetricNameLabel:
 	case model.InstanceLabel:
+		return false
 	case model.SchemeLabel:
 	case model.MetricsPathLabel:
 	case model.JobLabel:
