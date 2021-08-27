@@ -348,9 +348,11 @@ func isUsefulLabel(mType textparse.MetricType, labelKey string) bool {
 	switch labelKey {
 	case model.MetricNameLabel:
 	case model.InstanceLabel:
+		return false // instance name already in metadata
 	case model.SchemeLabel:
 	case model.MetricsPathLabel:
 	case model.JobLabel:
+		return false // service name already in metadata
 	case model.BucketLabel: // histogram le
 		return mType != textparse.MetricTypeHistogram
 	case model.QuantileLabel: // summary quantile
