@@ -3,8 +3,6 @@ First and most important thing is, SkyWalking Satellite startup behaviours are d
 
 ## Requirements and default settings
 
-Requirement: **>= Go 1.14 are tested**. Other versions are not tested and may or may not work.
-
 Before you start, you should know that the main purpose of quickstart is to help you obtain a basic configuration for previews/demo. Performance and long-term running are not our goals.
 
 You can use `bin/startup.sh` (or cmd) to start up the satellite with their [default settings](../../../configs/satellite_config.yaml), set out as follows:
