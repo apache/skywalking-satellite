@@ -18,7 +18,6 @@ catalog:
     - name: Welcome
       path: /readme
     - name: Concepts and Designs
-      path: /en/concepts-and-designs/readme
       catalog:
         - name: What is SkyWalking Satellite?
           catalog:
@@ -37,7 +36,6 @@ catalog:
             - name: The design of the memory mapped queue
               path: /en/concepts-and-designs/mmap-queue
     - name: Setup
-      path: /en/setup/readme
       catalog:
         - name: Configuration
           catalog:
@@ -49,6 +47,12 @@ catalog:
               path: /en/setup/configuration/pipe-plugins
             - name: Override Configuration
               path: /en/setup/configuration/override-settings
+        - name: Examples
+          catalog:
+            - name: Transmit protocol from agent
+              path: /en/setup/examples/transmit-protocol-from-agent/readme
+            - name: Transmit log to kafka
+              path: /en/setup/examples/transmit-log-to-kafka/readme
         - name: Plugins
           catalog:
             - name: client
@@ -124,7 +128,6 @@ catalog:
                 - name: prometheus-server
                   path: /en/setup/plugins/server_prometheus-server
     - name: Guides
-      path: /en/guides/readme
       catalog:
         - name: Contribution
           catalog:

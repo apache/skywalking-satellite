@@ -30,6 +30,8 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	frowarder_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativelog"
 	http_server "github.com/apache/skywalking-satellite/plugins/server/http"
 
 	logging "skywalking.apache.org/repo/goapi/collect/logging/v3"
@@ -126,4 +128,10 @@ func (r *Receiver) httpHandler() http.Handler {
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {
 	return r.OutputChannel
+}
+
+func (r *Receiver) SupportForwarders() []forwarder.Forwarder {
+	return []forwarder.Forwarder{
+		new(frowarder_nativelog.Forwarder),
+	}
 }

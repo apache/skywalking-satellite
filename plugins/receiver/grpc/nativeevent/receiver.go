@@ -20,6 +20,8 @@ package nativeevent
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	forwarder_nativeevent "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeevent"
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 
 	nativeevent "skywalking.apache.org/repo/goapi/collect/event/v3"
@@ -58,4 +60,10 @@ func (r *Receiver) RegisterSyncInvoker(_ module.SyncInvoker) {
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {
 	return r.OutputChannel
+}
+
+func (r *Receiver) SupportForwarders() []forwarder.Forwarder {
+	return []forwarder.Forwarder{
+		new(forwarder_nativeevent.Forwarder),
+	}
 }
