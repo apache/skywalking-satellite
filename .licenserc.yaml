@@ -22,9 +22,6 @@ header:
     spdx-id: Apache-2.0
     copyright-owner: Apache Software Foundation
 
-  paths: # `paths` are the path list that will be checked (and fixed) by license-eye, default is ['**'].
-    - '**'
-
   paths-ignore:
     - '**/gen-codes/**'
     - '**/*.md'
