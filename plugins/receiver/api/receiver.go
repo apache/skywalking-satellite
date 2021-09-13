@@ -24,6 +24,7 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
 // Receiver is a plugin interface, that defines new collectors.
@@ -38,6 +39,9 @@ type Receiver interface {
 
 	// Channel would be put a data when the receiver receives an APM data.
 	Channel() <-chan *v1.SniffData
+
+	// SupportForwarders should provider all forwarder support current receiver
+	SupportForwarders() []forwarder.Forwarder
 }
 
 // Get an initialized receiver plugin.

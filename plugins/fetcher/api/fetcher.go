@@ -24,6 +24,7 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
 // Fetcher is a plugin interface, that defines new fetchers.
@@ -37,6 +38,8 @@ type Fetcher interface {
 	Channel() <-chan *v1.SniffData
 	// Shutdown shutdown the fetcher
 	Shutdown(context.Context) error
+	// SupportForwarders should provider all forwarder support current receiver
+	SupportForwarders() []forwarder.Forwarder
 }
 
 // Get an initialized fetcher plugin.
