@@ -20,6 +20,8 @@ package nativeprofile
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	frowarder_nativeprofile "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeprofile"
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 
 	v3 "skywalking.apache.org/repo/goapi/collect/language/profile/v3"
@@ -59,4 +61,10 @@ func (r *Receiver) RegisterSyncInvoker(invoker module.SyncInvoker) {
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {
 	return r.OutputChannel
+}
+
+func (r *Receiver) SupportForwarders() []forwarder.Forwarder {
+	return []forwarder.Forwarder{
+		new(frowarder_nativeprofile.Forwarder),
+	}
 }

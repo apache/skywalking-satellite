@@ -25,6 +25,10 @@ import (
 	"sort"
 	"strings"
 
+	fetcher_api "github.com/apache/skywalking-satellite/plugins/fetcher/api"
+	forwarder_api "github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	receiver_api "github.com/apache/skywalking-satellite/plugins/receiver/api"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins"
@@ -135,9 +139,27 @@ func generatePluginDoc(docDir string, category reflect.Type, pluginName string) 
 	doc := topLevel + category.Name() + "/" + pluginName + lf
 	doc += secondLevel + "Description" + lf
 	doc += p.Description() + lf
+	doc += generateSupportForwarders(category, p)
 	doc += secondLevel + "DefaultConfig" + lf
 	doc += yamlQuoteStart + p.DefaultConfig() + yamlQuoteEnd + lf
 	return writeDoc([]byte(doc), docFileName)
+}
+
+func generateSupportForwarders(category reflect.Type, p plugin.Plugin) string {
+	var forwarders []forwarder_api.Forwarder
+	if category.Name() == "Receiver" {
+		forwarders = p.(receiver_api.Receiver).SupportForwarders()
+	} else if category.Name() == "Fetcher" {
+		forwarders = p.(fetcher_api.Fetcher).SupportForwarders()
+	}
+	if len(forwarders) == 0 {
+		return ""
+	}
+	result := secondLevel + "Support Forwarders" + lf
+	for _, forwarder := range forwarders {
+		result += " - [" + forwarder.Name() + "](" + getPluginDocFileName(reflect.TypeOf(forwarder).Elem(), forwarder.Name()) + ")" + lf
+	}
+	return result
 }
 
 func getPluginsByCategory(category reflect.Type) []string {

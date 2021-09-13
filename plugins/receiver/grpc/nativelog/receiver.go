@@ -23,6 +23,8 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	forwarder_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativelog"
 	grpcreceiver "github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 )
 
@@ -58,4 +60,10 @@ func (r *Receiver) RegisterSyncInvoker(_ module.SyncInvoker) {
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {
 	return r.OutputChannel
+}
+
+func (r *Receiver) SupportForwarders() []forwarder.Forwarder {
+	return []forwarder.Forwarder{
+		new(forwarder_nativelog.Forwarder),
+	}
 }

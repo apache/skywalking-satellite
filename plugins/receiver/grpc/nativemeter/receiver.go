@@ -15,11 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package nativeevent
+package nativemeter
 
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	forwarder_nativemeter "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativemeter"
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 
 	meter "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
@@ -58,4 +60,10 @@ func (r *Receiver) RegisterSyncInvoker(_ module.SyncInvoker) {
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {
 	return r.OutputChannel
+}
+
+func (r *Receiver) SupportForwarders() []forwarder.Forwarder {
+	return []forwarder.Forwarder{
+		new(forwarder_nativemeter.Forwarder),
+	}
 }

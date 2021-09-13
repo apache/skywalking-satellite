@@ -24,6 +24,8 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativemeter"
 
 	promConfig "github.com/prometheus/prometheus/config"
 	"github.com/prometheus/prometheus/discovery"
@@ -194,4 +196,10 @@ func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, output
 			log.Logger.Errorf("scrape failed, error: %s", err.Error())
 		}
 	}()
+}
+
+func (f *Fetcher) SupportForwarders() []forwarder.Forwarder {
+	return []forwarder.Forwarder{
+		new(nativemeter.Forwarder),
+	}
 }

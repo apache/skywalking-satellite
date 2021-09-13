@@ -20,6 +20,8 @@ package nativecds
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	frowarder_nativecds "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativecds"
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 
 	v3 "skywalking.apache.org/repo/goapi/collect/agent/configuration/v3"
@@ -59,4 +61,10 @@ func (r *Receiver) RegisterSyncInvoker(invoker module.SyncInvoker) {
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {
 	return r.OutputChannel
+}
+
+func (r *Receiver) SupportForwarders() []forwarder.Forwarder {
+	return []forwarder.Forwarder{
+		new(frowarder_nativecds.Forwarder),
+	}
 }

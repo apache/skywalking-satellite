@@ -20,6 +20,8 @@ package nativemanagement
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	forwarder_nativemanagement "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativemanagement"
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 
 	v3 "skywalking.apache.org/repo/goapi/collect/management/v3"
@@ -58,4 +60,10 @@ func (r *Receiver) RegisterSyncInvoker(_ module.SyncInvoker) {
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {
 	return r.OutputChannel
+}
+
+func (r *Receiver) SupportForwarders() []forwarder.Forwarder {
+	return []forwarder.Forwarder{
+		new(forwarder_nativemanagement.Forwarder),
+	}
 }
