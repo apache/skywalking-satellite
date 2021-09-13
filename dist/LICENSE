@@ -350,8 +350,8 @@ The text of each license is the standard Apache 2.0 license.
     k8s.io-utils v0.0.0 https://k8s.io/utils Apache-2.0
     sigs.k8s.io-structured-merge-diff-v4 v4.0.1 https://sigs.k8s.io/structured-merge-diff/v4 Apache-2.0
     skywalking.apache.org-repo-goapi v0.0.0 https://skywalking.apache.org/repo/goapi Apache-2.0
-    github.com/apache/arrow/go/arrow github.com/apache/arrow/go/arrow Apache-2.0
-    github.com/circonus-labs/circonusllhist github.com/circonus-labs/circonusllhist Apache-2.0
+    github.com-apache-arrow-go-arrow github.com/apache/arrow/go/arrow Apache-2.0
+    github.com-circonus-labs-circonusllhist github.com/circonus-labs/circonusllhist Apache-2.0
 
 ========================================================================
 BSD licenses
