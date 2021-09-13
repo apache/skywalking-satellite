@@ -25,13 +25,20 @@ header:
   paths-ignore:
     - '**/gen-codes/**'
     - '**/*.md'
-    - .gitignore
-    - .gitmodules
-    - .gitattributes
-    - LICENSE
-    - NOTICE
-    - go.mod
-    - go.sum
-    - plugins/queue/mmap/queue_operation.go
+    - 'dist'
+    - 'licenses'
+    - '**/go.mod'
+    - '**/go.sum'
+    - 'LICENSE'
+    - 'NOTICE'
+    - '.gitignore'
+    - '.gitmodules'
+    - '.gitattributes'
+    # Copy from https://github.com/grandecola/bigqueue, listed in the LICENSE file
+    - 'plugins/queue/mmap/queue_operation.go'
 
   comment: on-failure
+
+dependency:
+  files:
+    - go.mod
