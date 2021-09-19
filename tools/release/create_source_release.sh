@@ -66,6 +66,7 @@ tar -zcvf ${PRODUCT_NAME}-src.tgz \
 	--exclude .gitignore \
 	--exclude .gitmodules \
 	--exclude .gitattributes \
+	--exclude dist \
 	--exclude ${PRODUCT_NAME}-src.tgz \
 	${PRODUCT_NAME}
 
