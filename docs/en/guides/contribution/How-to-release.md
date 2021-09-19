@@ -22,21 +22,21 @@ This documentation guides the release manager to release the SkyWalking Satellit
 ```shell
 export VERSION=<the version to release>
 git clone git@github.com:apache/skywalking-satellite && cd skywalking-satellite
-git tag -a "$VERSION" -m "Release Apache SkyWalking-Satellite $VERSION"
+git tag -a "v$VERSION" -m "Release Apache SkyWalking-Satellite v$VERSION"
 git push --tags
 make release
 ```
 
-**In total, six files should be automatically generated in the directory**: `skywalking-satellite-${VERSION}-bin.tgz`, `skywalking-satellite-${VERSION}-src.tgz`, and their corresponding `asc`, `sha512` files.
+**In total, six files should be automatically generated in the directory**: `apache-skywalking-satellite-${VERSION}-bin.tgz`, `apache-skywalking-satellite-${VERSION}-src.tgz`, and their corresponding `asc`, `sha512` files.
 
 ## Upload to Apache svn
 
 ```bash
 svn co https://dist.apache.org/repos/dist/dev/skywalking/
 mkdir -p skywalking/satellite/"$VERSION"
-cp skywalking-satellite/skywalking*.tgz skywalking/satellite/"$VERSION"
-cp skywalking-satellite/skywalking*.tgz.asc skywalking/satellite/"$VERSION"
-cp skywalking-satellite/skywalking-satellite*.tgz.sha512 skywalking/satellite/"$VERSION"
+cp skywalking-satellite/apache-skywalking*.tgz skywalking/satellite/"$VERSION"
+cp skywalking-satellite/apache-skywalking*.tgz.asc skywalking/satellite/"$VERSION"
+cp skywalking-satellite/apache-skywalking-satellite*.tgz.sha512 skywalking/satellite/"$VERSION"
 
 cd skywalking/satellite && svn add "$VERSION" && svn commit -m "Draft Apache SkyWalking-Satellite release $VERSION"
 ```
@@ -80,7 +80,7 @@ Keys to verify the Release Candidate :
 
 Guide to build the release from source :
 
- * https://github.com/apache/skywalking-satellite/blob/$VERSION/docs/en/guides/contribuation/How-to-release.md
+ * https://github.com/apache/skywalking-satellite/blob/v$VERSION/docs/en/guides/contribution/How-to-release.md
 
 A vote regarding the quality of this test build will be initiated
 within the next couple of days.
@@ -192,6 +192,12 @@ Vote result should follow these:
 1. Refer to the previous [PR](https://github.com/apache/skywalking-website/pull/212), update the event and download links on the website.
 
 1. Update [Github release page](https://github.com/apache/skywalking-satellite/releases), follow the previous convention.
+
+1. Push docker image to the [Docker Hub](https://hub.docker.com/r/apache/skywalking-satellite), make sure you have the write permission for push image.
+
+   ```shell
+   make docker && make docker.push
+   ```
 
 1. Send ANNOUNCE email to `dev@skywalking.apache.org` and `announce@apache.org`, the sender should use his/her Apache email account, **please check all links before sending the email**.
 
