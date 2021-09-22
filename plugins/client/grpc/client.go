@@ -28,14 +28,16 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/plugins/client/api"
+	"github.com/apache/skywalking-satellite/plugins/client/grpc/resolvers"
 )
 
 const Name = "grpc-client"
 
 type Client struct {
 	config.CommonFields
+	// server finder config
+	ServerFinderConfig resolvers.ServerFinderConfig `mapstructure:",squash"`
 	// config
-	ServerAddr         string `mapstructure:"server_addr"`          // The gRPC server address
 	EnableTLS          bool   `mapstructure:"enable_TLS"`           // Enable TLS connect to server
 	ClientPemPath      string `mapstructure:"client_pem_path"`      // The file path of client.pem. The config only works when opening the TLS switch.
 	ClientKeyPath      string `mapstructure:"client_key_path"`      // The file path of client.key. The config only works when opening the TLS switch.
@@ -62,7 +64,7 @@ func (c *Client) Description() string {
 
 func (c *Client) DefaultConfig() string {
 	return `
-# The gRPC server address (default localhost:11800). 
+# The gRPC server address (default localhost:11800), multiple addresses are split by ",".
 server_addr: localhost:11800
 
 # The TLS switch (default false).
@@ -100,8 +102,15 @@ func (c *Client) Prepare() error {
 		"client_name": Name,
 	})})
 
+	// server address resolver
+	resolvers.RegisterAllGrpcResolvers()
+
 	// connect to server
-	client, err := grpc.Dial(c.ServerAddr, *cfg...)
+	target, err := resolvers.BuildTarget(&c.ServerFinderConfig)
+	if err != nil {
+		return fmt.Errorf("cannot build grpc target: %v", err)
+	}
+	client, err := grpc.Dial(target, *cfg...)
 	if err != nil {
 		return fmt.Errorf("cannot connect to grpc server: %v", err)
 	}

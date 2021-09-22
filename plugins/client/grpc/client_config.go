@@ -73,6 +73,9 @@ func (c *Client) loadConfig() (*[]grpc.DialOption, error) {
 		return err
 	})
 
+	// using round-robin load balancer
+	options = append(options, grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`))
+
 	return &options, nil
 }
 
