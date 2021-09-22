@@ -3,7 +3,7 @@
 The gRPC client is a sharing plugin to keep connection with the gRPC server and delivery the data to it.
 ## DefaultConfig
 ```yaml
-# The gRPC server address (default localhost:11800). 
+# The gRPC server address (default localhost:11800), multiple addresses are split by ",".
 server_addr: localhost:11800
 
 # The TLS switch (default false).
