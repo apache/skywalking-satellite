@@ -53,6 +53,8 @@ catalog:
               path: /en/setup/examples/transmit-protocol-from-agent/readme
             - name: Transmit log to kafka
               path: /en/setup/examples/transmit-log-to-kafka/readme
+            - name: GRPC load balance client
+              path: /en/setup/examples/grpc-load-balance-client/readme
         - name: Plugins
           catalog:
             - name: client
