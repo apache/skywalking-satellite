@@ -44,7 +44,7 @@ type Client struct {
 	CaPemPath          string `mapstructure:"ca_pem_path"`          // The file path oca.pem. The config only works when opening the TLS switch.
 	InsecureSkipVerify bool   `mapstructure:"insecure_skip_verify"` // Controls whether a client verifies the server's certificate chain and host name.
 	Authentication     string `mapstructure:"authentication"`       // The auth value when send request
-	CheckPeriod        int    `mapstructure:"check_period"`         // How frequently to check the connection
+	CheckPeriod        int    `mapstructure:"check_period"`         // How frequently to check the connection(second)
 
 	// components
 	status    api.ClientStatus
@@ -85,7 +85,7 @@ insecure_skip_verify: true
 # The auth value when send request
 authentication: ""
 
-# How frequently to check the connection
+# How frequently to check the connection(second)
 check_period: 5
 `
 }

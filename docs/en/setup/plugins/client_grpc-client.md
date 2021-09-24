@@ -24,6 +24,6 @@ insecure_skip_verify: true
 # The auth value when send request
 authentication: ""
 
-# How frequently to check the connection
+# How frequently to check the connection(second)
 check_period: 5
 ```

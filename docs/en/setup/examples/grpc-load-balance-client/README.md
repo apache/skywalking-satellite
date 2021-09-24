@@ -1,6 +1,6 @@
 # GRPC load balance client
 
-GRPC client support connect to multiple server address, and using round-robin to load-balance server before send each request.
+GRPC client support connect to multiple server address, and use `round-robin` policy for load-balance server before send each request.
 
 ## Server Discovery
 
@@ -28,7 +28,7 @@ sharing:
       insecure_skip_verify: ${SATELLITE_GRPC_INSECURE_SKIP_VERIFY:false}
       # The file path oca.pem. The config only works when opening the TLS switch.
       ca_pem_path: ${SATELLITE_grpc_CA_PEM_PATH:"ca.pem"}
-      # How frequently to check the connection
+      # How frequently to check the connection(second)
       check_period: ${SATELLITE_GRPC_CHECK_PERIOD:5}
       # The auth value when send request
       authentication: ${SATELLITE_GRPC_AUTHENTICATION:""}
@@ -72,7 +72,7 @@ sharing:
       insecure_skip_verify: ${SATELLITE_GRPC_INSECURE_SKIP_VERIFY:false}
       # The file path oca.pem. The config only works when opening the TLS switch.
       ca_pem_path: ${SATELLITE_grpc_CA_PEM_PATH:"ca.pem"}
-      # How frequently to check the connection
+      # How frequently to check the connection(second)
       check_period: ${SATELLITE_GRPC_CHECK_PERIOD:5}
       # The auth value when send request
       authentication: ${SATELLITE_GRPC_AUTHENTICATION:""}
