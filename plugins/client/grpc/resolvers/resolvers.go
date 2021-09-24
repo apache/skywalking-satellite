@@ -26,10 +26,12 @@ import (
 // all customized resolvers
 var rs = []GrpcResolver{
 	&staticServerResolver{},
+	&kubernetesServerResolver{},
 }
 
 type ServerFinderConfig struct {
-	ServerAddr string `mapstructure:"server_addr"` // The gRPC server address
+	ServerAddr       string            `mapstructure:"server_addr"`       // The gRPC server address
+	KubernetesConfig *KubernetesConfig `mapstructure:"kubernetes_config"` // The kubernetes config to lookup addresses
 }
 
 type GrpcResolver interface {
