@@ -32,7 +32,7 @@ type staticServerResolver struct {
 }
 
 func (s *staticServerResolver) IsSupport(c *ServerFinderConfig) bool {
-	return c.ServerAddr != ""
+	return c.KubernetesConfig == nil && c.ServerAddr != ""
 }
 
 func (s *staticServerResolver) BuildTarget(c *ServerFinderConfig) (string, error) {

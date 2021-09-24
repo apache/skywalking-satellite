@@ -21,6 +21,7 @@ You can quickly build your satellite according to the following examples:
 
 1. [Transmit protocol from agent](examples/transmit-protocol-from-agent/README.md)
 2. [Transmit Log to Kafka](examples/transmit-log-to-kafka/README.md)
+3. [GRPC load balance client](examples/grpc-load-balance-client/README.md)
 
 ## satellite_config.yaml
 The core concept behind this setting file is, SkyWalking Satellite is based on pure modularization design. End user can switch or assemble the collector features by their own requirements.
