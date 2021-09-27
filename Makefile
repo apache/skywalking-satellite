@@ -16,6 +16,7 @@
 #
 
 VERSION ?= latest
+HUB ?= apache
 OUT_DIR = bin
 BINARY = skywalking-satellite
 
@@ -90,11 +91,11 @@ check: clean
 
 .PHONY: docker
 docker:
-	docker build --build-arg VERSION=$(VERSION) -t apache/skywalking-satellite:v$(VERSION) --no-cache . -f docker/Dockerfile
+	docker build --build-arg VERSION=$(VERSION) -t $(HUB)/skywalking-satellite:v$(VERSION) --no-cache . -f docker/Dockerfile
 
 .PHONY: docker.push
 docker.push:
-	docker push apache/skywalking-satellite:v$(VERSION)
+	docker push $(HUB)/skywalking-satellite:v$(VERSION)
 
 .PHONY: release
 release:
