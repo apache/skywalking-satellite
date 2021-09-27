@@ -22,7 +22,6 @@ on:
       - master
 
 env:
-  SKIP_TEST: true
   HUB: ghcr.io/apache/skywalking-satellite
 
 jobs:
