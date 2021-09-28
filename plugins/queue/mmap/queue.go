@@ -15,6 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
+//go:build !windows
 // +build !windows
 
 package mmap
@@ -53,7 +54,6 @@ const (
 // Queue is a memory mapped queue to store the input data.
 type Queue struct {
 	config.CommonFields
-	// config
 	SegmentSize           int   `mapstructure:"segment_size"`            // The size of each segment. The unit is byte.
 	MaxInMemSegments      int32 `mapstructure:"max_in_mem_segments"`     // The max num of segments in memory.
 	QueueCapacitySegments int   `mapstructure:"queue_capacity_segments"` // The capacity of Queue = segment_size * queue_capacity_segments.

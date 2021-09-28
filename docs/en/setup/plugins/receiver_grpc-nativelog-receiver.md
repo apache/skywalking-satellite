@@ -5,3 +5,7 @@ This is a receiver for SkyWalking native logging format, which is defined at htt
  - [nativelog-grpc-forwarder](forwarder_nativelog-grpc-forwarder.md)
 ## DefaultConfig
 ```yaml```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+

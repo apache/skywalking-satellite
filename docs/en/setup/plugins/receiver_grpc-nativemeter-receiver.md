@@ -5,3 +5,7 @@ This is a receiver for SkyWalking native meter format, which is defined at https
  - [nativemeter-grpc-forwarder](forwarder_nativemeter-grpc-forwarder.md)
 ## DefaultConfig
 ```yaml```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+

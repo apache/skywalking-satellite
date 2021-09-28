@@ -33,7 +33,6 @@ const Name = "kafka-client"
 
 type Client struct {
 	config.CommonFields
-	// config
 	Brokers            string `mapstructure:"brokers"`              // The Kafka broker addresses (default `localhost:9092`).
 	Version            string `mapstructure:"version"`              // The version should follow this pattern, which is `major.minor.veryMinor.patch`.
 	EnableTLS          bool   `mapstructure:"enable_TLS"`           // The TLS switch (default false).

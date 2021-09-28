@@ -5,3 +5,7 @@ This is a receiver for SkyWalking native profile format, which is defined at htt
  - [nativeprofile-grpc-forwarder](forwarder_nativeprofile-grpc-forwarder.md)
 ## DefaultConfig
 ```yaml```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+

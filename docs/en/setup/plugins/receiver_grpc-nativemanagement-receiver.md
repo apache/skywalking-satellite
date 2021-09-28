@@ -5,3 +5,7 @@ This is a receiver for SkyWalking native management format, which is defined at 
  - [nativemanagement-grpc-forwarder](forwarder_nativemanagement-grpc-forwarder.md)
 ## DefaultConfig
 ```yaml```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+

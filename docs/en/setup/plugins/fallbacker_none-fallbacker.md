@@ -3,3 +3,7 @@
 The fallbacker would do nothing when facing failure data.
 ## DefaultConfig
 ```yaml```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+

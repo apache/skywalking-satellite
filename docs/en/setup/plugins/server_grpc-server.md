@@ -16,3 +16,13 @@ tls_cert_file: ""
 # The TLS key file path.
 tls_key_file: ""
 ```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+| address | string | The address of grpc server. |
+| network | string | The network of grpc. |
+| max_recv_msg_size | int | The max size of the received log. |
+| max_concurrent_streams | uint32 | The max concurrent stream channels. |
+| tls_cert_file | string | The TLS cert file path. |
+| tls_key_file | string | The TLS key file path. |
+
