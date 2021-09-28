@@ -34,3 +34,8 @@ scrape_configs:
     - role: pod
       label: "app=prometheus"
 ```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+| scrape_configs | []*prometheus.scrapeConfig | config is the top level configuratScrapeConfigsMapion of prometheus |
+

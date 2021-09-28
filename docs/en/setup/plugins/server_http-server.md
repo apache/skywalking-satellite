@@ -6,3 +6,8 @@ This is a sharing plugin, which would start a http server.
 # The http server address.
 address: ":12800"
 ```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+| address | string |  |
+

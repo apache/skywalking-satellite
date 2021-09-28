@@ -19,19 +19,24 @@ package tools
 
 import (
 	"fmt"
+	"go/ast"
+	"go/doc"
+	"go/parser"
+	"go/token"
 	"io/ioutil"
 	"os"
 	"reflect"
 	"sort"
 	"strings"
 
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/plugins"
 	fetcher_api "github.com/apache/skywalking-satellite/plugins/fetcher/api"
 	forwarder_api "github.com/apache/skywalking-satellite/plugins/forwarder/api"
 	receiver_api "github.com/apache/skywalking-satellite/plugins/receiver/api"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins"
+	"golang.org/x/mod/modfile"
 )
 
 const (
@@ -41,6 +46,8 @@ const (
 	yamlQuoteStart = "```yaml"
 	yamlQuoteEnd   = "```"
 	markdownSuffix = ".md"
+
+	commentPrefix = "/ "
 )
 
 func GeneratePluginDoc(outputRootPath, menuFilePath, pluginFilePath string) error {
@@ -119,30 +126,184 @@ func updateMenuPluginListDoc(outputRootPath, menuFilePath, pluginFilePath string
 
 func generatePluginListDoc(docDir string, categories []reflect.Type) error {
 	fileName := docDir + "/" + "plugin-list" + markdownSuffix
-	doc := topLevel + "Plugin List" + lf
+	docStr := topLevel + "Plugin List" + lf
 	for _, category := range categories {
-		doc += "- " + category.Name() + lf
+		docStr += "- " + category.Name() + lf
 		pluginList := getPluginsByCategory(category)
 		for _, pluginName := range pluginList {
-			doc += "	- [" + pluginName + "](./" + getPluginDocFileName(category, pluginName) + ")" + lf
+			docStr += "	- [" + pluginName + "](./" + getPluginDocFileName(category, pluginName) + ")" + lf
 			if err := generatePluginDoc(docDir, category, pluginName); err != nil {
 				return err
 			}
 		}
 	}
-	return writeDoc([]byte(doc), fileName)
+	return writeDoc([]byte(docStr), fileName)
 }
 
 func generatePluginDoc(docDir string, category reflect.Type, pluginName string) error {
 	docFileName := docDir + "/" + getPluginDocFileName(category, pluginName)
 	p := plugin.Get(category, plugin.Config{plugin.NameField: pluginName})
-	doc := topLevel + category.Name() + "/" + pluginName + lf
-	doc += secondLevel + "Description" + lf
-	doc += p.Description() + lf
-	doc += generateSupportForwarders(category, p)
-	doc += secondLevel + "DefaultConfig" + lf
-	doc += yamlQuoteStart + p.DefaultConfig() + yamlQuoteEnd + lf
-	return writeDoc([]byte(doc), docFileName)
+	docRes := topLevel + category.Name() + "/" + pluginName + lf
+	docRes += secondLevel + "Description" + lf
+	docRes += p.Description() + lf
+	docRes += generateSupportForwarders(category, p)
+	docRes += secondLevel + "DefaultConfig" + lf
+	docRes += yamlQuoteStart + p.DefaultConfig() + yamlQuoteEnd + lf
+	docRes += secondLevel + "Configuration" + lf
+	docRes += generateConfiguration(category, p) + lf
+	return writeDoc([]byte(docRes), docFileName)
+}
+
+func GetModuleName() string {
+	goModBytes, err := ioutil.ReadFile("go.mod")
+	if err != nil {
+		return ""
+	}
+
+	modName := modfile.ModulePath(goModBytes)
+	return modName
+}
+
+func generateConfiguration(category reflect.Type, p plugin.Plugin) string {
+	var content = ""
+
+	content += "|Name|Type|Description|" + lf
+	content += "|----|----|-----------|" + lf
+
+	configurations := getConfigurations(category, reflect.TypeOf(p).Elem())
+	eachConfigurationItem(configurations, "", func(name, dataType, desc string) {
+		content += fmt.Sprintf("| %s | %s | %s |%s", name, dataType, desc, lf)
+	})
+
+	return content
+}
+
+func eachConfigurationItem(items []*pluginConfigurationItem, parentName string, consumer func(name, dataType, desc string)) {
+	for _, conf := range items {
+		consumer(parentName+conf.name, conf.dataType, conf.description)
+		eachConfigurationItem(conf.children, parentName+conf.name+".", consumer)
+	}
+}
+
+type pluginConfigurationItem struct {
+	name        string
+	description string
+	dataType    string
+	children    []*pluginConfigurationItem
+}
+
+type pluginChildrenFinder struct {
+	childType reflect.Type
+	squash    bool
+}
+
+func getConfigurations(category, p reflect.Type) []*pluginConfigurationItem {
+	pluginDir := strings.TrimPrefix(p.PkgPath(), GetModuleName())
+	fset := token.NewFileSet()
+
+	d, err := parser.ParseDir(fset, "."+pluginDir, nil, parser.ParseComments)
+	if err != nil {
+		log.Logger.Warnf("failed to generate plugin [%s] configuration, error: %v", category.Name()+"/"+p.Name(), err)
+		return make([]*pluginConfigurationItem, 0)
+	}
+
+	result := make([]*pluginConfigurationItem, 0)
+	for _, f := range d {
+		pack := doc.New(f, "./", 0)
+		for _, t := range pack.Types {
+			if t.Name != p.Name() {
+				continue
+			}
+
+			for _, spec := range t.Decl.Specs {
+				typeSpec, ok := spec.(*ast.TypeSpec)
+				if !ok {
+					continue
+				}
+				structType, ok := typeSpec.Type.(*ast.StructType)
+				if !ok {
+					continue
+				}
+
+				for _, field := range structType.Fields.List {
+					item, childFinder := parsePluginConfigurationItem(field, p)
+					if childFinder != nil {
+						configurations := getConfigurations(category, childFinder.childType)
+						if childFinder.squash {
+							result = append(result, configurations...)
+						} else if item != nil {
+							item.children = configurations
+						}
+					}
+					if item != nil {
+						result = append(result, item)
+					}
+				}
+			}
+		}
+	}
+	return result
+}
+
+// parse field to configuration item
+func parsePluginConfigurationItem(field *ast.Field, pType reflect.Type) (*pluginConfigurationItem, *pluginChildrenFinder) {
+	if field.Names == nil || field.Tag == nil {
+		return nil, nil
+	}
+
+	var fieldName = ""
+	for _, n := range field.Names {
+		fieldName += n.Name
+	}
+
+	pluginField, find := pType.FieldByName(fieldName)
+	if !find {
+		return nil, nil
+	}
+	mapStructureValue := pluginField.Tag.Get("mapstructure")
+	var confName string
+	var childrenFinder *pluginChildrenFinder
+	if index := strings.Index(mapStructureValue, ","); index != -1 {
+		if strings.Contains(mapStructureValue[index+1:], "squash") {
+			if pluginField.Type.Kind() == reflect.Struct {
+				return nil, &pluginChildrenFinder{childType: pluginField.Type, squash: true}
+			}
+			log.Logger.Warnf("Could not identity plugin field: %v", pluginField)
+			return nil, nil
+		}
+		confName = mapStructureValue[:index]
+	} else if len(mapStructureValue) > 0 {
+		confName = mapStructureValue
+	} else {
+		confName = fieldName
+	}
+
+	var dataType = pluginField.Type.String()
+	switch pluginField.Type.Kind() {
+	case reflect.Struct:
+	case reflect.Ptr:
+		if pluginField.Type.Elem().PkgPath() != "" {
+			childrenFinder = &pluginChildrenFinder{childType: pluginField.Type.Elem()}
+		}
+	}
+
+	return &pluginConfigurationItem{
+		name:        confName,
+		dataType:    dataType,
+		description: buildPluginDescription(field),
+	}, childrenFinder
+}
+
+func buildPluginDescription(field *ast.Field) string {
+	var comments = ""
+	for _, group := range []*ast.CommentGroup{field.Doc, field.Comment} {
+		if group != nil {
+			for _, comment := range group.List {
+				comments += strings.TrimLeft(comment.Text, commentPrefix)
+			}
+		}
+	}
+	return comments
 }
 
 func generateSupportForwarders(category reflect.Type, p plugin.Plugin) string {
@@ -176,8 +337,8 @@ func getPluginDocFileName(category reflect.Type, pluginName string) string {
 	return strings.ToLower(category.Name() + "_" + pluginName + markdownSuffix)
 }
 
-func writeDoc(doc []byte, docFileName string) error {
-	if err := ioutil.WriteFile(docFileName, doc, os.ModePerm); err != nil {
+func writeDoc(docBytes []byte, docFileName string) error {
+	if err := ioutil.WriteFile(docFileName, docBytes, os.ModePerm); err != nil {
 		return fmt.Errorf("cannot init the plugin doc: %v", err)
 	}
 	return nil

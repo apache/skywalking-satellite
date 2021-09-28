@@ -6,3 +6,8 @@ This is a memory queue to buffer the input event.
 # The maximum buffer event size.
 event_buffer_size: 5000
 ```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+| event_buffer_size | int | configThe maximum buffer event size. |
+

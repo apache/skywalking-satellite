@@ -5,3 +5,7 @@ This is a receiver for SkyWalking native jvm format, which is defined at https:/
  - [nativejvm-grpc-forwarder](forwarder_nativejvm-grpc-forwarder.md)
 ## DefaultConfig
 ```yaml```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+

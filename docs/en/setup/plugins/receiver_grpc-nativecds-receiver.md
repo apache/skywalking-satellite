@@ -5,3 +5,7 @@ This is a receiver for SkyWalking native Configuration Discovery Service format,
  - [nativecds-grpc-forwarder](forwarder_nativecds-grpc-forwarder.md)
 ## DefaultConfig
 ```yaml```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+

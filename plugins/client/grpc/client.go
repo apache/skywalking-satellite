@@ -37,7 +37,7 @@ type Client struct {
 	config.CommonFields
 	// server finder config
 	ServerFinderConfig resolvers.ServerFinderConfig `mapstructure:",squash"`
-	// config
+
 	EnableTLS          bool   `mapstructure:"enable_TLS"`           // Enable TLS connect to server
 	ClientPemPath      string `mapstructure:"client_pem_path"`      // The file path of client.pem. The config only works when opening the TLS switch.
 	ClientKeyPath      string `mapstructure:"client_key_path"`      // The file path of client.key. The config only works when opening the TLS switch.

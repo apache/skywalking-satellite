@@ -16,3 +16,13 @@ flush_ceiling_num: 10000
 # The max size of the input event. Default value is 20k.
 max_event_size: 20480
 ```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+| segment_size | int | The size of each segment. The unit is byte. |
+| max_in_mem_segments | int32 | The max num of segments in memory. |
+| queue_capacity_segments | int | The capacity of Queue = segment_size * queue_capacity_segments. |
+| flush_period | int | The period flush time. The unit is ms. |
+| flush_ceiling_num | int | The max number in one flush time. |
+| max_event_size | int | The max size of the input event. |
+

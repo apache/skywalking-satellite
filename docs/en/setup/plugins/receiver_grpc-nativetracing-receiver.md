@@ -5,3 +5,7 @@ This is a receiver for SkyWalking native tracing format, which is defined at htt
  - [nativetracing-grpc-forwarder](forwarder_nativetracing-grpc-forwarder.md)
 ## DefaultConfig
 ```yaml```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+

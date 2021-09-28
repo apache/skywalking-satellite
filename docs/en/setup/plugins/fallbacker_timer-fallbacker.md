@@ -12,3 +12,10 @@ exponential_backoff: 2000
 # with exponential increasing larger than it.(Time unit is millisecond.)
 max_backoff: 5000
 ```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+| max_attempts | int |  |
+| exponential_backoff | int |  |
+| max_backoff | int |  |
+

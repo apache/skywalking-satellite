@@ -10,3 +10,9 @@ uri: "/logging"
 # The request timeout seconds.
 timeout: 5
 ```
+## Configuration
+|Name|Type|Description|
+|----|----|-----------|
+| uri | string | config |
+| timeout | int |  |
+
