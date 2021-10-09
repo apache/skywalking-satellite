@@ -38,9 +38,7 @@ setup:
           mkdir -p swctl && cd swctl
           curl -kLo skywalking-cli.tar.gz https://github.com/apache/skywalking-cli/archive/76f9f848b3142d14c6ab6fa7910d408b92bced64.tar.gz
           tar -zxf skywalking-cli.tar.gz --strip=1
-          utype=$(uname | awk '{print tolower($0)}')
-          make $utype && mv bin/swctl-*-$utype-amd64 ../bin/swctl
-          export PATH="$PATH:/tmp/skywalking-infra-e2e/bin"
+          make install DESTDIR=/usr/local/bin
           echo "success to install swctl"
         fi
 
