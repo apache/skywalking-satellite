@@ -36,7 +36,7 @@ setup:
         if ! command -v swctl &> /dev/null; then
           mkdir -p /tmp/skywalking-infra-e2e/bin && cd /tmp/skywalking-infra-e2e
           mkdir -p swctl && cd swctl
-          curl -kLo skywalking-cli.tar.gz https://github.com/apache/skywalking-cli/archive/4d1cb83e24ff58988f4aba0daa50259593b11670.tar.gz
+          curl -kLo skywalking-cli.tar.gz https://github.com/apache/skywalking-cli/archive/76f9f848b3142d14c6ab6fa7910d408b92bced64.tar.gz
           tar -zxf skywalking-cli.tar.gz --strip=1
           utype=$(uname | awk '{print tolower($0)}')
           make $utype && mv bin/swctl-*-$utype-amd64 ../bin/swctl
