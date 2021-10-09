@@ -42,7 +42,7 @@ func (m *AlsService) StreamAccessLogs(stream v3.AccessLogService_StreamAccessLog
 		if err != nil {
 			return err
 		}
-		// only first item has service and service instance property
+		// only first item has identifier property
 		// need correlate information to each item
 		if item.Identifier != nil {
 			identifier = item.Identifier
