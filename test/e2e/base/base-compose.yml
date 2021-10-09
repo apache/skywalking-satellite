@@ -35,7 +35,6 @@ services:
       SW_METER_ANALYZER_ACTIVE_FILES: spring-sleuth
       SW_CLUSTER_ETCD_ENDPOINTS: http://etcd:2379
       SW_SCLUSTER_ETCD_ERVICE_NAME: s1
-      SW_CONFIGURATION: etcd
       SW_CONFIG_ETCD_PERIOD: 1
       SW_CONFIG_ETCD_ENDPOINTS: http://etcd:2379
     healthcheck:

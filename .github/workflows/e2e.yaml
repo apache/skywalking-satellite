@@ -32,3 +32,18 @@ jobs:
       - uses: apache/skywalking-infra-e2e@7d55a252c35bf69f65dc64675a80699dc3c21bde
         with:
           e2e-file: test/e2e/case/native-protocols/e2e.yaml
+  EnvoyE2E:
+    name: Envoy ALS
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        envoy_version: [ 'v1.19.0', 'v1.16.2' ]
+    env:
+      ENVOY_VERSION: ${{ matrix.envoy_version }}
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - uses: apache/skywalking-infra-e2e@7d55a252c35bf69f65dc64675a80699dc3c21bde
+        with:
+          e2e-file: test/e2e/case/envoy/e2e.yaml

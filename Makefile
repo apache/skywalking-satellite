@@ -39,7 +39,8 @@ GO_GET = $(GO) get
 GO_TEST = $(GO) test
 GO_LINT = $(GO_PATH)/bin/golangci-lint
 GO_BUILD_FLAGS = -v
-GO_BUILD_LDFLAGS = -X main.version=$(VERSION) -w -s
+GO_BUILD_LDFLAGS = -X main.version=$(VERSION) -X google.golang.org/protobuf/reflect/protoregistry.conflictPolicy=ignore -w -s
+GO_TEST_LDFLAGS = -X google.golang.org/protobuf/reflect/protoregistry.conflictPolicy=warn
 GQL_GEN = $(GO_PATH)/bin/gqlgen
 
 PLATFORMS := linux darwin windows
@@ -67,7 +68,7 @@ lint: tools
 
 .PHONY: test
 test: clean
-	$(GO_TEST) ./... -coverprofile=coverage.txt -covermode=atomic
+	$(GO_TEST) -ldflags "$(GO_TEST_LDFLAGS)" ./... -coverprofile=coverage.txt -covermode=atomic
 
 .PHONY: verify
 verify: clean lint test
