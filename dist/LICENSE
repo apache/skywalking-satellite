@@ -331,7 +331,7 @@ The text of each license is the standard Apache 2.0 license.
     go.opencensus.io v0.20.1 https://go.opencensus.io Apache-2.0
     google.golang.org-appengine v1.1.0 https://google.golang.org/appengine Apache-2.0
     google.golang.org-genproto v0.0.0 https://google.golang.org/genproto Apache-2.0
-    google.golang.org-grpc v1.17.0 https://google.golang.org/grpc Apache-2.0
+    google.golang.org-grpc v1.40.0 https://google.golang.org/grpc Apache-2.0
     gopkg.in-ini.v1 v1.51.0 https://gopkg.in/ini.v1 Apache-2.0
     gopkg.in-jcmturner-aescts.v1 v1.0.1 https://gopkg.in/jcmturner/aescts.v1 Apache-2.0
     gopkg.in-jcmturner-dnsutils.v1 v1.0.1 https://gopkg.in/jcmturner/dnsutils.v1 Apache-2.0
@@ -376,7 +376,7 @@ The text of each license is also included at licenses/license-[project].txt.
     github.com-go-gl-glfw-v3.3-glfw v0.0.0 https://github.com/go-gl/glfw/v3.3/glfw BSD-3-Clause
     github.com-golang-protobuf v1.2.0 https://github.com/golang/protobuf BSD-3-Clause
     github.com-golang-snappy v0.0.0 https://github.com/golang/snappy BSD-3-Clause
-    github.com-google-go-cmp v0.2.0 https://github.com/google/go-cmp BSD-3-Clause
+    github.com-google-go-cmp v0.5.6 https://github.com/google/go-cmp BSD-3-Clause
     github.com-google-go-querystring v1.0.0 https://github.com/google/go-querystring BSD-3-Clause
     github.com-google-uuid v1.0.0 https://github.com/google/uuid BSD-3-Clause
     github.com-googleapis-gax-go-v2 v2.0.4 https://github.com/googleapis/gax-go/v2 BSD-3-Clause
@@ -427,7 +427,7 @@ The text of each license is also included at licenses/license-[project].txt.
     golang.org-x-tools v0.0.0 https://golang.org/x/tools BSD-3-Clause
     golang.org-x-xerrors v0.0.0 https://golang.org/x/xerrors BSD-3-Clause
     google.golang.org-api v0.3.1 https://google.golang.org/api BSD-3-Clause
-    google.golang.org-protobuf v0.0.0 https://google.golang.org/protobuf BSD-3-Clause
+    google.golang.org-protobuf v1.27.1 https://google.golang.org/protobuf BSD-3-Clause
     gopkg.in-cheggaaa-pb.v1 v1.0.25 https://gopkg.in/cheggaaa/pb.v1 BSD-3-Clause
     gopkg.in-errgo.v2 v2.1.0 https://gopkg.in/errgo.v2 BSD-3-Clause
     gopkg.in-fsnotify.v1 v1.4.7 https://gopkg.in/fsnotify.v1 BSD-3-Clause
