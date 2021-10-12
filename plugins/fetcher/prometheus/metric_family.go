@@ -171,45 +171,51 @@ func getBoundary(metricType textparse.MetricType, lbs labels.Labels) (float64, e
 	return strconv.ParseFloat(v, 64)
 }
 
+func (mf *metricFamily) convertSummaryToSingleValue(mg *metricGroup) []*v3.MeterData {
+	result := make([]*v3.MeterData, 0)
+	if mg.hasCount || mg.hasSum {
+		if mg.hasCount {
+			msv := &v3.MeterSingleValue{
+				Name:   mg.name + metricsSuffixCount,
+				Labels: mf.convertLabels(mg),
+				Value:  mg.count,
+			}
+			result = append(result, &v3.MeterData{
+				Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
+				Timestamp: mg.ts,
+			})
+		}
+		if mg.hasSum {
+			msv := &v3.MeterSingleValue{
+				Name:   mg.name + metricsSuffixSum,
+				Labels: mf.convertLabels(mg),
+				Value:  mg.sum,
+			}
+			result = append(result, &v3.MeterData{
+				Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
+				Timestamp: mg.ts,
+			})
+		}
+	} else {
+		msv := &v3.MeterSingleValue{
+			Name:   mg.name,
+			Labels: mf.convertLabels(mg),
+			Value:  mg.value,
+		}
+		result = append(result, &v3.MeterData{
+			Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
+			Timestamp: mg.ts,
+		})
+	}
+	return result
+}
+
 func (mf *metricFamily) ToMetric() []*v3.MeterData {
 	result := make([]*v3.MeterData, 0)
 	switch mf.mtype {
 	case textparse.MetricTypeSummary:
 		for _, mg := range mf.getGroups() {
-			if mg.hasCount || mg.hasSum {
-				if mg.hasCount {
-					msv := &v3.MeterSingleValue{
-						Name:   mg.name + metricsSuffixCount,
-						Labels: mf.convertLabels(mg),
-						Value:  mg.count,
-					}
-					result = append(result, &v3.MeterData{
-						Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
-						Timestamp: mg.ts,
-					})
-				}
-				if mg.hasSum {
-					msv := &v3.MeterSingleValue{
-						Name:   mg.name + metricsSuffixSum,
-						Labels: mf.convertLabels(mg),
-						Value:  mg.sum,
-					}
-					result = append(result, &v3.MeterData{
-						Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
-						Timestamp: mg.ts,
-					})
-				}
-			} else {
-				msv := &v3.MeterSingleValue{
-					Name:   mg.name,
-					Labels: mf.convertLabels(mg),
-					Value:  mg.value,
-				}
-				result = append(result, &v3.MeterData{
-					Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
-					Timestamp: mg.ts,
-				})
-			}
+			result = mf.convertSummaryToSingleValue(mg)
 		}
 	case textparse.MetricTypeHistogram:
 		for _, mg := range mf.getGroups() {
