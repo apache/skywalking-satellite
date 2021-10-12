@@ -118,11 +118,11 @@ func (mf *metricFamily) Add(metricName string, ls labels.Labels, t int64, v floa
 		if strings.HasSuffix(metricName, metricsSuffixCount) {
 			mg.hasCount = true
 			mg.count = v
-			mg.name = metricName
+			mg.name = strings.ReplaceAll(metricName, metricsSuffixCount, "")
 		} else if strings.HasSuffix(metricName, metricsSuffixSum) {
 			mg.hasSum = true
 			mg.sum = v
-			mg.name = metricName
+			mg.name = strings.ReplaceAll(metricName, metricsSuffixSum, "")
 		} else if strings.HasSuffix(metricName, metricsSuffixBucket) {
 			boundary, err := getBoundary(mf.mtype, ls)
 			if err != nil {
@@ -135,11 +135,11 @@ func (mf *metricFamily) Add(metricName string, ls labels.Labels, t int64, v floa
 		if strings.HasSuffix(metricName, metricsSuffixCount) {
 			mg.hasCount = true
 			mg.count = v
-			mg.name = metricName
+			mg.name = strings.ReplaceAll(metricName, metricsSuffixCount, "")
 		} else if strings.HasSuffix(metricName, metricsSuffixSum) {
 			mg.hasSum = true
 			mg.sum = v
-			mg.name = metricName
+			mg.name = strings.ReplaceAll(metricName, metricsSuffixSum, "")
 		} else {
 			mg.value = v
 			mg.name = metricName
@@ -171,44 +171,51 @@ func getBoundary(metricType textparse.MetricType, lbs labels.Labels) (float64, e
 	return strconv.ParseFloat(v, 64)
 }
 
-func (mf *metricFamily) toMeterSingleValue(mg *metricGroup) *v3.MeterSingleValue {
-	if mg.hasCount {
-		return &v3.MeterSingleValue{
-			Name:   mg.name,
-			Labels: mf.convertLabels(mg),
-			Value:  mg.count,
-		}
-	}
-	if mg.hasSum {
-		return &v3.MeterSingleValue{
-			Name:   mg.name,
-			Labels: mf.convertLabels(mg),
-			Value:  mg.sum,
-		}
-	}
-	return &v3.MeterSingleValue{
-		Name:   mg.name,
-		Labels: mf.convertLabels(mg),
-		Value:  mg.value,
-	}
-}
-
 func (mf *metricFamily) ToMetric() []*v3.MeterData {
 	result := make([]*v3.MeterData, 0)
 	switch mf.mtype {
 	case textparse.MetricTypeSummary:
 		for _, mg := range mf.getGroups() {
-			msv := mf.toMeterSingleValue(mg)
-			result = append(result, &v3.MeterData{
-				Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
-				Timestamp: mg.ts,
-			})
+			if mg.hasCount || mg.hasSum {
+				if mg.hasCount {
+					msv := &v3.MeterSingleValue{
+						Name:   mg.name + metricsSuffixCount,
+						Labels: mf.convertLabels(mg),
+						Value:  mg.count,
+					}
+					result = append(result, &v3.MeterData{
+						Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
+						Timestamp: mg.ts,
+					})
+				}
+				if mg.hasSum {
+					msv := &v3.MeterSingleValue{
+						Name:   mg.name + metricsSuffixSum,
+						Labels: mf.convertLabels(mg),
+						Value:  mg.sum,
+					}
+					result = append(result, &v3.MeterData{
+						Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
+						Timestamp: mg.ts,
+					})
+				}
+			} else {
+				msv := &v3.MeterSingleValue{
+					Name:   mg.name,
+					Labels: mf.convertLabels(mg),
+					Value:  mg.value,
+				}
+				result = append(result, &v3.MeterData{
+					Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
+					Timestamp: mg.ts,
+				})
+			}
 		}
 	case textparse.MetricTypeHistogram:
 		for _, mg := range mf.getGroups() {
 			if mg.hasCount {
 				msv := &v3.MeterSingleValue{
-					Name:   mg.name,
+					Name:   mg.name + metricsSuffixCount,
 					Labels: mf.convertLabels(mg),
 					Value:  mg.count,
 				}
@@ -216,11 +223,10 @@ func (mf *metricFamily) ToMetric() []*v3.MeterData {
 					Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
 					Timestamp: mg.ts,
 				})
-				continue
 			}
 			if mg.hasSum {
 				msv := &v3.MeterSingleValue{
-					Name:   mg.name,
+					Name:   mg.name + metricsSuffixSum,
 					Labels: mf.convertLabels(mg),
 					Value:  mg.sum,
 				}
@@ -228,7 +234,6 @@ func (mf *metricFamily) ToMetric() []*v3.MeterData {
 					Metric:    &v3.MeterData_SingleValue{SingleValue: msv},
 					Timestamp: mg.ts,
 				})
-				continue
 			}
 
 			bucketMap := make(map[float64]float64)
@@ -286,6 +291,9 @@ func (mf *metricFamily) ToMetric() []*v3.MeterData {
 func (mf *metricFamily) convertLabels(mg *metricGroup) []*v3.Label {
 	result := make([]*v3.Label, 0)
 	for k, v := range mg.ls.Map() {
+		if !isUsefulLabel(mf.mtype, k) {
+			continue
+		}
 		label := &v3.Label{
 			Name:  k,
 			Value: v,
