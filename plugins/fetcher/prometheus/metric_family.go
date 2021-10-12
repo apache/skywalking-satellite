@@ -215,7 +215,7 @@ func (mf *metricFamily) ToMetric() []*v3.MeterData {
 	switch mf.mtype {
 	case textparse.MetricTypeSummary:
 		for _, mg := range mf.getGroups() {
-			result = mf.convertSummaryToSingleValue(mg)
+			result = append(result, mf.convertSummaryToSingleValue(mg)...)
 		}
 	case textparse.MetricTypeHistogram:
 		for _, mg := range mf.getGroups() {
