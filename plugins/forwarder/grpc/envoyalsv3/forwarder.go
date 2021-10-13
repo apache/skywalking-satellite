@@ -33,7 +33,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
-const Name = "envoyals-v3-grpc-forwarder"
+const Name = "envoy-als-v3-grpc-forwarder"
 
 type Forwarder struct {
 	config.CommonFields

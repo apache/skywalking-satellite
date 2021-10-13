@@ -28,7 +28,7 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-const Name = "grpc-envoyals-v3-receiver"
+const Name = "grpc-envoy-als-v3-receiver"
 
 type Receiver struct {
 	config.CommonFields

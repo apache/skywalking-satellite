@@ -25,7 +25,7 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-const eventName = "grpc-envoyals-v3-event"
+const eventName = "grpc-envoy-als-v3-event"
 
 type AlsService struct {
 	receiveChannel chan *v1.SniffData
