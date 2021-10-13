@@ -255,7 +255,7 @@ The text of each license is the standard Apache 2.0 license.
     github.com-eapache-go-resiliency v1.1.0 https://github.com/eapache/go-resiliency MIT
     github.com-eapache-go-xerial-snappy v0.0.0 https://github.com/eapache/go-xerial-snappy MIT
     github.com-eapache-queue v1.1.0 https://github.com/eapache/queue MIT
-    github.com-envoyproxy-go-control-plane v0.6.9 https://github.com/envoyproxy/go-control-plane Apache-2.0
+    github.com-envoyproxy-go-control-plane v0.9.9 https://github.com/envoyproxy/go-control-plane Apache-2.0
     github.com-envoyproxy-protoc-gen-validate v0.1.0 https://github.com/envoyproxy/protoc-gen-validate Apache-2.0
     github.com-go-logr-logr v0.1.0 https://github.com/go-logr/logr Apache-2.0
     github.com-go-openapi-analysis v0.0.0 https://github.com/go-openapi/analysis Apache-2.0
@@ -325,6 +325,7 @@ The text of each license is the standard Apache 2.0 license.
     github.com-uber-jaeger-client-go v2.25.0 https://github.com/uber/jaeger-client-go Apache-2.0
     github.com-uber-jaeger-lib v2.4.0 https://github.com/uber/jaeger-lib Apache-2.0
     github.com-xdg-scram v0.0.0 https://github.com/xdg/scram Apache-2.0
+    github.com-xds-cds-go v0.0.0 https://github.com/cncf/xds/go Apache-2.0
     github.com-xdg-stringprep v0.0.0 https://github.com/xdg/stringprep Apache-2.0
     go.etcd.io-etcd v0.0.0 https://go.etcd.io/etcd Apache-2.0
     go.mongodb.org-mongo-driver v1.0.3 https://go.mongodb.org/mongo-driver Apache-2.0
@@ -384,7 +385,7 @@ The text of each license is also included at licenses/license-[project].txt.
     github.com-gorilla-context v1.1.1 https://github.com/gorilla/context BSD-3-Clause
     github.com-gorilla-mux v1.6.2 https://github.com/gorilla/mux BSD-3-Clause
     github.com-gorilla-websocket v0.0.0 https://github.com/gorilla/websocket BSD-2-Clause
-    github.com-grpc-ecosystem-grpc-gateway v1.9.0 https://github.com/grpc-ecosystem/grpc-gateway BSD-3-Clause
+    github.com-grpc-ecosystem-grpc-gateway v1.16.0 https://github.com/grpc-ecosystem/grpc-gateway BSD-3-Clause
     github.com-hashicorp-go-msgpack v0.5.3 https://github.com/hashicorp/go-msgpack BSD-3-Clause
     github.com-hashicorp-go.net v0.0.1 https://github.com/hashicorp/go.net BSD-3-Clause
     github.com-ianlancetaylor-demangle v0.0.0 https://github.com/ianlancetaylor/demangle BSD-3-Clause
@@ -422,9 +423,9 @@ The text of each license is also included at licenses/license-[project].txt.
     golang.org-x-sync v0.0.0 https://golang.org/x/sync BSD-3-Clause
     golang.org-x-sys v0.0.0 https://golang.org/x/sys BSD-3-Clause
     golang.org-x-term v0.0.0 https://golang.org/x/term BSD-3-Clause
-    golang.org-x-text v0.0.0 https://golang.org/x/text BSD-3-Clause
+    golang.org-x-text v0.3.6 https://golang.org/x/text BSD-3-Clause
     golang.org-x-time v0.0.0 https://golang.org/x/time BSD-3-Clause
-    golang.org-x-tools v0.0.0 https://golang.org/x/tools BSD-3-Clause
+    golang.org-x-tools v0.1.6 https://golang.org/x/tools BSD-3-Clause
     golang.org-x-xerrors v0.0.0 https://golang.org/x/xerrors BSD-3-Clause
     google.golang.org-api v0.3.1 https://google.golang.org/api BSD-3-Clause
     google.golang.org-protobuf v1.27.1 https://google.golang.org/protobuf BSD-3-Clause
@@ -616,7 +617,7 @@ The text of each license is also included at licenses/license-[project].txt.
     github.com-vektah-gqlparser v1.1.2 https://github.com/vektah/gqlparser MIT
     github.com-xiang90-probing v0.0.0 https://github.com/xiang90/probing MIT
     github.com-xlab-treeprint v0.0.0 https://github.com/xlab/treeprint MIT
-    github.com-yuin-goldmark v1.1.25 https://github.com/yuin/goldmark MIT
+    github.com-yuin-goldmark v1.4.0 https://github.com/yuin/goldmark MIT
     go.etcd.io-bbolt v1.3.2 https://go.etcd.io/bbolt MIT
     go.uber.org-atomic v1.3.2 https://go.uber.org/atomic MIT
     go.uber.org-automaxprocs v1.4.0 https://go.uber.org/automaxprocs MIT
