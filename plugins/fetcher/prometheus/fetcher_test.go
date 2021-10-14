@@ -240,13 +240,13 @@ var (
 	bucketValues = map[string][][]*v3.MeterBucketValue{
 		"http_request_duration_seconds": {
 			{
-				&v3.MeterBucketValue{Bucket: float64(math.MinInt64), Count: int64(1000)},
+				&v3.MeterBucketValue{Bucket: math.Inf(-1), Count: int64(1000)},
 				&v3.MeterBucketValue{Bucket: float64(0.05), Count: int64(1500)},
 				&v3.MeterBucketValue{Bucket: float64(0.5), Count: int64(2000)},
 				&v3.MeterBucketValue{Bucket: float64(1), Count: int64(2500)},
 			},
 			{
-				&v3.MeterBucketValue{Bucket: float64(math.MinInt64), Count: int64(1100)},
+				&v3.MeterBucketValue{Bucket: math.Inf(-1), Count: int64(1100)},
 				&v3.MeterBucketValue{Bucket: float64(0.05), Count: int64(1600)},
 				&v3.MeterBucketValue{Bucket: float64(0.5), Count: int64(2100)},
 				&v3.MeterBucketValue{Bucket: float64(1), Count: int64(2600)},

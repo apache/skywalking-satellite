@@ -249,11 +249,12 @@ func (mf *metricFamily) ToMetric() []*v3.MeterData {
 			sort.Slice(mg.complexValue, func(i, j int) bool {
 				return mg.complexValue[i].boundary < mg.complexValue[j].boundary
 			})
+
 			mbs := make([]*v3.MeterBucketValue, 0)
 			for index, m := range mg.complexValue {
 				if index == 0 {
 					mbv := &v3.MeterBucketValue{
-						Bucket: float64(math.MinInt64),
+						Bucket: math.Inf(-1),
 						Count:  int64(m.value),
 					}
 					mbs = append(mbs, mbv)
