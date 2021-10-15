@@ -6,7 +6,6 @@ require (
 	github.com/Azure/go-autorest/autorest v0.11.18 // indirect
 	github.com/Shopify/sarama v1.27.2
 	github.com/enriquebris/goconcurrentqueue v0.6.0
-	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/google/go-cmp v0.5.6
 	github.com/gophercloud/gophercloud v0.17.0 // indirect
 	github.com/grandecola/mmap v0.6.0
