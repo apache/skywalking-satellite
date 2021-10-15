@@ -17,42 +17,18 @@ version: '2.1'
 
 services:
 
-  etcd:
-    hostname: etcd
-    image: quay.io/coreos/etcd:v3.5.0
-    ports:
-      - 2379
-    networks:
-      - e2e
-    environment:
-      ETCD_LISTEN_CLIENT_URLS: http://0.0.0.0:2379
-      ETCD_ADVERTISE_CLIENT_URLS: http://0.0.0.0:2379
-      ETCD_LISTEN_PEER_URLS: http://0.0.0.0:2380
-      ETCD_INITIAL_ADVERTISE_PEER_URLS: http://0.0.0.0:2380
-      ETCD_INITIAL_CLUSTER: s1=http://0.0.0.0:2380
-      ETCD_NAME: s1
-      ETCD_DATA_DIR: /etcd-data
-    healthcheck:
-      test: ["CMD", "sh", "-c", "etcdctl endpoint health" ]
-      interval: 5s
-      timeout: 60s
-      retries: 120
-
   oap:
     extends:
       file: ../../base/base-compose.yml
       service: oap
     environment:
-      SW_LOG_LAL_FILES: test
-      SW_CLUSTER: etcd
-      SW_CONFIGURATION: etcd
+      SW_CONFIGURATION: none
+      SW_LOG_LAL_FILES: envoy-als
+      SW_ENVOY_METRIC_ALS_HTTP_ANALYSIS: mx-mesh,persistence
     volumes:
-      - ./lal.yaml:/skywalking/config/lal/test.yaml
+      - ./envoy-als.yaml:/skywalking/config/lal/envoy-als.yaml
     ports:
       - 12800
-    depends_on:
-      etcd:
-        condition: service_healthy
 
   satellite:
     extends:
@@ -60,6 +36,8 @@ services:
       service: satellite
     ports:
       - 11800
+    environment:
+      SATELLITE_GRPC_CLIENT: oap:11800
     depends_on:
       oap:
         condition: service_healthy
@@ -74,16 +52,37 @@ services:
       satellite:
         condition: service_healthy
 
+  envoy:
+    image: envoyproxy/envoy-alpine:${ENVOY_VERSION}
+    ports:
+      - 9090
+    networks:
+      - e2e
+    volumes:
+      - ./envoy-${ENVOY_VERSION}.yaml:/etc/envoy/envoy.yaml
+    depends_on:
+      provider:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 --spider http://localhost:9090/info --post-data='' || exit 1"]
+      interval: 5s
+      timeout: 60s
+      retries: 120
+
   consumer:
     extends:
       file: ../../base/base-compose.yml
       service: consumer
     ports:
       - 9090
+    environment:
+      PROVIDER_URL: http://envoy:9090
     depends_on:
       satellite:
         condition: service_healthy
       provider:
+        condition: service_healthy
+      envoy:
         condition: service_healthy
 
 networks:

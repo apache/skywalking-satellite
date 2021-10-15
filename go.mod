@@ -6,8 +6,7 @@ require (
 	github.com/Azure/go-autorest/autorest v0.11.18 // indirect
 	github.com/Shopify/sarama v1.27.2
 	github.com/enriquebris/goconcurrentqueue v0.6.0
-	github.com/golang/protobuf v1.5.2 // indirect
-	github.com/google/go-cmp v0.5.5
+	github.com/google/go-cmp v0.5.6
 	github.com/gophercloud/gophercloud v0.17.0 // indirect
 	github.com/grandecola/mmap v0.6.0
 	github.com/prometheus/client_golang v1.9.0
@@ -20,9 +19,9 @@ require (
 	go.uber.org/automaxprocs v1.4.0
 	golang.org/x/mod v0.4.2
 	golang.org/x/tools v0.1.6 // indirect
-	google.golang.org/grpc v1.38.0
-	google.golang.org/protobuf v1.27.0
+	google.golang.org/grpc v1.40.0
+	google.golang.org/protobuf v1.27.1
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	gotest.tools v2.2.0+incompatible
-	skywalking.apache.org/repo/goapi v0.0.0-20210628073857-a95ba03d3c7a
+	skywalking.apache.org/repo/goapi v0.0.0-20211013044926-15f732fe3718
 )

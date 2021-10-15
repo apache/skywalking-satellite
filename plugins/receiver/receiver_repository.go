@@ -22,6 +22,8 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins/receiver/api"
+	"github.com/apache/skywalking-satellite/plugins/receiver/grpc/envoyalsv2"
+	"github.com/apache/skywalking-satellite/plugins/receiver/grpc/envoyalsv3"
 	grpcnativecds "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativecds"
 	grpcnativeevent "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativeevent"
 	grpcnativejvm "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativejvm"
@@ -47,6 +49,8 @@ func RegisterReceiverPlugins() {
 		new(grpcnativejvm.Receiver),
 		new(grpcnativeevent.Receiver),
 		new(grpcnativemeter.Receiver),
+		new(envoyalsv2.Receiver),
+		new(envoyalsv3.Receiver),
 	}
 	for _, receiver := range receivers {
 		plugin.RegisterPlugin(receiver)

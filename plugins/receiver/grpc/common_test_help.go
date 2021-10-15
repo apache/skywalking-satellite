@@ -41,9 +41,20 @@ import (
 func TestReceiver(rec receiver.Receiver,
 	dataGenerator func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string,
 	snifferConvertor func(data *v1.SniffData) string, t *testing.T) {
+	TestReceiverWithConfig(rec, make(map[string]string), dataGenerator, snifferConvertor, t)
+}
+
+// TestReceiverWithConfig help to testing grpc receiver with customize config
+func TestReceiverWithConfig(rec receiver.Receiver, recConf map[string]string,
+	dataGenerator func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string,
+	snifferConvertor func(data *v1.SniffData) string, t *testing.T) {
 	Init(rec)
 	grpcPort := randomGrpcPort()
-	r := initReceiver(make(plugin.Config), t, rec)
+	receiverConfig := make(plugin.Config)
+	for k, v := range recConf {
+		receiverConfig[k] = v
+	}
+	r := initReceiver(receiverConfig, t, rec)
 	s := initServer(make(plugin.Config), grpcPort, t)
 	r.RegisterHandler(s.GetServer())
 	_ = s.Start()
