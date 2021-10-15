@@ -9,6 +9,8 @@
 	- [prometheus-metrics-fetcher](./fetcher_prometheus-metrics-fetcher.md)
 - Filter
 - Forwarder
+	- [envoy-als-v2-grpc-forwarder](./forwarder_envoy-als-v2-grpc-forwarder.md)
+	- [envoy-als-v3-grpc-forwarder](./forwarder_envoy-als-v3-grpc-forwarder.md)
 	- [nativecds-grpc-forwarder](./forwarder_nativecds-grpc-forwarder.md)
 	- [nativeevent-grpc-forwarder](./forwarder_nativeevent-grpc-forwarder.md)
 	- [nativejvm-grpc-forwarder](./forwarder_nativejvm-grpc-forwarder.md)
@@ -24,6 +26,8 @@
 	- [mmap-queue](./queue_mmap-queue.md)
 	- [none-queue](./queue_none-queue.md)
 - Receiver
+	- [grpc-envoy-als-v2-receiver](./receiver_grpc-envoy-als-v2-receiver.md)
+	- [grpc-envoy-als-v3-receiver](./receiver_grpc-envoy-als-v3-receiver.md)
 	- [grpc-nativecds-receiver](./receiver_grpc-nativecds-receiver.md)
 	- [grpc-nativeevent-receiver](./receiver_grpc-nativeevent-receiver.md)
 	- [grpc-nativejvm-receiver](./receiver_grpc-nativejvm-receiver.md)

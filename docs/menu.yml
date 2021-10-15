@@ -75,6 +75,10 @@ catalog:
                   path: /en/setup/plugins/fetcher_prometheus-metrics-fetcher
             - name: forwarder
               catalog:
+                - name: envoy-als-v2-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_envoy-als-v2-grpc-forwarder
+                - name: envoy-als-v3-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_envoy-als-v3-grpc-forwarder
                 - name: nativecds-grpc-forwarder
                   path: /en/setup/plugins/forwarder_nativecds-grpc-forwarder
                 - name: nativeevent-grpc-forwarder
@@ -103,6 +107,10 @@ catalog:
                   path: /en/setup/plugins/queue_none-queue
             - name: receiver
               catalog:
+                - name: grpc-envoy-als-v2-receiver
+                  path: /en/setup/plugins/receiver_grpc-envoy-als-v2-receiver
+                - name: grpc-envoy-als-v3-receiver
+                  path: /en/setup/plugins/receiver_grpc-envoy-als-v3-receiver
                 - name: grpc-nativecds-receiver
                   path: /en/setup/plugins/receiver_grpc-nativecds-receiver
                 - name: grpc-nativeevent-receiver

@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package nativelog
+package envoyalsv2
 
 import (
 	"context"
@@ -23,22 +23,21 @@ import (
 	"io"
 	"reflect"
 
-	"google.golang.org/grpc"
-
-	logging "skywalking.apache.org/repo/goapi/collect/logging/v3"
+	v2 "skywalking.apache.org/repo/goapi/proto/envoy/service/accesslog/v2"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+
+	"google.golang.org/grpc"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
-const Name = "nativelog-grpc-forwarder"
+const Name = "envoy-als-v2-grpc-forwarder"
 
 type Forwarder struct {
 	config.CommonFields
-
-	logClient logging.LogReportServiceClient
+	alsClient v2.AccessLogServiceClient
 }
 
 func (f *Forwarder) Name() string {
@@ -46,7 +45,7 @@ func (f *Forwarder) Name() string {
 }
 
 func (f *Forwarder) Description() string {
-	return "This is a synchronization grpc forwarder with the SkyWalking native log protocol."
+	return "This is a synchronization ALS v2 grpc forwarder with the Envoy ALS protocol."
 }
 
 func (f *Forwarder) DefaultConfig() string {
@@ -59,47 +58,46 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 		return fmt.Errorf("the %s only accepts a grpc client, but received a %s",
 			f.Name(), reflect.TypeOf(connection).String())
 	}
-	f.logClient = logging.NewLogReportServiceClient(client)
+	f.alsClient = v2.NewAccessLogServiceClient(client)
 	return nil
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-	stream, err := f.logClient.Collect(context.Background())
-	if err != nil {
-		log.Logger.Errorf("open grpc stream error %v", err)
-		return err
-	}
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_Log)
+		data, ok := e.GetData().(*v1.SniffData_EnvoyALSV2List)
 		if !ok {
 			continue
 		}
-		err := stream.Send(data.Log)
+		stream, err := f.alsClient.StreamAccessLogs(context.Background())
 		if err != nil {
-			log.Logger.Errorf("%s send log data error: %v", f.Name(), err)
-			err = closeStream(stream)
-			if err != nil {
-				log.Logger.Errorf("%s close stream error: %v", f.Name(), err)
-			}
+			log.Logger.Errorf("open grpc stream error %v", err)
 			return err
 		}
-	}
-	return closeStream(stream)
-}
-
-func closeStream(stream logging.LogReportService_CollectClient) error {
-	_, err := stream.CloseAndRecv()
-	if err != nil && err != io.EOF {
-		return err
+		for _, message := range data.EnvoyALSV2List.Messages {
+			err := stream.Send(message)
+			if err != nil {
+				log.Logger.Errorf("%s send envoy ALS v2 data error: %v", f.Name(), err)
+				f.closeStream(stream)
+				return err
+			}
+		}
+		f.closeStream(stream)
 	}
 	return nil
 }
 
-func (f *Forwarder) ForwardType() v1.SniffType {
-	return v1.SniffType_Logging
+func (f *Forwarder) closeStream(stream v2.AccessLogService_StreamAccessLogsClient) {
+	_, err := stream.CloseAndRecv()
+	if err != nil && err != io.EOF {
+		log.Logger.Warnf("%s close stream error: %v", f.Name(), err)
+	}
 }
 
-func (f *Forwarder) SyncForward(*v1.SniffData) (*v1.SniffData, error) {
+func (f *Forwarder) ForwardType() v1.SniffType {
+	return v1.SniffType_EnvoyALSV2Type
+}
+
+func (f *Forwarder) SyncForward(_ *v1.SniffData) (*v1.SniffData, error) {
 	return nil, fmt.Errorf("unsupport sync forward")
 }
 

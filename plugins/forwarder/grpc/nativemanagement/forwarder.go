@@ -59,7 +59,7 @@ func (f *Forwarder) DefaultConfig() string {
 func (f *Forwarder) Prepare(connection interface{}) error {
 	client, ok := connection.(*grpc.ClientConn)
 	if !ok {
-		return fmt.Errorf("the %s is only accepet the grpc client, but receive a %s",
+		return fmt.Errorf("the %s only accepts a grpc client, but received a %s",
 			f.Name(), reflect.TypeOf(connection).String())
 	}
 	f.managementClient = management.NewManagementServiceClient(client)
