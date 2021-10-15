@@ -50,7 +50,12 @@ func (r *Receiver) Description() string {
 }
 
 func (r *Receiver) DefaultConfig() string {
-	return ""
+	return `
+# The time interval between two flush operations. And the time unit is millisecond.
+flush_time: 1000
+# The max cache count when receive the message
+limit_count: 500
+`
 }
 
 func (r *Receiver) RegisterHandler(server interface{}) {

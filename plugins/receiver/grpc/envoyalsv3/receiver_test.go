@@ -32,7 +32,10 @@ import (
 )
 
 func TestReceiver_RegisterHandler(t *testing.T) {
-	receiver_grpc.TestReceiver(new(Receiver), func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string {
+	recConf := make(map[string]string, 2)
+	recConf["limit_count"] = "1"
+	recConf["flush_time"] = "1000"
+	receiver_grpc.TestReceiverWithConfig(new(Receiver), recConf, func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string {
 		client := v3.NewAccessLogServiceClient(conn)
 		data := initData(sequence)
 		collect, err := client.StreamAccessLogs(ctx)
