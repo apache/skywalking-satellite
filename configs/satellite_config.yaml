@@ -254,9 +254,9 @@ pipes:
       receiver:
         plugin_name: "grpc-envoy-als-v2-receiver"
         # The time interval between two flush operations. And the time unit is millisecond.
-        flush_time: ${SATELLITE_ENVOYALSV2PIPE_RECEIVER_FLUSH_TIME:1000}
+        flush_time: ${SATELLITE_ENVOY_ALS_V2_PIPE_RECEIVER_FLUSH_TIME:1000}
         # The max cache count when receive the message
-        limit_count: ${SATELLITE_ENVOYALSV2PIPE_RECEIVER_LIMIT_COUNT:500}
+        limit_count: ${SATELLITE_ENVOY_ALS_V2_PIPE_RECEIVER_LIMIT_COUNT:500}
       queue:
         plugin_name: "memory-queue"
     processor:
@@ -265,11 +265,11 @@ pipes:
       fallbacker:
         plugin_name: none-fallbacker
       # The time interval between two flush operations. And the time unit is millisecond.
-      flush_time: ${SATELLITE_ENVOYALSV2PIPE_SENDER_FLUSH_TIME:1000}
+      flush_time: ${SATELLITE_ENVOY_ALS_V2_PIPE_SENDER_FLUSH_TIME:1000}
       # The maximum buffer elements.
-      max_buffer_size: ${SATELLITE_ENVOYALSV2PIPE_SENDER_MAX_BUFFER_SIZE:200}
+      max_buffer_size: ${SATELLITE_ENVOY_ALS_V2_PIPE_SENDER_MAX_BUFFER_SIZE:200}
       # The minimum flush elements.
-      min_flush_events: ${SATELLITE_ENVOYALSV2PIPE_SENDER_MIN_FLUSH_EVENTS:1}
+      min_flush_events: ${SATELLITE_ENVOY_ALS_V2_PIPE_SENDER_MIN_FLUSH_EVENTS:1}
       client_name: grpc-client
       forwarders:
         - plugin_name: envoy-als-v2-grpc-forwarder
@@ -280,9 +280,9 @@ pipes:
       receiver:
         plugin_name: "grpc-envoy-als-v3-receiver"
         # The time interval between two flush operations. And the time unit is millisecond.
-        flush_time: ${SATELLITE_ENVOYALSV3PIPE_RECEIVER_FLUSH_TIME:1000}
+        flush_time: ${SATELLITE_ENVOY_ALS_V3_PIPE_RECEIVER_FLUSH_TIME:1000}
         # The max cache count when receive the message
-        limit_count: ${SATELLITE_ENVOYALSV3PIPE_RECEIVER_LIMIT_COUNT:500}
+        limit_count: ${SATELLITE_ENVOY_ALS_V3_PIPE_RECEIVER_LIMIT_COUNT:500}
       queue:
         plugin_name: "memory-queue"
     processor:
@@ -291,11 +291,11 @@ pipes:
       fallbacker:
         plugin_name: none-fallbacker
       # The time interval between two flush operations. And the time unit is millisecond.
-      flush_time: ${SATELLITE_ENVOYALSV3PIPE_SENDER_FLUSH_TIME:1000}
+      flush_time: ${SATELLITE_ENVOY_ALS_V3_PIPE_SENDER_FLUSH_TIME:1000}
       # The maximum buffer elements.
-      max_buffer_size: ${SATELLITE_ENVOYALSV3PIPE_SENDER_MAX_BUFFER_SIZE:200}
+      max_buffer_size: ${SATELLITE_ENVOY_ALS_V3_PIPE_SENDER_MAX_BUFFER_SIZE:200}
       # The minimum flush elements.
-      min_flush_events: ${SATELLITE_ENVOYALSV3PIPE_SENDER_MIN_FLUSH_EVENTS:1}
+      min_flush_events: ${SATELLITE_ENVOY_ALS_V3_PIPE_SENDER_MIN_FLUSH_EVENTS:1}
       client_name: grpc-client
       forwarders:
         - plugin_name: envoy-als-v3-grpc-forwarder
