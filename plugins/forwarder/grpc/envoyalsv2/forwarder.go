@@ -63,49 +63,34 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-	streamMap := make(map[*v2.StreamAccessLogsMessage_Identifier]v2.AccessLogService_StreamAccessLogsClient)
-	defer func() {
-		for _, stream := range streamMap {
-			err := closeStream(stream)
-			if err != nil {
-				log.Logger.Warnf("%s close stream error: %v", f.Name(), err)
-			}
-		}
-	}()
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_EnvoyALSV2)
+		data, ok := e.GetData().(*v1.SniffData_EnvoyALSV2List)
 		if !ok {
 			continue
 		}
-		stream := streamMap[data.EnvoyALSV2.Identifier]
-		if stream == nil {
-			curStream, err := f.alsClient.StreamAccessLogs(context.Background())
-			if err != nil {
-				log.Logger.Errorf("open grpc stream error %v", err)
-				return err
-			}
-			streamMap[data.EnvoyALSV2.Identifier] = curStream
-			stream = curStream
-		} else {
-			// only first message have identifier
-			data.EnvoyALSV2.Identifier = nil
-		}
-
-		err := stream.Send(data.EnvoyALSV2)
+		stream, err := f.alsClient.StreamAccessLogs(context.Background())
 		if err != nil {
-			log.Logger.Errorf("%s send meter data error: %v", f.Name(), err)
+			log.Logger.Errorf("open grpc stream error %v", err)
 			return err
 		}
+		for _, message := range data.EnvoyALSV2List.Messages {
+			err := stream.Send(message)
+			if err != nil {
+				log.Logger.Errorf("%s send envoy ALS v2 data error: %v", f.Name(), err)
+				f.closeStream(stream)
+				return err
+			}
+		}
+		f.closeStream(stream)
 	}
 	return nil
 }
 
-func closeStream(stream v2.AccessLogService_StreamAccessLogsClient) error {
+func (f *Forwarder) closeStream(stream v2.AccessLogService_StreamAccessLogsClient) {
 	_, err := stream.CloseAndRecv()
 	if err != nil && err != io.EOF {
-		return err
+		log.Logger.Warnf("%s close stream error: %v", f.Name(), err)
 	}
-	return nil
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {

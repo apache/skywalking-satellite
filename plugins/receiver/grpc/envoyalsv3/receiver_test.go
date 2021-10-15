@@ -47,7 +47,7 @@ func TestReceiver_RegisterHandler(t *testing.T) {
 		}
 		return data.String()
 	}, func(data *v1.SniffData) string {
-		return data.GetEnvoyALSV3().String()
+		return data.GetEnvoyALSV3List().Messages[0].String()
 	}, t)
 }
 

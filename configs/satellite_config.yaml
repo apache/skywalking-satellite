@@ -253,6 +253,10 @@ pipes:
       server_name: "grpc-server"
       receiver:
         plugin_name: "grpc-envoy-als-v2-receiver"
+        # The time interval between two flush operations. And the time unit is millisecond.
+        flush_time: ${SATELLITE_ENVOYALSV2PIPE_RECEIVER_FLUSH_TIME:1000}
+        # The max cache count when receive the message
+        limit_count: ${SATELLITE_ENVOYALSV2PIPE_RECEIVER_LIMIT_COUNT:500}
       queue:
         plugin_name: "memory-queue"
     processor:
@@ -275,6 +279,10 @@ pipes:
       server_name: "grpc-server"
       receiver:
         plugin_name: "grpc-envoy-als-v3-receiver"
+        # The time interval between two flush operations. And the time unit is millisecond.
+        flush_time: ${SATELLITE_ENVOYALSV3PIPE_RECEIVER_FLUSH_TIME:1000}
+        # The max cache count when receive the message
+        limit_count: ${SATELLITE_ENVOYALSV3PIPE_RECEIVER_LIMIT_COUNT:500}
       queue:
         plugin_name: "memory-queue"
     processor:

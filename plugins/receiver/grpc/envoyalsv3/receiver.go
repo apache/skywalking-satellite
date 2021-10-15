@@ -20,6 +20,7 @@ package envoyalsv3
 import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	"github.com/apache/skywalking-satellite/internal/satellite/module/buffer"
 	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoyalsv3"
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc"
@@ -34,6 +35,8 @@ type Receiver struct {
 	config.CommonFields
 	grpc.CommonGRPCReceiverFields
 	service *AlsService
+
+	LimitConfig buffer.LimiterConfig `mapstructure:",squash"`
 }
 
 func (r *Receiver) Name() string {
@@ -52,7 +55,7 @@ func (r *Receiver) DefaultConfig() string {
 
 func (r *Receiver) RegisterHandler(server interface{}) {
 	r.CommonGRPCReceiverFields = *grpc.InitCommonGRPCReceiverFields(server)
-	r.service = &AlsService{receiveChannel: r.OutputChannel}
+	r.service = &AlsService{receiveChannel: r.OutputChannel, limiterConfig: r.LimitConfig}
 	v3.RegisterAccessLogServiceServer(r.Server, r.service)
 }
 
