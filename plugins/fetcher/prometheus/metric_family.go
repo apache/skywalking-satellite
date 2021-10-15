@@ -254,8 +254,9 @@ func (mf *metricFamily) ToMetric() []*v3.MeterData {
 			for index, m := range mg.complexValue {
 				if index == 0 {
 					mbv := &v3.MeterBucketValue{
-						Bucket: math.Inf(-1),
-						Count:  int64(m.value),
+						Bucket:             math.Inf(-1),
+						Count:              int64(m.value),
+						IsNegativeInfinity: true,
 					}
 					mbs = append(mbs, mbv)
 				} else {
