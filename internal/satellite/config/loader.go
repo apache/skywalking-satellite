@@ -77,7 +77,7 @@ func load(configPath string) (*SatelliteConfig, error) {
 	return cfg, nil
 }
 
-// propagate the common fields to every modules and the dependency plugins.
+// propagateCommonFieldsInPipes propagates the common fields to every module and the dependency plugin.
 func propagateCommonFieldsInPipes(pipes []*PipeConfig) {
 	for _, pipe := range pipes {
 		pipe.Gatherer.CommonFields = pipe.PipeCommonConfig

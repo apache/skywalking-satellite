@@ -37,13 +37,13 @@ type ClientStatus int8
 type Client interface {
 	plugin.SharingPlugin
 
-	// GetConnection returns the connected client to publish events.
+	// GetConnectedClient returns the connected client to publish events.
 	GetConnectedClient() interface{}
 	// RegisterListener register a listener to listen the client status.
 	RegisterListener(chan<- ClientStatus)
 }
 
-// Get an initialized client plugin.
+// GetClient gets an initialized client plugin.
 func GetClient(config plugin.Config) Client {
 	return plugin.Get(reflect.TypeOf((*Client)(nil)).Elem(), config).(Client)
 }

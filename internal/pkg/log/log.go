@@ -42,7 +42,7 @@ type LoggerConfig struct {
 // FormatOption is a function to set formatter config.
 type FormatOption func(f *formatter)
 
-// FormatOption is a function to set logger config.
+// ConfigOption is a function to set logger config.
 type ConfigOption func(l *logrus.Logger)
 
 type formatter struct {

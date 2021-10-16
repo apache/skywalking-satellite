@@ -87,7 +87,7 @@ func TestReceiverWithConfig(rec receiver.Receiver, recConf map[string]string,
 	}
 }
 
-// TestReceiver help to testing grpc receiver
+// TestReceiverWithSync help to testing grpc receiver
 func TestReceiverWithSync(rec receiver.Receiver,
 	dataGenerator func(t *testing.T, sequence int, conn *grpc.ClientConn, sendData *string, ctx context.Context),
 	snifferConvertor func(data *v1.SniffData) string, mockResp *v1.SniffData, t *testing.T) {

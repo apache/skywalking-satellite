@@ -30,7 +30,7 @@ type Server interface {
 	GetServer() interface{}
 }
 
-// Get an initialized server plugin.
+// GetServer gets an initialized server plugin.
 func GetServer(config plugin.Config) Server {
 	return plugin.Get(reflect.TypeOf((*Server)(nil)).Elem(), config).(Server)
 }

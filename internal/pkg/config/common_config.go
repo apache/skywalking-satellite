@@ -22,8 +22,8 @@ const (
 	TagName          = "mapstructure"
 )
 
-// CommonFields defines some common filed for every modules or plugins.
+// CommonFields defines some common fields for every module or plugin.
 type CommonFields struct {
-	// PipeName indicates which pipe belongs to.
+	// PipeName indicates which pipe it belongs to.
 	PipeName string `mapstructure:"pipe_name"`
 }

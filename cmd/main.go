@@ -27,7 +27,7 @@ import (
 )
 
 // version will be initialized when building
-var version string = "lastest"
+var version = "latest"
 
 func main() {
 	app := cli.NewApp()
