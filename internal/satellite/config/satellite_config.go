@@ -50,7 +50,7 @@ type PipeConfig struct {
 	Sender           *sender.SenderConfig       `mapstructure:"sender"`
 }
 
-// Create a satellite config with default value.
+// NewDefaultSatelliteConfig creates a satellite config with default value.
 func NewDefaultSatelliteConfig() *SatelliteConfig {
 	return &SatelliteConfig{
 		Logger: &log.LoggerConfig{

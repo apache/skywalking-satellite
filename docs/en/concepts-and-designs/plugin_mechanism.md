@@ -1,5 +1,5 @@
 # plugin structure
-`Plugin is a common concept for Satellite, which is in all externsion plugins.`
+`Plugin is a common concept for Satellite, which is in all extension plugins.`
 
 ## Registration mechanism
 

@@ -36,13 +36,13 @@ type Fetcher interface {
 	Fetch(ctx context.Context)
 	// Channel would be put a data when the receiver receives an APM data.
 	Channel() <-chan *v1.SniffData
-	// Shutdown shutdown the fetcher
+	// Shutdown shutdowns the fetcher
 	Shutdown(context.Context) error
 	// SupportForwarders should provider all forwarder support current receiver
 	SupportForwarders() []forwarder.Forwarder
 }
 
-// Get an initialized fetcher plugin.
+// GetFetcher gets an initialized fetcher plugin.
 func GetFetcher(config plugin.Config) Fetcher {
 	return plugin.Get(reflect.TypeOf((*Fetcher)(nil)).Elem(), config).(Fetcher)
 }

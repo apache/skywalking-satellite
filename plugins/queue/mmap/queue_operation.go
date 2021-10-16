@@ -32,7 +32,7 @@ import (
 // bigqueue(https://github.com/grandecola/bigqueue), the queue operation file retains
 // the original author license.
 //
-// The reason why we references the source codes of bigqueue rather than using the lib
+// The reason why we reference the source codes of bigqueue rather than using the lib
 // is the file queue in Satellite is like following.
 // 1. Only one consumer and publisher in the Satellite queue.
 // 2. Reusing files strategy is required to reduce the creation times in the Satellite queue.

@@ -26,7 +26,7 @@ type Plugin interface {
 	Name() string
 	// Description returns the description of the specific plugin.
 	Description() string
-	// Config returns the default config, that is a YAML pattern.
+	// DefaultConfig returns the default config, that is a YAML pattern.
 	DefaultConfig() string
 }
 

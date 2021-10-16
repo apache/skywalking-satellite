@@ -44,7 +44,7 @@ type Receiver interface {
 	SupportForwarders() []forwarder.Forwarder
 }
 
-// Get an initialized receiver plugin.
+// GetReceiver gets an initialized receiver plugin.
 func GetReceiver(config plugin.Config) Receiver {
 	return plugin.Get(reflect.TypeOf((*Receiver)(nil)).Elem(), config).(Receiver)
 }

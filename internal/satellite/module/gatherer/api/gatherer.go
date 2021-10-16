@@ -26,7 +26,7 @@ import (
 // Gatherer is the APM data collection module in Satellite.
 type Gatherer interface {
 	api.Module
-	// DataChannel is a blocking channel to transfer the apm data to the upstream processor module.
+	// OutputDataChannel is a blocking channel to transfer the apm data to the upstream processor module.
 	OutputDataChannel() <-chan *queue.SequenceEvent
 	// Ack the sent offset.
 	Ack(lastOffset event.Offset)

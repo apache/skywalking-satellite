@@ -235,7 +235,7 @@ func testEndToEnd(ctx context.Context, t *testing.T, targets []*testData) {
 	outputChannel := make(chan *v1.SniffData)
 	// 1. setup mock server
 	mp, cfg, err := setupMockPrometheus(targets...)
-	require.Nilf(t, err, "Failed to create Promtheus config: %v", err)
+	require.Nilf(t, err, "Failed to create Prometheus config: %v", err)
 	defer mp.Close()
 	t.Log(cfg)
 	fetch(ctx, cfg.ScrapeConfigs, outputChannel)

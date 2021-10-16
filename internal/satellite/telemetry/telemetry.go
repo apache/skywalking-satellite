@@ -34,7 +34,7 @@ var (
 	lock               sync.Mutex
 )
 
-// register the metric meta to the registerer.
+// Register registers the metric meta to the registerer.
 func Register(meta ...SelfTelemetryMetaFunc) {
 	for _, telemetryMeta := range meta {
 		name, collector := telemetryMeta()
