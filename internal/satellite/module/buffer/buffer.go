@@ -31,7 +31,7 @@ type BatchBuffer struct {
 	cap   int                         // the max capacity
 }
 
-// NewBuffer crate a new BatchBuffer according to the capacity param.
+// NewBatchBuffer creates a new BatchBuffer according to the capacity param.
 func NewBatchBuffer(capacity int) *BatchBuffer {
 	return &BatchBuffer{
 		buf:   make([]*event.OutputEventContext, capacity),

@@ -43,7 +43,7 @@ LifeCycle
 
 ## Plugins
 
-Plugin is the minimal components in the module. Sateliite has 2 plugin catalogs, which are sharing plugins and normal plugins.
+Plugin is the minimal components in the module. Satellite has 2 plugin catalogs, which are sharing plugins and normal plugins.
 
 - a sharing plugin instance could be sharing with multiple modules in the different pipes.
 - a normal plugin instance is only be used in a fixed module of the fixed pipes.
@@ -102,7 +102,7 @@ There are 7 kinds of normal plugins in Satellite, which are Receiver, Fetcher, Q
                                             | | A |     | I |    |Segment Forwarder|   |
                                             | | T |     | S |    |    (Fallbacker) |   |
                                             | | C |     | P |     -----------------    |
-                                            | | H |  => | A |                          | ===> Kakfa/OAP
+                                            | | H |  => | A |                          | ===> Kafka/OAP
                                             | | B |     | T | =>        ......         |
                                             | | U |     | C |                          |
                                             | | F |     | H |     -----------------    |

@@ -52,11 +52,11 @@ func (c *Catalog) Find(namePaths ...string) *Catalog {
 		return nil
 	}
 
-	childrens := c.Catalog
+	children := c.Catalog
 	finded := c
 	for _, name := range namePaths {
 		finded = nil
-		for _, cc := range childrens {
+		for _, cc := range children {
 			if cc.Name == name {
 				finded = cc
 				break
@@ -65,7 +65,7 @@ func (c *Catalog) Find(namePaths ...string) *Catalog {
 		if finded == nil {
 			return nil
 		}
-		childrens = finded.Catalog
+		children = finded.Catalog
 	}
 	return finded
 }

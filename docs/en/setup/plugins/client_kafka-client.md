@@ -6,7 +6,7 @@ The Kafka client is a sharing plugin to keep connection with the Kafka brokers a
 # The Kafka broker addresses (default localhost:9092). Multiple values are separated by commas.
 brokers: localhost:9092
 
-# The Kakfa version should follow this pattern, which is major_minor_veryMinor_patch (default 1.0.0.0).
+# The Kafka version should follow this pattern, which is major_minor_veryMinor_patch (default 1.0.0.0).
 version: 1.0.0.0
 
 # The TLS switch (default false).

@@ -63,7 +63,7 @@ func TestFallbacker_FallBack1(t1 *testing.T) {
 			wantCount: 2,
 		},
 		{
-			name: "test-recach-max_attempts",
+			name: "test-reach-max_attempts",
 			args: plugin.Config{
 				"max_attempts":        5,
 				"exponential_backoff": 200,
@@ -73,7 +73,7 @@ func TestFallbacker_FallBack1(t1 *testing.T) {
 			wantCount: 4,
 		},
 		{
-			name: "test-unrecach-max_attempts",
+			name: "test-unreach-max_attempts",
 			args: plugin.Config{
 				"max_attempts":        10,
 				"exponential_backoff": 20,
