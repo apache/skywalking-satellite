@@ -28,7 +28,7 @@ setup:
 
 cleanup:
   # always never success failure
-  on: no
+  on: always
 
 trigger:
   action: http
@@ -54,3 +54,6 @@ verify:
     # als: logs list
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql logs list --service-name test-app-v1 |yq e 'del(.. | select(has("content")).content)' -
       expected: expected/logs-list.yml
+    # metrics: envoy metrics
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name envoy_worker_threads --service-name istio-dp::test-app-v1 --instance-name service-instance-name-v1|yq e 'to_entries' -
+      expected: expected/metrics-has-value.yml

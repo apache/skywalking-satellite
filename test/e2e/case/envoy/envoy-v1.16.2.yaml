@@ -16,6 +16,13 @@
 # under the License.
 #
 
+stats_sinks:
+  - name: envoy.metrics_service
+    config:
+      grpc_service:
+        envoy_grpc:
+          cluster_name: skywalking-satellite
+
 node:
   id: ingress-v1
   cluster: card-api-cluster-v1
