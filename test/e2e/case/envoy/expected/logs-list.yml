@@ -15,10 +15,10 @@
 
 logs:
   {{- contains .logs }}
-  - servicename: -.test-app-v1.-
-    serviceid: {{ b64enc "-.test-app-v1.-" }}.1
+  - servicename: test-app-v1
+    serviceid: {{ b64enc "test-app-v1" }}.1
     serviceinstancename: service-instance-name-v1
-    serviceinstanceid: {{ b64enc "-.test-app-v1.-" }}.1_{{ b64enc "service-instance-name-v1" }}
+    serviceinstanceid: {{ b64enc "test-app-v1" }}.1_{{ b64enc "service-instance-name-v1" }}
     endpointname: null
     endpointid: null
     traceid: null
