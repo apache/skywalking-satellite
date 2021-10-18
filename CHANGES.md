@@ -5,6 +5,9 @@ Release Notes.
 0.3.0
 ------------------
 #### Features
+* Support load-balance GRPC client with the static server list.
+* Support load-balance GRPC client with the Kubernetes selector.
+* Support transmit Envoy ALS v2/v3 protocol.
 
 #### Bug Fixes
 * Fix errors when converting meter data from histogram and summary.[#75](https://github.com/apache/skywalking-satellite/pull/75)

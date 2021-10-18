@@ -13,15 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- contains . }}
-- segmentid: {{ notEmpty .segmentid }}
-  endpointnames:
-    - /info
-  duration: {{ gt .duration 0 }}
-  start: "{{ notEmpty .start }}"
-  iserror: false
-  traceids:
-  {{- contains .traceids }}
-    - {{ notEmpty . }}
-  {{- end }}
-{{- end }}
+SW_AGENT_JAVA_COMMIT=3997f0256056788bd054ee37e4603c11c0fd6756
+SW_OAP_COMMIT=b5578b68fd0d5d8e4543ad7d8fc9c3066ace456c
+
+SW_CTL_COMMIT=b90255132f916f53eb90955cc8a6445b03a4bec3

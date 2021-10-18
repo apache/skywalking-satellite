@@ -109,7 +109,7 @@ func updateMenuPluginListDoc(outputRootPath, menuFilePath, pluginFilePath string
 		pluginList := getPluginsByCategory(category)
 		for _, pluginName := range pluginList {
 			implements = append(implements, &Catalog{
-				Name: pluginName,
+				Name: strings.ReplaceAll(pluginName, "-", " "),
 				Path: strings.TrimRight(fmt.Sprintf("%s/%s", pluginFilePath, getPluginDocFileName(category, pluginName)), markdownSuffix),
 			})
 		}
