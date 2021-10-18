@@ -19,32 +19,16 @@ setup:
   env: compose
   file: docker-compose.yml
   timeout: 1200
+  init-system-environment: ../../base/env
   steps:
     - name: install yq
-      command: |
-        if ! command -v yq &> /dev/null; then
-          mkdir -p /tmp/skywalking-infra-e2e/bin && cd /tmp/skywalking-infra-e2e
-          mkdir -p yq && cd yq
-          curl -kLo yq.tar.gz https://github.com/mikefarah/yq/archive/v4.11.1.tar.gz
-          tar -zxf yq.tar.gz --strip=1
-          go install && go build -ldflags -s && mv yq ../bin/yq
-          export PATH="$PATH:/tmp/skywalking-infra-e2e/bin"
-          echo "success to install yq"
-        fi
+      command: bash test/e2e/base/scripts/prepare/setup-e2e-shell/install.sh yq
     - name: install swctl
-      command: |
-        if ! command -v swctl &> /dev/null; then
-          mkdir -p /tmp/skywalking-infra-e2e/bin && cd /tmp/skywalking-infra-e2e
-          mkdir -p swctl && cd swctl
-          curl -kLo skywalking-cli.tar.gz https://github.com/apache/skywalking-cli/archive/76f9f848b3142d14c6ab6fa7910d408b92bced64.tar.gz
-          tar -zxf skywalking-cli.tar.gz --strip=1
-          make install DESTDIR=/usr/local/bin
-          echo "success to install swctl"
-        fi
+      command: bash test/e2e/base/scripts/prepare/setup-e2e-shell/install.sh swctl
 
 cleanup:
   # always never success failure
-  on: always
+  on: no
 
 trigger:
   action: http
@@ -65,8 +49,8 @@ verify:
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql service ls
       expected: expected/service.yml
     # basic check: service instance list
-    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql instance list --service-name=test-app-v1
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql instance list --service-name test-app-v1
       expected: expected/service-instance.yml
     # als: logs list
-    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql logs list --service-name=test-app-v1 |yq e 'del(.. | select(has("content")).content)' -
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql logs list --service-name test-app-v1 |yq e 'del(.. | select(has("content")).content)' -
       expected: expected/logs-list.yml

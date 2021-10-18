@@ -49,7 +49,7 @@ func (f *Forwarder) Name() string {
 }
 
 func (f *Forwarder) Description() string {
-	return "This is a synchronization grpc forwarder with the SkyWalking native mangement protocol."
+	return "This is a synchronization grpc forwarder with the SkyWalking native management protocol."
 }
 
 func (f *Forwarder) DefaultConfig() string {
