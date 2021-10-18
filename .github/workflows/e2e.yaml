@@ -38,7 +38,7 @@ jobs:
         with:
           e2e-file: test/e2e/case/native-protocols/e2e.yaml
   EnvoyE2E:
-    name: Envoy ALS
+    name: Envoy ALS/Metrics
     runs-on: ubuntu-latest
     strategy:
       matrix:
