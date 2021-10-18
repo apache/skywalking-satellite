@@ -21,6 +21,7 @@ package prometheus
 import (
 	"context"
 	"fmt"
+	"math"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -30,6 +31,8 @@ import (
 	"sync/atomic"
 	"testing"
 	"time"
+
+	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
@@ -119,7 +122,7 @@ type testData struct {
 	name         string
 	pages        []mockPrometheusResponse
 	ScrapeConfig *scrapeConfig
-	validateFunc func(t *testing.T, em *v1.SniffData)
+	validateFunc func(t *testing.T, em *v1.SniffData, svc map[string][]float64, bvc map[string][][]*v3.MeterBucketValue)
 }
 
 func setupMockPrometheus(tds ...*testData) (*mockPrometheus, *promcfg.Config, error) {
@@ -211,6 +214,47 @@ rpc_duration_seconds_sum 5002
 rpc_duration_seconds_count 1001
 `
 
+var (
+	singleElems = []string{
+		"go_threads",
+		"http_requests_total",
+		"rpc_duration_seconds",
+		"rpc_duration_seconds_count",
+		"rpc_duration_seconds_sum",
+		"http_request_duration_seconds_sum",
+		"http_request_duration_seconds_count",
+	}
+
+	singleValues = map[string][]float64{
+		"go_threads":                          {19, 18},
+		"http_requests_total":                 {100, 5, 199, 12},
+		"http_request_duration_seconds_sum":   {5000, 5050},
+		"http_request_duration_seconds_count": {2500, 2600},
+		"rpc_duration_seconds":                {1, 5, 8, 1, 6, 8},
+		"rpc_duration_seconds_sum":            {5000, 5002},
+		"rpc_duration_seconds_count":          {1000, 1001},
+	}
+
+	histogramElems = []string{"http_request_duration_seconds"}
+
+	bucketValues = map[string][][]*v3.MeterBucketValue{
+		"http_request_duration_seconds": {
+			{
+				&v3.MeterBucketValue{Bucket: math.Inf(-1), Count: int64(1000)},
+				&v3.MeterBucketValue{Bucket: float64(0.05), Count: int64(1500)},
+				&v3.MeterBucketValue{Bucket: float64(0.5), Count: int64(2000)},
+				&v3.MeterBucketValue{Bucket: float64(1), Count: int64(2500)},
+			},
+			{
+				&v3.MeterBucketValue{Bucket: math.Inf(-1), Count: int64(1100)},
+				&v3.MeterBucketValue{Bucket: float64(0.05), Count: int64(1600)},
+				&v3.MeterBucketValue{Bucket: float64(0.5), Count: int64(2100)},
+				&v3.MeterBucketValue{Bucket: float64(1), Count: int64(2600)},
+			},
+		},
+	}
+)
+
 func TestEndToEnd(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
@@ -239,46 +283,55 @@ func testEndToEnd(ctx context.Context, t *testing.T, targets []*testData) {
 	defer mp.Close()
 	t.Log(cfg)
 	fetch(ctx, cfg.ScrapeConfigs, outputChannel)
+
+	singleValueCollection := map[string][]float64{}
+	bucketValueCollection := map[string][][]*v3.MeterBucketValue{}
+
+OuterLoop:
 	for {
 		select {
 		case e := <-outputChannel:
-			targets[0].validateFunc(t, e)
+			targets[0].validateFunc(t, e, singleValueCollection, bucketValueCollection)
 		case <-ctx.Done():
-			return
+			break OuterLoop
 		}
+	}
+	verifyCollection(t, singleValueCollection, bucketValueCollection)
+}
+
+func verifyTarget1(t *testing.T, em *v1.SniffData, svc map[string][]float64, bvc map[string][][]*v3.MeterBucketValue) {
+	assert.Equal(t, em.GetMeter().Service, "target1", "Get meter service error")
+
+	if em.GetMeter().GetSingleValue() != nil {
+		single := em.GetMeter().GetSingleValue()
+		t.Log(single.GetName(), single.GetLabels(), single.GetValue())
+		assert.Assert(t, is.Contains(singleElems, single.GetName()), "Mismatch single meter name")
+		assert.Assert(t, is.Contains(singleValues[single.GetName()], single.GetValue()), "Mismatch single meter value")
+		svc[single.GetName()] = append(svc[single.GetName()], single.GetValue())
+	} else {
+		histogram := em.GetMeter().GetHistogram()
+		t.Log(histogram.GetName(), histogram.GetLabels(), histogram.GetValues())
+		assert.Assert(t, is.Contains(histogramElems, histogram.GetName()), "Mismatch histogram meter")
+		bvc[histogram.GetName()] = append(bvc[histogram.GetName()], histogram.GetValues())
 	}
 }
 
-func verifyTarget1(t *testing.T, em *v1.SniffData) {
-	assert.Equal(t, em.GetMeter().Service, "target1", "Get meter service error")
+func verifyCollection(t *testing.T, svc map[string][]float64, bvc map[string][][]*v3.MeterBucketValue) {
+	for k, v := range singleValues {
+		for i, e := range v {
+			assert.Equal(t, svc[k][i], e, fmt.Sprintf("%s collection has errors", k))
+		}
+		t.Log(fmt.Sprintf("%s  collection is OK", k))
+	}
 
-	singleElems := []string{
-		"go_threads",
-		"http_requests_total",
-		"rpc_duration_seconds",
-		"rpc_duration_seconds_count",
-		"rpc_duration_seconds_sum",
-		"http_request_duration_seconds_sum",
-		"http_request_duration_seconds_count",
-	}
-	singleValues := map[string][]float64{
-		"go_threads":                          {19, 18},
-		"http_requests_total":                 {100, 5, 199, 12},
-		"http_request_duration_seconds_sum":   {5000, 5050},
-		"http_request_duration_seconds_count": {2500, 2600},
-		"rpc_duration_seconds":                {1, 5, 6, 8},
-		"rpc_duration_seconds_sum":            {5000, 5002},
-		"rpc_duration_seconds_count":          {1000, 1001},
-	}
-	histogramElems := []string{"http_request_duration_seconds"}
-	if em.GetMeter().GetSingleValue() != nil {
-		single := em.GetMeter().GetSingleValue()
-		t.Log(single.GetName())
-		assert.Assert(t, is.Contains(singleElems, single.GetName()), "Mismatch single meter name")
-		assert.Assert(t, is.Contains(singleValues[single.GetName()], single.GetValue()), "Mismatch single meter value")
-	} else {
-		histogram := em.GetMeter().GetHistogram()
-		assert.Assert(t, is.Contains(histogramElems, histogram.GetName()), "Mismatch histogram meter")
+	for k, v := range bucketValues {
+		for i, e := range v {
+			for j, f := range e {
+				assert.Equal(t, bvc[k][i][j].Bucket, f.Bucket, fmt.Sprintf("%s collection has errors", k))
+				assert.Equal(t, bvc[k][i][j].Count, f.Count, fmt.Sprintf("%s collection has errors", k))
+			}
+		}
+		t.Log(fmt.Sprintf("%s  collection is OK", k))
 	}
 }
 

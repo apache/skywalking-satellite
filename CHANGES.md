@@ -7,6 +7,7 @@ Release Notes.
 #### Features
 
 #### Bug Fixes
+* Fix errors when converting meter data from histogram and summary.[#75](https://github.com/apache/skywalking-satellite/pull/75)
 
 #### Issues and PR
 - All issues are [here](https://github.com/apache/skywalking/milestone/93?closed=1)
