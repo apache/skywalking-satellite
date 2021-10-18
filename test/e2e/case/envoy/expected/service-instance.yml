@@ -16,9 +16,9 @@
 # under the License.
 
 {{- contains .}}
-- id: {{ b64enc "-.test-app-v1.-" }}.1_{{ b64enc "service-instance-name-v1" }}
+- id: {{ b64enc "test-app-v1" }}.1_{{ b64enc "service-instance-name-v1" }}
   name: service-instance-name-v1
   attributes: []
   language: UNKNOWN
-  instanceuuid: {{ b64enc "-.test-app-v1.-" }}.1_{{ b64enc "service-instance-name-v1" }}
+  instanceuuid: {{ b64enc "test-app-v1" }}.1_{{ b64enc "service-instance-name-v1" }}
 {{- end}}

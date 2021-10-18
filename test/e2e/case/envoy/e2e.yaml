@@ -65,8 +65,8 @@ verify:
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql service ls
       expected: expected/service.yml
     # basic check: service instance list
-    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql instance list --service-name=-.test-app-v1.-
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql instance list --service-name=test-app-v1
       expected: expected/service-instance.yml
     # als: logs list
-    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql logs list --service-name=-.test-app-v1.- |yq e 'del(.. | select(has("content")).content)' -
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql logs list --service-name=test-app-v1 |yq e 'del(.. | select(has("content")).content)' -
       expected: expected/logs-list.yml

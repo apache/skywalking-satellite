@@ -20,7 +20,7 @@
 - id: {{ b64enc "e2e-service-consumer" }}.1
   name: e2e-service-consumer
   group: ""
-- id: {{ b64enc "-.test-app-v1.-" }}.1
-  name: -.test-app-v1.-
+- id: {{ b64enc "test-app-v1" }}.1
+  name: test-app-v1
   group: ""
 {{- end }}
