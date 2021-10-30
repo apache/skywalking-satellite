@@ -34,26 +34,6 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
-      - uses: apache/skywalking-infra-e2e@d37840fb22f7c78f03ab5932bbdccf925cb5ef73
+      - uses: apache/skywalking-infra-e2e@main
         with:
           e2e-file: test/e2e/case/native-protocols/e2e.yaml
-  EnvoyE2E:
-    name: Envoy ALS/Metrics
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        envoy_version: [ 'v1.19.0', 'v1.16.2' ]
-    env:
-      ENVOY_VERSION: ${{ matrix.envoy_version }}
-    steps:
-      - name: Set up Go 1.16
-        uses: actions/setup-go@v2
-        with:
-          go-version: 1.16
-        id: go
-      - uses: actions/checkout@v2
-        with:
-          submodules: true
-      - uses: apache/skywalking-infra-e2e@d37840fb22f7c78f03ab5932bbdccf925cb5ef73
-        with:
-          e2e-file: test/e2e/case/envoy/e2e.yaml

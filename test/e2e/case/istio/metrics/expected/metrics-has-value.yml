@@ -13,9 +13,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SW_AGENT_JAVA_COMMIT=3997f0256056788bd054ee37e4603c11c0fd6756
-SW_OAP_COMMIT=b5578b68fd0d5d8e4543ad7d8fc9c3066ace456c
-SW_UI_COMMIT=b5578b68fd0d5d8e4543ad7d8fc9c3066ace456c
-SW_KUBERNETES_COMMIT_SHA=0f3ec68e5a7e1608cec8688716b848ed15e971e5
-
-SW_CTL_COMMIT=45a5f9807126dc6ea9fe06e17e7aafbe212436d2
+{{- contains . }}
+- key: {{ notEmpty .key }}
+  value: {{ ge .value 1 }}
+{{- end }}

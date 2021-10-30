@@ -13,18 +13,23 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-rules:
-  - name: envoy-als
-    dsl: |
-      filter {
-        extractor {
-          if (parsed?.response?.responseCode) {
-            tag 'status.code': parsed?.response?.responseCode?.value
-          }
-          if (parsed?.request?.path) {
-            tag 'request.path': parsed?.request?.path
-          }
-        }
-        sink {
-        }
-      }
+{{- contains . }}
+- id: {{ b64enc "istio-dp::e2e::istio-egressgateway" }}.1
+  name: istio-dp::e2e::istio-egressgateway
+  group: ""
+- id: {{ b64enc "istio-dp::e2e::istio-ingressgateway" }}.1
+  name: istio-dp::e2e::istio-ingressgateway
+  group: ""
+- id: {{ b64enc "istio-dp::e2e::reviews" }}.1
+  name: istio-dp::e2e::reviews
+  group: ""
+- id: {{ b64enc "istio-dp::e2e::productpage" }}.1
+  name: istio-dp::e2e::productpage
+  group: ""
+- id: {{ b64enc "istio-dp::e2e::details" }}.1
+  name: istio-dp::e2e::details
+  group: ""
+- id: {{ b64enc "istio-dp::e2e::ratings" }}.1
+  name: istio-dp::e2e::ratings
+  group: ""
+{{- end }}

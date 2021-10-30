@@ -13,14 +13,29 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- contains . }}
-- id: {{ b64enc "e2e-service-provider" }}.1
-  name: e2e-service-provider
-  group: ""
-- id: {{ b64enc "e2e-service-consumer" }}.1
-  name: e2e-service-consumer
-  group: ""
-- id: {{ b64enc "test-app-v1" }}.1
-  name: test-app-v1
-  group: ""
+nodes:
+{{- contains .nodes }}
+- id: {{ notEmpty .id }}
+  name: {{ notEmpty .name }}
+  serviceid: {{ b64enc "e2e::reviews" }}.1
+  servicename: e2e::reviews
+  type: http
+  isreal: true
+- id: {{ notEmpty .id }}
+  name: {{ notEmpty .name }}
+  serviceid: {{ b64enc "e2e::productpage" }}.1
+  servicename: e2e::productpage
+  type: ""
+  isreal: true
+{{- end }}
+calls:
+{{- contains .calls }}
+- source: {{ notEmpty .source }}
+  sourcecomponents: []
+  target: {{ notEmpty .target }}
+  targetcomponents: []
+  id: {{ notEmpty .source }}-{{ notEmpty .target }}
+  detectpoints:
+    - CLIENT
+    - SERVER
 {{- end }}
