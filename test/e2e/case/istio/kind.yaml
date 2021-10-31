@@ -13,23 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-logs:
-  {{- contains .logs }}
-  - servicename: test-app-v1
-    serviceid: {{ b64enc "test-app-v1" }}.1
-    serviceinstancename: service-instance-name-v1
-    serviceinstanceid: {{ b64enc "test-app-v1" }}.1_{{ b64enc "service-instance-name-v1" }}
-    endpointname: null
-    endpointid: null
-    traceid: null
-    timestamp: {{ gt .timestamp 0 }}
-    contenttype: JSON
-    tags:
-      {{- contains .tags }}
-      - key: status.code
-        value: "200"
-      - key: request.path
-        value: "/info"
-      {{- end }}
-  {{- end }}
-total: {{ gt .total 0 }}
+# this config file contains all config fields with comments
+# NOTE: this is not a particularly useful config file
+kind: Cluster
+apiVersion: kind.x-k8s.io/v1alpha4
+nodes:
+  # the control plane node config
+  - role: control-plane
+  # the three workers
+  - role: worker
+  - role: worker
+  - role: worker
