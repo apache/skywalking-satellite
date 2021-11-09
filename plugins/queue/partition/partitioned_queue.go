@@ -34,8 +34,8 @@ import (
 
 type PartitionedQueue struct {
 	config.CommonFields
-	PartitionCount int `mapstructure:"partition_count"` // The total partition count.
-	config         plugin.Config
+	Partition int `mapstructure:"partition"` // The total partition count.
+	config    plugin.Config
 
 	subQueues         []api.Queue
 	loadBalancerIndex int32
@@ -49,9 +49,9 @@ func NewPartitionQueue(c plugin.Config) *PartitionedQueue {
 }
 
 func (p *PartitionedQueue) Initialize() error {
-	queues := make([]api.Queue, p.PartitionCount)
+	queues := make([]api.Queue, p.Partition)
 	pipeName := p.PipeName
-	for partition := 0; partition < p.PartitionCount; partition++ {
+	for partition := 0; partition < p.Partition; partition++ {
 		p.config["pipe_name"] = fmt.Sprintf("%s-%d", p.config["pipe_name"], partition)
 		queue := plugin.Get(reflect.TypeOf((*api.Queue)(nil)).Elem(), p.config).(api.Queue)
 		if err := queue.Initialize(); err != nil {
@@ -68,7 +68,7 @@ func (p *PartitionedQueue) Initialize() error {
 func (p *PartitionedQueue) DefaultConfig() string {
 	return `
 # The partition count of queue.
-partition_count: 1
+partition: 1
 `
 }
 
@@ -114,7 +114,7 @@ func (p *PartitionedQueue) Ack(lastOffset *event.Offset) {
 }
 
 func (p *PartitionedQueue) findPartition(_ *v1.SniffData) (int, error) {
-	if p.PartitionCount == 1 {
+	if p.Partition == 1 {
 		return 0, nil
 	}
 
@@ -124,7 +124,7 @@ func (p *PartitionedQueue) findPartition(_ *v1.SniffData) (int, error) {
 		result := atomic.AddInt32(&p.loadBalancerIndex, 1)
 		partition = int(result)
 
-		if partition < p.PartitionCount {
+		if partition < p.Partition {
 			break
 		} else if atomic.CompareAndSwapInt32(&p.loadBalancerIndex, result, 0) {
 			partition = 0
@@ -136,10 +136,10 @@ func (p *PartitionedQueue) findPartition(_ *v1.SniffData) (int, error) {
 	if !p.subQueues[partition].IsFull() {
 		return partition, nil
 	}
-	for addition := 1; addition < p.PartitionCount; addition++ {
+	for addition := 1; addition < p.Partition; addition++ {
 		checkPartition := partition + addition
-		if checkPartition >= p.PartitionCount {
-			checkPartition -= p.PartitionCount
+		if checkPartition >= p.Partition {
+			checkPartition -= p.Partition
 		}
 		if !p.subQueues[checkPartition].IsFull() {
 			return checkPartition, nil

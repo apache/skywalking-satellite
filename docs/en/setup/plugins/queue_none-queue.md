@@ -4,10 +4,10 @@ This is an empty queue for direct connection protocols, such as SkyWalking nativ
 ## DefaultConfig
 ```yaml
 # The partition count of queue.
-partition_count: 1
+partition: 1
 ```
 ## Configuration
 |Name|Type|Description|
 |----|----|-----------|
-| partition_count | int | The total partition count. |
+| partition | int | The total partition count. |
 

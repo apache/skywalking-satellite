@@ -137,7 +137,7 @@ func pipes() []*PipeConfig {
 					"commonfields_pipe_name": "logpipe",
 					"plugin_name":            "memory-queue",
 					"event_buffer_size":      5000,
-					"partition_count":        1,
+					"partition":              1,
 				},
 			},
 			Processor: &processor.ProcessorConfig{

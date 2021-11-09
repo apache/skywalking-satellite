@@ -116,7 +116,7 @@ func TestPartitionQueue(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			queue, err := initPartitionQueue("memory-queue", map[string]interface{}{
 				"event_buffer_size": tt.bufferSize,
-				"partition_count":   tt.partitionCount,
+				"partition":         tt.partitionCount,
 			})
 			if err != nil {
 				t.Fatal(err)
