@@ -31,6 +31,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
 	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
+	"github.com/apache/skywalking-satellite/plugins/queue/partition"
 )
 
 type FetcherGatherer struct {
@@ -39,10 +40,10 @@ type FetcherGatherer struct {
 
 	// dependency plugins
 	runningFetcher fetcher.Fetcher
-	runningQueue   queue.Queue
+	runningQueue   *partition.PartitionedQueue
 
 	// self components
-	outputChannel chan *queue.SequenceEvent
+	outputChannel []chan *queue.SequenceEvent
 
 	// metrics
 	fetchCounter       *telemetry.Counter
@@ -58,6 +59,10 @@ func (f *FetcherGatherer) Prepare() error {
 		log.Logger.WithField("pipe", f.config.PipeName).Infof("the %s queue failed when initializing", f.runningQueue.Name())
 		return err
 	}
+	f.outputChannel = make([]chan *queue.SequenceEvent, f.runningQueue.TotalPartitionCount())
+	for p := 0; p < f.runningQueue.TotalPartitionCount(); p++ {
+		f.outputChannel[p] = make(chan *queue.SequenceEvent)
+	}
 	f.fetchCounter = telemetry.NewCounter("gatherer_fetch_count", "Total number of the receiving count in the Gatherer.", "pipe", "status")
 	f.queueOutputCounter = telemetry.NewCounter("queue_output_count", "Total number of the output count in the Queue of Gatherer.", "pipe", "status")
 	return nil
@@ -66,7 +71,7 @@ func (f *FetcherGatherer) Prepare() error {
 func (f *FetcherGatherer) Boot(ctx context.Context) {
 	log.Logger.WithField("pipe", f.config.PipeName).Info("fetch_gatherer module is starting...")
 	var wg sync.WaitGroup
-	wg.Add(2)
+	wg.Add(f.PartitionCount() + 1)
 	go func() {
 		defer wg.Done()
 		childCtx, cancel := context.WithCancel(ctx)
@@ -87,6 +92,13 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 		}
 	}()
 
+	for p := 0; p < f.PartitionCount(); p++ {
+		f.consumeQueue(ctx, p, &wg)
+	}
+	wg.Wait()
+}
+
+func (f *FetcherGatherer) consumeQueue(ctx context.Context, p int, wg *sync.WaitGroup) {
 	go func() {
 		defer wg.Done()
 		childCtx, cancel := context.WithCancel(ctx)
@@ -97,8 +109,8 @@ func (f *FetcherGatherer) Boot(ctx context.Context) {
 				f.Shutdown()
 				return
 			default:
-				if e, err := f.runningQueue.Dequeue(); err == nil {
-					f.outputChannel <- e
+				if e, err := f.runningQueue.Dequeue(p); err == nil {
+					f.outputChannel[p] <- e
 					f.queueOutputCounter.Inc(f.config.PipeName, "success")
 				} else if err == queue.ErrEmpty {
 					time.Sleep(time.Second)
@@ -120,11 +132,15 @@ func (f *FetcherGatherer) Shutdown() {
 	}
 }
 
-func (f *FetcherGatherer) OutputDataChannel() <-chan *queue.SequenceEvent {
-	return f.outputChannel
+func (f *FetcherGatherer) PartitionCount() int {
+	return len(f.outputChannel)
 }
 
-func (f *FetcherGatherer) Ack(lastOffset event.Offset) {
+func (f *FetcherGatherer) OutputDataChannel(index int) <-chan *queue.SequenceEvent {
+	return f.outputChannel[index]
+}
+
+func (f *FetcherGatherer) Ack(lastOffset *event.Offset) {
 	f.runningQueue.Ack(lastOffset)
 }
 

@@ -79,6 +79,8 @@ pipes:
         plugin_name: "memory-queue"
         # The maximum buffer event size.
         event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+        # The partition count of queue.
+        partition_count: ${SATELLITE_QUEUE_PARTITION_COUNT:1}
     processor:
       filters:
     sender:
@@ -103,6 +105,8 @@ pipes:
         plugin_name: "memory-queue"
         # The maximum buffer event size.
         event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+        # The partition count of queue.
+        partition_count: ${SATELLITE_QUEUE_PARTITION_COUNT:1}
     processor:
       filters:
     sender:
@@ -127,6 +131,8 @@ pipes:
         plugin_name: "memory-queue"
         # The maximum buffer event size.
         event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+        # The partition count of queue.
+        partition_count: ${SATELLITE_QUEUE_PARTITION_COUNT:1}
     processor:
       filters:
     sender:
@@ -151,6 +157,8 @@ pipes:
         plugin_name: "memory-queue"
         # The maximum buffer event size.
         event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+        # The partition count of queue.
+        partition_count: ${SATELLITE_QUEUE_PARTITION_COUNT:1}
     processor:
       filters:
     sender:
@@ -189,6 +197,10 @@ pipes:
         plugin_name: "grpc-nativeevent-receiver"
       queue:
         plugin_name: "memory-queue"
+        # The maximum buffer event size.
+        event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+        # The partition count of queue.
+        partition_count: ${SATELLITE_QUEUE_PARTITION_COUNT:1}
     processor:
       filters:
     sender:
@@ -211,6 +223,10 @@ pipes:
         plugin_name: "grpc-nativejvm-receiver"
       queue:
         plugin_name: "memory-queue"
+        # The maximum buffer event size.
+        event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+        # The partition count of queue.
+        partition_count: ${SATELLITE_QUEUE_PARTITION_COUNT:1}
     processor:
       filters:
     sender:
@@ -233,6 +249,10 @@ pipes:
         plugin_name: "grpc-nativemeter-receiver"
       queue:
         plugin_name: "memory-queue"
+        # The maximum buffer event size.
+        event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+        # The partition count of queue.
+        partition_count: ${SATELLITE_QUEUE_PARTITION_COUNT:1}
     processor:
       filters:
     sender:
@@ -259,6 +279,10 @@ pipes:
         limit_count: ${SATELLITE_ENVOY_ALS_V2_PIPE_RECEIVER_LIMIT_COUNT:500}
       queue:
         plugin_name: "memory-queue"
+        # The maximum buffer event size.
+        event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+        # The partition count of queue.
+        partition_count: ${SATELLITE_QUEUE_PARTITION_COUNT:1}
     processor:
       filters:
     sender:
@@ -285,6 +309,10 @@ pipes:
         limit_count: ${SATELLITE_ENVOY_ALS_V3_PIPE_RECEIVER_LIMIT_COUNT:500}
       queue:
         plugin_name: "memory-queue"
+        # The maximum buffer event size.
+        event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+        # The partition count of queue.
+        partition_count: ${SATELLITE_QUEUE_PARTITION_COUNT:1}
     processor:
       filters:
     sender:
@@ -311,6 +339,10 @@ pipes:
         limit_count: ${SATELLITE_ENVOY_METRICS_V2_PIPE_RECEIVER_LIMIT_COUNT:500}
       queue:
         plugin_name: "memory-queue"
+        # The maximum buffer event size.
+        event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+        # The partition count of queue.
+        partition_count: ${SATELLITE_QUEUE_PARTITION_COUNT:1}
     processor:
       filters:
     sender:
@@ -337,6 +369,10 @@ pipes:
         limit_count: ${SATELLITE_ENVOY_METRICS_V3_PIPE_RECEIVER_LIMIT_COUNT:500}
       queue:
         plugin_name: "memory-queue"
+        # The maximum buffer event size.
+        event_buffer_size: ${SATELLITE_QUEUE_EVENT_BUFFER_SIZE:5000}
+        # The partition count of queue.
+        partition_count: ${SATELLITE_QUEUE_PARTITION_COUNT:1}
     processor:
       filters:
     sender:

@@ -54,14 +54,21 @@ func (p *Processor) Prepare() error {
 func (p *Processor) Boot(ctx context.Context) {
 	log.Logger.WithField("pipe", p.config.PipeName).Info("processor module is starting...")
 	var wg sync.WaitGroup
-	wg.Add(1)
+	wg.Add(p.gatherer.PartitionCount())
+	for partition := 0; partition < p.gatherer.PartitionCount(); partition++ {
+		p.processPerPartition(ctx, partition, &wg)
+	}
+	wg.Wait()
+}
+
+func (p *Processor) processPerPartition(ctx context.Context, partition int, wg *sync.WaitGroup) {
 	go func() {
 		childCtx, cancel := context.WithCancel(ctx)
 		defer wg.Done()
 		for {
 			select {
 			// receive the input event from the output channel of the gatherer
-			case e := <-p.gatherer.OutputDataChannel():
+			case e := <-p.gatherer.OutputDataChannel(partition):
 				c := &event.OutputEventContext{
 					Offset:  e.Offset,
 					Context: make(map[string]*v1.SniffData),
@@ -72,7 +79,7 @@ func (p *Processor) Boot(ctx context.Context) {
 					f.Process(c)
 				}
 				// send the final context that contains many events to the sender.
-				p.sender.InputDataChannel() <- c
+				p.sender.InputDataChannel(partition) <- c
 			case <-childCtx.Done():
 				cancel()
 				p.Shutdown()
@@ -80,7 +87,6 @@ func (p *Processor) Boot(ctx context.Context) {
 			}
 		}
 	}()
-	wg.Wait()
 }
 
 func (p *Processor) Shutdown() {

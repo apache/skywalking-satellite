@@ -32,6 +32,10 @@ const (
 	Name = "memory-queue"
 )
 
+var DefaultOffset = &event.Offset{
+	Position: "",
+}
+
 type Queue struct {
 	config.CommonFields
 	// config
@@ -77,7 +81,7 @@ func (q *Queue) Dequeue() (*api.SequenceEvent, error) {
 	}
 	return &api.SequenceEvent{
 		Event:  element.(*v1.SniffData),
-		Offset: "no_offset_in_memory_queue",
+		Offset: DefaultOffset,
 	}, nil
 }
 
@@ -85,5 +89,17 @@ func (q *Queue) Close() error {
 	return nil
 }
 
-func (q *Queue) Ack(_ event.Offset) {
+func (q *Queue) Ack(_ *event.Offset) {
+}
+
+func (q *Queue) TotalSize() int64 {
+	return int64(q.EventBufferSize)
+}
+
+func (q *Queue) UsedCount() int64 {
+	return int64(q.buffer.GetLen())
+}
+
+func (q *Queue) IsFull() bool {
+	return q.UsedCount() >= q.TotalSize()
 }

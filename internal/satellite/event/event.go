@@ -26,7 +26,10 @@ import (
 type Type int32
 
 // Offset is a generic form, which allows having different definitions in different Queues.
-type Offset string
+type Offset struct {
+	Partition int
+	Position  string
+}
 
 // BatchEvents is used by Forwarder to forward.
 type BatchEvents []*v1.SniffData
@@ -34,7 +37,7 @@ type BatchEvents []*v1.SniffData
 // OutputEventContext is a container to store the output context.
 type OutputEventContext struct {
 	Context map[string]*v1.SniffData
-	Offset  Offset
+	Offset  *Offset
 }
 
 // Put puts the incoming event into the context.
@@ -50,4 +53,11 @@ func (c *OutputEventContext) Get(eventName string) (*v1.SniffData, error) {
 		return nil, err
 	}
 	return e, nil
+}
+
+func (o *Offset) String() string {
+	if o == nil {
+		return ""
+	}
+	return fmt.Sprintf("%d_%s", o.Partition, o.Position)
 }

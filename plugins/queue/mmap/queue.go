@@ -73,6 +73,7 @@ type Queue struct {
 	markReadChannel        chan int64     // Transfer the read segmentID to do ummap operation.
 	ready                  bool           // The status of the queue.
 	locker                 []int32        // locker
+	usedSize               int64          // The used size of queue
 
 	// control components
 	ctx        context.Context    // Parent ctx
@@ -208,7 +209,7 @@ func (q *Queue) Close() error {
 	return nil
 }
 
-func (q *Queue) Ack(lastOffset event.Offset) {
+func (q *Queue) Ack(lastOffset *event.Offset) {
 	if !q.ready {
 		log.Logger.WithFields(logrus.Fields{
 			"pipe":   q.CommonFields.PipeName,
@@ -269,8 +270,7 @@ func (q *Queue) isEmpty() bool {
 	return rid == wid && roffset == woffset
 }
 
-// isEmpty returns the capacity status
-func (q *Queue) isFull() bool {
+func (q *Queue) IsFull() bool {
 	rid, _ := q.meta.GetReadingOffset()
 	wid, _ := q.meta.GetWritingOffset()
 	// ensure enough spaces to promise data stability.
@@ -279,13 +279,13 @@ func (q *Queue) isFull() bool {
 }
 
 // encode the meta to the offset
-func (q *Queue) encodeOffset(id, offset int64) event.Offset {
-	return event.Offset(strconv.FormatInt(id, 10) + "-" + strconv.FormatInt(offset, 10))
+func (q *Queue) encodeOffset(id, offset int64) *event.Offset {
+	return &event.Offset{Position: strconv.FormatInt(id, 10) + "-" + strconv.FormatInt(offset, 10)}
 }
 
 // decode the offset to the meta of the mmap queue.
-func (q *Queue) decodeOffset(val event.Offset) (id, offset int64, err error) {
-	arr := strings.Split(string(val), "-")
+func (q *Queue) decodeOffset(val *event.Offset) (id, offset int64, err error) {
+	arr := strings.Split(val.Position, "-")
 	if len(arr) == 2 {
 		id, err := strconv.ParseInt(arr[0], 10, 64)
 		if err != nil {
@@ -298,4 +298,12 @@ func (q *Queue) decodeOffset(val event.Offset) (id, offset int64, err error) {
 		return id, offset, nil
 	}
 	return 0, 0, fmt.Errorf("the input offset string is illegal: %s", val)
+}
+
+func (q *Queue) TotalSize() int64 {
+	return int64(q.QueueCapacitySegments * q.SegmentSize)
+}
+
+func (q *Queue) UsedCount() int64 {
+	return q.usedSize
 }

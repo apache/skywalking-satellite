@@ -25,8 +25,8 @@ import (
 // BatchBuffer is a buffer to cache the input data in Sender.
 type BatchBuffer struct {
 	buf   []*event.OutputEventContext // cache
-	first event.Offset                // the first OutputEventContext offset
-	last  event.Offset                // the last OutputEventContext offset
+	first *event.Offset               // the first OutputEventContext offset
+	last  *event.Offset               // the last OutputEventContext offset
 	size  int                         // usage size
 	cap   int                         // the max capacity
 }
@@ -35,8 +35,8 @@ type BatchBuffer struct {
 func NewBatchBuffer(capacity int) *BatchBuffer {
 	return &BatchBuffer{
 		buf:   make([]*event.OutputEventContext, capacity),
-		first: "",
-		last:  "",
+		first: nil,
+		last:  nil,
 		size:  0,
 		cap:   capacity,
 	}
@@ -48,12 +48,12 @@ func (b *BatchBuffer) Buf() []*event.OutputEventContext {
 }
 
 // First returns the first OutputEventContext offset.
-func (b *BatchBuffer) First() event.Offset {
+func (b *BatchBuffer) First() *event.Offset {
 	return b.first
 }
 
 // Last returns the last OutputEventContext offset.
-func (b *BatchBuffer) Last() event.Offset {
+func (b *BatchBuffer) Last() *event.Offset {
 	return b.last
 }
 
@@ -67,15 +67,14 @@ func (b *BatchBuffer) Add(data *event.OutputEventContext) {
 	if b.size == b.cap {
 		log.Logger.Errorf("cannot add one item to the fulling BatchBuffer, the capacity is %d", b.cap)
 		return
-	} else if data.Offset == "" {
+	} else if data.Offset == nil {
 		log.Logger.Errorf("cannot add one item to BatchBuffer because the input data is illegal, the offset is empty")
 		return
 	}
 	if b.size == 0 {
 		b.first = data.Offset
-	} else {
-		b.last = data.Offset
 	}
+	b.last = data.Offset
 	b.buf[b.size] = data
 	b.size++
 }

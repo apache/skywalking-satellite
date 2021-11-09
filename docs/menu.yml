@@ -27,13 +27,13 @@ catalog:
               path: /en/concepts-and-designs/project-goals
         - name: Design
           catalog:
-            - name: Module Design
+            - name: Module design
               path: /en/concepts-and-designs/module_design
             - name: Plugin mechanism
               path: /en/concepts-and-designs/plugin_mechanism
-            - name: Project Structure
+            - name: Project structure
               path: /en/concepts-and-designs/project_structue
-            - name: The design of the memory mapped queue
+            - name: Memory mapped queue
               path: /en/concepts-and-designs/mmap-queue
     - name: Setup
       catalog:
@@ -49,12 +49,14 @@ catalog:
               path: /en/setup/configuration/override-settings
         - name: Examples
           catalog:
-            - name: Transmit protocol from agent
-              path: /en/setup/examples/transmit-protocol-from-agent/readme
+            - name: Forward agent data to OAP server
+              path: /en/setup/examples/forward-agent-data-to-oap-server/readme
             - name: Transmit log to kafka
               path: /en/setup/examples/transmit-log-to-kafka/readme
             - name: GRPC load balance client
               path: /en/setup/examples/grpc-load-balance-client/readme
+            - name: High throughput queue
+              path: /en/setup/examples/high-throughput-queue/readme
         - name: Plugins
           catalog:
             - name: client

@@ -18,8 +18,6 @@
 package sender
 
 import (
-	"github.com/apache/skywalking-satellite/internal/satellite/event"
-	"github.com/apache/skywalking-satellite/internal/satellite/module/buffer"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/sharing"
 	client "github.com/apache/skywalking-satellite/plugins/client/api"
@@ -34,10 +32,7 @@ func NewSender(cfg *api.SenderConfig) api.Sender {
 		runningForwarders: []forwarder.Forwarder{},
 		runningFallbacker: fallbacker.GetFallbacker(cfg.FallbackerConfig),
 		runningClient:     sharing.Manager[cfg.ClientName].(client.Client),
-		input:             make(chan *event.OutputEventContext),
 		listener:          make(chan client.ClientStatus),
-		flushChannel:      make(chan *buffer.BatchBuffer, 1),
-		buffer:            buffer.NewBatchBuffer(cfg.MaxBufferSize),
 	}
 	for _, c := range s.config.ForwardersConfig {
 		s.runningForwarders = append(s.runningForwarders, forwarder.GetForwarder(c))

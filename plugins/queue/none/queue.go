@@ -61,5 +61,17 @@ func (q *Queue) Close() error {
 	return nil
 }
 
-func (q *Queue) Ack(_ event.Offset) {
+func (q *Queue) Ack(_ *event.Offset) {
+}
+
+func (q *Queue) TotalSize() int64 {
+	return 0
+}
+
+func (q *Queue) UsedCount() int64 {
+	return 0
+}
+
+func (q *Queue) IsFull() bool {
+	return false
 }

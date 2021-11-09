@@ -61,6 +61,7 @@ limit_count: 500
 func (r *Receiver) RegisterHandler(server interface{}) {
 	r.CommonGRPCReceiverFields = *grpc.InitCommonGRPCReceiverFields(server)
 	r.service = &AlsService{receiveChannel: r.OutputChannel, limiterConfig: r.LimitConfig}
+	r.service.init()
 	v3.RegisterAccessLogServiceServer(r.Server, r.service)
 }
 

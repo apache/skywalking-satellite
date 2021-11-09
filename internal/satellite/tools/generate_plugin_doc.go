@@ -29,6 +29,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/apache/skywalking-satellite/plugins/queue/partition"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins"
@@ -48,6 +50,8 @@ const (
 	markdownSuffix = ".md"
 
 	commentPrefix = "/ "
+
+	categoryQueue = "Queue"
 )
 
 func GeneratePluginDoc(outputRootPath, menuFilePath, pluginFilePath string) error {
@@ -148,7 +152,7 @@ func generatePluginDoc(docDir string, category reflect.Type, pluginName string) 
 	docRes += p.Description() + lf
 	docRes += generateSupportForwarders(category, p)
 	docRes += secondLevel + "DefaultConfig" + lf
-	docRes += yamlQuoteStart + p.DefaultConfig() + yamlQuoteEnd + lf
+	docRes += yamlQuoteStart + generateDefaultConfig(category, p) + yamlQuoteEnd + lf
 	docRes += secondLevel + "Configuration" + lf
 	docRes += generateConfiguration(category, p) + lf
 	return writeDoc([]byte(docRes), docFileName)
@@ -164,6 +168,15 @@ func GetModuleName() string {
 	return modName
 }
 
+func generateDefaultConfig(category reflect.Type, p plugin.Plugin) string {
+	configs := p.DefaultConfig()
+	if category.Name() == categoryQueue {
+		partitionQueue := &partition.PartitionedQueue{}
+		configs = fmt.Sprintf("%s%s", configs, partitionQueue.DefaultConfig())
+	}
+	return configs
+}
+
 func generateConfiguration(category reflect.Type, p plugin.Plugin) string {
 	var content = ""
 
@@ -174,6 +187,12 @@ func generateConfiguration(category reflect.Type, p plugin.Plugin) string {
 	eachConfigurationItem(configurations, "", func(name, dataType, desc string) {
 		content += fmt.Sprintf("| %s | %s | %s |%s", name, dataType, desc, lf)
 	})
+	if category.Name() == categoryQueue {
+		configurations := getConfigurations(category, reflect.TypeOf(&partition.PartitionedQueue{}).Elem())
+		eachConfigurationItem(configurations, "", func(name, dataType, desc string) {
+			content += fmt.Sprintf("| %s | %s | %s |%s", name, dataType, desc, lf)
+		})
+	}
 
 	return content
 }
@@ -247,13 +266,21 @@ func getConfigurations(category, p reflect.Type) []*pluginConfigurationItem {
 
 // parse field to configuration item
 func parsePluginConfigurationItem(field *ast.Field, pType reflect.Type) (*pluginConfigurationItem, *pluginChildrenFinder) {
-	if field.Names == nil || field.Tag == nil {
+	if field.Tag == nil {
 		return nil, nil
 	}
 
 	var fieldName = ""
-	for _, n := range field.Names {
-		fieldName += n.Name
+	if field.Names != nil {
+		for _, n := range field.Names {
+			fieldName += n.Name
+		}
+	} else {
+		expr, ok := field.Type.(*ast.SelectorExpr)
+		if !ok {
+			return nil, nil
+		}
+		fieldName = expr.Sel.Name
 	}
 
 	pluginField, find := pType.FieldByName(fieldName)

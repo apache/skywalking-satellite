@@ -20,11 +20,14 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+//go:build !windows
 // +build !windows
 
 package mmap
 
 import (
+	"sync/atomic"
+
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
 )
 
@@ -43,11 +46,12 @@ const uInt64Size = 8
 // enqueue writes the data into the file system. It first writes the length of the data,
 // then the data itself. It means the whole data may not exist in the one segments.
 func (q *Queue) enqueue(bytes []byte) error {
-	if q.isFull() {
+	if q.IsFull() {
 		return api.ErrFull
 	}
 	id, offset := q.meta.GetWritingOffset()
-	id, offset, err := q.writeLength(len(bytes), id, offset)
+	byteSize := len(bytes)
+	id, offset, err := q.writeLength(byteSize, id, offset)
 	if err != nil {
 		return err
 	}
@@ -61,6 +65,7 @@ func (q *Queue) enqueue(bytes []byte) error {
 		q.flushChannel <- struct{}{}
 		q.unflushedNum = 0
 	}
+	atomic.AddInt64(&q.usedSize, int64(byteSize))
 	return nil
 }
 
@@ -83,6 +88,7 @@ func (q *Queue) dequeue() (data []byte, rid, roffset int64, err error) {
 	if id != preID {
 		q.markReadChannel <- preID
 	}
+	atomic.AddInt64(&q.usedSize, int64(-len(bytes)))
 	return bytes, id, offset, nil
 }
 

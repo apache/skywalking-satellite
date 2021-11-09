@@ -23,6 +23,7 @@ import (
 	"time"
 
 	"github.com/apache/skywalking-satellite/internal/satellite/module/buffer"
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 
 	v3 "skywalking.apache.org/repo/goapi/proto/envoy/service/accesslog/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
@@ -34,6 +35,22 @@ type AlsService struct {
 	receiveChannel chan *v1.SniffData
 	limiterConfig  buffer.LimiterConfig
 	v3.UnimplementedAccessLogServiceServer
+
+	messageCount          *telemetry.Counter
+	streamingCount        *telemetry.Counter
+	streamingFailedCount  *telemetry.Counter
+	streamingToEventCount *telemetry.Counter
+}
+
+func (m *AlsService) init() {
+	m.messageCount = telemetry.NewCounter("als_message_receive_count",
+		"Total count of the receive message in the ALS Receiver.")
+	m.streamingCount = telemetry.NewCounter("als_streaming_receive_count",
+		"Total count of the receive stream in the ALS Receiver.")
+	m.streamingFailedCount = telemetry.NewCounter("als_streaming_receive_failed_count",
+		"Total count of the failed receive message in the ALS Receiver.")
+	m.streamingToEventCount = telemetry.NewCounter("als_streaming_to_event_count",
+		"Total count of the packaged the ALS streaming in the ALS Receiver.")
 }
 
 func (m *AlsService) StreamAccessLogs(stream v3.AccessLogService_StreamAccessLogsServer) error {
@@ -68,6 +85,7 @@ func (m *AlsService) StreamAccessLogs(stream v3.AccessLogService_StreamAccessLog
 				},
 			},
 		}
+		m.streamingToEventCount.Inc()
 		m.receiveChannel <- d
 	})
 
@@ -75,11 +93,18 @@ func (m *AlsService) StreamAccessLogs(stream v3.AccessLogService_StreamAccessLog
 	for {
 		item, err := stream.Recv()
 		if err != nil {
+			m.streamingFailedCount.Inc()
 			err1 = err
 			break
 		}
 		if item.Identifier != nil {
 			identity = item.Identifier
+		}
+		m.streamingCount.Inc()
+		if item.GetHttpLogs() != nil {
+			m.messageCount.Add(float64(len(item.GetHttpLogs().LogEntry)))
+		} else if item.GetTcpLogs() != nil {
+			m.messageCount.Add(float64(len(item.GetTcpLogs().LogEntry)))
 		}
 		messages <- item
 		limiter.Check()

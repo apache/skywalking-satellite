@@ -57,17 +57,18 @@ type Sender struct {
 	gatherer gatherer.Gatherer
 
 	// self components
-	input        chan *event.OutputEventContext // physical input channel
-	listener     chan client.ClientStatus       // client status listener
-	flushChannel chan *buffer.BatchBuffer       // forwarder flush channel
-	buffer       *buffer.BatchBuffer            // cache the downstream input data
-	blocking     int32                          // the status of input channel
+	inputs       []chan *event.OutputEventContext // physical input channel of partitions
+	listener     chan client.ClientStatus         // client status listener
+	flushChannel []chan *buffer.BatchBuffer       // forwarder flush channel
+	buffers      []*buffer.BatchBuffer            // cache the downstream petitioned input data
+	blocking     int32                            // the status of input channel
+	shutdownOnce sync.Once
 
 	// metrics
 	sendCounter *telemetry.Counter
 }
 
-// Prepare register the client status listener to the client manager and open input channel.
+// Prepare register the client status listener to the client manager and open partitioned input channel.
 func (s *Sender) Prepare() error {
 	log.Logger.WithField("pipe", s.config.PipeName).Info("sender module is preparing...")
 	s.runningClient.RegisterListener(s.listener)
@@ -77,25 +78,35 @@ func (s *Sender) Prepare() error {
 			return err
 		}
 	}
+	s.inputs = make([]chan *event.OutputEventContext, s.gatherer.PartitionCount())
+	s.buffers = make([]*buffer.BatchBuffer, s.gatherer.PartitionCount())
+	s.flushChannel = make([]chan *buffer.BatchBuffer, s.gatherer.PartitionCount())
+	for partition := 0; partition < s.gatherer.PartitionCount(); partition++ {
+		s.inputs[partition] = make(chan *event.OutputEventContext)
+		s.buffers[partition] = buffer.NewBatchBuffer(s.config.MaxBufferSize)
+		s.flushChannel[partition] = make(chan *buffer.BatchBuffer)
+	}
 	s.sendCounter = telemetry.NewCounter("sender_output_count", "Total number of the output count in the Sender.", "pipe", "status", "type")
 	return nil
 }
 
-// Boot fetches the downstream input data and forward to external services, such as Kafka and OAP receiver.
+// Boot fetches the downstream partitioned input data and forward to external services, such as Kafka and OAP receiver.
 func (s *Sender) Boot(ctx context.Context) {
 	log.Logger.WithField("pipe", s.config.PipeName).Info("sender module is starting...")
 	var wg sync.WaitGroup
-	wg.Add(3)
-	go s.store(ctx, &wg)
+	wg.Add(2*s.gatherer.PartitionCount() + 1)
 	go s.listen(ctx, &wg)
-	go s.flush(ctx, &wg)
+	for partition := 0; partition < s.gatherer.PartitionCount(); partition++ {
+		go s.store(ctx, partition, &wg)
+		go s.flush(ctx, partition, &wg)
+	}
 	wg.Wait()
 }
 
 // store data.
 // 1. keep fetching the downstream data when client connected, and put it into BatchBuffer.
 // 2. When reaches the buffer limit or receives a timer flush signal, and put BatchBuffer into flushChannel.
-func (s *Sender) store(ctx context.Context, wg *sync.WaitGroup) {
+func (s *Sender) store(ctx context.Context, partition int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	defer log.Logger.WithField("pipe", s.config.PipeName).Infof("store routine closed")
 	childCtx, _ := context.WithCancel(ctx) // nolint
@@ -114,18 +125,18 @@ func (s *Sender) store(ctx context.Context, wg *sync.WaitGroup) {
 		case <-childCtx.Done():
 			return
 		case <-timeTicker.C:
-			if s.buffer.Len() >= s.config.MinFlushEvents {
-				s.flushChannel <- s.buffer
-				s.buffer = buffer.NewBatchBuffer(s.config.MaxBufferSize)
+			if s.buffers[partition].Len() >= s.config.MinFlushEvents {
+				s.flushChannel[partition] <- s.buffers[partition]
+				s.buffers[partition] = buffer.NewBatchBuffer(s.config.MaxBufferSize)
 			}
-		case e := <-s.input:
+		case e := <-s.inputs[partition]:
 			if e == nil {
 				continue
 			}
-			s.buffer.Add(e)
-			if s.buffer.Len() == s.config.MaxBufferSize {
-				s.flushChannel <- s.buffer
-				s.buffer = buffer.NewBatchBuffer(s.config.MaxBufferSize)
+			s.buffers[partition].Add(e)
+			if s.buffers[partition].Len() == s.config.MaxBufferSize {
+				s.flushChannel[partition] <- s.buffers[partition]
+				s.buffers[partition] = buffer.NewBatchBuffer(s.config.MaxBufferSize)
 			}
 		}
 	}
@@ -154,7 +165,7 @@ func (s *Sender) listen(ctx context.Context, wg *sync.WaitGroup) {
 }
 
 // Keep fetching BatchBuffer to forward.
-func (s *Sender) flush(ctx context.Context, wg *sync.WaitGroup) {
+func (s *Sender) flush(ctx context.Context, partition int, wg *sync.WaitGroup) {
 	defer wg.Done()
 	defer log.Logger.WithField("pipe", s.config.PipeName).Infof("flush routine closed")
 	childCtx, _ := context.WithCancel(ctx) // nolint
@@ -163,7 +174,7 @@ func (s *Sender) flush(ctx context.Context, wg *sync.WaitGroup) {
 		case <-childCtx.Done():
 			s.Shutdown()
 			return
-		case b := <-s.flushChannel:
+		case b := <-s.flushChannel[partition]:
 			s.consume(b)
 		}
 	}
@@ -171,17 +182,39 @@ func (s *Sender) flush(ctx context.Context, wg *sync.WaitGroup) {
 
 // Shutdown closes the channels and tries to force forward the events in the buffer.
 func (s *Sender) Shutdown() {
+	s.shutdownOnce.Do(func() {
+		s.shutdown0()
+	})
+}
+
+func (s *Sender) shutdown0() {
 	log.Logger.WithField("pipe", s.config.PipeName).Info("sender module is closing")
-	close(s.input)
+	for _, in := range s.inputs {
+		close(in)
+	}
+	var wg sync.WaitGroup
+	finished := make(chan struct{}, 1)
+	wg.Add(len(s.flushChannel))
+	for partition := range s.buffers {
+		go func(p int) {
+			defer wg.Done()
+			s.consume(s.buffers[p])
+		}(partition)
+	}
+	go func() {
+		wg.Wait()
+		close(finished)
+	}()
+
 	ticker := time.NewTicker(module.ShutdownHookTime)
-	for {
-		select {
-		case <-ticker.C:
-			s.consume(s.buffer)
-			return
-		case b := <-s.flushChannel:
-			s.consume(b)
+	select {
+	case <-ticker.C:
+		for _, buffer := range s.buffers {
+			s.consume(buffer)
 		}
+		return
+	case <-finished:
+		return
 	}
 }
 
@@ -221,8 +254,8 @@ func (s *Sender) consume(batch *buffer.BatchBuffer) {
 	s.gatherer.Ack(batch.Last())
 }
 
-func (s *Sender) InputDataChannel() chan<- *event.OutputEventContext {
-	return s.input
+func (s *Sender) InputDataChannel(partition int) chan<- *event.OutputEventContext {
+	return s.inputs[partition]
 }
 
 func (s *Sender) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
