@@ -31,7 +31,10 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/client/grpc/resolvers"
 )
 
-const Name = "grpc-client"
+const (
+	Name     = "grpc-client"
+	ShowName = "GRPC Client"
+)
 
 type Client struct {
 	config.CommonFields
@@ -56,6 +59,10 @@ type Client struct {
 
 func (c *Client) Name() string {
 	return Name
+}
+
+func (c *Client) ShowName() string {
+	return ShowName
 }
 
 func (c *Client) Description() string {

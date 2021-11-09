@@ -37,6 +37,7 @@ import (
 
 const (
 	Name      = "prometheus-metrics-fetcher"
+	ShowName  = "Prometheus Metrics Fetcher"
 	eventName = "prometheus-metrics-event"
 )
 
@@ -91,6 +92,10 @@ type Fetcher struct {
 
 func (f *Fetcher) Name() string {
 	return Name
+}
+
+func (f *Fetcher) ShowName() string {
+	return ShowName
 }
 
 func (f *Fetcher) Description() string {

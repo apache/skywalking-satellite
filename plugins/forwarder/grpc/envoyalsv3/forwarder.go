@@ -35,7 +35,10 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
-const Name = "envoy-als-v3-grpc-forwarder"
+const (
+	Name     = "envoy-als-v3-grpc-forwarder"
+	ShowName = "Envoy ALS v3 GRPC Forwarder"
+)
 
 type Forwarder struct {
 	config.CommonFields
@@ -68,6 +71,10 @@ func (f *Forwarder) init() {
 
 func (f *Forwarder) Name() string {
 	return Name
+}
+
+func (f *Forwarder) ShowName() string {
+	return ShowName
 }
 
 func (f *Forwarder) Description() string {

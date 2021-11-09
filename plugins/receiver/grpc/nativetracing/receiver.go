@@ -28,7 +28,10 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-const Name = "grpc-nativetracing-receiver"
+const (
+	Name     = "grpc-nativetracing-receiver"
+	ShowName = "GRPC Native Tracing Receiver"
+)
 
 type Receiver struct {
 	config.CommonFields
@@ -38,6 +41,10 @@ type Receiver struct {
 
 func (r *Receiver) Name() string {
 	return Name
+}
+
+func (r *Receiver) ShowName() string {
+	return ShowName
 }
 
 func (r *Receiver) Description() string {

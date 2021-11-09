@@ -24,7 +24,10 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 )
 
-const Name = "http-server"
+const (
+	Name     = "http-server"
+	ShowName = "HTTP Server"
+)
 
 type Server struct {
 	config.CommonFields
@@ -34,6 +37,10 @@ type Server struct {
 
 func (s *Server) Name() string {
 	return Name
+}
+
+func (s *Server) ShowName() string {
+	return ShowName
 }
 
 func (s *Server) Description() string {

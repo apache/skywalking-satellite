@@ -106,15 +106,15 @@ func updateMenuPluginListDoc(outputRootPath, menuFilePath, pluginFilePath string
 		// plugin
 		implements := []*Catalog{}
 		curPlugin := &Catalog{
-			Name: strings.ToLower(category.Name()),
+			Name: strings.Title(strings.ToLower(category.Name())),
 		}
 
 		// all implements
 		pluginList := getPluginsByCategory(category)
 		for _, pluginName := range pluginList {
 			implements = append(implements, &Catalog{
-				Name: strings.ReplaceAll(pluginName, "-", " "),
-				Path: strings.TrimRight(fmt.Sprintf("%s/%s", pluginFilePath, getPluginDocFileName(category, pluginName)), markdownSuffix),
+				Name: pluginName.showName,
+				Path: strings.TrimRight(fmt.Sprintf("%s/%s", pluginFilePath, getPluginDocFileName(category, pluginName.defineName)), markdownSuffix),
 			})
 		}
 		curPlugin.Catalog = implements
@@ -135,7 +135,7 @@ func generatePluginListDoc(docDir string, categories []reflect.Type) error {
 		docStr += "- " + category.Name() + lf
 		pluginList := getPluginsByCategory(category)
 		for _, pluginName := range pluginList {
-			docStr += "	- [" + pluginName + "](./" + getPluginDocFileName(category, pluginName) + ")" + lf
+			docStr += "	- [" + pluginName.showName + "](./" + getPluginDocFileName(category, pluginName.defineName) + ")" + lf
 			if err := generatePluginDoc(docDir, category, pluginName); err != nil {
 				return err
 			}
@@ -144,10 +144,10 @@ func generatePluginListDoc(docDir string, categories []reflect.Type) error {
 	return writeDoc([]byte(docStr), fileName)
 }
 
-func generatePluginDoc(docDir string, category reflect.Type, pluginName string) error {
-	docFileName := docDir + "/" + getPluginDocFileName(category, pluginName)
-	p := plugin.Get(category, plugin.Config{plugin.NameField: pluginName})
-	docRes := topLevel + category.Name() + "/" + pluginName + lf
+func generatePluginDoc(docDir string, category reflect.Type, pluginName *pluginNames) error {
+	docFileName := docDir + "/" + getPluginDocFileName(category, pluginName.defineName)
+	p := plugin.Get(category, plugin.Config{plugin.NameField: pluginName.defineName})
+	docRes := topLevel + category.Name() + "/" + pluginName.defineName + lf
 	docRes += secondLevel + "Description" + lf
 	docRes += p.Description() + lf
 	docRes += generateSupportForwarders(category, p)
@@ -350,13 +350,25 @@ func generateSupportForwarders(category reflect.Type, p plugin.Plugin) string {
 	return result
 }
 
-func getPluginsByCategory(category reflect.Type) []string {
+type pluginNames struct {
+	defineName string
+	showName   string
+}
+
+func getPluginsByCategory(category reflect.Type) []*pluginNames {
 	mapping := plugin.Reg[category]
-	var keys []string
+	var keys []*pluginNames
 	for k := range mapping {
-		keys = append(keys, k)
+		t := mapping[k].Type()
+		if t.Kind() == reflect.Ptr {
+			t = t.Elem()
+		}
+		p := reflect.New(t).Interface().(plugin.Plugin)
+		keys = append(keys, &pluginNames{defineName: k, showName: p.ShowName()})
 	}
-	sort.Strings(keys)
+	sort.Slice(keys, func(i, j int) bool {
+		return keys[i].defineName < keys[j].defineName
+	})
 	return keys
 }
 

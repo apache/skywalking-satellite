@@ -29,7 +29,10 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-const Name = "grpc-envoy-metrics-v3-receiver"
+const (
+	Name     = "grpc-envoy-metrics-v3-receiver"
+	ShowName = "GRPC Envoy Metrics v3 Receiver"
+)
 
 type Receiver struct {
 	config.CommonFields
@@ -41,6 +44,10 @@ type Receiver struct {
 
 func (r *Receiver) Name() string {
 	return Name
+}
+
+func (r *Receiver) ShowName() string {
+	return ShowName
 }
 
 func (r *Receiver) Description() string {

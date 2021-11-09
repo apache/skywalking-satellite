@@ -93,7 +93,11 @@ func (p *PartitionedQueue) TotalPartitionCount() int {
 }
 
 func (p *PartitionedQueue) Name() string {
-	return p.PipeName
+	return "partition-queue"
+}
+
+func (p *PartitionedQueue) ShowName() string {
+	return "Partition Queue"
 }
 
 func (p *PartitionedQueue) Description() string {

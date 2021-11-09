@@ -26,7 +26,8 @@ import (
 )
 
 const (
-	Name = "none-queue"
+	Name     = "none-queue"
+	ShowName = "None Queue"
 )
 
 type Queue struct {
@@ -35,6 +36,10 @@ type Queue struct {
 
 func (q *Queue) Name() string {
 	return Name
+}
+
+func (q *Queue) ShowName() string {
+	return ShowName
 }
 
 func (q *Queue) Description() string {

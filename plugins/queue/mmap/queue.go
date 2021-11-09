@@ -48,6 +48,7 @@ const (
 	data4KB         = 131072
 	minimumSegments = 4
 	Name            = "mmap-queue"
+	ShowName        = "Mmap Queue"
 )
 
 // Queue is a memory mapped queue to store the input data.
@@ -82,6 +83,10 @@ type Queue struct {
 
 func (q *Queue) Name() string {
 	return Name
+}
+
+func (q *Queue) ShowName() string {
+	return ShowName
 }
 
 func (q *Queue) Description() string {

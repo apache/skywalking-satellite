@@ -32,7 +32,10 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-const Name = "nativelog-kafka-forwarder"
+const (
+	Name     = "nativelog-kafka-forwarder"
+	ShowName = "Native Log Kafka Forwarder"
+)
 
 type Forwarder struct {
 	config.CommonFields
@@ -42,6 +45,10 @@ type Forwarder struct {
 
 func (f *Forwarder) Name() string {
 	return Name
+}
+
+func (f *Forwarder) ShowName() string {
+	return ShowName
 }
 
 func (f *Forwarder) Description() string {

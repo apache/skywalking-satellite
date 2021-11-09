@@ -23,7 +23,10 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
-const Name = "none-fallbacker"
+const (
+	Name     = "none-fallbacker"
+	ShowName = "None Fallbacker"
+)
 
 type Fallbacker struct {
 	config.CommonFields
@@ -31,6 +34,10 @@ type Fallbacker struct {
 
 func (f *Fallbacker) Name() string {
 	return Name
+}
+
+func (f *Fallbacker) ShowName() string {
+	return ShowName
 }
 
 func (f *Fallbacker) Description() string {

@@ -29,7 +29,8 @@ import (
 )
 
 const (
-	Name = "memory-queue"
+	Name     = "memory-queue"
+	ShowName = "Memory Queue"
 )
 
 var DefaultOffset = &event.Offset{
@@ -47,6 +48,10 @@ type Queue struct {
 
 func (q *Queue) Name() string {
 	return Name
+}
+
+func (q *Queue) ShowName() string {
+	return ShowName
 }
 
 func (q *Queue) Description() string {
