@@ -29,6 +29,8 @@ import (
 	"sort"
 	"strings"
 
+	"github.com/apache/skywalking-satellite/plugins/queue/partition"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/plugins"
@@ -48,6 +50,8 @@ const (
 	markdownSuffix = ".md"
 
 	commentPrefix = "/ "
+
+	categoryQueue = "Queue"
 )
 
 func GeneratePluginDoc(outputRootPath, menuFilePath, pluginFilePath string) error {
@@ -102,15 +106,15 @@ func updateMenuPluginListDoc(outputRootPath, menuFilePath, pluginFilePath string
 		// plugin
 		implements := []*Catalog{}
 		curPlugin := &Catalog{
-			Name: strings.ToLower(category.Name()),
+			Name: strings.Title(strings.ToLower(category.Name())),
 		}
 
 		// all implements
 		pluginList := getPluginsByCategory(category)
 		for _, pluginName := range pluginList {
 			implements = append(implements, &Catalog{
-				Name: strings.ReplaceAll(pluginName, "-", " "),
-				Path: strings.TrimRight(fmt.Sprintf("%s/%s", pluginFilePath, getPluginDocFileName(category, pluginName)), markdownSuffix),
+				Name: pluginName.showName,
+				Path: strings.TrimRight(fmt.Sprintf("%s/%s", pluginFilePath, getPluginDocFileName(category, pluginName.defineName)), markdownSuffix),
 			})
 		}
 		curPlugin.Catalog = implements
@@ -131,7 +135,7 @@ func generatePluginListDoc(docDir string, categories []reflect.Type) error {
 		docStr += "- " + category.Name() + lf
 		pluginList := getPluginsByCategory(category)
 		for _, pluginName := range pluginList {
-			docStr += "	- [" + pluginName + "](./" + getPluginDocFileName(category, pluginName) + ")" + lf
+			docStr += "	- [" + pluginName.showName + "](./" + getPluginDocFileName(category, pluginName.defineName) + ")" + lf
 			if err := generatePluginDoc(docDir, category, pluginName); err != nil {
 				return err
 			}
@@ -140,15 +144,15 @@ func generatePluginListDoc(docDir string, categories []reflect.Type) error {
 	return writeDoc([]byte(docStr), fileName)
 }
 
-func generatePluginDoc(docDir string, category reflect.Type, pluginName string) error {
-	docFileName := docDir + "/" + getPluginDocFileName(category, pluginName)
-	p := plugin.Get(category, plugin.Config{plugin.NameField: pluginName})
-	docRes := topLevel + category.Name() + "/" + pluginName + lf
+func generatePluginDoc(docDir string, category reflect.Type, pluginName *pluginNames) error {
+	docFileName := docDir + "/" + getPluginDocFileName(category, pluginName.defineName)
+	p := plugin.Get(category, plugin.Config{plugin.NameField: pluginName.defineName})
+	docRes := topLevel + category.Name() + "/" + pluginName.defineName + lf
 	docRes += secondLevel + "Description" + lf
 	docRes += p.Description() + lf
 	docRes += generateSupportForwarders(category, p)
 	docRes += secondLevel + "DefaultConfig" + lf
-	docRes += yamlQuoteStart + p.DefaultConfig() + yamlQuoteEnd + lf
+	docRes += yamlQuoteStart + generateDefaultConfig(category, p) + yamlQuoteEnd + lf
 	docRes += secondLevel + "Configuration" + lf
 	docRes += generateConfiguration(category, p) + lf
 	return writeDoc([]byte(docRes), docFileName)
@@ -164,6 +168,15 @@ func GetModuleName() string {
 	return modName
 }
 
+func generateDefaultConfig(category reflect.Type, p plugin.Plugin) string {
+	configs := p.DefaultConfig()
+	if category.Name() == categoryQueue {
+		partitionQueue := &partition.PartitionedQueue{}
+		configs = fmt.Sprintf("%s%s", configs, partitionQueue.DefaultConfig())
+	}
+	return configs
+}
+
 func generateConfiguration(category reflect.Type, p plugin.Plugin) string {
 	var content = ""
 
@@ -174,6 +187,12 @@ func generateConfiguration(category reflect.Type, p plugin.Plugin) string {
 	eachConfigurationItem(configurations, "", func(name, dataType, desc string) {
 		content += fmt.Sprintf("| %s | %s | %s |%s", name, dataType, desc, lf)
 	})
+	if category.Name() == categoryQueue {
+		configurations := getConfigurations(category, reflect.TypeOf(&partition.PartitionedQueue{}).Elem())
+		eachConfigurationItem(configurations, "", func(name, dataType, desc string) {
+			content += fmt.Sprintf("| %s | %s | %s |%s", name, dataType, desc, lf)
+		})
+	}
 
 	return content
 }
@@ -247,13 +266,21 @@ func getConfigurations(category, p reflect.Type) []*pluginConfigurationItem {
 
 // parse field to configuration item
 func parsePluginConfigurationItem(field *ast.Field, pType reflect.Type) (*pluginConfigurationItem, *pluginChildrenFinder) {
-	if field.Names == nil || field.Tag == nil {
+	if field.Tag == nil {
 		return nil, nil
 	}
 
 	var fieldName = ""
-	for _, n := range field.Names {
-		fieldName += n.Name
+	if field.Names != nil {
+		for _, n := range field.Names {
+			fieldName += n.Name
+		}
+	} else {
+		expr, ok := field.Type.(*ast.SelectorExpr)
+		if !ok {
+			return nil, nil
+		}
+		fieldName = expr.Sel.Name
 	}
 
 	pluginField, find := pType.FieldByName(fieldName)
@@ -323,13 +350,25 @@ func generateSupportForwarders(category reflect.Type, p plugin.Plugin) string {
 	return result
 }
 
-func getPluginsByCategory(category reflect.Type) []string {
+type pluginNames struct {
+	defineName string
+	showName   string
+}
+
+func getPluginsByCategory(category reflect.Type) []*pluginNames {
 	mapping := plugin.Reg[category]
-	var keys []string
+	var keys []*pluginNames
 	for k := range mapping {
-		keys = append(keys, k)
+		t := mapping[k].Type()
+		if t.Kind() == reflect.Ptr {
+			t = t.Elem()
+		}
+		p := reflect.New(t).Interface().(plugin.Plugin)
+		keys = append(keys, &pluginNames{defineName: k, showName: p.ShowName()})
 	}
-	sort.Strings(keys)
+	sort.Slice(keys, func(i, j int) bool {
+		return keys[i].defineName < keys[j].defineName
+	})
 	return keys
 }
 

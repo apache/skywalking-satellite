@@ -25,7 +25,10 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
 )
 
-const Name = "timer-fallbacker"
+const (
+	Name     = "timer-fallbacker"
+	ShowName = "Timer Fallbacker"
+)
 
 // Fallbacker is a timer fallbacker when forward fails.
 type Fallbacker struct {
@@ -37,6 +40,10 @@ type Fallbacker struct {
 
 func (t *Fallbacker) Name() string {
 	return Name
+}
+
+func (t *Fallbacker) ShowName() string {
+	return ShowName
 }
 
 func (t *Fallbacker) Description() string {

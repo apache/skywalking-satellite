@@ -49,6 +49,10 @@ func (d *DemoPlugin) Name() string {
 	return "demo-plugin"
 }
 
+func (d *DemoPlugin) ShowName() string {
+	return "Demo Plugin"
+}
+
 func (d *DemoPlugin) Description() string {
 	return "this is just a demo"
 }

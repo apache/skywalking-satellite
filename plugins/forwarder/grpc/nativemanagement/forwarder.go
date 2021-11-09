@@ -31,7 +31,10 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-const Name = "nativemanagement-grpc-forwarder"
+const (
+	Name     = "nativemanagement-grpc-forwarder"
+	ShowName = "Native Management GRPC Forwarder"
+)
 
 // empty struct for set
 type void struct{}
@@ -46,6 +49,10 @@ type Forwarder struct {
 
 func (f *Forwarder) Name() string {
 	return Name
+}
+
+func (f *Forwarder) ShowName() string {
+	return ShowName
 }
 
 func (f *Forwarder) Description() string {

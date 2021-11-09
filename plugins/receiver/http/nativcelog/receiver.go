@@ -40,6 +40,7 @@ import (
 
 const (
 	Name      = "http-nativelog-receiver"
+	ShowName  = "HTTP Native Log Receiver"
 	eventName = "http-nativelog-event"
 	success   = "success"
 	failing   = "failing"
@@ -62,6 +63,10 @@ type Response struct {
 
 func (r *Receiver) Name() string {
 	return Name
+}
+
+func (r *Receiver) ShowName() string {
+	return ShowName
 }
 
 func (r *Receiver) Description() string {

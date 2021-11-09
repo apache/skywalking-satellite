@@ -33,7 +33,10 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
-const Name = "nativetracing-grpc-forwarder"
+const (
+	Name     = "nativetracing-grpc-forwarder"
+	ShowName = "Native Tracing GRPC Forwarder"
+)
 
 type Forwarder struct {
 	config.CommonFields
@@ -43,6 +46,10 @@ type Forwarder struct {
 
 func (f *Forwarder) Name() string {
 	return Name
+}
+
+func (f *Forwarder) ShowName() string {
+	return ShowName
 }
 
 func (f *Forwarder) Description() string {

@@ -28,7 +28,10 @@ import (
 	grpcreceiver "github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 )
 
-const Name = "grpc-nativejvm-receiver"
+const (
+	Name     = "grpc-nativejvm-receiver"
+	ShowName = "GRPC Native JVM Receiver"
+)
 
 type Receiver struct {
 	config.CommonFields
@@ -38,6 +41,10 @@ type Receiver struct {
 
 func (r *Receiver) Name() string {
 	return Name
+}
+
+func (r *Receiver) ShowName() string {
+	return ShowName
 }
 
 func (r *Receiver) Description() string {

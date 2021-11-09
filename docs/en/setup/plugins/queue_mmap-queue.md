@@ -15,6 +15,9 @@ flush_period: 1000
 flush_ceiling_num: 10000
 # The max size of the input event. Default value is 20k.
 max_event_size: 20480
+
+# The partition count of queue.
+partition: 1
 ```
 ## Configuration
 |Name|Type|Description|
@@ -25,4 +28,5 @@ max_event_size: 20480
 | flush_period | int | The period flush time. The unit is ms. |
 | flush_ceiling_num | int | The max number in one flush time. |
 | max_event_size | int | The max size of the input event. |
+| partition | int | The total partition count. |
 

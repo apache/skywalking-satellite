@@ -5,6 +5,7 @@ Release Notes.
 0.4.0
 ------------------
 #### Features
+* Support partition queue.
 
 #### Bug Fixes
 

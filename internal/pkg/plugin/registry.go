@@ -79,7 +79,7 @@ func Get(category reflect.Type, cfg Config) Plugin {
 		t = t.Elem()
 	}
 	plugin := reflect.New(t).Interface().(Plugin)
-	initializing(plugin, cfg)
+	Initializing(plugin, cfg)
 	return plugin
 }
 
@@ -96,8 +96,8 @@ func nameFinder(cfg interface{}) string {
 	return name.(string)
 }
 
-// initializing initialize the fields by fields mapping.
-func initializing(plugin Plugin, cfg Config) {
+// Initializing initialize the fields by fields mapping.
+func Initializing(plugin Plugin, cfg Config) {
 	v := viper.New()
 	v.SetConfigType("yaml")
 	if plugin.DefaultConfig() != "" {

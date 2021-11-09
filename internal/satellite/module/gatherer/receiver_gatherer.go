@@ -32,6 +32,7 @@ import (
 	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
+	"github.com/apache/skywalking-satellite/plugins/queue/partition"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 
@@ -44,11 +45,11 @@ type ReceiverGatherer struct {
 
 	// dependency plugins
 	runningReceiver receiver.Receiver
-	runningQueue    queue.Queue
+	runningQueue    *partition.PartitionedQueue
 	runningServer   server.Server
 
 	// self components
-	outputChannel chan *queue.SequenceEvent
+	outputChannel []chan *queue.SequenceEvent
 	// metrics
 	receiveCounter     *telemetry.Counter
 	queueOutputCounter *telemetry.Counter
@@ -64,6 +65,10 @@ func (r *ReceiverGatherer) Prepare() error {
 		log.Logger.WithField("pipe", r.config.PipeName).Infof("the %s queue failed when initializing", r.runningQueue.Name())
 		return err
 	}
+	r.outputChannel = make([]chan *queue.SequenceEvent, r.runningQueue.TotalPartitionCount())
+	for p := 0; p < r.runningQueue.TotalPartitionCount(); p++ {
+		r.outputChannel[p] = make(chan *queue.SequenceEvent)
+	}
 	r.receiveCounter = telemetry.NewCounter("gatherer_receive_count", "Total number of the receiving count in the Gatherer.", "pipe", "status")
 	r.queueOutputCounter = telemetry.NewCounter("queue_output_count", "Total number of the output count in the Queue of Gatherer.", "pipe", "status")
 	return nil
@@ -72,7 +77,7 @@ func (r *ReceiverGatherer) Prepare() error {
 func (r *ReceiverGatherer) Boot(ctx context.Context) {
 	r.runningReceiver.RegisterSyncInvoker(r)
 	var wg sync.WaitGroup
-	wg.Add(2)
+	wg.Add(r.PartitionCount() + 1)
 	log.Logger.WithField("pipe", r.config.PipeName).Info("receive_gatherer module is starting...")
 	go func() {
 		childCtx, cancel := context.WithCancel(ctx)
@@ -96,6 +101,13 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 		}
 	}()
 
+	for p := 0; p < r.PartitionCount(); p++ {
+		r.consumeQueue(ctx, p, &wg)
+	}
+	wg.Wait()
+}
+
+func (r *ReceiverGatherer) consumeQueue(ctx context.Context, p int, wg *sync.WaitGroup) {
 	go func() {
 		childCtx, cancel := context.WithCancel(ctx)
 		defer wg.Done()
@@ -106,8 +118,8 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 				r.Shutdown()
 				return
 			default:
-				if e, err := r.runningQueue.Dequeue(); err == nil {
-					r.outputChannel <- e
+				if e, err := r.runningQueue.Dequeue(p); err == nil {
+					r.outputChannel[p] <- e
 					r.queueOutputCounter.Inc(r.config.PipeName, "success")
 				} else if err == queue.ErrEmpty {
 					time.Sleep(time.Second)
@@ -121,7 +133,6 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 			}
 		}
 	}()
-	wg.Wait()
 }
 
 func (r *ReceiverGatherer) Shutdown() {
@@ -135,11 +146,15 @@ func (r *ReceiverGatherer) Shutdown() {
 	}
 }
 
-func (r *ReceiverGatherer) OutputDataChannel() <-chan *queue.SequenceEvent {
-	return r.outputChannel
+func (r *ReceiverGatherer) PartitionCount() int {
+	return len(r.outputChannel)
 }
 
-func (r *ReceiverGatherer) Ack(lastOffset event.Offset) {
+func (r *ReceiverGatherer) OutputDataChannel(index int) <-chan *queue.SequenceEvent {
+	return r.outputChannel[index]
+}
+
+func (r *ReceiverGatherer) Ack(lastOffset *event.Offset) {
 	r.runningQueue.Ack(lastOffset)
 }
 

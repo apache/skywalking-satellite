@@ -33,7 +33,10 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
-const Name = "nativeprofile-grpc-forwarder"
+const (
+	Name     = "nativeprofile-grpc-forwarder"
+	ShowName = "Native Profile GRPC Forwarder"
+)
 
 type Forwarder struct {
 	config.CommonFields
@@ -43,6 +46,10 @@ type Forwarder struct {
 
 func (f *Forwarder) Name() string {
 	return Name
+}
+
+func (f *Forwarder) ShowName() string {
+	return ShowName
 }
 
 func (f *Forwarder) Description() string {

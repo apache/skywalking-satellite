@@ -43,13 +43,22 @@ type Queue interface {
 	Close() error
 
 	// Ack the lastOffset
-	Ack(lastOffset event.Offset)
+	Ack(lastOffset *event.Offset)
+
+	// TotalSize total capacity of queue
+	TotalSize() int64
+
+	// UsedCount used count of queue
+	UsedCount() int64
+
+	// IsFull the queue is full
+	IsFull() bool
 }
 
 // SequenceEvent is a wrapper to pass the event and the offset.
 type SequenceEvent struct {
 	Event  *v1.SniffData
-	Offset event.Offset
+	Offset *event.Offset
 }
 
 // GetQueue an initialized filter plugin.

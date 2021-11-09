@@ -9,6 +9,6 @@ After you read the above documents, you should understand basic goals of the Sky
 you are interested, then dive in.   
 
 - [Module Design](./module_design.md)
-- [Plugin mechanism](./plugin_mechanism.md)
+- [Plugin Mechanism](./plugin_mechanism.md)
 - [Project Structure](./project_structue.md)
-- [The design of the memory mapped queue](./mmap-queue.md)
+- [Memory mapped Queue](./mmap-queue.md)

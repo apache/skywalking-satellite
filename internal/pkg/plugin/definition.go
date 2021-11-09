@@ -24,6 +24,8 @@ const NameField = "plugin_name"
 type Plugin interface {
 	// Name returns the name of the specific plugin.
 	Name() string
+	// ShowName returns the specific name show on documentations.
+	ShowName() string
 	// Description returns the description of the specific plugin.
 	Description() string
 	// DefaultConfig returns the default config, that is a YAML pattern.

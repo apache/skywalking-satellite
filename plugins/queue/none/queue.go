@@ -26,7 +26,8 @@ import (
 )
 
 const (
-	Name = "none-queue"
+	Name     = "none-queue"
+	ShowName = "None Queue"
 )
 
 type Queue struct {
@@ -35,6 +36,10 @@ type Queue struct {
 
 func (q *Queue) Name() string {
 	return Name
+}
+
+func (q *Queue) ShowName() string {
+	return ShowName
 }
 
 func (q *Queue) Description() string {
@@ -61,5 +66,17 @@ func (q *Queue) Close() error {
 	return nil
 }
 
-func (q *Queue) Ack(_ event.Offset) {
+func (q *Queue) Ack(_ *event.Offset) {
+}
+
+func (q *Queue) TotalSize() int64 {
+	return 0
+}
+
+func (q *Queue) UsedCount() int64 {
+	return 0
+}
+
+func (q *Queue) IsFull() bool {
+	return false
 }

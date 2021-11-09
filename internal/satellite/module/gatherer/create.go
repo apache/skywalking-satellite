@@ -21,7 +21,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/module/gatherer/api"
 	"github.com/apache/skywalking-satellite/internal/satellite/sharing"
 	fetcher "github.com/apache/skywalking-satellite/plugins/fetcher/api"
-	queue "github.com/apache/skywalking-satellite/plugins/queue/api"
+	"github.com/apache/skywalking-satellite/plugins/queue/partition"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 )
@@ -40,9 +40,8 @@ func NewGatherer(cfg *api.GathererConfig) api.Gatherer {
 func newFetcherGatherer(cfg *api.GathererConfig) *FetcherGatherer {
 	return &FetcherGatherer{
 		config:         cfg,
-		runningQueue:   queue.GetQueue(cfg.QueueConfig),
+		runningQueue:   partition.NewPartitionQueue(cfg.QueueConfig),
 		runningFetcher: fetcher.GetFetcher(cfg.FetcherConfig),
-		outputChannel:  make(chan *queue.SequenceEvent),
 	}
 }
 
@@ -50,9 +49,8 @@ func newFetcherGatherer(cfg *api.GathererConfig) *FetcherGatherer {
 func newReceiverGatherer(cfg *api.GathererConfig) *ReceiverGatherer {
 	return &ReceiverGatherer{
 		config:          cfg,
-		runningQueue:    queue.GetQueue(cfg.QueueConfig),
+		runningQueue:    partition.NewPartitionQueue(cfg.QueueConfig),
 		runningReceiver: receiver.GetReceiver(cfg.ReceiverConfig),
 		runningServer:   sharing.Manager[cfg.ServerName].(server.Server),
-		outputChannel:   make(chan *queue.SequenceEvent),
 	}
 }
