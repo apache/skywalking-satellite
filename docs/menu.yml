@@ -27,13 +27,13 @@ catalog:
               path: /en/concepts-and-designs/project-goals
         - name: Design
           catalog:
-            - name: Module design
+            - name: Module Design
               path: /en/concepts-and-designs/module_design
-            - name: Plugin mechanism
+            - name: Plugin Mechanism
               path: /en/concepts-and-designs/plugin_mechanism
-            - name: Project structure
+            - name: Project Structure
               path: /en/concepts-and-designs/project_structue
-            - name: Memory mapped queue
+            - name: Memory mapped Queue
               path: /en/concepts-and-designs/mmap-queue
     - name: Setup
       catalog:

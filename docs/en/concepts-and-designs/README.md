@@ -8,7 +8,7 @@ Concepts and Designs help you to learn and understand the SkyWalking Satellite a
 After you read the above documents, you should understand basic goals of the SkyWalking Satellite. Now, you can choose which following parts 
 you are interested, then dive in.   
 
-- [Module design](./module_design.md)
-- [Plugin mechanism](./plugin_mechanism.md)
-- [Project structure](./project_structue.md)
-- [Memory mapped queue](./mmap-queue.md)
+- [Module Design](./module_design.md)
+- [Plugin Mechanism](./plugin_mechanism.md)
+- [Project Structure](./project_structue.md)
+- [Memory mapped Queue](./mmap-queue.md)

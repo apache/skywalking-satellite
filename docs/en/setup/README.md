@@ -19,10 +19,10 @@ bin/startup.sh
 ## Examples
 You can quickly build your satellite according to the following examples:
 
-1. [Forward agent data to OAP server](examples/forward-agent-data-to-oap-server/README.md)
-2. [Transmit log to Kafka](examples/transmit-log-to-kafka/README.md)
-3. [GRPC load balance client](examples/grpc-load-balance-client/README.md)
-3. [High throughput queue](examples/high-throughput-queue/README.md)
+1. [Forward Agent Data to OAP Server](examples/forward-agent-data-to-oap-server/README.md)
+2. [Transmit Log to Kafka](examples/transmit-log-to-kafka/README.md)
+3. [GRPC load balance Client](examples/grpc-load-balance-client/README.md)
+3. [High Throughput Queue](examples/high-throughput-queue/README.md)
 
 ## satellite_config.yaml
 The core concept behind this setting file is, SkyWalking Satellite is based on pure modularization design. End user can switch or assemble the collector features by their own requirements.

@@ -1,4 +1,4 @@
-# Transmit protocol from agent
+# Transmit Log to Kafka
 
 Using Satellite to receive the SkyWalking log protocol from agent, and transport data to the Kafka Topic.
 

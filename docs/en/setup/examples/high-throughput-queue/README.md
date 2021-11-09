@@ -1,4 +1,4 @@
-# High throughput queue
+# High Throughput Queue
 
 High throughput queues can send messages to multiple channels by using `round-robin` policy for load-balance, and consume messages from each queue in parallel.
 This prevents the single-threaded sender from performing network IO, blocking the `receiver`/`fetcher` to the queue.

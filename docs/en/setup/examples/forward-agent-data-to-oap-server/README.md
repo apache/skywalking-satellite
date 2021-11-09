@@ -1,4 +1,4 @@
-# Forward agent data to OAP server
+# Forward Agent Data to OAP Server
 
 Using Satellite to receive the SkyWalking protocols from agent, and transport data to the SkyWalking backend or another Satellite.
 
