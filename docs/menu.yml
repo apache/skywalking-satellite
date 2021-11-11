@@ -53,7 +53,7 @@ catalog:
               path: /en/setup/examples/forward-agent-data-to-oap-server/readme
             - name: Transmit Log to Kafka
               path: /en/setup/examples/transmit-log-to-kafka/readme
-            - name: GRPC load balance Client
+            - name: GRPC Load Balance Client
               path: /en/setup/examples/grpc-load-balance-client/readme
             - name: High Throughput Queue
               path: /en/setup/examples/high-throughput-queue/readme

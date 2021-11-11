@@ -21,7 +21,7 @@ You can quickly build your satellite according to the following examples:
 
 1. [Forward Agent Data to OAP Server](examples/forward-agent-data-to-oap-server/README.md)
 2. [Transmit Log to Kafka](examples/transmit-log-to-kafka/README.md)
-3. [GRPC load balance Client](examples/grpc-load-balance-client/README.md)
+3. [GRPC Load Balance Client](examples/grpc-load-balance-client/README.md)
 3. [High Throughput Queue](examples/high-throughput-queue/README.md)
 
 ## satellite_config.yaml
