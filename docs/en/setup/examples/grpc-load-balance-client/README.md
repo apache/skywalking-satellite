@@ -1,4 +1,4 @@
-# GRPC load balance Client
+# GRPC Load Balance Client
 
 GRPC client support connect to multiple server address, and use `round-robin` policy for load-balance server before send each request.
 
