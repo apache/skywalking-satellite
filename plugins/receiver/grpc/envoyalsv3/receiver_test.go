@@ -22,6 +22,8 @@ import (
 	"strconv"
 	"testing"
 
+	"google.golang.org/protobuf/proto"
+
 	"google.golang.org/grpc"
 
 	v3 "skywalking.apache.org/repo/goapi/proto/envoy/service/accesslog/v3"
@@ -50,7 +52,9 @@ func TestReceiver_RegisterHandler(t *testing.T) {
 		}
 		return data.String()
 	}, func(data *v1.SniffData) string {
-		return data.GetEnvoyALSV3List().Messages[0].String()
+		m := new(v3.StreamAccessLogsMessage)
+		_ = proto.Unmarshal(data.GetEnvoyALSV3List().Messages[0], m)
+		return m.String()
 	}, t)
 }
 

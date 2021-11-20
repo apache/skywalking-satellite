@@ -23,16 +23,16 @@ import (
 	"io"
 	"reflect"
 
-	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
+	"google.golang.org/grpc"
 
 	v3 "skywalking.apache.org/repo/goapi/proto/envoy/service/accesslog/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
-	"google.golang.org/grpc"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
+	server_grpc "github.com/apache/skywalking-satellite/plugins/server/grpc"
 )
 
 const (
@@ -46,8 +46,6 @@ type Forwarder struct {
 
 	eventReadySendCount        *telemetry.Counter
 	eventSendFinishedCount     *telemetry.Counter
-	messageReadySendCount      *telemetry.Counter
-	messageSendFinishedCount   *telemetry.Counter
 	streamingReadySendCount    *telemetry.Counter
 	streamingSendFinishedCount *telemetry.Counter
 
@@ -58,11 +56,9 @@ type Forwarder struct {
 
 func (f *Forwarder) init() {
 	f.eventReadySendCount = telemetry.NewCounter("als_event_ready_send", "Total count of the ALS event ready send.")
-	f.eventSendFinishedCount = telemetry.NewCounter("als_event_send_finished", "Total count of the ALS event send finished.")
-	f.messageReadySendCount = telemetry.NewCounter("als_message_ready_send", "Total count of the ALS message ready send.")
-	f.messageSendFinishedCount = telemetry.NewCounter("als_message_send_finished", "Total count of the ALS event sned finished.")
+	f.eventSendFinishedCount = telemetry.NewCounter("als_event_send_finished", "Total count of the ALS event send finished.", "target")
 	f.streamingReadySendCount = telemetry.NewCounter("als_streaming_ready_send", "Total count of the ALS streaming ready send.")
-	f.streamingSendFinishedCount = telemetry.NewCounter("als_streaming_send_finished", "Total count of the ALS streaming send finished.")
+	f.streamingSendFinishedCount = telemetry.NewCounter("als_streaming_send_finished", "Total count of the ALS streaming send finished.", "target")
 
 	f.forwardConnectTime = telemetry.NewTimer("als_forward_connect_time", "Total time of the open ALS streaming.")
 	f.forwardSendTime = telemetry.NewTimer("als_forward_send_time", "Total time of the ALS send message.")
@@ -101,20 +97,9 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	for _, e := range batch {
 		data, _ := e.GetData().(*v1.SniffData_EnvoyALSV3List)
 		f.streamingReadySendCount.Add(float64(len(data.EnvoyALSV3List.Messages)))
-		for _, message := range data.EnvoyALSV3List.Messages {
-			if message.GetHttpLogs() != nil {
-				f.messageReadySendCount.Add(float64(len(message.GetHttpLogs().LogEntry)))
-			} else if message.GetTcpLogs() != nil {
-				f.messageReadySendCount.Add(float64(len(message.GetTcpLogs().LogEntry)))
-			}
-		}
 	}
 
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_EnvoyALSV3List)
-		if !ok {
-			continue
-		}
 		// open stream
 		timeRecord := f.forwardConnectTime.Start()
 		stream, err := f.alsClient.StreamAccessLogs(context.Background())
@@ -123,30 +108,31 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 			log.Logger.Errorf("open grpc stream error %v", err)
 			return err
 		}
+		peer := server_grpc.GetPeerHostFromStreamContext(stream.Context())
+		timeRecord = f.forwardSendTime.Start()
+
+		data := e.GetEnvoyALSV3List()
+		if data == nil {
+			continue
+		}
 
 		// send message
-		timeRecord = f.forwardSendTime.Start()
-		for _, message := range data.EnvoyALSV3List.Messages {
-			err := stream.Send(message)
+		for _, message := range data.Messages {
+			err := stream.SendMsg(server_grpc.NewOriginalData(message))
 			if err != nil {
 				log.Logger.Errorf("%s send envoy ALS v3 data error: %v", f.Name(), err)
 				f.closeStream(stream)
 				return err
 			}
-			if message.GetHttpLogs() != nil {
-				f.messageSendFinishedCount.Add(float64(len(message.GetHttpLogs().LogEntry)))
-			} else if message.GetTcpLogs() != nil {
-				f.messageSendFinishedCount.Add(float64(len(message.GetTcpLogs().LogEntry)))
-			}
 		}
+
+		f.eventSendFinishedCount.Inc(peer)
 		timeRecord.Stop()
 
 		// close stream
 		timeRecord = f.forwardCloseTime.Start()
 		f.closeStream(stream)
 		timeRecord.Stop()
-		f.eventSendFinishedCount.Inc()
-		f.streamingSendFinishedCount.Add(float64(len(data.EnvoyALSV3List.Messages)))
 	}
 	return nil
 }

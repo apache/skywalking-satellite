@@ -222,7 +222,7 @@ func TestQueue_ReadHistory(t *testing.T) {
 			if err != nil {
 				t.Errorf("error in fetching data from queue: %v", err)
 			} else if cmp.Equal(events[index].String(), sequenceEvent.Event.String()) {
-				q.Ack(sequenceEvent.Offset)
+				q.Ack(&sequenceEvent.Offset)
 			} else {
 				t.Errorf("history data and fetching data is not equal\n,history:%+v\n. dequeue data:%+v\n", events[index], sequenceEvent.Event)
 			}

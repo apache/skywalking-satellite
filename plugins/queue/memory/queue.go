@@ -33,7 +33,7 @@ const (
 	ShowName = "Memory Queue"
 )
 
-var DefaultOffset = &event.Offset{
+var DefaultOffset = event.Offset{
 	Position: "",
 }
 

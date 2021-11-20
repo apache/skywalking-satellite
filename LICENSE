@@ -216,6 +216,7 @@ The following components are provided under the Apache License. See project link
 The text of each license is the standard Apache 2.0 license.
 
 prometheus/common v0.15.0: https://github.com/prometheus/common Apache-2.0
+grpc v1.40.0: https://github.com/grpc/grpc-go Apache-2.0
 
 ========================================================================
 BSD licenses

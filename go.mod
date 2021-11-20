@@ -23,5 +23,5 @@ require (
 	google.golang.org/protobuf v1.27.1
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	gotest.tools v2.2.0+incompatible
-	skywalking.apache.org/repo/goapi v0.0.0-20211014145040-b215a7f7b270
+	skywalking.apache.org/repo/goapi v0.0.0-20211119053430-01f9654d8896
 )

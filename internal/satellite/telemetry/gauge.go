@@ -25,10 +25,20 @@ type Gauge struct {
 	gauge prometheus.GaugeFunc
 }
 
+type DynamicGauge struct {
+	Collector
+	name  string
+	gauge *prometheus.GaugeVec
+}
+
 func NewGauge(name, help string, getter func() float64, labels ...string) *Gauge {
 	lock.Lock()
 	defer lock.Unlock()
-	rebuildName, rebuildLabels := rebuildGaugeNameAndLabels(name, labels...)
+	rebuildName := rebuildGaugeName(name, labels...)
+	constLabels := make(map[string]string)
+	for inx := 0; inx < len(labels); inx += 2 {
+		constLabels[labels[inx]] = labels[inx+1]
+	}
 	collector, ok := collectorContainer[rebuildName]
 	if !ok {
 		gauge := &Gauge{
@@ -36,7 +46,7 @@ func NewGauge(name, help string, getter func() float64, labels ...string) *Gauge
 			gauge: prometheus.NewGaugeFunc(prometheus.GaugeOpts{
 				Name:        name,
 				Help:        help,
-				ConstLabels: rebuildLabels,
+				ConstLabels: constLabels,
 			}, getter),
 		}
 		Register(WithMeta(rebuildName, gauge.gauge))
@@ -46,13 +56,39 @@ func NewGauge(name, help string, getter func() float64, labels ...string) *Gauge
 	return collector.(*Gauge)
 }
 
-func rebuildGaugeNameAndLabels(name string, labels ...string) (gaugeName string, labelsMap map[string]string) {
+func NewDynamicGauge(name, help string, labels ...string) *DynamicGauge {
+	lock.Lock()
+	defer lock.Unlock()
+	rebuildName := rebuildGaugeName(name, labels...)
+	collector, ok := collectorContainer[rebuildName]
+	if !ok {
+		gauge := &DynamicGauge{
+			name: name,
+			gauge: prometheus.NewGaugeVec(prometheus.GaugeOpts{
+				Name: name,
+				Help: help,
+			}, labels),
+		}
+		Register(WithMeta(rebuildName, gauge.gauge))
+		collectorContainer[rebuildName] = gauge
+		collector = gauge
+	}
+	return collector.(*DynamicGauge)
+}
+
+func (i *DynamicGauge) Inc(labels ...string) {
+	i.gauge.WithLabelValues(labels...).Inc()
+}
+
+func (i *DynamicGauge) Dec(labels ...string) {
+	i.gauge.WithLabelValues(labels...).Dec()
+}
+
+func rebuildGaugeName(name string, labels ...string) string {
 	resultName := name
-	resultLabels := make(map[string]string)
-	for inx := 0; inx < len(labels); inx += 2 {
-		resultName += "_" + labels[inx] + "_" + labels[inx+1]
-		resultLabels[labels[inx]] = labels[inx+1]
+	for inx := 0; inx < len(labels); inx++ {
+		resultName += "_" + labels[inx]
 	}
 
-	return resultName, resultLabels
+	return resultName
 }
