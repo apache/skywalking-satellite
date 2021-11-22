@@ -23,6 +23,8 @@ import (
 	"testing"
 	"time"
 
+	"google.golang.org/protobuf/proto"
+
 	"google.golang.org/grpc"
 
 	common "skywalking.apache.org/repo/goapi/collect/common/v3"
@@ -49,7 +51,9 @@ func TestReceiver_RegisterHandler(t *testing.T) {
 		}
 		return data.String()
 	}, func(data *v1.SniffData) string {
-		return data.GetLog().String()
+		d := new(logging.LogData)
+		_ = proto.Unmarshal(data.GetLog(), d)
+		return d.String()
 	}, t)
 }
 

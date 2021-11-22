@@ -21,6 +21,8 @@ import (
 	"io"
 	"time"
 
+	"github.com/apache/skywalking-satellite/plugins/server/grpc"
+
 	common "skywalking.apache.org/repo/goapi/collect/common/v3"
 	logging "skywalking.apache.org/repo/goapi/collect/logging/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
@@ -35,7 +37,8 @@ type LogReportService struct {
 
 func (s *LogReportService) Collect(stream logging.LogReportService_CollectServer) error {
 	for {
-		logData, err := stream.Recv()
+		originalData := grpc.NewOriginalData(nil)
+		err := stream.RecvMsg(originalData)
 		if err == io.EOF {
 			return stream.SendAndClose(&common.Commands{})
 		}
@@ -49,7 +52,7 @@ func (s *LogReportService) Collect(stream logging.LogReportService_CollectServer
 			Type:      v1.SniffType_Logging,
 			Remote:    true,
 			Data: &v1.SniffData_Log{
-				Log: logData,
+				Log: originalData.Content,
 			},
 		}
 		s.receiveChannel <- e

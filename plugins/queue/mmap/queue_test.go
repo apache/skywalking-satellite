@@ -28,6 +28,8 @@ import (
 	"testing"
 	"time"
 
+	"google.golang.org/protobuf/proto"
+
 	common "skywalking.apache.org/repo/goapi/collect/common/v3"
 	logging "skywalking.apache.org/repo/goapi/collect/logging/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
@@ -68,6 +70,27 @@ func cleanTestQueue(t *testing.T, q api.Queue) {
 func getBatchEvents(count int) []*v1.SniffData {
 	var slice []*v1.SniffData
 	for i := 0; i < count; i++ {
+		log := &logging.LogData{
+			Service:         "mock-service",
+			ServiceInstance: "mock-serviceInstance",
+			Timestamp:       time.Date(2020, 12, 20, 12, 12, 12, 0, time.UTC).Unix(),
+			Endpoint:        "mock-endpoint",
+			Tags:            &logging.LogTags{},
+			TraceContext: &logging.TraceContext{
+				TraceId:        "traceId",
+				TraceSegmentId: "trace-segmentId",
+				SpanId:         12,
+			},
+			Body: &logging.LogDataBody{
+				Type: "body-type",
+				Content: &logging.LogDataBody_Text{
+					Text: &logging.TextLog{
+						Text: getNKData(2) + strconv.Itoa(i),
+					},
+				},
+			},
+		}
+		logBytes, _ := proto.Marshal(log)
 		slice = append(slice, &v1.SniffData{
 			Name:      "event" + strconv.Itoa(i),
 			Timestamp: time.Now().Unix(),
@@ -77,26 +100,7 @@ func getBatchEvents(count int) []*v1.SniffData {
 			Type:   v1.SniffType_Logging,
 			Remote: true,
 			Data: &v1.SniffData_Log{
-				Log: &logging.LogData{
-					Service:         "mock-service",
-					ServiceInstance: "mock-serviceInstance",
-					Timestamp:       time.Date(2020, 12, 20, 12, 12, 12, 0, time.UTC).Unix(),
-					Endpoint:        "mock-endpoint",
-					Tags:            &logging.LogTags{},
-					TraceContext: &logging.TraceContext{
-						TraceId:        "traceId",
-						TraceSegmentId: "trace-segmentId",
-						SpanId:         12,
-					},
-					Body: &logging.LogDataBody{
-						Type: "body-type",
-						Content: &logging.LogDataBody_Text{
-							Text: &logging.TextLog{
-								Text: getNKData(2) + strconv.Itoa(i),
-							},
-						},
-					},
-				},
+				Log: logBytes,
 			},
 		},
 		)
@@ -109,6 +113,34 @@ func getNKData(n int) string {
 }
 
 func getLargeEvent(n int) *v1.SniffData {
+	log := &logging.LogData{
+		Service:         "mock-service",
+		ServiceInstance: "mock-serviceInstance",
+		Timestamp:       time.Date(2020, 12, 20, 12, 12, 12, 0, time.UTC).Unix(),
+		Endpoint:        "mock-endpoint",
+		Tags: &logging.LogTags{
+			Data: []*common.KeyStringValuePair{
+				{
+					Key:   "tags-key",
+					Value: "tags-val",
+				},
+			},
+		},
+		TraceContext: &logging.TraceContext{
+			TraceId:        "traceId",
+			TraceSegmentId: "trace-segmentId",
+			SpanId:         12,
+		},
+		Body: &logging.LogDataBody{
+			Type: "body-type",
+			Content: &logging.LogDataBody_Text{
+				Text: &logging.TextLog{
+					Text: getNKData(n),
+				},
+			},
+		},
+	}
+	logBytes, _ := proto.Marshal(log)
 	return &v1.SniffData{
 		Name:      "largeEvent",
 		Timestamp: time.Now().Unix(),
@@ -118,33 +150,7 @@ func getLargeEvent(n int) *v1.SniffData {
 		Type:   v1.SniffType_Logging,
 		Remote: true,
 		Data: &v1.SniffData_Log{
-			Log: &logging.LogData{
-				Service:         "mock-service",
-				ServiceInstance: "mock-serviceInstance",
-				Timestamp:       time.Date(2020, 12, 20, 12, 12, 12, 0, time.UTC).Unix(),
-				Endpoint:        "mock-endpoint",
-				Tags: &logging.LogTags{
-					Data: []*common.KeyStringValuePair{
-						{
-							Key:   "tags-key",
-							Value: "tags-val",
-						},
-					},
-				},
-				TraceContext: &logging.TraceContext{
-					TraceId:        "traceId",
-					TraceSegmentId: "trace-segmentId",
-					SpanId:         12,
-				},
-				Body: &logging.LogDataBody{
-					Type: "body-type",
-					Content: &logging.LogDataBody_Text{
-						Text: &logging.TextLog{
-							Text: getNKData(n),
-						},
-					},
-				},
-			},
+			Log: logBytes,
 		},
 	}
 }

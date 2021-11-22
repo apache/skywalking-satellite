@@ -28,6 +28,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	server_grpc "github.com/apache/skywalking-satellite/plugins/server/grpc"
 
 	agent "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
@@ -81,7 +82,7 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		if !ok {
 			continue
 		}
-		err := stream.Send(data.Segment)
+		err := stream.SendMsg(server_grpc.NewOriginalData(data.Segment))
 		if err != nil {
 			log.Logger.Errorf("%s send log data error: %v", f.Name(), err)
 			err = closeStream(stream)

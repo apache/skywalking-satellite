@@ -6,7 +6,7 @@ Release Notes.
 ------------------
 #### Features
 * Support partition queue.
-* Using byte array to transmit the ALS streaming, reducing en/decoding cpu usage.
+* Using byte array to transmit the ALS streaming, Native tracing segment and log, reducing en/decoding cpu usage.
 
 #### Bug Fixes
 

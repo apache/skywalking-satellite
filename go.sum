@@ -1332,4 +1332,6 @@ sigs.k8s.io/yaml v1.2.0 h1:kr/MCeFWJWTwyaHoR9c8EjH9OumOmoF9YGiZd7lFm/Q=
 sigs.k8s.io/yaml v1.2.0/go.mod h1:yfXDCHCao9+ENCvLSE62v9VSji2MKu5jeNfTrofGhJc=
 skywalking.apache.org/repo/goapi v0.0.0-20211119053430-01f9654d8896 h1:Om3XZ0eizMIiQI56K9ukO2T4+xgv3g4tRyFQic1gkBk=
 skywalking.apache.org/repo/goapi v0.0.0-20211119053430-01f9654d8896/go.mod h1:4KrWd+Oi4lkB+PtxZgIlf+3T6EECPru4fOWNMEHjxRk=
+skywalking.apache.org/repo/goapi v0.0.0-20211122071111-ffc517fbfe21 h1:USC28w3toXoRiNzSCN3lLgnmT8l6RokW7++GiXcNMCU=
+skywalking.apache.org/repo/goapi v0.0.0-20211122071111-ffc517fbfe21/go.mod h1:4KrWd+Oi4lkB+PtxZgIlf+3T6EECPru4fOWNMEHjxRk=
 sourcegraph.com/sourcegraph/appdash v0.0.0-20190731080439-ebfcffb1b5c0/go.mod h1:hI742Nqp5OhwiqlzhgfbWU4mW4yO10fP+LoT9WOswdU=
