@@ -70,7 +70,7 @@ func (p *Processor) processPerPartition(ctx context.Context, partition int, wg *
 			// receive the input event from the output channel of the gatherer
 			case e := <-p.gatherer.OutputDataChannel(partition):
 				c := &event.OutputEventContext{
-					Offset:  e.Offset,
+					Offset:  &e.Offset,
 					Context: make(map[string]*v1.SniffData),
 				}
 				c.Put(e.Event)

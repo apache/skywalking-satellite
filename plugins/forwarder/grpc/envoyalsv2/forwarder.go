@@ -31,6 +31,8 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
+	server_grpc "github.com/apache/skywalking-satellite/plugins/server/grpc"
 )
 
 const (
@@ -41,6 +43,26 @@ const (
 type Forwarder struct {
 	config.CommonFields
 	alsClient v2.AccessLogServiceClient
+
+	eventReadySendCount        *telemetry.Counter
+	eventSendFinishedCount     *telemetry.Counter
+	streamingReadySendCount    *telemetry.Counter
+	streamingSendFinishedCount *telemetry.Counter
+
+	forwardConnectTime *telemetry.Timer
+	forwardSendTime    *telemetry.Timer
+	forwardCloseTime   *telemetry.Timer
+}
+
+func (f *Forwarder) init() {
+	f.eventReadySendCount = telemetry.NewCounter("als_event_ready_send", "Total count of the ALS event ready send.")
+	f.eventSendFinishedCount = telemetry.NewCounter("als_event_send_finished", "Total count of the ALS event send finished.", "target")
+	f.streamingReadySendCount = telemetry.NewCounter("als_streaming_ready_send", "Total count of the ALS streaming ready send.")
+	f.streamingSendFinishedCount = telemetry.NewCounter("als_streaming_send_finished", "Total count of the ALS streaming send finished.", "target")
+
+	f.forwardConnectTime = telemetry.NewTimer("als_forward_connect_time", "Total time of the open ALS streaming.")
+	f.forwardSendTime = telemetry.NewTimer("als_forward_send_time", "Total time of the ALS send message.")
+	f.forwardCloseTime = telemetry.NewTimer("als_forward_close_time", "Total time of the ALS streaming close.")
 }
 
 func (f *Forwarder) Name() string {
@@ -66,29 +88,51 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 			f.Name(), reflect.TypeOf(connection).String())
 	}
 	f.alsClient = v2.NewAccessLogServiceClient(client)
+	f.init()
 	return nil
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
+	f.eventReadySendCount.Add(float64(len(batch)))
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_EnvoyALSV2List)
-		if !ok {
-			continue
-		}
+		data, _ := e.GetData().(*v1.SniffData_EnvoyALSV2List)
+		f.streamingReadySendCount.Add(float64(len(data.EnvoyALSV2List.Messages)))
+	}
+
+	for _, e := range batch {
+		// open stream
+		timeRecord := f.forwardConnectTime.Start()
 		stream, err := f.alsClient.StreamAccessLogs(context.Background())
+		timeRecord.Stop()
 		if err != nil {
 			log.Logger.Errorf("open grpc stream error %v", err)
 			return err
 		}
-		for _, message := range data.EnvoyALSV2List.Messages {
-			err := stream.Send(message)
+		peer := server_grpc.GetPeerHostFromStreamContext(stream.Context())
+		timeRecord = f.forwardSendTime.Start()
+
+		data := e.GetEnvoyALSV2List()
+		if data == nil {
+			continue
+		}
+
+		// send message
+		for _, message := range data.Messages {
+			err := stream.SendMsg(server_grpc.NewOriginalData(message))
 			if err != nil {
 				log.Logger.Errorf("%s send envoy ALS v2 data error: %v", f.Name(), err)
 				f.closeStream(stream)
 				return err
 			}
 		}
+
+		f.eventSendFinishedCount.Inc(peer)
+		timeRecord.Stop()
+
+		// close stream
+		timeRecord = f.forwardCloseTime.Start()
 		f.closeStream(stream)
+		timeRecord.Stop()
 	}
 	return nil
 }

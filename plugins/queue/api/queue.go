@@ -58,7 +58,7 @@ type Queue interface {
 // SequenceEvent is a wrapper to pass the event and the offset.
 type SequenceEvent struct {
 	Event  *v1.SniffData
-	Offset *event.Offset
+	Offset event.Offset
 }
 
 // GetQueue an initialized filter plugin.

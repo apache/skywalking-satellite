@@ -283,8 +283,8 @@ func (q *Queue) IsFull() bool {
 }
 
 // encode the meta to the offset
-func (q *Queue) encodeOffset(id, offset int64) *event.Offset {
-	return &event.Offset{Position: strconv.FormatInt(id, 10) + "-" + strconv.FormatInt(offset, 10)}
+func (q *Queue) encodeOffset(id, offset int64) event.Offset {
+	return event.Offset{Position: strconv.FormatInt(id, 10) + "-" + strconv.FormatInt(offset, 10)}
 }
 
 // decode the offset to the meta of the mmap queue.
