@@ -71,8 +71,23 @@ func (c *Client) Description() string {
 
 func (c *Client) DefaultConfig() string {
 	return `
+# The gRPC client finder type
+finder_type: "static"
+
 # The gRPC server address (default localhost:11800), multiple addresses are split by ",".
 server_addr: localhost:11800
+
+# The gRPC kubernetes server address finder
+kubernetes_config:
+  # The kind of resource
+  kind: pod
+  # The resource namespaces
+  namespaces:
+    - default
+  # How to get the address exported port
+  extra_port:
+    # Resource target port
+    port: 11800
 
 # The TLS switch (default false).
 enable_TLS: false
