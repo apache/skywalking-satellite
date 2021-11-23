@@ -4,9 +4,9 @@ GRPC client support connect to multiple server address, and use `round-robin` po
 
 ## Server Discovery
 
-Support two ways to locate the server list:
-1. Static server list: Define the server address list.
-2. Kubernetes selector: Define kubernetes pod/service/endpoint, it could be found addresses and dynamic update automatically.
+Support two ways to locate the server list, using `finder_type` to change the type to find:
+1. `static`: Define the server address list.
+2. `kubernetes`: Define kubernetes pod/service/endpoint, it could be found addresses and dynamic update automatically.
 
 ### Static server list
 
