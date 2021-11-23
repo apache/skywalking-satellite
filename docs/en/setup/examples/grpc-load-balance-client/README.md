@@ -4,9 +4,9 @@ GRPC client support connect to multiple server address, and use `round-robin` po
 
 ## Server Discovery
 
-Support two ways to locate the server list:
-1. Static server list: Define the server address list.
-2. Kubernetes selector: Define kubernetes pod/service/endpoint, it could be found addresses and dynamic update automatically.
+Support two ways to locate the server list, using `finder_type` to change the type to find:
+1. `static`: Define the server address list.
+2. `kubernetes`: Define kubernetes pod/service/endpoint, it could be found addresses and dynamic update automatically.
 
 ### Static server list
 
@@ -16,6 +16,8 @@ You could see there define two server address and split by ",".
 sharing:
   clients:
     - plugin_name: "grpc-client"
+      # The gRPC server address finder type
+      finder_type: ${SATELLITE_GRPC_CLIENT_FINDER:static}
       # The gRPC server address (default localhost:11800).
       server_addr: ${SATELLITE_GRPC_CLIENT:127.0.0.1:11800,127.0.0.2:11800}
       # The TLS switch
@@ -47,6 +49,8 @@ Using `kubernetes_config` to define the address's finder.
 sharing:
   clients:
     - plugin_name: "grpc-client"
+      # The gRPC server address finder type
+      finder_type: ${SATELLITE_GRPC_CLIENT_FINDER:kubernetes}
       # The kubernetes config to lookup addresses
       kubernetes_config:
         # The kubernetes API server address, If not define means using in kubernetes mode to connect

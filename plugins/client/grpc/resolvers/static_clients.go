@@ -31,8 +31,8 @@ var staticServerSchema = "static"
 type staticServerResolver struct {
 }
 
-func (s *staticServerResolver) IsSupport(c *ServerFinderConfig) bool {
-	return c.KubernetesConfig == nil && c.ServerAddr != ""
+func (s *staticServerResolver) Type() string {
+	return staticServerSchema
 }
 
 func (s *staticServerResolver) BuildTarget(c *ServerFinderConfig) (string, error) {
