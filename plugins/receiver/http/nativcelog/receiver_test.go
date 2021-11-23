@@ -83,7 +83,9 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 		}()
 
 		newData := <-r.Channel()
-		if !cmp.Equal(newData.Data.(*v1.SniffData_Log).Log.String(), data.String()) {
+		d := new(logging.LogData)
+		_ = proto.Unmarshal(newData.Data.(*v1.SniffData_Log).Log, d)
+		if !cmp.Equal(d.String(), data.String()) {
 			t.Fatalf("the sent data is not equal to the received data\n, "+
 				"want data %s\n, but got %s\n", data.String(), newData.String())
 		}

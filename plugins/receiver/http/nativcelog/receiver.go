@@ -121,7 +121,7 @@ func (r *Receiver) httpHandler() http.Handler {
 			Type:      v1.SniffType_Logging,
 			Remote:    true,
 			Data: &v1.SniffData_Log{
-				Log: &data,
+				Log: b,
 			},
 		}
 		r.OutputChannel <- e

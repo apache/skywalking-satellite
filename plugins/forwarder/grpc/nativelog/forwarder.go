@@ -31,6 +31,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	server_grpc "github.com/apache/skywalking-satellite/plugins/server/grpc"
 )
 
 const (
@@ -81,7 +82,7 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		if !ok {
 			continue
 		}
-		err := stream.Send(data.Log)
+		err := stream.SendMsg(server_grpc.NewOriginalData(data.Log))
 		if err != nil {
 			log.Logger.Errorf("%s send log data error: %v", f.Name(), err)
 			err = closeStream(stream)

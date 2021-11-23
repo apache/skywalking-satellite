@@ -21,12 +21,9 @@ import (
 	"fmt"
 	"reflect"
 
-	"google.golang.org/protobuf/proto"
-
 	"github.com/Shopify/sarama"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
@@ -83,14 +80,9 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		if !ok {
 			continue
 		}
-		bytes, err := proto.Marshal(data.Log)
-		if err != nil {
-			log.Logger.Errorf("%s serialize the logData fail: %v", f.Name(), err)
-			continue
-		}
 		message = append(message, &sarama.ProducerMessage{
 			Topic: f.Topic,
-			Value: sarama.ByteEncoder(bytes),
+			Value: sarama.ByteEncoder(data.Log),
 		})
 	}
 	return f.producer.SendMessages(message)

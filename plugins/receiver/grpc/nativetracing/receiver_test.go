@@ -23,6 +23,8 @@ import (
 	"testing"
 	"time"
 
+	"google.golang.org/protobuf/proto"
+
 	"google.golang.org/grpc"
 
 	common "skywalking.apache.org/repo/goapi/collect/common/v3"
@@ -49,7 +51,9 @@ func TestReceiver_RegisterHandlerStream(t *testing.T) {
 		}
 		return data.String()
 	}, func(data *v1.SniffData) string {
-		return data.GetSegment().String()
+		d := new(agent.SegmentObject)
+		_ = proto.Unmarshal(data.GetSegment(), d)
+		return d.String()
 	}, t)
 }
 
@@ -68,7 +72,9 @@ func TestReceiver_RegisterHandlerSync(t *testing.T) {
 		}
 		return data.String()
 	}, func(data *v1.SniffData) string {
-		return data.GetSegment().String()
+		d := new(agent.SegmentObject)
+		_ = proto.Unmarshal(data.GetSegment(), d)
+		return d.String()
 	}, t)
 }
 
