@@ -37,8 +37,55 @@ telemetry:
 sharing:
   clients:
     - plugin_name: "grpc-client"
+      # The gRPC server address finder type
+      finder_type: ${SATELLITE_GRPC_CLIENT_FINDER:static}
       # The gRPC server address (default localhost:11800).
       server_addr: ${SATELLITE_GRPC_CLIENT:127.0.0.1:11800}
+      # The gRPC kubernetes server address finder
+      kubernetes_config:
+        # The kubernetes API server address, If not define means using in kubernetes mode to connect
+        api_server: ${SATELLITE_GRPC_CLIENT_KUBERNETES_API_SERVER:}
+        # The HTTP basic authentication credentials for the targets.
+        basic_auth:
+          # The username for auth.
+          username: ${SATELLITE_GRPC_CLIENT_KUBERNETES_BASIC_AUTH_USERNAME:}
+          # The password for auth.
+          password: ${SATELLITE_GRPC_CLIENT_KUBERNETES_BASIC_AUTH_PASSWORD:}
+          # The password file path for auth.
+          password_file: ${SATELLITE_GRPC_CLIENT_KUBERNETES_BASIC_AUTH_PASSWORD_FILE:}
+        # The bearer token for the targets.
+        bearer_token: ${SATELLITE_GRPC_CLIENT_KUBERNETES_BEARER_TOKEN:}
+        # The bearer token file for the targets.
+        bearer_token_file: ${SATELLITE_GRPC_CLIENT_KUBERNETES_BEARER_TOKEN_FILE:}
+        # HTTP proxy server to use to connect to the targets.
+        proxy_url: ${SATELLITE_GRPC_CLIENT_KUBERNETES_PROXY_URL:}
+        # Used to connect to the targets.
+        tls_config:
+          # The CA cert to use for the targets.
+          ca_file: ${SATELLITE_GRPC_CLIENT_KUBERNETES_TLS_CONFIG_CA_FILE:}
+          # The client cert file for the targets.
+          cert_file: ${SATELLITE_GRPC_CLIENT_KUBERNETES_TLS_CONFIG_CERT_FILE:}
+          # The client key file for the targets.
+          key_file: ${SATELLITE_GRPC_CLIENT_KUBERNETES_TLS_CONFIG_KEY_FILE:}
+          # Used to verify the hostname for the targets.
+          server_name: ${SATELLITE_GRPC_CLIENT_KUBERNETES_TLS_CONFIG_SERVER_NAME:}
+          # Disable target certificate validation.
+          insecure_skip_verify: ${SATELLITE_GRPC_CLIENT_KUBERNETES_TLS_CONFIG_INSECURE_SKIP_VERIFY:}
+        namespaces:
+          # Support to lookup namespaces.
+          - ${SATELLITE_GRPC_CLIENT_KUBERNETES_NAMESPACE:default}
+        # The kind of resource
+        kind: ${SATELLITE_GRPC_CLIENT_KUBERNETES_KIND:pod}
+        # The kind selector
+        selector:
+          # Label selector
+          label: ${SATELLITE_GRPC_CLIENT_KUBERNETES_SELECTOR_LABEL:}
+          # Field selector
+          field: ${SATELLITE_GRPC_CLIENT_KUBERNETES_SELECTOR_FIELD:}
+        # How to get the address exported port
+        extra_port:
+          # Resource target port
+          port: ${SATELLITE_GRPC_CLIENT_KUBERNETES_EXTRA_PORT_PORT:11800}
       # The TLS switch
       enable_TLS: ${SATELLITE_GRPC_ENABLE_TLS:false}
       # The file path of client.pem. The config only works when opening the TLS switch.

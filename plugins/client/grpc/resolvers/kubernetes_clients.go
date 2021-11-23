@@ -32,8 +32,8 @@ var kubernetesServerSchema = "kubernetes"
 type kubernetesServerResolver struct {
 }
 
-func (k *kubernetesServerResolver) IsSupport(c *ServerFinderConfig) bool {
-	return c.KubernetesConfig != nil
+func (k *kubernetesServerResolver) Type() string {
+	return kubernetesServerSchema
 }
 
 func (k *kubernetesServerResolver) BuildTarget(c *ServerFinderConfig) (string, error) {

@@ -3,8 +3,23 @@
 The gRPC client is a sharing plugin to keep connection with the gRPC server and delivery the data to it.
 ## DefaultConfig
 ```yaml
+# The gRPC client finder type
+finder_type: "static"
+
 # The gRPC server address (default localhost:11800), multiple addresses are split by ",".
 server_addr: localhost:11800
+
+# The gRPC kubernetes server address finder
+kubernetes_config:
+  # The kind of resource
+  kind: pod
+  # The resource namespaces
+  namespaces:
+    - default
+  # How to get the address exported port
+  extra_port:
+    # Resource target port
+    port: 11800
 
 # The TLS switch (default false).
 enable_TLS: false
@@ -30,6 +45,7 @@ check_period: 5
 ## Configuration
 |Name|Type|Description|
 |----|----|-----------|
+| finder_type | string | The gRPC server address finder type |
 | server_addr | string | The gRPC server address |
 | kubernetes_config | *resolvers.KubernetesConfig | The kubernetes config to lookup addresses |
 | kubernetes_config.api_server | string | The kubernetes API server address, If not define means using in kubernetes mode to connect |
@@ -39,7 +55,7 @@ check_period: 5
 | kubernetes_config.basic_auth.password_file | string |  |
 | kubernetes_config.bearer_token | resolvers.Secret | The bearer token for the targets. |
 | kubernetes_config.bearer_token_file | string | The bearer token file for the targets. |
-| kubernetes_config.proxy_url | resolvers.URL | HTTP proxy server to use to connect to the targets. |
+| kubernetes_config.proxy_url | string | HTTP proxy server to use to connect to the targets. |
 | kubernetes_config.tls_config | resolvers.TLSConfig | TLSConfig to use to connect to the targets. |
 | kubernetes_config.namespaces | []string | Support to lookup namespaces |
 | kubernetes_config.kind | string | The kind of api |

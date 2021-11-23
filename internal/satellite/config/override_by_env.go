@@ -71,7 +71,7 @@ func overrideSlice(m []interface{}, regex *regexp.Regexp) []interface{} {
 		case map[interface{}]interface{}:
 			res = append(res, overrideMapInterfaceInterface(val, regex))
 		case string:
-			res = append(res, val)
+			res = append(res, overrideString(val, regex))
 		}
 	}
 	return res

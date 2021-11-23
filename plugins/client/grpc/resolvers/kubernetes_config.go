@@ -19,7 +19,6 @@ package resolvers
 
 import (
 	"fmt"
-	"net/url"
 
 	"github.com/prometheus/common/config"
 	"gopkg.in/yaml.v3"
@@ -49,14 +48,9 @@ type HTTPClientConfig struct {
 	// The bearer token file for the targets.
 	BearerTokenFile string `mapstructure:"bearer_token_file" yaml:"bearer_token_file,omitempty"`
 	// HTTP proxy server to use to connect to the targets.
-	ProxyURL URL `mapstructure:"proxy_url" yaml:"proxy_url,omitempty"`
+	ProxyURL string `mapstructure:"proxy_url" yaml:"proxy_url,omitempty"`
 	// TLSConfig to use to connect to the targets.
 	TLSConfig TLSConfig `mapstructure:"tls_config" yaml:"tls_config,omitempty"`
-}
-
-// URL is a custom URL type that allows validation at configuration load time.
-type URL struct {
-	*url.URL
 }
 
 // BasicAuth contains basic HTTP authentication credentials.

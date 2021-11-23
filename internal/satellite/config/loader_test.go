@@ -97,6 +97,34 @@ func sharing() *SharingConfig {
 				"insecure_skip_verify":   false,
 				"check_period":           5,
 				"authentication":         "",
+				"finder_type":            "static",
+				"kubernetes_config": map[string]interface{}{
+					"api_server": "",
+					"basic_auth": map[string]interface{}{
+						"username":      "",
+						"password":      "",
+						"password_file": "",
+					},
+					"bearer_token":      "",
+					"bearer_token_file": "",
+					"proxy_url":         "",
+					"tls_config": map[string]interface{}{
+						"ca_file":              "",
+						"cert_file":            "",
+						"key_file":             "",
+						"server_name":          "",
+						"insecure_skip_verify": "",
+					},
+					"namespaces": []interface{}{"default"},
+					"kind":       "pod",
+					"selector": map[string]interface{}{
+						"label": "",
+						"field": "",
+					},
+					"extra_port": map[string]interface{}{
+						"port": 11800,
+					},
+				},
 			},
 		},
 		Servers: []plugin.Config{
