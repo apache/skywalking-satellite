@@ -85,7 +85,7 @@ sharing:
         # How to get the address exported port
         extra_port:
           # Resource target port
-          port: ${SATELLITE_GRPC_CLIENT_KUBERNETES_EXTRA_PORT_PORT:11800}
+          port: ${SATELLITE_GRPC_CLIENT_KUBERNETES_EXTRA_PORT:11800}
       # The TLS switch
       enable_TLS: ${SATELLITE_GRPC_ENABLE_TLS:false}
       # The file path of client.pem. The config only works when opening the TLS switch.
