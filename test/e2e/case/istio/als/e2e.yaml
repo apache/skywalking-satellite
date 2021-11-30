@@ -64,14 +64,14 @@ setup:
                        --set ui.image.tag=$SW_UI_COMMIT \
                        --set oap.image.tag=$SW_OAP_COMMIT \
                        --set oap.image.repository=ghcr.io/apache/skywalking/oap \
-                       --set oap.storageType=elasticsearch
+                       --set oap.storageType=elasticsearch \
+                       --set satellite.enabled=true \
+                       --set satellite.image.repository=apache/skywalking-satellite \
+                       --set satellite.image.tag=vlatest
       wait:
         - namespace: istio-system
           resource: deployments/skywalking-oap
           for: condition=available
-    - name: Setup Satellite
-      path: ../satellite.yaml
-      wait:
         - namespace: istio-system
           resource: deployments/skywalking-satellite
           for: condition=available

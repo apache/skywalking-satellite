@@ -23,8 +23,8 @@ import (
 	"io"
 	"reflect"
 
-	v2 "skywalking.apache.org/repo/goapi/proto/envoy/service/accesslog/v2"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+	v3 "skywalking.apache.org/repo/goapi/satellite/envoy/accesslog/v3"
 
 	"google.golang.org/grpc"
 
@@ -42,7 +42,7 @@ const (
 
 type Forwarder struct {
 	config.CommonFields
-	alsClient v2.AccessLogServiceClient
+	alsClient v3.SatelliteAccessLogServiceClient
 
 	eventReadySendCount        *telemetry.Counter
 	eventSendFinishedCount     *telemetry.Counter
@@ -87,7 +87,7 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 		return fmt.Errorf("the %s only accepts a grpc client, but received a %s",
 			f.Name(), reflect.TypeOf(connection).String())
 	}
-	f.alsClient = v2.NewAccessLogServiceClient(client)
+	f.alsClient = v3.NewSatelliteAccessLogServiceClient(client)
 	f.init()
 	return nil
 }
@@ -99,18 +99,18 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		f.streamingReadySendCount.Add(float64(len(data.EnvoyALSV2List.Messages)))
 	}
 
-	for _, e := range batch {
-		// open stream
-		timeRecord := f.forwardConnectTime.Start()
-		stream, err := f.alsClient.StreamAccessLogs(context.Background())
-		timeRecord.Stop()
-		if err != nil {
-			log.Logger.Errorf("open grpc stream error %v", err)
-			return err
-		}
-		peer := server_grpc.GetPeerHostFromStreamContext(stream.Context())
-		timeRecord = f.forwardSendTime.Start()
+	// open stream
+	timeRecord := f.forwardConnectTime.Start()
+	stream, err := f.alsClient.StreamAccessLogs(context.Background())
+	timeRecord.Stop()
+	if err != nil {
+		log.Logger.Errorf("open grpc stream error %v", err)
+		return err
+	}
+	peer := server_grpc.GetPeerHostFromStreamContext(stream.Context())
+	timeRecord = f.forwardSendTime.Start()
 
+	for _, e := range batch {
 		data := e.GetEnvoyALSV2List()
 		if data == nil {
 			continue
@@ -127,17 +127,18 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		}
 
 		f.eventSendFinishedCount.Inc(peer)
-		timeRecord.Stop()
-
-		// close stream
-		timeRecord = f.forwardCloseTime.Start()
-		f.closeStream(stream)
-		timeRecord.Stop()
 	}
+
+	timeRecord.Stop()
+
+	// close stream
+	timeRecord = f.forwardCloseTime.Start()
+	f.closeStream(stream)
+	timeRecord.Stop()
 	return nil
 }
 
-func (f *Forwarder) closeStream(stream v2.AccessLogService_StreamAccessLogsClient) {
+func (f *Forwarder) closeStream(stream v3.SatelliteAccessLogService_StreamAccessLogsClient) {
 	_, err := stream.CloseAndRecv()
 	if err != nil && err != io.EOF {
 		log.Logger.Warnf("%s close stream error: %v", f.Name(), err)
