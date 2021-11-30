@@ -31,6 +31,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	server_grpc "github.com/apache/skywalking-satellite/plugins/server/grpc"
 )
 
 const (
@@ -70,7 +71,7 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-	streamMap := make(map[string]v3.MeterReportService_CollectClient)
+	streamMap := make(map[string]grpc.ClientStream)
 	defer func() {
 		for _, stream := range streamMap {
 			err := closeStream(stream)
@@ -80,34 +81,65 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		}
 	}()
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_Meter)
-		if !ok {
-			continue
-		}
-		streamName := fmt.Sprintf("%s_%s", data.Meter.Service, data.Meter.ServiceInstance)
-		stream := streamMap[streamName]
-		if stream == nil {
-			curStream, err := f.meterClient.Collect(context.Background())
-			if err != nil {
-				log.Logger.Errorf("open grpc stream error %v", err)
+		if data, ok := e.GetData().(*v1.SniffData_Meter); ok {
+			if err := f.handleMeter(data, streamMap); err != nil {
 				return err
 			}
-			streamMap[streamName] = curStream
-			stream = curStream
 		}
-
-		err := stream.Send(data.Meter)
-		if err != nil {
-			log.Logger.Errorf("%s send meter data error: %v", f.Name(), err)
-			return err
+		if data, ok := e.GetData().(*v1.SniffData_MeterCollection); ok {
+			if err := f.handleMeterCollection(data, streamMap); err != nil {
+				return err
+			}
 		}
 	}
 	return nil
 }
 
-func closeStream(stream v3.MeterReportService_CollectClient) error {
-	_, err := stream.CloseAndRecv()
-	if err != nil && err != io.EOF {
+func (f *Forwarder) handleMeterCollection(data *v1.SniffData_MeterCollection, streamMap map[string]grpc.ClientStream) error {
+	streamName := "batch-stream"
+	stream := streamMap[streamName]
+	if stream == nil {
+		curStream, err := f.meterClient.CollectBatch(context.Background())
+		if err != nil {
+			log.Logger.Errorf("open grpc stream error %v", err)
+			return err
+		}
+		streamMap[streamName] = curStream
+		stream = curStream
+	}
+
+	if err := stream.SendMsg(data.MeterCollection); err != nil {
+		log.Logger.Errorf("%s send meter data error: %v", f.Name(), err)
+		return err
+	}
+	return nil
+}
+
+func (f *Forwarder) handleMeter(data *v1.SniffData_Meter, streamMap map[string]grpc.ClientStream) error {
+	streamName := fmt.Sprintf("%s_%s", data.Meter.Service, data.Meter.ServiceInstance)
+	stream := streamMap[streamName]
+	if stream == nil {
+		curStream, err := f.meterClient.Collect(context.Background())
+		if err != nil {
+			log.Logger.Errorf("open grpc stream error %v", err)
+			return err
+		}
+		streamMap[streamName] = curStream
+		stream = curStream
+	}
+
+	if err := stream.SendMsg(data.Meter); err != nil {
+		log.Logger.Errorf("%s send meter data error: %v", f.Name(), err)
+		return err
+	}
+	return nil
+}
+
+func closeStream(stream grpc.ClientStream) error {
+	if err := stream.CloseSend(); err != nil && err != io.EOF {
+		return err
+	}
+	if err := stream.RecvMsg(server_grpc.NewOriginalData(nil)); err != nil {
 		return err
 	}
 	return nil
