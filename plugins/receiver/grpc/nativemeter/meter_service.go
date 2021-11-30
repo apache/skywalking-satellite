@@ -66,3 +66,27 @@ func (m *MeterService) Collect(stream meter.MeterReportService_CollectServer) er
 		m.receiveChannel <- d
 	}
 }
+
+func (m *MeterService) CollectBatch(batch meter.MeterReportService_CollectBatchServer) error {
+	for {
+		item, err := batch.Recv()
+		if err == io.EOF {
+			return nil
+		}
+		if err != nil {
+			return err
+		}
+
+		d := &v1.SniffData{
+			Name:      eventName,
+			Timestamp: time.Now().UnixNano() / 1e6,
+			Meta:      nil,
+			Type:      v1.SniffType_MeterType,
+			Remote:    true,
+			Data: &v1.SniffData_MeterCollection{
+				MeterCollection: item,
+			},
+		}
+		m.receiveChannel <- d
+	}
+}
