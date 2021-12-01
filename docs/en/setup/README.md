@@ -19,10 +19,15 @@ bin/startup.sh
 ## Examples
 You can quickly build your satellite according to the following examples:
 
-1. [Forward Agent Data to OAP Server](examples/forward-agent-data-to-oap-server/README.md)
-2. [Transmit Log to Kafka](examples/transmit-log-to-kafka/README.md)
-3. [GRPC Load Balance Client](examples/grpc-load-balance-client/README.md)
-3. [High Throughput Queue](examples/high-throughput-queue/README.md)
+### Deploy
+
+1. [VM Deploy](examples/deploy/vm/README.md)
+2. [Kubernetes Deploy](examples/deploy/kubernetes/README.md)
+
+### Feature
+
+1. [Transmit Log to Kafka](examples/feature/transmit-log-to-kafka/README.md)
+2. [Enable/Disable Channel](examples/feature/enable-disable-channel/README.md)
 
 ## satellite_config.yaml
 The core concept behind this setting file is, SkyWalking Satellite is based on pure modularization design. End user can switch or assemble the collector features by their own requirements.
@@ -34,3 +39,7 @@ So, in satellite_config.yaml, there are three parts.
 
 ## Advanced feature document link list
 1. [Overriding settings](./configuration/override-settings.md) in satellite_config.yaml is supported
+
+## Performance
+
+1. [ALS Load Balance](performance/als-load-balance/README.md).
