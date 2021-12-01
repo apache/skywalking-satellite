@@ -51,7 +51,7 @@ catalog:
           catalog:
             - name: Deploy
               catalog:
-                - name: Deploy on Linux
+                - name: Deploy on Linux and Windows
                   path: /en/setup/examples/deploy/linux-windows/readme
                 - name: Deploy on Kubernetes
                   path: /en/setup/examples/deploy/kubernetes/readme

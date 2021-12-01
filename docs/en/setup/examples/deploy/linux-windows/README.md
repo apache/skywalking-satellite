@@ -1,4 +1,4 @@
-# Deploy on Linux/Windows
+# Deploy on Linux and Windows
 
 It could help you run the Satellite as a gateway in Linux or Windows instance.
 
