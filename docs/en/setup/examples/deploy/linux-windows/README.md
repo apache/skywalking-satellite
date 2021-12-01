@@ -1,14 +1,22 @@
-# GRPC Load Balance Client
+# Deploy on Linux and Windows
 
-GRPC client support connect to multiple server address, and use `round-robin` policy for load-balance server before send each request.
+It could help you run the Satellite as a gateway in Linux or Windows instance.
 
-## Server Discovery
+## Install
+
+### Download
+
+Download the latest release version from [SkyWalking Release Page](https://skywalking.apache.org/downloads/#SkyWalkingSatellite).
+
+### Change OAP Server addresses
+
+Update the OAP Server address in the config file, then satellite could connect to them and use `round-robin` policy for load-balance server before send each request.
 
 Support two ways to locate the server list, using `finder_type` to change the type to find:
 1. `static`: Define the server address list.
 2. `kubernetes`: Define kubernetes pod/service/endpoint, it could be found addresses and dynamic update automatically.
 
-### Static server list
+#### Static server list
 
 You could see there define two server address and split by ",".
 
@@ -41,7 +49,7 @@ sharing:
       tls_key_file: ${SATELLITE_GRPC_TLS_KEY_FILE:""}
 ```
 
-### Kubernetes selector
+#### Kubernetes selector
 
 Using `kubernetes_config` to define the address's finder.
 
@@ -86,3 +94,15 @@ sharing:
       # The TLS key file path.
       tls_key_file: ${SATELLITE_GRPC_TLS_KEY_FILE:""}
 ```
+
+### Start Satellite
+
+Execute the script `bin/startup.sh`(linux) or `bin/startup.cmd`(windows) to start. Then It could start these port:
+1. gRPC port(`11800`): listen the gRPC request, It could handle request from SkyWalking Agent protocol and Envoy ALS/Metrics protocol.
+2. Prometheus(`1234`): listen the HTTP request, It could get all `SO11Y` metrics from `/metrics` endpoint using Prometheus format.
+
+## Change Address
+
+After the satellite start, need to change the address from agent/node. Then the satellite could load balance the request from agent/node to OAP backend.
+
+Such as in Java Agent, you should change the property value in `collector.backend_service` forward to the satellite gRPC port.

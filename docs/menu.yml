@@ -49,14 +49,22 @@ catalog:
               path: /en/setup/configuration/override-settings
         - name: Examples
           catalog:
-            - name: Forward Agent Data to OAP Server
-              path: /en/setup/examples/forward-agent-data-to-oap-server/readme
-            - name: Transmit Log to Kafka
-              path: /en/setup/examples/transmit-log-to-kafka/readme
-            - name: GRPC Load Balance Client
-              path: /en/setup/examples/grpc-load-balance-client/readme
-            - name: High Throughput Queue
-              path: /en/setup/examples/high-throughput-queue/readme
+            - name: Deploy
+              catalog:
+                - name: Deploy on Linux and Windows
+                  path: /en/setup/examples/deploy/linux-windows/readme
+                - name: Deploy on Kubernetes
+                  path: /en/setup/examples/deploy/kubernetes/readme
+            - name: More Use Cases
+              catalog:
+                - name: Transmit Log to Kafka
+                  path: /en/setup/examples/feature/transmit-log-to-kafka/readme
+                - name: Enable/Disable Channel
+                  path: /en/setup/examples/feature/enable-disable-channel/readme
+        - name: Performance
+          catalog:
+            - name: ALS Load Balance
+              path: /en/setup/performance/als-load-balance/readme
         - name: Plugins
           catalog:
             - name: Client
@@ -163,5 +171,3 @@ catalog:
           catalog:
             - name: How to compile SkyWalking Satellite
               path: /en/guides/compile/How-to-compile
-    - name: FAQs
-      path: /en/FAQ/readme
