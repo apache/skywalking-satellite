@@ -21,7 +21,7 @@ You can quickly build your satellite according to the following examples:
 
 ### Deploy
 
-1. [Deploy on Linux](examples/deploy/linux/README.md)
+1. [Deploy on Linux/Windows](examples/deploy/linux-windows/README.md)
 2. [Deploy on Kubernetes](examples/deploy/kubernetes/README.md)
 
 ### More Use Cases

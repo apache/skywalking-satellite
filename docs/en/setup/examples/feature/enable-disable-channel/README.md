@@ -1,6 +1,6 @@
 # Enable/Disable Channel
 
-Different channels mean that different protocols can be transparently transmitted to downstream services(OAP).
+Different channels mean that different protocols can be transparently transmitted to upstream services(OAP).
 
 ## Config
 

@@ -52,7 +52,7 @@ catalog:
             - name: Deploy
               catalog:
                 - name: Deploy on Linux
-                  path: /en/setup/examples/deploy/linux/readme
+                  path: /en/setup/examples/deploy/linux-windows/readme
                 - name: Deploy on Kubernetes
                   path: /en/setup/examples/deploy/kubernetes/readme
             - name: More Use Cases

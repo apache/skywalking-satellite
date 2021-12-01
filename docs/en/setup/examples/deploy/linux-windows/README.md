@@ -1,6 +1,6 @@
-# Deploy on Linux
+# Deploy on Linux/Windows
 
-It could help you run the Satellite as a gateway in Linux instance.
+It could help you run the Satellite as a gateway in Linux or Windows instance.
 
 ## Install
 
@@ -97,7 +97,7 @@ sharing:
 
 ### Start Satellite
 
-Execute the script `bin/startup.sh` to start. Then It could start these port:
+Execute the script `bin/startup.sh`(linux) or `bin/startup.cmd`(windows) to start. Then It could start these port:
 1. gRPC port(`11800`): listen the gRPC request, It could handle request from SkyWalking Agent protocol and Envoy ALS/Metrics protocol.
 2. Prometheus(`1234`): listen the HTTP request, It could get all `SO11Y` metrics from `/metrics` endpoint using Prometheus format.
 
