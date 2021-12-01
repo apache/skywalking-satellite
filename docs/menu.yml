@@ -55,7 +55,7 @@ catalog:
                   path: /en/setup/examples/deploy/linux/readme
                 - name: Deploy on Kubernetes
                   path: /en/setup/examples/deploy/kubernetes/readme
-            - name: Feature
+            - name: More Use Cases
               catalog:
                 - name: Transmit Log to Kafka
                   path: /en/setup/examples/feature/transmit-log-to-kafka/readme
