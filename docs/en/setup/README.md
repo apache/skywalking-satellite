@@ -21,10 +21,10 @@ You can quickly build your satellite according to the following examples:
 
 ### Deploy
 
-1. [VM Deploy](examples/deploy/vm/README.md)
-2. [Kubernetes Deploy](examples/deploy/kubernetes/README.md)
+1. [Deploy on Linux](examples/deploy/linux/README.md)
+2. [Deploy on Kubernetes](examples/deploy/kubernetes/README.md)
 
-### Feature
+### More Use Cases
 
 1. [Transmit Log to Kafka](examples/feature/transmit-log-to-kafka/README.md)
 2. [Enable/Disable Channel](examples/feature/enable-disable-channel/README.md)

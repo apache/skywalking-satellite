@@ -22,6 +22,8 @@ Deference Envoy Count, OAP performance could impact the Satellite transmit perfo
 
 ## Detail
 
+### Environment
+
 Using GKE Environment, helm to build cluster.
 
 |Module|Version|Replicate Count|CPU Limit|Memory Limit|Description|
@@ -30,3 +32,14 @@ Using GKE Environment, helm to build cluster.
 |Satellite|0.4.0|1|8C|16Gi||
 |ElasticSearch|7.5.1|3|8|16Gi||
 
+### Setting
+
+800 Envoy, 100K QPS ALS.
+
+|Module|Environment Config|Use Value|Default Value|Description|Recommend Value|
+|------|------------------|---------|-------------|-----------|--------------|
+|Satellite|SATELLITE_QUEUE_PARTITION|50|4|Support several goroutines concurrently to consume the queue|Satellite CPU number * 4-6, It could help improve throughput, but the default value also could handle `800` Envoy Instance and `100K` QPS ALS message. |
+|Satellite|SATELLITE_QUEUE_EVENT_BUFFER_SIZE|3000|1000|The size of the queue in each concurrency|This is related to the number of Envoys. If the number of Envoys is large, it is recommended to increase the value.|
+|Satellite|SATELLITE_ENVOY_ALS_V3_PIPE_RECEIVER_FLUSH_TIME|3000|1000|When the Satellite receives the message, how long(millisecond) will the ALS message be merged into an Event.|If a certain time delay is accepted, the value can be adjusted larger, which can effectively reduce CPU usage and make the Satellite more stable|
+|Satellite|SATELLITE_ENVOY_ALS_V3_PIPE_SENDER_FLUSH_TIME|3000|1000|How long(millisecond) is the memory queue data for each Goroutine to be summarized and sent to OAP|This depends on the amount of data in your queue, you can keep it consistent with `SATELLITE_ENVOY_ALS_V3_PIPE_RECEIVER_FLUSH_TIME`|
+|OAP|SW_CORE_GRPC_MAX_CONCURRENT_CALL|50|4|A link between Satellite and OAP, how many requests parallelism is supported|Same with `SATELLITE_QUEUE_PARTITION` in Satellite|

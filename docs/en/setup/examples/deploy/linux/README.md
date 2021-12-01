@@ -1,6 +1,6 @@
-# VM Deploy
+# Deploy on Linux
 
-It could help you run the Satellite as a gateway in VM instance.
+It could help you run the Satellite as a gateway in Linux instance.
 
 ## Install
 

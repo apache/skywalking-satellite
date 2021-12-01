@@ -1,4 +1,4 @@
-# Kubernetes Deploy
+# Deploy on Kubernetes
 
 It could help you run the Satellite as a gateway in Kubernetes environment.
 
@@ -18,7 +18,7 @@ helm install "${SKYWALKING_RELEASE_NAME}" ${REPO}/skywalking -n "${SKYWALKING_RE
   --set ui.image.tag=8.8.1 \
   --set elasticsearch.imageTag=6.8.6 \
   --set satellite.enabled=true \
-  --set satellite.image.tag=v0.3.0
+  --set satellite.image.tag=v0.4.0
 ```
 
 ## Change Address
