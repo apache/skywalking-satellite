@@ -42,8 +42,8 @@ type Client struct {
 	ServerFinderConfig resolvers.ServerFinderConfig `mapstructure:",squash"`
 
 	EnableTLS          bool   `mapstructure:"enable_TLS"`           // Enable TLS connect to server
-	ClientPemPath      string `mapstructure:"client_pem_path"`      // The file path of client.pem. The config only works when opening the TLS switch.
-	ClientKeyPath      string `mapstructure:"client_key_path"`      // The file path of client.key. The config only works when opening the TLS switch.
+	ClientPemPath      string `mapstructure:"client_pem_path"`      // The file path of client.pem. The config only works when opening the TLS switch.(optional)
+	ClientKeyPath      string `mapstructure:"client_key_path"`      // The file path of client.key. The config only works when opening the TLS switch.(optional)
 	CaPemPath          string `mapstructure:"ca_pem_path"`          // The file path oca.pem. The config only works when opening the TLS switch.
 	InsecureSkipVerify bool   `mapstructure:"insecure_skip_verify"` // Controls whether a client verifies the server's certificate chain and host name.
 	Authentication     string `mapstructure:"authentication"`       // The auth value when send request

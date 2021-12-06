@@ -45,7 +45,7 @@ check_period: 5
 ## Configuration
 |Name|Type|Description|
 |----|----|-----------|
-| finder_type | string | The gRPC server address finder type |
+| finder_type | string | The gRPC server address finder type, support "static" and "kubernetes" |
 | server_addr | string | The gRPC server address |
 | kubernetes_config | *resolvers.KubernetesConfig | The kubernetes config to lookup addresses |
 | kubernetes_config.api_server | string | The kubernetes API server address, If not define means using in kubernetes mode to connect |
@@ -62,8 +62,8 @@ check_period: 5
 | kubernetes_config.selector | resolvers.Selector | The kind selector |
 | kubernetes_config.extra_port | resolvers.ExtraPort | How to get the address exported port |
 | enable_TLS | bool | Enable TLS connect to server |
-| client_pem_path | string | The file path of client.pem. The config only works when opening the TLS switch. |
-| client_key_path | string | The file path of client.key. The config only works when opening the TLS switch. |
+| client_pem_path | string | The file path of client.pem. The config only works when opening the TLS switch.(optional) |
+| client_key_path | string | The file path of client.key. The config only works when opening the TLS switch.(optional) |
 | ca_pem_path | string | The file path oca.pem. The config only works when opening the TLS switch. |
 | insecure_skip_verify | bool | Controls whether a client verifies the server's certificate chain and host name. |
 | authentication | string | The auth value when send request |
