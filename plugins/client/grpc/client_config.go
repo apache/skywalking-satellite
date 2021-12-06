@@ -84,12 +84,6 @@ func (c *Client) configTLS() (tc *tls.Config, tlsErr error) {
 	if err := checkTLSFile(c.CaPemPath); err != nil {
 		return nil, err
 	}
-	if err := checkTLSFile(c.ClientKeyPath); err != nil {
-		return nil, err
-	}
-	if err := checkTLSFile(c.ClientPemPath); err != nil {
-		return nil, err
-	}
 	tlsConfig := new(tls.Config)
 	tlsConfig.Renegotiation = tls.RenegotiateNever
 	tlsConfig.InsecureSkipVerify = c.InsecureSkipVerify
@@ -98,14 +92,24 @@ func (c *Client) configTLS() (tc *tls.Config, tlsErr error) {
 		return nil, err
 	}
 	certPool := x509.NewCertPool()
-	certPool.AppendCertsFromPEM(caPem)
+	if !certPool.AppendCertsFromPEM(caPem) {
+		return nil, fmt.Errorf("failed to append certificates")
+	}
 	tlsConfig.RootCAs = certPool
 
-	clientPem, err := tls.LoadX509KeyPair(c.ClientPemPath, c.ClientKeyPath)
-	if err != nil {
-		return nil, err
+	if c.ClientKeyPath != "" && c.ClientPemPath != "" {
+		if err := checkTLSFile(c.ClientKeyPath); err != nil {
+			return nil, err
+		}
+		if err := checkTLSFile(c.ClientPemPath); err != nil {
+			return nil, err
+		}
+		clientPem, err := tls.LoadX509KeyPair(c.ClientPemPath, c.ClientKeyPath)
+		if err != nil {
+			return nil, err
+		}
+		tlsConfig.Certificates = []tls.Certificate{clientPem}
 	}
-	tlsConfig.Certificates = []tls.Certificate{clientPem}
 	return tlsConfig, nil
 }
 

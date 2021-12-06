@@ -45,7 +45,7 @@ check_period: 5
 ## Configuration
 |Name|Type|Description|
 |----|----|-----------|
-| finder_type | string | The gRPC server address finder type |
+| finder_type | string | The gRPC server address finder type, support "static" and "kubernetes" |
 | server_addr | string | The gRPC server address |
 | kubernetes_config | *resolvers.KubernetesConfig | The kubernetes config to lookup addresses |
 | kubernetes_config.api_server | string | The kubernetes API server address, If not define means using in kubernetes mode to connect |

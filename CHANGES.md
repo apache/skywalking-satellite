@@ -5,6 +5,7 @@ Release Notes.
 0.5.0
 ------------------
 #### Features
+* Make the gRPC client `client_pem_path` and `client_key_path` as an optional config.
 
 #### Bug Fixes
 
