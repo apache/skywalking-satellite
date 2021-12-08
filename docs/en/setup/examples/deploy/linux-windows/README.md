@@ -42,11 +42,6 @@ sharing:
       check_period: ${SATELLITE_GRPC_CHECK_PERIOD:5}
       # The auth value when send request
       authentication: ${SATELLITE_GRPC_AUTHENTICATION:""}
-      address: ${SATELLITE_GRPC_ADDRESS:":11800"}
-      # The TLS cert file path.
-      tls_cert_file: ${SATELLITE_GRPC_TLS_KEY_FILE:""}
-      # The TLS key file path.
-      tls_key_file: ${SATELLITE_GRPC_TLS_KEY_FILE:""}
 ```
 
 #### Kubernetes selector
@@ -88,11 +83,6 @@ sharing:
       check_period: ${SATELLITE_GRPC_CHECK_PERIOD:5}
       # The auth value when send request
       authentication: ${SATELLITE_GRPC_AUTHENTICATION:""}
-      address: ${SATELLITE_GRPC_ADDRESS:":11800"}
-      # The TLS cert file path.
-      tls_cert_file: ${SATELLITE_GRPC_TLS_KEY_FILE:""}
-      # The TLS key file path.
-      tls_key_file: ${SATELLITE_GRPC_TLS_KEY_FILE:""}
 ```
 
 ### Start Satellite

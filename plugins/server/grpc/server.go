@@ -77,7 +77,7 @@ tls_key_file: ""
 func (s *Server) Prepare() error {
 	var options []grpc.ServerOption
 	if s.TLSCertFile != "" && s.TLSKeyFile != "" {
-		if c, err := credentials.NewClientTLSFromFile(s.TLSCertFile, s.TLSKeyFile); err == nil {
+		if c, err := credentials.NewServerTLSFromFile(s.TLSCertFile, s.TLSKeyFile); err == nil {
 			options = append(options, grpc.Creds(c))
 		} else {
 			log.Logger.Errorf("error in checking TLS files: %v", err)
