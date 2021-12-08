@@ -54,7 +54,7 @@ sharing:
       # The address of grpc server.
       address: ${SATELLITE_GRPC_ADDRESS:":11800"}
       # The TLS cert file path.
-      tls_cert_file: ${SATELLITE_GRPC_TLS_KEY_FILE:""}
+      tls_cert_file: ${SATELLITE_GRPC_TLS_CERT_FILE:""}
       # The TLS key file path.
       tls_key_file: ${SATELLITE_GRPC_TLS_KEY_FILE:""}
     - plugin_name: "prometheus-server"
