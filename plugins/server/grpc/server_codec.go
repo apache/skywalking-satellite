@@ -20,6 +20,7 @@ package grpc
 import (
 	"fmt"
 
+	pbv1 "github.com/golang/protobuf/proto"
 	"google.golang.org/grpc/encoding"
 	"google.golang.org/protobuf/proto"
 )
@@ -41,28 +42,42 @@ func NewOriginalData(data []byte) *OriginalData {
 type codec struct{}
 
 func (codec) Marshal(v interface{}) ([]byte, error) {
-	vv, ok := v.(proto.Message)
-	if !ok {
-		original, ok := v.(*OriginalData)
-		if !ok {
-			return nil, fmt.Errorf("failed to marshal, message is %T, want proto.Message or grpc.OriginalData", v)
-		}
+	original, ok := v.(*OriginalData)
+	if ok {
 		return original.Content, nil
 	}
-	return proto.Marshal(vv)
+
+	vv, ok := v.(proto.Message)
+	if ok {
+		return proto.Marshal(vv)
+	}
+
+	b, err := pbv1.Marshal(pbv1.MessageV1(v))
+	if err == nil {
+		return b, nil
+	}
+	return nil, fmt.Errorf("failed to marshal, message is %T, want proto.MessageV1/V2 or grpc.OriginalData", v)
+
 }
 
 func (codec) Unmarshal(data []byte, v interface{}) error {
-	vv, ok := v.(proto.Message)
-	if !ok {
-		original, ok := v.(*OriginalData)
-		if !ok {
-			return fmt.Errorf("failed to unmarshal, message is %T, want proto.Message or grpc.OriginalData", v)
-		}
+	original, ok := v.(*OriginalData)
+	if ok {
 		original.Content = data
 		return nil
 	}
-	return proto.Unmarshal(data, vv)
+
+	vv, ok := v.(proto.Message)
+	if ok {
+		return proto.Unmarshal(data, vv)
+	}
+
+	err := proto.Unmarshal(data, pbv1.MessageV2(v))
+	if err != nil {
+		return fmt.Errorf("failed to unmarshal, message is %T, want proto.MessageV1/V2 or grpc.OriginalData", v)
+	}
+	return nil
+
 }
 
 func (codec) Name() string {
