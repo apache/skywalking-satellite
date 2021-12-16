@@ -20,6 +20,7 @@ package metricsservice
 import (
 	"context"
 	"fmt"
+	"io"
 	"sync"
 	"time"
 
@@ -28,6 +29,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	client "github.com/apache/skywalking-satellite/plugins/client/api"
 	"github.com/apache/skywalking-satellite/plugins/client/grpc/lb"
+	server_grpc "github.com/apache/skywalking-satellite/plugins/server/grpc"
 
 	"google.golang.org/grpc"
 
@@ -46,10 +48,11 @@ type Server struct {
 	metrics  map[string]Metric
 	lock     sync.Mutex
 
-	meterClient  v3.MeterReportServiceClient
-	reportStream v3.MeterReportService_CollectBatchClient
-	ctx          context.Context
-	cancel       context.CancelFunc
+	prevServerAddr string
+	meterClient    v3.MeterReportServiceClient
+	reportStream   v3.MeterReportService_CollectBatchClient
+	ctx            context.Context
+	cancel         context.CancelFunc
 }
 
 func (s *Server) Start(config *telemetry.Config) error {
@@ -94,10 +97,8 @@ func (s *Server) AfterSharingStart() error {
 
 func (s *Server) sendMetrics() error {
 	if s.reportStream == nil {
-		if meterStream, err := s.meterClient.CollectBatch(lb.WithLoadBalanceConfig(context.Background(), "metricsService", "")); err == nil {
-			s.reportStream = meterStream
-		} else {
-			return fmt.Errorf("could not start metrics service stream: %v", err)
+		if err := s.openBatchStream(); err != nil {
+			return err
 		}
 	}
 	appender := &MetricsAppender{
@@ -115,7 +116,30 @@ func (s *Server) sendMetrics() error {
 	appender.metrics[0].Service = s.service
 	appender.metrics[0].ServiceInstance = s.instance
 	if err := s.reportStream.Send(&v3.MeterDataCollection{MeterData: appender.metrics}); err != nil {
-		return fmt.Errorf("could send metrics: %v", err)
+		if err != io.EOF {
+			return fmt.Errorf("could send metrics: %v", err)
+		}
+
+		if openErr := s.openBatchStream(); openErr != nil {
+			log.Logger.Warnf("detect send message error and reopen stream failure: %v", openErr)
+		}
+	}
+	return nil
+}
+
+func (s *Server) openBatchStream() error {
+	if s.reportStream != nil {
+		_, err := s.reportStream.CloseAndRecv()
+		if err != nil {
+			log.Logger.Warnf("close satellite meter protocol error: %v", err)
+		}
+	}
+
+	if meterStream, err := s.meterClient.CollectBatch(lb.WithLoadBalanceConfig(context.Background(), "metricsService", s.prevServerAddr)); err == nil {
+		s.reportStream = meterStream
+		s.prevServerAddr = server_grpc.GetPeerAddressFromStreamContext(meterStream.Context())
+	} else {
+		return fmt.Errorf("could not start metrics service stream: %v", err)
 	}
 	return nil
 }
