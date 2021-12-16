@@ -46,8 +46,8 @@ check_period: 5
 |Name|Type|Description|
 |----|----|-----------|
 | finder_type | string | The gRPC server address finder type, support "static" and "kubernetes" |
-| server_addr | string | The gRPC server address |
-| kubernetes_config | *resolvers.KubernetesConfig | The kubernetes config to lookup addresses |
+| server_addr | string | The gRPC server address, only works on "static" address finder |
+| kubernetes_config | *resolvers.KubernetesConfig | The kubernetes config to lookup addresses, only works on "kubernetes" address finder |
 | kubernetes_config.api_server | string | The kubernetes API server address, If not define means using in kubernetes mode to connect |
 | kubernetes_config.basic_auth | *resolvers.BasicAuth | The HTTP basic authentication credentials for the targets. |
 | kubernetes_config.basic_auth.username | string |  |

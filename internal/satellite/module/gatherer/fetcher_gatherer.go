@@ -46,8 +46,8 @@ type FetcherGatherer struct {
 	outputChannel []chan *queue.SequenceEvent
 
 	// metrics
-	fetchCounter       *telemetry.Counter
-	queueOutputCounter *telemetry.Counter
+	fetchCounter       telemetry.Counter
+	queueOutputCounter telemetry.Counter
 
 	// sync invoker
 	processor processor.Processor

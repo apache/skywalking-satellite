@@ -15,9 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package telemetry
+package prometheus
 
-import "github.com/prometheus/client_golang/prometheus"
+import (
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
+
+	"github.com/prometheus/client_golang/prometheus"
+)
 
 type Gauge struct {
 	Collector
@@ -31,15 +35,15 @@ type DynamicGauge struct {
 	gauge *prometheus.GaugeVec
 }
 
-func NewGauge(name, help string, getter func() float64, labels ...string) *Gauge {
-	lock.Lock()
-	defer lock.Unlock()
+func (s *Server) NewGauge(name, help string, getter func() float64, labels ...string) telemetry.Gauge {
+	s.lock.Lock()
+	defer s.lock.Unlock()
 	rebuildName := rebuildGaugeName(name, labels...)
 	constLabels := make(map[string]string)
 	for inx := 0; inx < len(labels); inx += 2 {
 		constLabels[labels[inx]] = labels[inx+1]
 	}
-	collector, ok := collectorContainer[rebuildName]
+	collector, ok := s.collectorContainer[rebuildName]
 	if !ok {
 		gauge := &Gauge{
 			name: name,
@@ -49,18 +53,18 @@ func NewGauge(name, help string, getter func() float64, labels ...string) *Gauge
 				ConstLabels: constLabels,
 			}, getter),
 		}
-		Register(WithMeta(rebuildName, gauge.gauge))
-		collectorContainer[rebuildName] = gauge
+		s.Register(s.WithMeta(rebuildName, gauge.gauge))
+		s.collectorContainer[rebuildName] = gauge
 		collector = gauge
 	}
-	return collector.(*Gauge)
+	return collector
 }
 
-func NewDynamicGauge(name, help string, labels ...string) *DynamicGauge {
-	lock.Lock()
-	defer lock.Unlock()
+func (s *Server) NewDynamicGauge(name, help string, labels ...string) telemetry.DynamicGauge {
+	s.lock.Lock()
+	defer s.lock.Unlock()
 	rebuildName := rebuildGaugeName(name, labels...)
-	collector, ok := collectorContainer[rebuildName]
+	collector, ok := s.collectorContainer[rebuildName]
 	if !ok {
 		gauge := &DynamicGauge{
 			name: name,
@@ -69,11 +73,11 @@ func NewDynamicGauge(name, help string, labels ...string) *DynamicGauge {
 				Help: help,
 			}, labels),
 		}
-		Register(WithMeta(rebuildName, gauge.gauge))
-		collectorContainer[rebuildName] = gauge
+		s.Register(s.WithMeta(rebuildName, gauge.gauge))
+		s.collectorContainer[rebuildName] = gauge
 		collector = gauge
 	}
-	return collector.(*DynamicGauge)
+	return collector.(telemetry.DynamicGauge)
 }
 
 func (i *DynamicGauge) Inc(labels ...string) {

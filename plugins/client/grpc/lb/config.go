@@ -15,22 +15,30 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package test
+package lb
 
-import (
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
-	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
+import "context"
 
-	// import default telemetry
-	_ "github.com/apache/skywalking-satellite/internal/satellite/telemetry/none"
-)
+type LoadBalancerConfig struct {
+	appointAddr string
+	routeKey    string
+}
 
-// init the dependency components.
-func init() {
-	log.Init(new(log.LoggerConfig))
-	c := new(telemetry.Config)
-	c.ExportType = "none"
-	if err := telemetry.Init(c); err != nil {
-		panic(err)
+type ctxKey struct{}
+
+var ctxKeyInstance = ctxKey{}
+
+func WithLoadBalanceConfig(ctx context.Context, routeKey, appointAddr string) context.Context {
+	return context.WithValue(ctx, ctxKeyInstance, &LoadBalancerConfig{
+		routeKey:    routeKey,
+		appointAddr: appointAddr,
+	})
+}
+
+func queryConfig(ctx context.Context) *LoadBalancerConfig {
+	value := ctx.Value(ctxKeyInstance)
+	if value == nil {
+		return nil
 	}
+	return value.(*LoadBalancerConfig)
 }

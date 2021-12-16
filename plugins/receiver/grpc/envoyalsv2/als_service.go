@@ -45,10 +45,10 @@ type AlsService struct {
 	limiterConfig  buffer.LimiterConfig
 	v2.UnimplementedAccessLogServiceServer
 
-	streamingCount        *telemetry.Counter
-	streamingFailedCount  *telemetry.Counter
-	streamingToEventCount *telemetry.Counter
-	activeStreamingCount  *telemetry.DynamicGauge
+	streamingCount        telemetry.Counter
+	streamingFailedCount  telemetry.Counter
+	streamingToEventCount telemetry.Counter
+	activeStreamingCount  telemetry.DynamicGauge
 }
 
 func (m *AlsService) init() {

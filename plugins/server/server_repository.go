@@ -24,7 +24,6 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/server/api"
 	"github.com/apache/skywalking-satellite/plugins/server/grpc"
 	"github.com/apache/skywalking-satellite/plugins/server/http"
-	"github.com/apache/skywalking-satellite/plugins/server/prometheus"
 )
 
 // RegisterServerPlugins register the used server plugins.
@@ -32,7 +31,6 @@ func RegisterServerPlugins() {
 	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Server)(nil)).Elem())
 	servers := []api.Server{
 		// Please register the server plugins at here.
-		new(prometheus.Server),
 		new(grpc.Server),
 		new(http.Server),
 	}

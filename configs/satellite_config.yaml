@@ -32,6 +32,20 @@ telemetry:
   service: ${SATELLITE_TELEMETRY_SERVICE:satellite-service}
   # The minimum running unit, such as the pod concept in the Kubernetes.
   instance: ${SATELLITE_TELEMETRY_SERVICE:satellite-instance}
+  # Telemetry export type, support "prometheus", "metrics_service" or "none"
+  export_type: ${SATELLITE_TELEMETRY_EXPORT_TYPE:metrics_service}
+  # Export to prometheus configuration, only works on "prometheus" exporter
+  prometheus:
+    # The prometheus server address.
+    address: ${SATELLITE_TELEMETRY_PROMETHEUS_ADDRESS::1234}
+    # The prometheus server metrics endpoint.
+    endpoint: ${SATELLITE_TELEMETRY_PROMETHEUS_ENDPOINT:/metrics}
+  # Export to MetricsService configuration, only works on "metrics_service" exporter
+  metrics_service:
+    # The grpc-client plugin name, using the SkyWalking native batch meter protocol
+    client_name: ${SATELLITE_TELEMETRY_METRICS_SERVICE_CLIENT_NAME:grpc-client}
+    # The interval second for sending metrics
+    interval: ${SATELLITE_TELEMETRY_METRICS_SERVICE_INTERVAL:10}
 
 # The sharing plugins referenced by the specific plugins in the different pipes.
 sharing:
@@ -108,11 +122,12 @@ sharing:
       tls_cert_file: ${SATELLITE_GRPC_TLS_CERT_FILE:""}
       # The TLS key file path.
       tls_key_file: ${SATELLITE_GRPC_TLS_KEY_FILE:""}
-    - plugin_name: "prometheus-server"
-      # The prometheus server address.
-      address: ${SATELLITE_PROMETHEUS_ADDRESS:":1234"}
-      # The prometheus server metrics endpoint.
-      endpoint: ${SATELLITE_PROMETHEUS_ENDPOINT:"/metrics"}
+      # To Accept Connection Limiter when reach the resource
+      accept_limit:
+        # The max CPU utilization limit
+        cpu_utilization: ${SATELLITE_GRPC_ACCEPT_LIMIT_CPU_UTILIZATION:90}
+        # The max connection count
+        connection_count: ${SATELLITE_GRPC_ACCEPT_LIMIT_CONNECTION_COUNT:4000}
 
 # The working pipe configurations.
 pipes:
@@ -314,6 +329,10 @@ pipes:
       client_name: grpc-client
       forwarders:
         - plugin_name: nativemeter-grpc-forwarder
+          # The upstream cache max size
+          upstream_cache_size: ${SATELLITE_METERPIPE_FORWARD_UPSTREAM_CACHE_SIZE:5000}
+          # The upstream cache time(second) on each service instance
+          upstream_cache_second: ${SATELLITE_METERPIPE_FORWARD_UPSTREAM_CACHE_SECOND:180}
   - common_config:
       pipe_name: envoy-als-v2
     gatherer:

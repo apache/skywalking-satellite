@@ -39,6 +39,11 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/sharing"
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	"github.com/apache/skywalking-satellite/plugins"
+
+	// import the telemetry implements
+	_ "github.com/apache/skywalking-satellite/internal/satellite/telemetry/metricsservice"
+	_ "github.com/apache/skywalking-satellite/internal/satellite/telemetry/none"
+	_ "github.com/apache/skywalking-satellite/internal/satellite/telemetry/prometheus"
 )
 
 // ModuleContainer contains the every running module in each namespace.
@@ -48,7 +53,9 @@ type ModuleContainer map[string][]api.Module
 func Start(cfg *config.SatelliteConfig, shutdownHookTime time.Duration) error {
 	// Init the global components.
 	log.Init(cfg.Logger)
-	telemetry.Init(cfg.Telemetry)
+	if err := telemetry.Init(cfg.Telemetry); err != nil {
+		return err
+	}
 	api.ShutdownHookTime = shutdownHookTime
 	// register the supported plugin types to the registry
 	plugins.RegisterPlugins()
@@ -69,6 +76,9 @@ func Start(cfg *config.SatelliteConfig, shutdownHookTime time.Duration) error {
 	} else if err := sharing.Start(); err != nil {
 		return err
 	} else {
+		if err := telemetry.AfterShardingStart(); err != nil {
+			return err
+		}
 		bootModules(ctx, modules)
 		return nil
 	}

@@ -15,6 +15,12 @@ max_concurrent_streams: 32
 tls_cert_file: ""
 # The TLS key file path.
 tls_key_file: ""
+# To Accept Connection Limiter when reach the resource
+accept_limit:
+  # The max CPU utilization limit
+  cpu_utilization: 90
+  # The max connection count
+  connection_count: 4000
 ```
 ## Configuration
 |Name|Type|Description|
@@ -25,4 +31,5 @@ tls_key_file: ""
 | max_concurrent_streams | uint32 | The max concurrent stream channels. |
 | tls_cert_file | string | The TLS cert file path. |
 | tls_key_file | string | The TLS key file path. |
+| accept_limit | grpc.AcceptConnectionConfig | To Accept Connection Limiter when reach the resource |
 

@@ -20,35 +20,29 @@ package prometheus
 import (
 	"fmt"
 	"net/http"
-	"reflect"
 	"testing"
 	"time"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/test"
-	"github.com/apache/skywalking-satellite/plugins/server/api"
 )
 
-func initPrometheusServer(cfg plugin.Config) (*Server, error) {
-	plugin.RegisterPluginCategory(reflect.TypeOf((*api.Server)(nil)).Elem())
-	plugin.RegisterPlugin(new(Server))
-	cfg[plugin.NameField] = Name
-	q := api.GetServer(cfg)
-	if q == nil {
-		return nil, fmt.Errorf("cannot get a default config mmap queue from the registry")
+func initPrometheusServer() (*telemetry.PrometheusConfig, error) {
+	c := new(telemetry.Config)
+	c.ExportType = "prometheus"
+	c.Prometheus.Endpoint = "/metrics"
+	c.Prometheus.Address = ":1234"
+	if err := telemetry.Init(c); err != nil {
+		return nil, fmt.Errorf("telemetry cannot initialize: %v", err)
 	}
-	if err := q.Prepare(); err != nil {
-		return nil, fmt.Errorf("queue cannot initialize: %v", err)
-	}
-	return q.(*Server), nil
+	return &c.Prometheus, nil
 }
 
 func TestServer_Start(t *testing.T) {
-	server, err := initPrometheusServer(make(plugin.Config))
+	server, err := initPrometheusServer()
 	if err != nil {
 		t.Fatalf("cannot init the prometheus server: %v", err)
 	}
-	_ = server.Start()
 	time.Sleep(time.Second)
 	response, err := http.Get("http://127.0.0.1" + server.Address + server.Endpoint)
 	defer func() {

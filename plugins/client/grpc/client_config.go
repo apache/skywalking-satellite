@@ -25,6 +25,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	"github.com/apache/skywalking-satellite/plugins/client/grpc/lb"
+
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 	"google.golang.org/grpc/metadata"
@@ -73,8 +75,8 @@ func (c *Client) loadConfig() (*[]grpc.DialOption, error) {
 		return err
 	})
 
-	// using round-robin load balancer
-	options = append(options, grpc.WithDefaultServiceConfig(`{"loadBalancingPolicy":"round_robin"}`))
+	// using self build load balancer
+	options = append(options, grpc.WithDefaultServiceConfig(fmt.Sprintf("{\"loadBalancingPolicy\":\"%s\"}", lb.Name)))
 
 	return &options, nil
 }

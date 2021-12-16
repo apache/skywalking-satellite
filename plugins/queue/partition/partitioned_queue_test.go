@@ -26,6 +26,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
+	_ "github.com/apache/skywalking-satellite/internal/satellite/telemetry/none"
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
 	"github.com/apache/skywalking-satellite/plugins/queue/memory"
 
@@ -34,7 +35,11 @@ import (
 
 func init() {
 	log.Init(&log.LoggerConfig{})
-	telemetry.Init(&telemetry.Config{})
+	c := &telemetry.Config{}
+	c.ExportType = "none"
+	if err := telemetry.Init(c); err != nil {
+		panic(err)
+	}
 }
 
 func initPartitionQueue(queueName string, cfg plugin.Config) (*PartitionedQueue, error) {

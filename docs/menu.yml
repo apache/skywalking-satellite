@@ -153,8 +153,6 @@ catalog:
                   path: /en/setup/plugins/server_grpc-server
                 - name: HTTP Server
                   path: /en/setup/plugins/server_http-server
-                - name: Prometheus Server
-                  path: /en/setup/plugins/server_prometheus-server
     - name: Guides
       catalog:
         - name: Contribution

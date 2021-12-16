@@ -44,14 +44,14 @@ type Forwarder struct {
 	config.CommonFields
 	alsClient v3.SatelliteAccessLogServiceClient
 
-	eventReadySendCount        *telemetry.Counter
-	eventSendFinishedCount     *telemetry.Counter
-	streamingReadySendCount    *telemetry.Counter
-	streamingSendFinishedCount *telemetry.Counter
+	eventReadySendCount        telemetry.Counter
+	eventSendFinishedCount     telemetry.Counter
+	streamingReadySendCount    telemetry.Counter
+	streamingSendFinishedCount telemetry.Counter
 
-	forwardConnectTime *telemetry.Timer
-	forwardSendTime    *telemetry.Timer
-	forwardCloseTime   *telemetry.Timer
+	forwardConnectTime telemetry.Timer
+	forwardSendTime    telemetry.Timer
+	forwardCloseTime   telemetry.Timer
 }
 
 func (f *Forwarder) init() {

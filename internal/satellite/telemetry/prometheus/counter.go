@@ -15,9 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package telemetry
+package prometheus
 
-import "github.com/prometheus/client_golang/prometheus"
+import (
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
+
+	"github.com/prometheus/client_golang/prometheus"
+)
 
 // The counter metric.
 type Counter struct {
@@ -27,10 +31,10 @@ type Counter struct {
 }
 
 // NewCounter create a new counter if no metric with the same name exists.
-func NewCounter(name, help string, labels ...string) *Counter {
-	lock.Lock()
-	defer lock.Unlock()
-	collector, ok := collectorContainer[name]
+func (s *Server) NewCounter(name, help string, labels ...string) telemetry.Counter {
+	s.lock.Lock()
+	defer s.lock.Unlock()
+	collector, ok := s.collectorContainer[name]
 	if !ok {
 		counter := &Counter{
 			name: name,
@@ -39,11 +43,11 @@ func NewCounter(name, help string, labels ...string) *Counter {
 				Help: help,
 			}, labels),
 		}
-		Register(WithMeta(name, counter.counter))
-		collectorContainer[name] = counter
+		s.Register(s.WithMeta(name, counter.counter))
+		s.collectorContainer[name] = counter
 		collector = counter
 	}
-	return collector.(*Counter)
+	return collector.(telemetry.Counter)
 }
 
 // Add one.

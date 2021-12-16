@@ -15,20 +15,22 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package telemetry
+package metricsservice
 
 import (
 	"sync"
 	"time"
+
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 )
 
 var timerLocker sync.Mutex
 
 type Timer struct {
-	Collector
-	name         string
-	sumCounter   *Counter
-	countCounter *Counter
+	BaseMetric
+
+	SumCounter   *Counter
+	CountCounter *Counter
 }
 
 type TimeRecorder struct {
@@ -37,40 +39,43 @@ type TimeRecorder struct {
 	labelValues []string
 }
 
-// NewCounter create a new counter if no metric with the same name exists.
-func NewTimer(name, help string, labels ...string) *Timer {
+func (s *Server) NewTimer(name, help string, labels ...string) telemetry.Timer {
 	timerLocker.Lock()
 	defer timerLocker.Unlock()
 
-	collector, ok := collectorContainer[name]
+	metric, ok := s.metrics[name]
 	if !ok {
-		timer := &Timer{
-			name:         name,
-			sumCounter:   NewCounter(name+"_sum", help, labels...),
-			countCounter: NewCounter(name+"_count", help, labels...),
+		metric = &Timer{
+			*NewBaseMetric(name, nil, func(labelValues ...string) SubMetric {
+				return nil
+			}),
+			s.NewCounter(name+"_sum", help, labels...).(*Counter),
+			s.NewCounter(name+"_count", help, labels...).(*Counter),
 		}
-		collectorContainer[name] = timer
-		collector = timer
+		s.Register(name, metric)
 	}
-	return collector.(*Timer)
+	return metric.(telemetry.Timer)
 }
 
-// Start a new time recorder
-func (c *Timer) Start(labelValues ...string) *TimeRecorder {
+func (t *Timer) WriteMetric(appender *MetricsAppender) {
+	t.SumCounter.WriteMetric(appender)
+	t.CountCounter.WriteMetric(appender)
+}
+
+func (t *Timer) Start(labelValues ...string) telemetry.TimeRecorder {
 	return &TimeRecorder{
-		timer:       c,
+		timer:       t,
 		startTime:   time.Now(),
 		labelValues: labelValues,
 	}
 }
 
-// AddTime add a new duration and count
-func (c *Timer) AddTime(t time.Duration, labelValues ...string) {
-	c.sumCounter.Add(float64(t.Milliseconds()), labelValues...)
-	c.countCounter.Inc(labelValues...)
+func (t *Timer) AddTime(d time.Duration, labelValues ...string) {
+	t.SumCounter.Add(float64(d.Milliseconds()), labelValues...)
+	t.CountCounter.Inc(labelValues...)
 }
 
 // Stop the time and record the time
-func (c *TimeRecorder) Stop() {
-	c.timer.AddTime(time.Since(c.startTime), c.labelValues...)
+func (t *TimeRecorder) Stop() {
+	t.timer.AddTime(time.Since(t.startTime), t.labelValues...)
 }
