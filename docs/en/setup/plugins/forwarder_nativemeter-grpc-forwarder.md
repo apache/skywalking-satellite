@@ -3,14 +3,14 @@
 This is a synchronization meter grpc forwarder with the SkyWalking meter protocol.
 ## DefaultConfig
 ```yaml
-# The upstream LRU Cache max size
-upstream_lru_cache_size: 5000
-# The upstream LRU Cache time(second) on each service instance
-upstream_lru_cache_ttl: 180
+# The LRU policy cache size for hosting routine rules of service instance.
+routing_rule_lru_cache_size: 5000
+# The TTL of the LRU cache size for hosting routine rules of service instance.
+routing_rule_lru_cache_ttl: 180
 ```
 ## Configuration
 |Name|Type|Description|
 |----|----|-----------|
-| upstream_lru_cache_size | int | The upstream LRU Cache max size |
-| upstream_lru_cache_ttl | int | The upstream LRU Cache time(second) on each service instance |
+| routing_rule_lru_cache_size | int | The LRU policy cache size for hosting routine rules of service instance. |
+| routing_rule_lru_cache_ttl | int | The TTL of the LRU cache size for hosting routine rules of service instance. |
 

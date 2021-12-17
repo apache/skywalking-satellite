@@ -31,7 +31,7 @@ telemetry:
   # The group concept for the deployment, such as the service resource concept in the Kubernetes.
   service: ${SATELLITE_TELEMETRY_SERVICE:satellite-service}
   # The minimum running unit, such as the pod concept in the Kubernetes.
-  instance: ${SATELLITE_TELEMETRY_SERVICE:satellite-instance}
+  instance: ${SATELLITE_TELEMETRY_INSTANCE:satellite-instance}
   # Telemetry export type, support "prometheus", "metrics_service" or "none"
   export_type: ${SATELLITE_TELEMETRY_EXPORT_TYPE:prometheus}
   # Export telemetry data through Prometheus server, only works on "export_type=prometheus".
@@ -329,10 +329,10 @@ pipes:
       client_name: grpc-client
       forwarders:
         - plugin_name: nativemeter-grpc-forwarder
-          # The upstream LRU Cache max size
-          upstream_lru_cache_size: ${SATELLITE_METERPIPE_FORWARD_UPSTREAM_LRU_CACHE_SIZE:5000}
-          # The upstream LRU Cache time(second) on each service instance
-          upstream_lru_cache_ttl: ${SATELLITE_METERPIPE_FORWARD_UPSTREAM_LRU_CACHE_TTL:180}
+          # The LRU policy cache size for hosting routine rules of service instance.
+          routing_rule_lru_cache_size: ${SATELLITE_METERPIPE_FORWARD_ROUTING_RULE_LRU_CACHE_SIZE:5000}
+          # The TTL of the LRU cache size for hosting routine rules of service instance.
+          routing_rule_lru_cache_ttl: ${SATELLITE_METERPIPE_FORWARD_ROUTING_RULE_LRU_CACHE_TTL:180}
   - common_config:
       pipe_name: envoy-als-v2
     gatherer:

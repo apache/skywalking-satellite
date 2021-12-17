@@ -1,6 +1,6 @@
 # Telemetry Exporter
 
-Satellite Telemetry Support two ways to export: `prometheus`, `metrics-service`.
+Satellite supports two ways to export its own telemetry data, `prometheus` or `metrics-service`.
 
 ## Prometheus
 
