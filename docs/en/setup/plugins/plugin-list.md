@@ -44,4 +44,3 @@
 - Server
 	- [GRPC Server](./server_grpc-server.md)
 	- [HTTP Server](./server_http-server.md)
-	- [Prometheus Server](./server_prometheus-server.md)

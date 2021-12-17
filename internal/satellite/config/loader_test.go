@@ -134,12 +134,10 @@ func sharing() *SharingConfig {
 				"address":                ":11800",
 				"tls_cert_file":          "",
 				"tls_key_file":           "",
-			},
-			{
-				"plugin_name":            "prometheus-server",
-				"address":                ":1234",
-				"commonfields_pipe_name": "sharing",
-				"endpoint":               "/metrics",
+				"accept_limit": map[string]interface{}{
+					"cpu_utilization":  75,
+					"connection_count": 4000,
+				},
 			},
 		},
 	}

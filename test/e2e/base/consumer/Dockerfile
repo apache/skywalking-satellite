@@ -13,25 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG AGENT_TAG=9a05ad4b423a380c8da711e2a2b856ee93bc9422-es6
-ARG SW_VERSION=8.6.0
+ARG SW_AGENT_JAVA_COMMIT
+ARG SW_AGENT_JDK_VERSION
 
-FROM maven:3.8.1-jdk-8 as builder
-
-ADD . /consumer_code
-
-WORKDIR /consumer_code
-RUN mvn clean package -B -Dsw.version=8.6.0
-
-FROM ghcr.io/apache/skywalking/agent:${AGENT_TAG}
+FROM ghcr.io/apache/skywalking-java/skywalking-java:${SW_AGENT_JAVA_COMMIT}-java${SW_AGENT_JDK_VERSION}
 
 VOLUME /services
 
-COPY --from=builder /consumer_code/target/e2e-service-consumer.jar /services/
-
-ENV JAVA_OPTS=""
+ADD target/e2e-service-consumer.jar /services/
 
 RUN echo 'agent.instance_name=${SW_INSTANCE_NAME:consumer}' >> /skywalking/agent/config/agent.config
 RUN echo 'logging.output=${SW_LOGGING_OUTPUT:CONSOLE}' >> /skywalking/agent/config/agent.config
 
-CMD ["sh", "-c", "java $JAVA_OPTS -jar /services/e2e-service-consumer.jar"]
+CMD ["sh", "-c", "java -jar /services/e2e-service-consumer.jar"]

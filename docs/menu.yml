@@ -61,6 +61,8 @@ catalog:
                   path: /en/setup/examples/feature/transmit-log-to-kafka/readme
                 - name: Enable/Disable Channel
                   path: /en/setup/examples/feature/enable-disable-channel/readme
+                - name: Telemetry Exporter
+                  path: /en/setup/examples/feature/telemetry-exporter/readme
         - name: Performance
           catalog:
             - name: ALS Load Balance
@@ -153,8 +155,6 @@ catalog:
                   path: /en/setup/plugins/server_grpc-server
                 - name: HTTP Server
                   path: /en/setup/plugins/server_http-server
-                - name: Prometheus Server
-                  path: /en/setup/plugins/server_prometheus-server
     - name: Guides
       catalog:
         - name: Contribution

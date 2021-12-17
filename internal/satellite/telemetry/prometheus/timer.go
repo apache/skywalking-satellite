@@ -15,11 +15,13 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package telemetry
+package prometheus
 
 import (
 	"sync"
 	"time"
+
+	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 )
 
 var timerLocker sync.Mutex
@@ -27,8 +29,8 @@ var timerLocker sync.Mutex
 type Timer struct {
 	Collector
 	name         string
-	sumCounter   *Counter
-	countCounter *Counter
+	sumCounter   telemetry.Counter
+	countCounter telemetry.Counter
 }
 
 type TimeRecorder struct {
@@ -38,25 +40,25 @@ type TimeRecorder struct {
 }
 
 // NewCounter create a new counter if no metric with the same name exists.
-func NewTimer(name, help string, labels ...string) *Timer {
+func (s *Server) NewTimer(name, help string, labels ...string) telemetry.Timer {
 	timerLocker.Lock()
 	defer timerLocker.Unlock()
 
-	collector, ok := collectorContainer[name]
+	collector, ok := s.collectorContainer[name]
 	if !ok {
 		timer := &Timer{
 			name:         name,
-			sumCounter:   NewCounter(name+"_sum", help, labels...),
-			countCounter: NewCounter(name+"_count", help, labels...),
+			sumCounter:   s.NewCounter(name+"_sum", help, labels...),
+			countCounter: s.NewCounter(name+"_count", help, labels...),
 		}
-		collectorContainer[name] = timer
+		s.collectorContainer[name] = timer
 		collector = timer
 	}
-	return collector.(*Timer)
+	return collector.(telemetry.Timer)
 }
 
 // Start a new time recorder
-func (c *Timer) Start(labelValues ...string) *TimeRecorder {
+func (c *Timer) Start(labelValues ...string) telemetry.TimeRecorder {
 	return &TimeRecorder{
 		timer:       c,
 		startTime:   time.Now(),

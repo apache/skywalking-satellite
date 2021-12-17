@@ -40,6 +40,9 @@ type Server struct {
 	MaxConcurrentStreams uint32 `mapstructure:"max_concurrent_streams"` // The max concurrent stream channels.
 	TLSCertFile          string `mapstructure:"tls_cert_file"`          // The TLS cert file path.
 	TLSKeyFile           string `mapstructure:"tls_key_file"`           // The TLS key file path.
+
+	AcceptLimit AcceptConnectionConfig `mapstructure:"accept_limit"` // To Accept Connection Limiter when reach the resource
+
 	// components
 	server   *grpc.Server
 	listener net.Listener
@@ -71,6 +74,12 @@ max_concurrent_streams: 32
 tls_cert_file: ""
 # The TLS key file path.
 tls_key_file: ""
+# To Accept Connection Limiter when reach the resource
+accept_limit:
+  # The max CPU utilization limit
+  cpu_utilization: 75
+  # The max connection count
+  connection_count: 4000
 `
 }
 
@@ -86,7 +95,7 @@ func (s *Server) Prepare() error {
 	}
 	options = append(options, grpc.MaxRecvMsgSize(s.MaxRecvMsgSize), grpc.MaxConcurrentStreams(s.MaxConcurrentStreams))
 	s.server = grpc.NewServer(options...)
-	listener, err := net.Listen(s.Network, s.Address)
+	listener, err := NewConnectionManager(s.Network, s.Address, s.AcceptLimit)
 	if err != nil {
 		log.Logger.Errorf("grpc server cannot be created: %v", err)
 		return err

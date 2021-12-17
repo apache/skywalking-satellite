@@ -22,6 +22,9 @@ import (
 	"fmt"
 	"io"
 	"reflect"
+	"time"
+
+	"k8s.io/apimachinery/pkg/util/cache"
 
 	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
@@ -31,6 +34,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	"github.com/apache/skywalking-satellite/plugins/client/grpc/lb"
 	server_grpc "github.com/apache/skywalking-satellite/plugins/server/grpc"
 )
 
@@ -41,7 +45,14 @@ const (
 
 type Forwarder struct {
 	config.CommonFields
-	meterClient v3.MeterReportServiceClient
+	// The LRU policy cache size for hosting routine rules of service instance.
+	RoutingRuleLRUCacheSize int `mapstructure:"routing_rule_lru_cache_size"`
+	// The TTL of the LRU cache size for hosting routine rules of service instance.
+	RoutingRuleLRUCacheTTL int `mapstructure:"routing_rule_lru_cache_ttl"`
+
+	meterClient         v3.MeterReportServiceClient
+	upstreamCache       *cache.LRUExpireCache
+	upstreamCacheExpire time.Duration
 }
 
 func (f *Forwarder) Name() string {
@@ -57,7 +68,12 @@ func (f *Forwarder) Description() string {
 }
 
 func (f *Forwarder) DefaultConfig() string {
-	return ``
+	return `
+# The LRU policy cache size for hosting routine rules of service instance.
+routing_rule_lru_cache_size: 5000
+# The TTL of the LRU cache size for hosting routine rules of service instance.
+routing_rule_lru_cache_ttl: 180
+`
 }
 
 func (f *Forwarder) Prepare(connection interface{}) error {
@@ -67,6 +83,8 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 			f.Name(), reflect.TypeOf(connection).String())
 	}
 	f.meterClient = v3.NewMeterReportServiceClient(client)
+	f.upstreamCache = cache.NewLRUExpireCache(f.RoutingRuleLRUCacheSize)
+	f.upstreamCacheExpire = time.Second * time.Duration(f.RoutingRuleLRUCacheTTL)
 	return nil
 }
 
@@ -96,16 +114,23 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 }
 
 func (f *Forwarder) handleMeterCollection(data *v1.SniffData_MeterCollection, streamMap map[string]grpc.ClientStream) error {
-	streamName := "batch-stream"
+	firstMeter := data.MeterCollection.MeterData[0]
+	streamName := fmt.Sprintf("batch-stream-%s-%s", firstMeter.Service, firstMeter.ServiceInstance)
 	stream := streamMap[streamName]
 	if stream == nil {
-		curStream, err := f.meterClient.CollectBatch(context.Background())
+		ctx := lb.WithLoadBalanceConfig(
+			context.Background(),
+			firstMeter.ServiceInstance,
+			f.loadCachedPeer(firstMeter.ServiceInstance))
+
+		curStream, err := f.meterClient.CollectBatch(ctx)
 		if err != nil {
 			log.Logger.Errorf("open grpc stream error %v", err)
 			return err
 		}
 		streamMap[streamName] = curStream
 		stream = curStream
+		f.savePeerInstanceFromStream(curStream, firstMeter.ServiceInstance)
 	}
 
 	if err := stream.SendMsg(data.MeterCollection); err != nil {
@@ -119,13 +144,19 @@ func (f *Forwarder) handleMeter(data *v1.SniffData_Meter, streamMap map[string]g
 	streamName := fmt.Sprintf("%s_%s", data.Meter.Service, data.Meter.ServiceInstance)
 	stream := streamMap[streamName]
 	if stream == nil {
-		curStream, err := f.meterClient.Collect(context.Background())
+		ctx := lb.WithLoadBalanceConfig(
+			context.Background(),
+			data.Meter.ServiceInstance,
+			f.loadCachedPeer(data.Meter.ServiceInstance))
+
+		curStream, err := f.meterClient.Collect(ctx)
 		if err != nil {
 			log.Logger.Errorf("open grpc stream error %v", err)
 			return err
 		}
 		streamMap[streamName] = curStream
 		stream = curStream
+		f.savePeerInstanceFromStream(curStream, data.Meter.ServiceInstance)
 	}
 
 	if err := stream.SendMsg(data.Meter); err != nil {
@@ -133,6 +164,22 @@ func (f *Forwarder) handleMeter(data *v1.SniffData_Meter, streamMap map[string]g
 		return err
 	}
 	return nil
+}
+
+func (f *Forwarder) savePeerInstanceFromStream(stream grpc.ClientStream, instance string) {
+	upstream := server_grpc.GetPeerAddressFromStreamContext(stream.Context())
+	if upstream == "" {
+		return
+	}
+
+	f.upstreamCache.Add(instance, upstream, f.upstreamCacheExpire)
+}
+
+func (f *Forwarder) loadCachedPeer(instance string) string {
+	if get, exists := f.upstreamCache.Get(instance); exists {
+		return get.(string)
+	}
+	return ""
 }
 
 func closeStream(stream grpc.ClientStream) error {

@@ -77,7 +77,8 @@ setup:
                        --set oap.storageType=elasticsearch \
                        --set satellite.enabled=true \
                        --set satellite.image.repository=apache/skywalking-satellite \
-                       --set satellite.image.tag=vlatest
+                       --set satellite.image.tag=vlatest \
+                       --set satellite.env.SATELLITE_GRPC_ACCEPT_LIMIT_CPU_UTILIZATION=100
       wait:
         - namespace: istio-system
           resource: deployments/skywalking-oap

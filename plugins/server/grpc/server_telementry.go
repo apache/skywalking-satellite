@@ -25,13 +25,16 @@ import (
 )
 
 func GetPeerHostFromStreamContext(ctx context.Context) string {
-	peerAddr, ok := peer.FromContext(ctx)
-	peerStr := ""
-	if ok {
-		peerStr = peerAddr.Addr.String()
-		if inx := strings.IndexByte(peerStr, ':'); inx > 0 {
-			peerStr = peerStr[:strings.IndexByte(peerStr, ':')]
-		}
+	peerAddr := GetPeerAddressFromStreamContext(ctx)
+	if inx := strings.IndexByte(peerAddr, ':'); inx > 0 {
+		peerAddr = peerAddr[:strings.IndexByte(peerAddr, ':')]
 	}
-	return peerStr
+	return peerAddr
+}
+
+func GetPeerAddressFromStreamContext(ctx context.Context) string {
+	if peerAddr, ok := peer.FromContext(ctx); ok {
+		return peerAddr.Addr.String()
+	}
+	return ""
 }

@@ -15,31 +15,11 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package telemetry
+package prometheus
 
-import "github.com/prometheus/client_golang/prometheus"
+import "github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 
-// Config defines the common telemetry labels.
-type Config struct {
-	Cluster  string `mapstructure:"cluster"`  // The cluster name.
-	Service  string `mapstructure:"service"`  // The service name.
-	Instance string `mapstructure:"instance"` // The instance name.
-}
-
-// Init create the global telemetry center according to the config.
-func Init(c *Config) {
-	labels := make(map[string]string)
-	if c.Service != "" {
-		labels["service"] = c.Service
-	}
-	if c.Cluster != "" {
-		labels["cluster"] = c.Cluster
-	}
-	if c.Instance != "" {
-		labels["instance"] = c.Instance
-	}
-	registry = prometheus.NewRegistry()
-	registerer = prometheus.WrapRegistererWith(labels, registry)
-	Gatherer = registry
-	collectorContainer = make(map[string]Collector)
+// The Self-telemetry data collection interface.
+type Collector interface {
+	telemetry.Metric
 }

@@ -26,16 +26,15 @@ import (
 	"testing"
 	"time"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
-
 	common "skywalking.apache.org/repo/goapi/collect/common/v3"
 	agent "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 
 	"google.golang.org/grpc"
 
-	client "github.com/apache/skywalking-satellite/plugins/client/api"
-
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	_ "github.com/apache/skywalking-satellite/internal/satellite/telemetry/none"
+	client "github.com/apache/skywalking-satellite/plugins/client/api"
 	receiver "github.com/apache/skywalking-satellite/plugins/receiver/api"
 	server "github.com/apache/skywalking-satellite/plugins/server/api"
 	grpc_server "github.com/apache/skywalking-satellite/plugins/server/grpc"

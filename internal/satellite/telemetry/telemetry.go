@@ -18,37 +18,94 @@
 package telemetry
 
 import (
-	"sync"
-
-	"github.com/prometheus/client_golang/prometheus"
-
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"fmt"
 )
 
-// registerer is the global metrics center for collecting the telemetry data in core modules or plugins.
 var (
-	Gatherer           prometheus.Gatherer // The gatherer is for fetching metrics from the registry.
-	registry           *prometheus.Registry
-	registerer         prometheus.Registerer // The register is for adding metrics to the registry.
-	collectorContainer map[string]Collector
-	lock               sync.Mutex
+	servers       = make(map[string]Server)
+	currentServer Server
+	defaultServer Server
 )
 
-// Register registers the metric meta to the registerer.
-func Register(meta ...SelfTelemetryMetaFunc) {
-	for _, telemetryMeta := range meta {
-		name, collector := telemetryMeta()
-		registerer.MustRegister(collector)
-		log.Logger.WithField("telemetry_name", name).Info("self telemetry register success")
+// Config defines the common telemetry labels.
+type Config struct {
+	Cluster  string `mapstructure:"cluster"`  // The cluster name.
+	Service  string `mapstructure:"service"`  // The service name.
+	Instance string `mapstructure:"instance"` // The instance name.
+
+	// Telemetry export type, support "prometheus", "metrics_service" or "none"
+	ExportType string `mapstructure:"export_type"`
+	// Export telemetry data through Prometheus server, only works on "export_type=prometheus".
+	Prometheus PrometheusConfig `mapstructure:"prometheus"`
+	// Export telemetry data through native meter format to OAP backend, only works on "export_type=metrics_service".
+	MetricsService MetricsServiceConfig `mapstructure:"metrics_service"`
+}
+
+type PrometheusConfig struct {
+	Address  string `mapstructure:"address"`  // The prometheus server address.
+	Endpoint string `mapstructure:"endpoint"` // The prometheus server metrics endpoint.
+}
+
+type MetricsServiceConfig struct {
+	ClientName string `mapstructure:"client_name"` // The grpc-client plugin name, using the SkyWalking native batch meter protocol
+	Interval   int    `mapstructure:"interval"`    // The interval second for sending metrics
+}
+
+type Server interface {
+	Start(config *Config) error
+	AfterSharingStart() error
+	Close() error
+
+	NewCounter(name, help string, labels ...string) Counter
+	NewGauge(name, help string, getter func() float64, labels ...string) Gauge
+	NewDynamicGauge(name, help string, labels ...string) DynamicGauge
+	NewTimer(name, help string, labels ...string) Timer
+}
+
+func Register(name string, server Server, isDefault bool) {
+	servers[name] = server
+	if isDefault {
+		defaultServer = server
 	}
 }
 
-// SelfTelemetryMetaFunc returns the metric name and the metric instance.
-type SelfTelemetryMetaFunc func() (string, prometheus.Collector)
-
-// WithMeta is used as the param of the Register function.
-func WithMeta(name string, collector prometheus.Collector) SelfTelemetryMetaFunc {
-	return func() (string, prometheus.Collector) {
-		return name, collector
+// Init create the global telemetry center according to the config.
+func Init(c *Config) error {
+	currentServer = servers[c.ExportType]
+	if currentServer == nil {
+		return fmt.Errorf("could not found telemetry exporter: %s", c.ExportType)
 	}
+
+	return currentServer.Start(c)
+}
+
+func AfterShardingStart() error {
+	return getServer().AfterSharingStart()
+}
+
+func Close() error {
+	return getServer().Close()
+}
+
+func NewCounter(name, help string, labels ...string) Counter {
+	return getServer().NewCounter(name, help, labels...)
+}
+
+func NewGauge(name, help string, getter func() float64, labels ...string) Gauge {
+	return getServer().NewGauge(name, help, getter, labels...)
+}
+
+func NewDynamicGauge(name, help string, labels ...string) DynamicGauge {
+	return getServer().NewDynamicGauge(name, help, labels...)
+}
+
+func NewTimer(name, help string, labels ...string) Timer {
+	return getServer().NewTimer(name, help, labels...)
+}
+
+func getServer() Server {
+	if currentServer == nil {
+		currentServer = defaultServer
+	}
+	return currentServer
 }

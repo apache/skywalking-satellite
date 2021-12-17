@@ -51,8 +51,8 @@ type ReceiverGatherer struct {
 	// self components
 	outputChannel []chan *queue.SequenceEvent
 	// metrics
-	receiveCounter     *telemetry.Counter
-	queueOutputCounter *telemetry.Counter
+	receiveCounter     telemetry.Counter
+	queueOutputCounter telemetry.Counter
 
 	// sync invoker
 	processor processor.Processor

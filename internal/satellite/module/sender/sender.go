@@ -65,7 +65,7 @@ type Sender struct {
 	shutdownOnce sync.Once
 
 	// metrics
-	sendCounter *telemetry.Counter
+	sendCounter telemetry.Counter
 }
 
 // Prepare register the client status listener to the client manager and open partitioned input channel.

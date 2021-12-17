@@ -28,6 +28,7 @@ You can quickly build your satellite according to the following examples:
 
 1. [Transmit Log to Kafka](examples/feature/transmit-log-to-kafka/README.md)
 2. [Enable/Disable Channel](examples/feature/enable-disable-channel/README.md)
+3. [Telemetry Exporter](examples/feature/telemetry-exporter/README.md)
 
 ## satellite_config.yaml
 The core concept behind this setting file is, SkyWalking Satellite is based on pure modularization design. End user can switch or assemble the collector features by their own requirements.
