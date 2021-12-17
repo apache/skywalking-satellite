@@ -18,8 +18,9 @@
 package grpc
 
 import (
-	"fmt"
 	"net"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 )
 
 type ConnectionManager struct {
@@ -48,8 +49,9 @@ func (c *ConnectionManager) Accept() (net.Conn, error) {
 
 	if !c.acceptLimiter.CouldHandleConnection() {
 		conn.Close()
-		return nil, fmt.Errorf("out of accept limit, drop the connection: %v->%v, environment: cpuUtilization: %f, connectionCount: %d",
+		log.Logger.Warnf("out of accept limit, drop the connection: %v->%v, environment: cpuUtilization: %f, connectionCount: %d",
 			conn.RemoteAddr(), conn.LocalAddr(), c.acceptLimiter.CurrentCPU, c.acceptLimiter.ActiveConnection)
+		return nil, &outOfLimit{}
 	}
 
 	return &ConnectionWrapper{conn, c}, nil
@@ -67,4 +69,16 @@ type ConnectionWrapper struct {
 func (c *ConnectionWrapper) Close() error {
 	defer c.manager.notifyCloseConnection()
 	return c.Conn.Close()
+}
+
+type outOfLimit struct {
+	error
+}
+
+func (o *outOfLimit) Temporary() bool {
+	return true
+}
+
+func (o *outOfLimit) Error() string {
+	return "out of limit"
 }
