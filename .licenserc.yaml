@@ -34,6 +34,7 @@ header:
     - '.gitignore'
     - '.gitmodules'
     - '.gitattributes'
+    - 'test/e2e/base/.mvn'
     # Copy from https://github.com/grandecola/bigqueue, listed in the LICENSE file
     - 'plugins/queue/mmap/queue_operation.go'
 
