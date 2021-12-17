@@ -45,8 +45,8 @@ const (
 
 type Forwarder struct {
 	config.CommonFields
-	UpstreamCacheSize   int `mapstructure:"upstream_cache_size"`   // The upstream cache max size
-	UpstreamCacheSecond int `mapstructure:"upstream_cache_second"` // The upstream cache time(second) on each service instance
+	UpstreamLRUCacheSize int `mapstructure:"upstream_lru_cache_size"` // The upstream LRU Cache max size
+	UpstreamLRUCacheTTL  int `mapstructure:"upstream_lru_cache_ttl"`  // The upstream LRU Cache time(second) on each service instance
 
 	meterClient         v3.MeterReportServiceClient
 	upstreamCache       *cache.LRUExpireCache
@@ -66,7 +66,12 @@ func (f *Forwarder) Description() string {
 }
 
 func (f *Forwarder) DefaultConfig() string {
-	return ``
+	return `
+# The upstream LRU Cache max size
+upstream_lru_cache_size: 5000
+# The upstream LRU Cache time(second) on each service instance
+upstream_lru_cache_ttl: 180
+`
 }
 
 func (f *Forwarder) Prepare(connection interface{}) error {
@@ -76,8 +81,8 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 			f.Name(), reflect.TypeOf(connection).String())
 	}
 	f.meterClient = v3.NewMeterReportServiceClient(client)
-	f.upstreamCache = cache.NewLRUExpireCache(f.UpstreamCacheSize)
-	f.upstreamCacheExpire = time.Second * time.Duration(f.UpstreamCacheSecond)
+	f.upstreamCache = cache.NewLRUExpireCache(f.UpstreamLRUCacheSize)
+	f.upstreamCacheExpire = time.Second * time.Duration(f.UpstreamLRUCacheTTL)
 	return nil
 }
 

@@ -18,11 +18,10 @@ version: '2.1'
 services:
 
   oap:
-    image: ghcr.io/apache/skywalking/oap:b5578b68fd0d5d8e4543ad7d8fc9c3066ace456c
+    image: ghcr.io/apache/skywalking/oap:${SW_OAP_COMMIT}
     expose:
       - 11800
       - 12800
-      - 10051
     networks:
       - e2e
     restart: on-failure
@@ -38,7 +37,7 @@ services:
       SW_CONFIG_ETCD_PERIOD: 1
       SW_CONFIG_ETCD_ENDPOINTS: http://etcd:2379
     healthcheck:
-      test: ["CMD", "sh", "-c", "nc -zn 127.0.0.1 11800"]
+      test: ["CMD", "bash", "-c", "cat < /dev/null > /dev/tcp/127.0.0.1/11800"]
       interval: 5s
       timeout: 60s
       retries: 120
@@ -47,6 +46,9 @@ services:
     build:
       context: provider
       dockerfile: Dockerfile
+      args:
+        - SW_AGENT_JDK_VERSION=${SW_AGENT_JDK_VERSION}
+        - SW_AGENT_JAVA_COMMIT=${SW_AGENT_JAVA_COMMIT}
     expose:
       - 9090
     networks:
@@ -70,6 +72,9 @@ services:
     build:
       context: consumer
       dockerfile: Dockerfile
+      args:
+        - SW_AGENT_JDK_VERSION=${SW_AGENT_JDK_VERSION}
+        - SW_AGENT_JAVA_COMMIT=${SW_AGENT_JAVA_COMMIT}
     expose:
       - 9090
     networks:
@@ -95,6 +100,7 @@ services:
     expose:
       - 11800
     environment:
+      SATELLITE_GRPC_CLIENT_FINDER: static
       SATELLITE_GRPC_CLIENT: oap:11800
       SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS: 1
     networks:

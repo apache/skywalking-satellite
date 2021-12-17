@@ -135,7 +135,7 @@ func sharing() *SharingConfig {
 				"tls_cert_file":          "",
 				"tls_key_file":           "",
 				"accept_limit": map[string]interface{}{
-					"cpu_utilization":  90,
+					"cpu_utilization":  75,
 					"connection_count": 4000,
 				},
 			},

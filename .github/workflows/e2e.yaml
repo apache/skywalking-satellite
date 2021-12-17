@@ -34,6 +34,12 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - name: Build Test Service
+        shell: bash
+        run: |
+          cd test/e2e/base
+          ./mvnw --batch-mode -f provider/pom.xml clean package -Dsw.version=8.7.0
+          ./mvnw --batch-mode -f consumer/pom.xml clean package -Dsw.version=8.7.0
       - uses: apache/skywalking-infra-e2e@45584853d6f660102c523b1e9cb5815d12ae55d3
         with:
           e2e-file: test/e2e/case/native-protocols/e2e.yaml

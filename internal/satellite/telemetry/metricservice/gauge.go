@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package metricsservice
+package metricservice
 
 import (
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"

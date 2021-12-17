@@ -31,9 +31,9 @@ var rs = []GrpcResolver{
 
 type ServerFinderConfig struct {
 	FinderType string `mapstructure:"finder_type"` // The gRPC server address finder type, support "static" and "kubernetes"
-	// The gRPC server address, only works on "static" address finder
+	// The gRPC server address, only works for "static" address finder
 	ServerAddr string `mapstructure:"server_addr"`
-	// The kubernetes config to lookup addresses, only works on "kubernetes" address finder
+	// The kubernetes config to lookup addresses, only works for "kubernetes" address finder
 	KubernetesConfig *KubernetesConfig `mapstructure:"kubernetes_config"`
 }
 

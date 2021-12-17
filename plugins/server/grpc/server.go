@@ -77,7 +77,7 @@ tls_key_file: ""
 # To Accept Connection Limiter when reach the resource
 accept_limit:
   # The max CPU utilization limit
-  cpu_utilization: 90
+  cpu_utilization: 75
   # The max connection count
   connection_count: 4000
 `

@@ -35,9 +35,9 @@ type Config struct {
 
 	// Telemetry export type, support "prometheus", "metrics_service" or "none"
 	ExportType string `mapstructure:"export_type"`
-	// Export to prometheus configuration, only works on "prometheus" exporter
+	// Export telemetry data through Prometheus server, only works on "export_type=prometheus".
 	Prometheus PrometheusConfig `mapstructure:"prometheus"`
-	// Export to MetricsService configuration, only works on "metrics_service" exporter
+	// Export telemetry data through native meter format to OAP backend, only works on "export_type=metrics_service".
 	MetricsService MetricsServiceConfig `mapstructure:"metrics_service"`
 }
 

@@ -48,7 +48,8 @@ func (c *ConnectionManager) Accept() (net.Conn, error) {
 
 	if !c.acceptLimiter.CouldHandleConnection() {
 		conn.Close()
-		return nil, fmt.Errorf("out of accept limit, drop the connection: %v->%v", conn.RemoteAddr(), conn.LocalAddr())
+		return nil, fmt.Errorf("out of accept limit, drop the connection: %v->%v, environment: cpuUtilization: %f, connectionCount: %d",
+			conn.RemoteAddr(), conn.LocalAddr(), c.acceptLimiter.CurrentCPU, c.acceptLimiter.ActiveConnection)
 	}
 
 	return &ConnectionWrapper{conn, c}, nil

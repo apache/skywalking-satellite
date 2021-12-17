@@ -58,6 +58,10 @@ services:
     extends:
       file: ../../base/base-compose.yml
       service: satellite
+    environment:
+      SATELLITE_GRPC_CLIENT_FINDER: static
+      SATELLITE_GRPC_CLIENT: oap:11800
+      SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS: 1
     ports:
       - 11800
     depends_on:
