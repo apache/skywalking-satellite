@@ -20,7 +20,6 @@ package metricservice
 import (
 	"context"
 	"fmt"
-	"io"
 	"sync"
 	"time"
 
@@ -116,10 +115,6 @@ func (s *Server) sendMetrics() error {
 	appender.metrics[0].Service = s.service
 	appender.metrics[0].ServiceInstance = s.instance
 	if err := s.reportStream.Send(&v3.MeterDataCollection{MeterData: appender.metrics}); err != nil {
-		if err != io.EOF {
-			return fmt.Errorf("could send metrics: %v", err)
-		}
-
 		if openErr := s.openBatchStream(); openErr != nil {
 			log.Logger.Warnf("detect send message error and reopen stream failure: %v", openErr)
 		}
