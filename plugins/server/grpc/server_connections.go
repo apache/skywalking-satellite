@@ -19,6 +19,7 @@ package grpc
 
 import (
 	"net"
+	"sync"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 )
@@ -53,8 +54,7 @@ func (c *ConnectionManager) Accept() (net.Conn, error) {
 			conn.RemoteAddr(), conn.LocalAddr(), c.acceptLimiter.CurrentCPU, c.acceptLimiter.ActiveConnection)
 		return nil, &outOfLimit{}
 	}
-
-	return &ConnectionWrapper{conn, c}, nil
+	return &ConnectionWrapper{Conn: conn, manager: c}, nil
 }
 
 func (c *ConnectionManager) notifyCloseConnection() {
@@ -63,12 +63,19 @@ func (c *ConnectionManager) notifyCloseConnection() {
 
 type ConnectionWrapper struct {
 	net.Conn
-	manager *ConnectionManager
+	manager   *ConnectionManager
+	closeOnce sync.Once
 }
 
 func (c *ConnectionWrapper) Close() error {
-	defer c.manager.notifyCloseConnection()
+	defer c.CloseNotify()
 	return c.Conn.Close()
+}
+
+func (c *ConnectionWrapper) CloseNotify() {
+	c.closeOnce.Do(func() {
+		c.manager.notifyCloseConnection()
+	})
 }
 
 type outOfLimit struct {
