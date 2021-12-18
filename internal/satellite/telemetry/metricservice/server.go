@@ -103,6 +103,7 @@ func (s *Server) sendMetrics() error {
 	appender := &MetricsAppender{
 		time:    time.Now().UnixNano() / int64(time.Millisecond),
 		metrics: make([]*v3.MeterData, 0),
+		prefix:  s.MetricPrefix,
 	}
 	for _, metric := range s.metrics {
 		metric.WriteMetric(appender)
@@ -156,6 +157,7 @@ func (s *Server) Register(name string, metric Metric) {
 type MetricsAppender struct {
 	time    int64
 	metrics []*v3.MeterData
+	prefix  string
 }
 
 func (a *MetricsAppender) appendSingleValue(name string, labels []*v3.Label, val float64) {
@@ -163,7 +165,7 @@ func (a *MetricsAppender) appendSingleValue(name string, labels []*v3.Label, val
 		Timestamp: a.time,
 		Metric: &v3.MeterData_SingleValue{
 			SingleValue: &v3.MeterSingleValue{
-				Name:   name,
+				Name:   a.prefix + name,
 				Labels: labels,
 				Value:  val,
 			},
