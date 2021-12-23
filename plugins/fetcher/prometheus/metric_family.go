@@ -350,7 +350,8 @@ func (mf *metricFamily) updateLabelKeys(ls labels.Labels) {
 				mf.labelKeys[l.Name] = true
 				// use insertion sort to maintain order
 				i := sort.SearchStrings(mf.labelKeysOrdered, l.Name)
-				labelKeys := append(mf.labelKeysOrdered, "")
+				labelKeys := mf.labelKeysOrdered
+				labelKeys = append(labelKeys, "")
 				copy(labelKeys[i+1:], labelKeys[i:])
 				labelKeys[i] = l.Name
 				mf.labelKeysOrdered = labelKeys
