@@ -29,6 +29,7 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/credentials/insecure"
 	"google.golang.org/grpc/metadata"
 )
 
@@ -43,7 +44,7 @@ func (c *Client) loadConfig() (*[]grpc.DialOption, error) {
 		}
 		options = append(options, grpc.WithTransportCredentials(credentials.NewTLS(configTLS)))
 	} else {
-		options = append(options, grpc.WithInsecure())
+		options = append(options, grpc.WithTransportCredentials(insecure.NewCredentials()))
 	}
 
 	var authHeader metadata.MD

@@ -1,5 +1,9 @@
 # Compiling
 
+## Go version
+
+Go version `1.17` or higher is supported for compilation.
+
 ## Platform
 Linux, MacOS and Windows are supported in SkyWalking Satellite. However, some components don't fit the Windows platform, including:
 1. mmap-queue

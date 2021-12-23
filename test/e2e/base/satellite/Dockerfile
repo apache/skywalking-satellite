@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.14
+FROM golang:1.17
 
 ADD . /satellite_code
 WORKDIR /satellite_code
