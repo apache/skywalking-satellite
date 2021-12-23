@@ -53,4 +53,6 @@ telemetry:
     client_name: ${SATELLITE_TELEMETRY_METRICS_SERVICE_CLIENT_NAME:grpc-client}
     # The interval second for sending metrics
     interval: ${SATELLITE_TELEMETRY_METRICS_SERVICE_INTERVAL:10}
+    # The prefix of telemetry metric name
+    metric_prefix: ${SATELLITE_TELEMETRY_METRICS_SERVICE_METRIC_PREFIX:sw_stl_}
 ```
