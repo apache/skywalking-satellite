@@ -21,6 +21,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"google.golang.org/grpc/resolver"
 
@@ -44,10 +45,11 @@ func (k *kubernetesServerResolver) BuildTarget(c *ServerFinderConfig) (string, e
 	return fmt.Sprintf("%s:///%s", kubernetesServerSchema, string(marshal)), nil
 }
 
+//nolint:gocritic // Implement for resolver.Target
 func (*kubernetesServerResolver) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
 	// convert data
 	kubernetesConfig := &KubernetesConfig{}
-	if err := json.Unmarshal([]byte(target.Endpoint), kubernetesConfig); err != nil {
+	if err := json.Unmarshal([]byte(strings.TrimLeft(target.URL.Path, "/")), kubernetesConfig); err != nil {
 		return nil, fmt.Errorf("could not analyze the address: %v", err)
 	}
 

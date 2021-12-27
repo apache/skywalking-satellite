@@ -47,8 +47,9 @@ type PrometheusConfig struct {
 }
 
 type MetricsServiceConfig struct {
-	ClientName string `mapstructure:"client_name"` // The grpc-client plugin name, using the SkyWalking native batch meter protocol
-	Interval   int    `mapstructure:"interval"`    // The interval second for sending metrics
+	ClientName   string `mapstructure:"client_name"`   // The grpc-client plugin name, using the SkyWalking native batch meter protocol
+	Interval     int    `mapstructure:"interval"`      // The interval second for sending metrics
+	MetricPrefix string `mapstructure:"metric_prefix"` // The prefix of telemetry metric name
 }
 
 type Server interface {

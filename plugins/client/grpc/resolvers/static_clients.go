@@ -40,6 +40,7 @@ func (s *staticServerResolver) BuildTarget(c *ServerFinderConfig) (string, error
 	return fmt.Sprintf("%s:///%s", staticServerSchema, c.ServerAddr), nil
 }
 
+//nolint:gocritic // Implement for resolver.Target
 func (*staticServerResolver) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
 	r := &staticResolver{
 		target: target,
@@ -66,7 +67,7 @@ func (*staticResolver) Close() {
 }
 
 func (r *staticResolver) analyzeClients() {
-	addresses := strings.Split(r.target.Endpoint, ",")
+	addresses := strings.Split(strings.TrimLeft(r.target.URL.Path, "/"), ",")
 	addrs := make([]resolver.Address, len(addresses))
 	for i, s := range addresses {
 		addrs[i] = resolver.Address{Addr: s}

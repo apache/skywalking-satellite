@@ -35,6 +35,7 @@ import (
 
 	"github.com/google/go-cmp/cmp"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials/insecure"
 )
 
 // TestReceiver help to testing grpc receiver
@@ -135,7 +136,7 @@ func (s *syncInvoker) SyncInvoke(event *v1.SniffData) (*v1.SniffData, error) {
 }
 
 func initConnection(grpcPort int, t *testing.T) *grpc.ClientConn {
-	conn, err := grpc.Dial(fmt.Sprintf("localhost:%d", grpcPort), grpc.WithInsecure(), grpc.WithBlock())
+	conn, err := grpc.Dial(fmt.Sprintf("localhost:%d", grpcPort), grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		t.Fatalf("cannot init the grpc client: %v", err)
 	}
