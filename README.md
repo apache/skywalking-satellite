@@ -3,7 +3,7 @@ Apache SkyWalking Satellite
 
 <img src="http://skywalking.apache.org/assets/logo.svg" alt="Sky Walking logo" height="90px" align="right" />
 
-**SkyWalking Satellite**: A lightweight collector/sidecar could be deployed closing to the target monitored system, to collect metrics, traces, and logs. Also, it provides advanced features, such as, local cache, format transform, sampling.
+**SkyWalking Satellite**: A lightweight collector/sidecar could be deployed closer to the target monitored system, to collect metrics, traces, and logs. Also, it provides advanced features, such as, local cache, format transform, sampling.
 
 [![GitHub stars](https://img.shields.io/github/stars/apache/skywalking.svg?style=for-the-badge&label=Stars&logo=github)](https://github.com/apache/skywalking)
 [![Twitter Follow](https://img.shields.io/twitter/follow/asfskywalking.svg?style=for-the-badge&label=Follow&logo=twitter)](https://twitter.com/AsfSkyWalking)
