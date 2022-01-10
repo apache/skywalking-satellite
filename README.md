@@ -14,12 +14,6 @@ Apache SkyWalking Satellite
 
 NOTICE, SkyWalking Satellite uses [v3 protocols](https://github.com/apache/skywalking/blob/master/docs/en/protocols/README.md). They are incompatible with previous SkyWalking releases before SkyWalking 8.0.
 
-# Performance
-- 0.5 core supported 3000 ops throughput with memory queue.
-- 0.5 core supported 1500 ops throughput with the memory mapped queue(Ensure data stability).
-
-Please read [the doc](./docs/en/FAQ/performance.md) to get more details.
-
 # Download
 Go to the [download page](https://skywalking.apache.org/downloads/) to download all available binaries, including MacOS, Linux and Windows. Due to system compatibility problems, some plugins of SkyWalking Satellite cannot be used in Windows system. Check [the corresponding documentation](./docs/en/guides/compile/How-to-compile.md) to see whether the plugin is available on Windows.
 
