@@ -249,7 +249,7 @@ The text of each license is the standard Apache 2.0 license.
     github.com-containerd-btrfs v1.0.0 https://github.com/containerd/btrfs Apache-2.0
     github.com-containerd-cgroups v1.0.1 https://github.com/containerd/cgroups Apache-2.0
     github.com-containerd-console v1.0.2 https://github.com/containerd/console Apache-2.0
-    github.com-containerd-containerd v1.5.8 https://github.com/containerd/containerd Apache-2.0
+    github.com-containerd-containerd v1.5.9 https://github.com/containerd/containerd Apache-2.0
     github.com-containerd-continuity v0.1.0 https://github.com/containerd/continuity Apache-2.0
     github.com-containerd-fifo v1.0.0 https://github.com/containerd/fifo Apache-2.0
     github.com-containerd-go-cni v1.0.2 https://github.com/containerd/go-cni Apache-2.0
@@ -376,7 +376,7 @@ The text of each license is the standard Apache 2.0 license.
     google.golang.org-appengine v1.6.6 https://google.golang.org/appengine Apache-2.0
     google.golang.org-cloud v0.0.0 https://google.golang.org/cloud Apache-2.0
     google.golang.org-genproto v0.0.0 https://google.golang.org/genproto Apache-2.0
-    google.golang.org-grpc v1.43.0 https://google.golang.org/grpc Apache-2.0
+    google.golang.org-grpc v1.44.0 https://google.golang.org/grpc Apache-2.0
     gopkg.in-ini.v1 v1.51.0 https://gopkg.in/ini.v1 Apache-2.0
     gopkg.in-jcmturner-aescts.v1 v1.0.1 https://gopkg.in/jcmturner/aescts.v1 Apache-2.0
     gopkg.in-jcmturner-dnsutils.v1 v1.0.1 https://gopkg.in/jcmturner/dnsutils.v1 Apache-2.0
@@ -454,7 +454,7 @@ The text of each license is also included at licenses/license-[project].txt.
     github.com-jessevdk-go-flags v1.4.0 https://github.com/jessevdk/go-flags BSD-3-Clause
     github.com-julienschmidt-httprouter v1.3.0 https://github.com/julienschmidt/httprouter BSD-3-Clause
     github.com-karrick-godirwalk v1.10.3 https://github.com/karrick/godirwalk BSD-2-Clause
-    github.com-klauspost-compress v1.13.6 https://github.com/klauspost/compress BSD-3-Clause
+    github.com-klauspost-compress v1.14.2 https://github.com/klauspost/compress BSD-3-Clause
     github.com-klauspost-crc32 v0.0.0 https://github.com/klauspost/crc32 BSD-3-Clause
     github.com-miekg-dns v1.1.31 https://github.com/miekg/dns BSD-3-Clause
     github.com-miekg-pkcs11 v1.0.3 https://github.com/miekg/pkcs11 BSD-3-Clause
@@ -715,7 +715,7 @@ The text of each license is also included at licenses/license-[project].txt.
     go.mozilla.org-pkcs7 v0.0.0 https://go.mozilla.org/pkcs7 MIT
     go.uber.org-atomic v1.7.0 https://go.uber.org/atomic MIT
     go.uber.org-automaxprocs v1.4.0 https://go.uber.org/automaxprocs MIT
-    go.uber.org-goleak v1.1.10 https://go.uber.org/goleak MIT
+    go.uber.org-goleak v1.1.12 https://go.uber.org/goleak MIT
     go.uber.org-multierr v1.3.0 https://go.uber.org/multierr MIT
     go.uber.org-tools v0.0.0 https://go.uber.org/tools MIT
     go.uber.org-zap v1.13.0 https://go.uber.org/zap MIT
