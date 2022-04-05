@@ -500,7 +500,7 @@ The text of each license is also included at licenses/license-[project].txt.
     gonum.org-v1-gonum v0.6.0 https://gonum.org/v1/gonum BSD-3-Clause
     gonum.org-v1-netlib v0.0.0 https://gonum.org/v1/netlib BSD-3-Clause
     google.golang.org-api v0.32.0 https://google.golang.org/api BSD-3-Clause
-    google.golang.org-protobuf v1.27.1 https://google.golang.org/protobuf BSD-3-Clause
+    google.golang.org-protobuf v1.28.0 https://google.golang.org/protobuf BSD-3-Clause
     gopkg.in-airbrake-gobrake.v2 v2.0.9 https://gopkg.in/airbrake/gobrake.v2 BSD-3-Clause
     gopkg.in-cheggaaa-pb.v1 v1.0.25 https://gopkg.in/cheggaaa/pb.v1 BSD-3-Clause
     gopkg.in-errgo.v2 v2.1.0 https://gopkg.in/errgo.v2 BSD-3-Clause

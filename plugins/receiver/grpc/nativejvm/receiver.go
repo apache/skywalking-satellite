@@ -19,6 +19,7 @@ package nativelog
 
 import (
 	agent "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
+	agent_compat "skywalking.apache.org/repo/goapi/collect/language/agent/v3/compat"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
@@ -60,6 +61,7 @@ func (r *Receiver) RegisterHandler(server interface{}) {
 	r.CommonGRPCReceiverFields = *grpcreceiver.InitCommonGRPCReceiverFields(server)
 	r.service = &JVMReportService{receiveChannel: r.OutputChannel}
 	agent.RegisterJVMMetricReportServiceServer(r.Server, r.service)
+	agent_compat.RegisterJVMMetricReportServiceServer(r.Server, &JVMReportServiceCompat{reportService: r.service})
 }
 
 func (r *Receiver) RegisterSyncInvoker(_ module.SyncInvoker) {

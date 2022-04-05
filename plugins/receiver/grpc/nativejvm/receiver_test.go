@@ -76,9 +76,8 @@ func initData() *agent.JVMMetricCollection {
 				},
 				Gc: []*agent.GC{
 					{
-						Phrase: 2,
-						Count:  3,
-						Time:   202106111010,
+						Count: 3,
+						Time:  202106111010,
 					},
 				},
 				Thread: &agent.Thread{

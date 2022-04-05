@@ -18,11 +18,11 @@ require (
 	go.uber.org/automaxprocs v1.4.0
 	golang.org/x/mod v0.4.2
 	google.golang.org/grpc v1.44.0
-	google.golang.org/protobuf v1.27.1
+	google.golang.org/protobuf v1.28.0
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	gotest.tools v2.2.0+incompatible
 	k8s.io/apimachinery v0.20.6
-	skywalking.apache.org/repo/goapi v0.0.0-20211130045256-aee6db90e633
+	skywalking.apache.org/repo/goapi v0.0.0-20220402141816-76988aaeab46
 )
 
 require (

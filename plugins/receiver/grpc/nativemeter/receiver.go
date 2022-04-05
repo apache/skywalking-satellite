@@ -25,6 +25,7 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 
 	meter "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
+	meter_compat "skywalking.apache.org/repo/goapi/collect/language/agent/v3/compat"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
@@ -60,6 +61,7 @@ func (r *Receiver) RegisterHandler(server interface{}) {
 	r.CommonGRPCReceiverFields = *grpc.InitCommonGRPCReceiverFields(server)
 	r.service = &MeterService{receiveChannel: r.OutputChannel}
 	meter.RegisterMeterReportServiceServer(r.Server, r.service)
+	meter_compat.RegisterMeterReportServiceServer(r.Server, &MeterServiceCompat{reportService: r.service})
 }
 
 func (r *Receiver) RegisterSyncInvoker(_ module.SyncInvoker) {
