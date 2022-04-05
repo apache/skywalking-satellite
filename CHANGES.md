@@ -5,6 +5,7 @@ Release Notes.
 1.0.0
 ------------------
 #### Features
+* Add the compat protocol receiver for the old version of agents.
 
 #### Bug Fixes
 
