@@ -34,37 +34,36 @@ type MeterService struct {
 }
 
 func (m *MeterService) Collect(stream meter.MeterReportService_CollectServer) error {
-	var service, instance string
+	dataList := make([]*meter.MeterData, 0)
 	for {
 		item, err := stream.Recv()
 		if err == io.EOF {
+			m.flushMeter(dataList)
 			return stream.SendAndClose(&common.Commands{})
 		}
 		if err != nil {
+			m.flushMeter(dataList)
 			return err
 		}
-		// only first item has service and service instance property
-		// need correlate information to each item
-		if item.Service != "" {
-			service = item.Service
-		}
-		if item.ServiceInstance != "" {
-			instance = item.ServiceInstance
-		}
-		item.Service = service
-		item.ServiceInstance = instance
-		d := &v1.SniffData{
-			Name:      eventName,
-			Timestamp: time.Now().UnixNano() / 1e6,
-			Meta:      nil,
-			Type:      v1.SniffType_MeterType,
-			Remote:    true,
-			Data: &v1.SniffData_Meter{
-				Meter: item,
-			},
-		}
-		m.receiveChannel <- d
+		dataList = append(dataList, item)
 	}
+}
+
+func (m *MeterService) flushMeter(dataList []*meter.MeterData) {
+	if len(dataList) == 0 {
+		return
+	}
+	d := &v1.SniffData{
+		Name:      eventName,
+		Timestamp: time.Now().UnixNano() / 1e6,
+		Meta:      nil,
+		Type:      v1.SniffType_MeterType,
+		Remote:    true,
+		Data: &v1.SniffData_MeterCollection{
+			MeterCollection: &meter.MeterDataCollection{MeterData: dataList},
+		},
+	}
+	m.receiveChannel <- d
 }
 
 func (m *MeterService) CollectBatch(batch meter.MeterReportService_CollectBatchServer) error {
