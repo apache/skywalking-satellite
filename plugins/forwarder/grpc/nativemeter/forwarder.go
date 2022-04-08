@@ -98,20 +98,14 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 			}
 		}
 	}()
-	oldTransformDataCount := 0
 	for _, e := range batch {
-		switch data := e.GetData().(type) {
-		case *v1.SniffData_MeterCollection:
+		// Only handle the meter collection data from queue
+		// There could have error when using previously meter data(SniffData_Meter)
+		if data, ok := e.GetData().(*v1.SniffData_MeterCollection); ok {
 			if err := f.handleMeterCollection(data, streamMap); err != nil {
 				return err
 			}
-		case *v1.SniffData_Meter:
-			oldTransformDataCount++
 		}
-	}
-	if oldTransformDataCount > 0 {
-		log.Logger.Warnf("Found out transform data, old data would cause backend statistics error, so ignore them. "+
-			"total count: %d", oldTransformDataCount)
 	}
 	return nil
 }
