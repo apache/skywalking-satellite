@@ -99,11 +99,8 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		}
 	}()
 	for _, e := range batch {
-		if data, ok := e.GetData().(*v1.SniffData_Meter); ok {
-			if err := f.handleMeter(data, streamMap); err != nil {
-				return err
-			}
-		}
+		// Only handle the meter collection data from queue
+		// There could have error when using previously meter data(SniffData_Meter)
 		if data, ok := e.GetData().(*v1.SniffData_MeterCollection); ok {
 			if err := f.handleMeterCollection(data, streamMap); err != nil {
 				return err
@@ -114,6 +111,9 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 }
 
 func (f *Forwarder) handleMeterCollection(data *v1.SniffData_MeterCollection, streamMap map[string]grpc.ClientStream) error {
+	if len(data.MeterCollection.MeterData) == 0 {
+		return nil
+	}
 	firstMeter := data.MeterCollection.MeterData[0]
 	streamName := fmt.Sprintf("batch-stream-%s-%s", firstMeter.Service, firstMeter.ServiceInstance)
 	stream := streamMap[streamName]
@@ -134,32 +134,6 @@ func (f *Forwarder) handleMeterCollection(data *v1.SniffData_MeterCollection, st
 	}
 
 	if err := stream.SendMsg(data.MeterCollection); err != nil {
-		log.Logger.Errorf("%s send meter data error: %v", f.Name(), err)
-		return err
-	}
-	return nil
-}
-
-func (f *Forwarder) handleMeter(data *v1.SniffData_Meter, streamMap map[string]grpc.ClientStream) error {
-	streamName := fmt.Sprintf("%s_%s", data.Meter.Service, data.Meter.ServiceInstance)
-	stream := streamMap[streamName]
-	if stream == nil {
-		ctx := lb.WithLoadBalanceConfig(
-			context.Background(),
-			data.Meter.ServiceInstance,
-			f.loadCachedPeer(data.Meter.ServiceInstance))
-
-		curStream, err := f.meterClient.Collect(ctx)
-		if err != nil {
-			log.Logger.Errorf("open grpc stream error %v", err)
-			return err
-		}
-		streamMap[streamName] = curStream
-		stream = curStream
-		f.savePeerInstanceFromStream(curStream, data.Meter.ServiceInstance)
-	}
-
-	if err := stream.SendMsg(data.Meter); err != nil {
 		log.Logger.Errorf("%s send meter data error: %v", f.Name(), err)
 		return err
 	}

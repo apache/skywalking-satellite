@@ -8,6 +8,7 @@ Release Notes.
 * Add the compat protocol receiver for the old version of agents.
 
 #### Bug Fixes
+* Fix Metadata lost in the Native Meter protocol.
 
 #### Issues and PR
 - All issues are [here](https://github.com/apache/skywalking/milestone/115?closed=1)
