@@ -100,11 +100,12 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	}()
 	oldTransformDataCount := 0
 	for _, e := range batch {
-		if data, ok := e.GetData().(*v1.SniffData_MeterCollection); ok {
+		switch data := e.GetData().(type) {
+		case *v1.SniffData_MeterCollection:
 			if err := f.handleMeterCollection(data, streamMap); err != nil {
 				return err
 			}
-		} else if _, ok := e.GetData().(*v1.SniffData_Meter); ok {
+		case *v1.SniffData_Meter:
 			oldTransformDataCount++
 		}
 	}

@@ -48,7 +48,7 @@ func TestReceiver_RegisterHandler(t *testing.T) {
 		}
 		return data.String()
 	}, func(data *v1.SniffData) string {
-		return data.GetMeter().String()
+		return data.GetMeterCollection().MeterData[0].String()
 	}, t)
 }
 
