@@ -13,23 +13,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-events:
-{{- contains .events }}
-- uuid: {{ notEmpty .uuid }}
-  source:
-    service: e2e-service-provider
-    serviceinstance: provider1
-    endpoint: ""
-  name: Start
-  type: Normal
-  message: Start Java Application
-  parameters:
-  {{- contains .parameters }}
-    - key: OPTS
-      value: {{ notEmpty .value }}
-  {{- end }}
-  starttime: {{ gt .starttime 0 }}
-  endtime: {{ gt .endtime 0 }}
-  layer: GENERAL
+{{- contains . }}
+- taskid: {{ notEmpty .taskid }}
+  serviceid: {{ b64enc "sqrt" }}.1
+  servicename: sqrt
+  processlabels:
+    {{- contains .processlabels }}
+    - e2e-label1
+    - e2e-label2
+    {{- end }}
+  taskstarttime: {{ gt .taskstarttime 0 }}
+  triggertype: FIXED_TIME
+  fixedtriggerduration: 60
+  targettype: ON_CPU
+  createtime: {{ gt .createtime 0 }}
 {{- end }}
-total: {{ gt .total 0 }}

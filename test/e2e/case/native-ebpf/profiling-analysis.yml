@@ -13,23 +13,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-events:
-{{- contains .events }}
-- uuid: {{ notEmpty .uuid }}
-  source:
-    service: e2e-service-provider
-    serviceinstance: provider1
-    endpoint: ""
-  name: Start
-  type: Normal
-  message: Start Java Application
-  parameters:
-  {{- contains .parameters }}
-    - key: OPTS
-      value: {{ notEmpty .value }}
-  {{- end }}
-  starttime: {{ gt .starttime 0 }}
-  endtime: {{ gt .endtime 0 }}
-  layer: GENERAL
+tip: null
+trees:
+{{- contains .trees }}
+- elements:
+  {{- contains .elements }}
+  - id: "{{ notEmpty .id }}"
+    parentid: "{{ notEmpty .parentid }}"
+    symbol: "main.sqrtGolang"
+    stacktype: USER_SPACE
+    dumpcount: {{ gt .dumpcount 0 }}
 {{- end }}
-total: {{ gt .total 0 }}
+{{- end }}

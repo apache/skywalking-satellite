@@ -13,23 +13,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-events:
-{{- contains .events }}
-- uuid: {{ notEmpty .uuid }}
-  source:
-    service: e2e-service-provider
-    serviceinstance: provider1
-    endpoint: ""
-  name: Start
-  type: Normal
-  message: Start Java Application
-  parameters:
-  {{- contains .parameters }}
-    - key: OPTS
-      value: {{ notEmpty .value }}
-  {{- end }}
-  starttime: {{ gt .starttime 0 }}
-  endtime: {{ gt .endtime 0 }}
-  layer: GENERAL
+{{- contains . }}
+- id: {{ b64enc "sqrt" }}.1_{{ b64enc "test-instance" }}
+  name: test-instance
+  attributes: []
+  language: UNKNOWN
+  instanceuuid: {{ notEmpty .instanceuuid }}
+  layer: OS_LINUX
 {{- end }}
-total: {{ gt .total 0 }}

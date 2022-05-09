@@ -23,7 +23,15 @@ on:
 
 jobs:
   NativeProtocolsE2E:
-    name: Native Management/JVM/Tracing/Meter/Event/Log/Profile/CDS
+    strategy:
+      matrix:
+        test:
+          - name: Native Management/JVM/Tracing/Meter/Event/Log/Profile/CDS
+            config: test/e2e/case/native-protocols/e2e.yaml
+          - name: Native Process/EBPF Profiling
+            config: test/e2e/case/native-ebpf/e2e.yaml
+      fail-fast: true
+    name: Native E2E test
     runs-on: ubuntu-latest
     steps:
       - name: Set up Go 1.17
@@ -40,9 +48,10 @@ jobs:
           cd test/e2e/base
           ./mvnw --batch-mode -f provider/pom.xml clean package -Dsw.version=8.7.0
           ./mvnw --batch-mode -f consumer/pom.xml clean package -Dsw.version=8.7.0
-      - uses: apache/skywalking-infra-e2e@45584853d6f660102c523b1e9cb5815d12ae55d3
+      - name: ${{ matrix.test.name }}
+        uses: apache/skywalking-infra-e2e@45584853d6f660102c523b1e9cb5815d12ae55d3
         with:
-          e2e-file: test/e2e/case/native-protocols/e2e.yaml
+          e2e-file: $GITHUB_WORKSPACE/${{ matrix.test.config }}
       - uses: actions/upload-artifact@v2
         if: ${{ failure() }}
         name: Upload Logs

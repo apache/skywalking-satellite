@@ -16,8 +16,16 @@
 {{- contains . }}
 - id: {{ b64enc "e2e-service-provider" }}.1
   name: e2e-service-provider
+  shortname: e2e-service-provider
   group: ""
+  layers:
+    - GENERAL
+  normal: true
 - id: {{ b64enc "e2e-service-consumer" }}.1
   name: e2e-service-consumer
+  shortname: e2e-service-consumer
   group: ""
+  layers:
+    - GENERAL
+  normal: true
 {{- end }}
