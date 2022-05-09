@@ -96,23 +96,27 @@ catalog:
                 - name: Envoy Metrics v3 GRPC Forwarder
                   path: /en/setup/plugins/forwarder_envoy-metrics-v3-grpc-forwarder
                 - name: Native CDS GRPC Forwarder
-                  path: /en/setup/plugins/forwarder_nativecds-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_native-cds-grpc-forwarder
+                - name: Native EBPF Profiling GRPC Forwarder
+                  path: /en/setup/plugins/forwarder_native-ebpf-profiling-grpc-forwarder
                 - name: Native Event GRPC Forwarder
-                  path: /en/setup/plugins/forwarder_nativeevent-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_native-event-grpc-forwarder
                 - name: Native JVM GRPC Forwarder
-                  path: /en/setup/plugins/forwarder_nativejvm-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_native-jvm-grpc-forwarder
                 - name: Native Log GRPC Forwarder
-                  path: /en/setup/plugins/forwarder_nativelog-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_native-log-grpc-forwarder
                 - name: Native Log Kafka Forwarder
-                  path: /en/setup/plugins/forwarder_nativelog-kafka-forwarder
+                  path: /en/setup/plugins/forwarder_native-log-kafka-forwarder
                 - name: Native Management GRPC Forwarder
-                  path: /en/setup/plugins/forwarder_nativemanagement-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_native-management-grpc-forwarder
                 - name: Native Meter GRPC Forwarder
-                  path: /en/setup/plugins/forwarder_nativemeter-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_native-meter-grpc-forwarder
+                - name: Native Process GRPC Forwarder
+                  path: /en/setup/plugins/forwarder_native-process-grpc-forwarder
                 - name: Native Profile GRPC Forwarder
-                  path: /en/setup/plugins/forwarder_nativeprofile-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_native-profile-grpc-forwarder
                 - name: Native Tracing GRPC Forwarder
-                  path: /en/setup/plugins/forwarder_nativetracing-grpc-forwarder
+                  path: /en/setup/plugins/forwarder_native-tracing-grpc-forwarder
             - name: Queue
               catalog:
                 - name: Memory Queue
@@ -132,23 +136,27 @@ catalog:
                 - name: GRPC Envoy Metrics v3 Receiver
                   path: /en/setup/plugins/receiver_grpc-envoy-metrics-v3-receiver
                 - name: GRPC Native CDS Receiver
-                  path: /en/setup/plugins/receiver_grpc-nativecds-receiver
+                  path: /en/setup/plugins/receiver_grpc-native-cds-receiver
+                - name: GRPC Native EBFP Profiling Receiver
+                  path: /en/setup/plugins/receiver_grpc-native-ebpf-profiling-receiver
                 - name: GRPC Native Event Receiver
-                  path: /en/setup/plugins/receiver_grpc-nativeevent-receiver
+                  path: /en/setup/plugins/receiver_grpc-native-event-receiver
                 - name: GRPC Native JVM Receiver
-                  path: /en/setup/plugins/receiver_grpc-nativejvm-receiver
+                  path: /en/setup/plugins/receiver_grpc-native-jvm-receiver
                 - name: GRPC Native Log Receiver
-                  path: /en/setup/plugins/receiver_grpc-nativelog-receiver
+                  path: /en/setup/plugins/receiver_grpc-native-log-receiver
                 - name: GRPC Native Management Receiver
-                  path: /en/setup/plugins/receiver_grpc-nativemanagement-receiver
+                  path: /en/setup/plugins/receiver_grpc-native-management-receiver
                 - name: GRPC Native Meter Receiver
-                  path: /en/setup/plugins/receiver_grpc-nativemeter-receiver
+                  path: /en/setup/plugins/receiver_grpc-native-meter-receiver
+                - name: GRPC Native Process Receiver
+                  path: /en/setup/plugins/receiver_grpc-native-process-receiver
                 - name: GRPC Native Profile Receiver
-                  path: /en/setup/plugins/receiver_grpc-nativeprofile-receiver
+                  path: /en/setup/plugins/receiver_grpc-native-profile-receiver
                 - name: GRPC Native Tracing Receiver
-                  path: /en/setup/plugins/receiver_grpc-nativetracing-receiver
+                  path: /en/setup/plugins/receiver_grpc-native-tracing-receiver
                 - name: HTTP Native Log Receiver
-                  path: /en/setup/plugins/receiver_http-nativelog-receiver
+                  path: /en/setup/plugins/receiver_http-native-log-receiver
             - name: Server
               catalog:
                 - name: GRPC Server

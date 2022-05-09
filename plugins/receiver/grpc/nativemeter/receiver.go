@@ -30,7 +30,7 @@ import (
 )
 
 const (
-	Name     = "grpc-nativemeter-receiver"
+	Name     = "grpc-native-meter-receiver"
 	ShowName = "GRPC Native Meter Receiver"
 )
 

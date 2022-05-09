@@ -1,4 +1,4 @@
-# Forwarder/nativelog-grpc-forwarder
+# Forwarder/native-log-grpc-forwarder
 ## Description
 This is a synchronization grpc forwarder with the SkyWalking native log protocol.
 ## DefaultConfig

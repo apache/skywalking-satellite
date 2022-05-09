@@ -1,8 +1,8 @@
-# Receiver/grpc-nativecds-receiver
+# Receiver/grpc-native-cds-receiver
 ## Description
 This is a receiver for SkyWalking native Configuration Discovery Service format, which is defined at https://github.com/apache/skywalking-data-collect-protocol/blob/master/language-agent/ConfigurationDiscoveryService.proto.
 ## Support Forwarders
- - [nativecds-grpc-forwarder](forwarder_nativecds-grpc-forwarder.md)
+ - [native-cds-grpc-forwarder](forwarder_native-cds-grpc-forwarder.md)
 ## DefaultConfig
 ```yaml```
 ## Configuration

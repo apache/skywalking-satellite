@@ -29,7 +29,7 @@ import (
 )
 
 const (
-	Name     = "grpc-nativelog-receiver"
+	Name     = "grpc-native-log-receiver"
 	ShowName = "GRPC Native Log Receiver"
 )
 

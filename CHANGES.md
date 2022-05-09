@@ -6,6 +6,8 @@ Release Notes.
 ------------------
 #### Features
 * Add the compat protocol receiver for the old version of agents.
+* Support transmit the native eBPF Process and Profiling protocol.
+* Change the name of plugin that is not well-named.
 
 #### Bug Fixes
 * Fix Metadata lost in the Native Meter protocol.

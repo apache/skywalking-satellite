@@ -39,7 +39,7 @@ import (
 )
 
 const (
-	Name     = "nativemeter-grpc-forwarder"
+	Name     = "native-meter-grpc-forwarder"
 	ShowName = "Native Meter GRPC Forwarder"
 )
 

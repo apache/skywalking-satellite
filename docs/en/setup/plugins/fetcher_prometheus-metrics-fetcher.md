@@ -2,7 +2,7 @@
 ## Description
 This is a fetcher for Skywalking prometheus metrics format, which will translate Prometheus metrics to Skywalking meter system.
 ## Support Forwarders
- - [nativemeter-grpc-forwarder](forwarder_nativemeter-grpc-forwarder.md)
+ - [native-meter-grpc-forwarder](forwarder_native-meter-grpc-forwarder.md)
 ## DefaultConfig
 ```yaml
 # scrape_configs is the scrape configuration of prometheus 

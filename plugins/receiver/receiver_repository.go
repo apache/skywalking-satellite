@@ -27,11 +27,13 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc/envoymetricsv2"
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc/envoymetricsv3"
 	grpcnativecds "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativecds"
+	grpcnativeebpfprofiling "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativeebpfprofiling"
 	grpcnativeevent "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativeevent"
 	grpcnativejvm "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativejvm"
 	grpcnavtivelog "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativelog"
 	grpcnativemanagement "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativemanagement"
 	grpcnativemeter "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativemeter"
+	grpcnativeprocess "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativeprocess"
 	grpcnativeprofile "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativeprofile"
 	grpcnativetracing "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativetracing"
 	httpnavtivelog "github.com/apache/skywalking-satellite/plugins/receiver/http/nativcelog"
@@ -51,6 +53,8 @@ func RegisterReceiverPlugins() {
 		new(grpcnativejvm.Receiver),
 		new(grpcnativeevent.Receiver),
 		new(grpcnativemeter.Receiver),
+		new(grpcnativeprocess.Receiver),
+		new(grpcnativeebpfprofiling.Receiver),
 		new(envoyalsv2.Receiver),
 		new(envoyalsv3.Receiver),
 		new(envoymetricsv2.Receiver),

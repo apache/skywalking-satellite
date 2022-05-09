@@ -35,7 +35,7 @@ import (
 )
 
 const (
-	Name     = "nativetracing-grpc-forwarder"
+	Name     = "native-tracing-grpc-forwarder"
 	ShowName = "Native Tracing GRPC Forwarder"
 )
 

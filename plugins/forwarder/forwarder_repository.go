@@ -25,11 +25,13 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoymetricsv2"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoymetricsv3"
 	grpc_nativecds "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativecds"
+	grpc_nativeebpfprofiling "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeebpfprofiling"
 	grpc_nativeevent "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeevent"
 	grpc_nativejvm "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativejvm"
 	grpc_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativelog"
 	grpc_nativemanagement "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativemanagement"
 	grpc_meter "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativemeter"
+	grpc_nativeprocess "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeprocess"
 	grpc_nativeprofile "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeprofile"
 	grpc_nativetracing "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativetracing"
 	kafka_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativelog"
@@ -52,6 +54,8 @@ func RegisterForwarderPlugins() {
 		new(grpc_nativecds.Forwarder),
 		new(grpc_nativeevent.Forwarder),
 		new(grpc_nativejvm.Forwarder),
+		new(grpc_nativeprocess.Forwarder),
+		new(grpc_nativeebpfprofiling.Forwarder),
 		new(envoyalsv2.Forwarder),
 		new(envoyalsv3.Forwarder),
 		new(envoymetricsv2.Forwarder),

@@ -32,7 +32,7 @@ import (
 )
 
 const (
-	Name     = "nativejvm-grpc-forwarder"
+	Name     = "native-jvm-grpc-forwarder"
 	ShowName = "Native JVM GRPC Forwarder"
 )
 
