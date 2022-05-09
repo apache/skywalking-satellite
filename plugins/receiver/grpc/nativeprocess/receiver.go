@@ -29,7 +29,7 @@ import (
 )
 
 const (
-	Name     = "grpc-nativeprocess-receiver"
+	Name     = "grpc-native-process-receiver"
 	ShowName = "GRPC Native Process Receiver"
 )
 

@@ -32,7 +32,7 @@ import (
 )
 
 const (
-	Name     = "nativeprocess-grpc-forwarder"
+	Name     = "native-process-grpc-forwarder"
 	ShowName = "Native Process GRPC Forwarder"
 )
 

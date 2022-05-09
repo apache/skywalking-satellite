@@ -1,4 +1,4 @@
-# Forwarder/native-ebpfprofiling-grpc-forwarder
+# Forwarder/native-ebpf-profiling-grpc-forwarder
 ## Description
 This is a synchronization grpc forwarder with the SkyWalking native process protocol.
 ## DefaultConfig

@@ -29,7 +29,7 @@ import (
 )
 
 const (
-	Name     = "grpc-nativeebpfprofiling-receiver"
+	Name     = "grpc-native-ebpf-profiling-receiver"
 	ShowName = "GRPC Native EBFP Profiling Receiver"
 )
 

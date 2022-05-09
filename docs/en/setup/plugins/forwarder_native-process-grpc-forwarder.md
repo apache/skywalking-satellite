@@ -1,4 +1,4 @@
-# Forwarder/nativeprocess-grpc-forwarder
+# Forwarder/native-process-grpc-forwarder
 ## Description
 This is a synchronization grpc forwarder with the SkyWalking native process protocol.
 ## DefaultConfig
