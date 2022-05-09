@@ -30,7 +30,7 @@ import (
 )
 
 const (
-	Name     = "nativelog-kafka-forwarder"
+	Name     = "native-log-kafka-forwarder"
 	ShowName = "Native Log Kafka Forwarder"
 )
 

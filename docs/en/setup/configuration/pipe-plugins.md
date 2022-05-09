@@ -46,7 +46,7 @@ pipes:
     gatherer:
       server_name: "grpc-server"
       receiver:
-        plugin_name: "grpc-nativelog-receiver"
+        plugin_name: "grpc-native-log-receiver"
       queue:
         plugin_name: "mmap-queue"
         segment_size: ${SATELLITE_MMAP_QUEUE_SIZE:524288}
@@ -62,6 +62,6 @@ pipes:
       min_flush_events: ${SATELLITE_PIPE1_SENDER_MIN_FLUSH_EVENTS:100}
       client_name: kafka-client
       forwarders:
-        - plugin_name: nativelog-kafka-forwarder
+        - plugin_name: native-log-kafka-forwarder
           topic: ${SATELLITE_NATIVELOG-TOPIC:log-topic}
 ```

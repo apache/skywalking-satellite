@@ -34,7 +34,7 @@ import (
 )
 
 const (
-	Name     = "nativeprofile-grpc-forwarder"
+	Name     = "native-profile-grpc-forwarder"
 	ShowName = "Native Profile GRPC Forwarder"
 )
 

@@ -30,7 +30,7 @@ import (
 )
 
 const (
-	Name     = "grpc-nativejvm-receiver"
+	Name     = "grpc-native-jvm-receiver"
 	ShowName = "GRPC Native JVM Receiver"
 )
 

@@ -34,7 +34,7 @@ import (
 )
 
 const (
-	Name     = "nativeevent-grpc-forwarder"
+	Name     = "native-event-grpc-forwarder"
 	ShowName = "Native Event GRPC Forwarder"
 )
 

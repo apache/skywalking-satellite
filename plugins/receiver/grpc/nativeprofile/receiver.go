@@ -30,7 +30,7 @@ import (
 )
 
 const (
-	Name     = "grpc-nativeprofile-receiver"
+	Name     = "grpc-native-profile-receiver"
 	ShowName = "GRPC Native Profile Receiver"
 )
 

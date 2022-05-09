@@ -33,7 +33,7 @@ import (
 )
 
 const (
-	Name     = "nativecds-grpc-forwarder"
+	Name     = "native-cds-grpc-forwarder"
 	ShowName = "Native CDS GRPC Forwarder"
 )
 

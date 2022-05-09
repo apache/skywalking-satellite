@@ -1,8 +1,8 @@
-# Receiver/grpc-nativetracing-receiver
+# Receiver/grpc-native-tracing-receiver
 ## Description
 This is a receiver for SkyWalking native tracing format, which is defined at https://github.com/apache/skywalking-data-collect-protocol/blob/master/language-agent/Tracing.proto.
 ## Support Forwarders
- - [nativetracing-grpc-forwarder](forwarder_nativetracing-grpc-forwarder.md)
+ - [native-tracing-grpc-forwarder](forwarder_native-tracing-grpc-forwarder.md)
 ## DefaultConfig
 ```yaml```
 ## Configuration

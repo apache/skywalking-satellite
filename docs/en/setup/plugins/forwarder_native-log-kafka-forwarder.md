@@ -1,4 +1,4 @@
-# Forwarder/nativelog-kafka-forwarder
+# Forwarder/native-log-kafka-forwarder
 ## Description
 This is a synchronization Kafka forwarder with the SkyWalking native log protocol.
 ## DefaultConfig

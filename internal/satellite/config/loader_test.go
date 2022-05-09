@@ -156,7 +156,7 @@ func pipes() []*PipeConfig {
 					PipeName: "logpipe",
 				},
 				ReceiverConfig: plugin.Config{
-					"plugin_name":            "grpc-nativelog-receiver",
+					"plugin_name":            "grpc-native-log-receiver",
 					"commonfields_pipe_name": "logpipe",
 				},
 				QueueConfig: plugin.Config{
@@ -185,7 +185,7 @@ func pipes() []*PipeConfig {
 				ClientName:     "grpc-client",
 				ForwardersConfig: []plugin.Config{
 					{
-						"plugin_name":            "nativelog-grpc-forwarder",
+						"plugin_name":            "native-log-grpc-forwarder",
 						"commonfields_pipe_name": "logpipe",
 					},
 				},

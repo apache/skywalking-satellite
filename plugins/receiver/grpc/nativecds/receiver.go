@@ -29,7 +29,7 @@ import (
 )
 
 const (
-	Name     = "grpc-nativecds-receiver"
+	Name     = "grpc-native-cds-receiver"
 	ShowName = "GRPC Native CDS Receiver"
 )
 

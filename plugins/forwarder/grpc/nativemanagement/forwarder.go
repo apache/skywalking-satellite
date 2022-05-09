@@ -32,7 +32,7 @@ import (
 )
 
 const (
-	Name     = "nativemanagement-grpc-forwarder"
+	Name     = "native-management-grpc-forwarder"
 	ShowName = "Native Management GRPC Forwarder"
 )
 

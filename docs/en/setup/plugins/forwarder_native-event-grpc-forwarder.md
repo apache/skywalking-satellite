@@ -1,4 +1,4 @@
-# Forwarder/nativeevent-grpc-forwarder
+# Forwarder/native-event-grpc-forwarder
 ## Description
 This is a synchronization grpc forwarder with the SkyWalking native event protocol.
 ## DefaultConfig

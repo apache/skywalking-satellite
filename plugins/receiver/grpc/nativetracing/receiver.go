@@ -30,7 +30,7 @@ import (
 )
 
 const (
-	Name     = "grpc-nativetracing-receiver"
+	Name     = "grpc-native-tracing-receiver"
 	ShowName = "GRPC Native Tracing Receiver"
 )
 

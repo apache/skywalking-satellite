@@ -35,7 +35,7 @@ import (
 )
 
 const (
-	Name     = "nativelog-grpc-forwarder"
+	Name     = "native-log-grpc-forwarder"
 	ShowName = "Native Log GRPC Forwarder"
 )
 
