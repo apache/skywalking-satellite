@@ -34,7 +34,7 @@ import (
 )
 
 const (
-	Name     = "nativeebpfprofiling-grpc-forwarder"
+	Name     = "native-ebpfprofiling-grpc-forwarder"
 	ShowName = "Native EBPF Profiling GRPC Forwarder"
 )
 
