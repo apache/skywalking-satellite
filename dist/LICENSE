@@ -209,319 +209,62 @@ subcomponents is subject to the terms and conditions of the following
 licenses.
 
 ========================================================================
-Apache 2.0 licenses
+CC-BY-3.0 licenses
 ========================================================================
 
-The following components are provided under the Apache License. See project link for details.
-The text of each license is the standard Apache 2.0 license.
-
-    cloud.google.com-go v0.65.0 https://cloud.google.com/go Apache-2.0
-    cloud.google.com-go-bigquery v1.8.0 https://cloud.google.com/go/bigquery Apache-2.0
-    cloud.google.com-go-bigtable v1.2.0 https://cloud.google.com/go/bigtable Apache-2.0
-    cloud.google.com-go-datastore v1.1.0 https://cloud.google.com/go/datastore Apache-2.0
-    cloud.google.com-go-firestore v1.1.0 https://cloud.google.com/go/firestore Apache-2.0
-    cloud.google.com-go-pubsub v1.3.1 https://cloud.google.com/go/pubsub Apache-2.0
-    cloud.google.com-go-storage v1.10.0 https://cloud.google.com/go/storage Apache-2.0
-    github.com-Azure-azure-sdk-for-go v46.4.0+incompatible https://github.com/Azure/azure-sdk-for-go Apache-2.0
-    github.com-Azure-go-autorest v14.2.0+incompatible https://github.com/Azure/go-autorest Apache-2.0
-    github.com-Azure-go-autorest-autorest v0.11.18 https://github.com/Azure/go-autorest/autorest Apache-2.0
-    github.com-Azure-go-autorest-autorest-adal v0.9.13 https://github.com/Azure/go-autorest/autorest/adal Apache-2.0
-    github.com-Azure-go-autorest-autorest-date v0.3.0 https://github.com/Azure/go-autorest/autorest/date Apache-2.0
-    github.com-Azure-go-autorest-autorest-mocks v0.4.1 https://github.com/Azure/go-autorest/autorest/mocks Apache-2.0
-    github.com-Azure-go-autorest-autorest-to v0.3.0 https://github.com/Azure/go-autorest/autorest/to Apache-2.0
-    github.com-Azure-go-autorest-autorest-validation v0.2.0 https://github.com/Azure/go-autorest/autorest/validation Apache-2.0
-    github.com-Azure-go-autorest-logger v0.2.1 https://github.com/Azure/go-autorest/logger Apache-2.0
-    github.com-Azure-go-autorest-tracing v0.6.0 https://github.com/Azure/go-autorest/tracing Apache-2.0
-    github.com-NYTimes-gziphandler v0.0.0 https://github.com/NYTimes/gziphandler Apache-2.0
-    github.com-OneOfOne-xxhash v1.2.2 https://github.com/OneOfOne/xxhash Apache-2.0
-    github.com-apache-thrift v0.13.0 https://github.com/apache/thrift Apache-2.0
-    github.com-aws-aws-lambda-go v1.13.3 https://github.com/aws/aws-lambda-go Apache-2.0
-    github.com-aws-aws-sdk-go v1.35.5 https://github.com/aws/aws-sdk-go Apache-2.0
-    github.com-aws-aws-sdk-go-v2 v0.18.0 https://github.com/aws/aws-sdk-go-v2 Apache-2.0
-    github.com-casbin-casbin-v2 v2.1.2 https://github.com/casbin/casbin/v2 Apache-2.0
-    github.com-census-instrumentation-opencensus-proto v0.2.1 https://github.com/census-instrumentation/opencensus-proto Apache-2.0
-    github.com-checkpoint-restore-go-criu-v4 v4.1.0 https://github.com/checkpoint-restore/go-criu/v4 Apache-2.0
-    github.com-checkpoint-restore-go-criu-v5 v5.0.0 https://github.com/checkpoint-restore/go-criu/v5 Apache-2.0
-    github.com-cncf-udpa-go v0.0.0 https://github.com/cncf/udpa/go Apache-2.0
-    github.com-cncf-xds-go v0.0.0 https://github.com/cncf/xds/go Apache-2.0
-    github.com-cockroachdb-datadriven v0.0.0 https://github.com/cockroachdb/datadriven Apache-2.0
-    github.com-containerd-aufs v1.0.0 https://github.com/containerd/aufs Apache-2.0
-    github.com-containerd-btrfs v1.0.0 https://github.com/containerd/btrfs Apache-2.0
-    github.com-containerd-cgroups v1.0.1 https://github.com/containerd/cgroups Apache-2.0
-    github.com-containerd-console v1.0.2 https://github.com/containerd/console Apache-2.0
-    github.com-containerd-containerd v1.5.9 https://github.com/containerd/containerd Apache-2.0
-    github.com-containerd-continuity v0.1.0 https://github.com/containerd/continuity Apache-2.0
-    github.com-containerd-fifo v1.0.0 https://github.com/containerd/fifo Apache-2.0
-    github.com-containerd-go-cni v1.0.2 https://github.com/containerd/go-cni Apache-2.0
-    github.com-containerd-go-runc v1.0.0 https://github.com/containerd/go-runc Apache-2.0
-    github.com-containerd-imgcrypt v1.1.1 https://github.com/containerd/imgcrypt Apache-2.0
-    github.com-containerd-nri v0.1.0 https://github.com/containerd/nri Apache-2.0
-    github.com-containerd-ttrpc v1.1.0 https://github.com/containerd/ttrpc Apache-2.0
-    github.com-containerd-typeurl v1.0.2 https://github.com/containerd/typeurl Apache-2.0
-    github.com-containerd-zfs v1.0.0 https://github.com/containerd/zfs Apache-2.0
-    github.com-containernetworking-cni v0.8.1 https://github.com/containernetworking/cni Apache-2.0
-    github.com-containernetworking-plugins v0.9.1 https://github.com/containernetworking/plugins Apache-2.0
-    github.com-containers-ocicrypt v1.1.1 https://github.com/containers/ocicrypt Apache-2.0
-    github.com-coreos-etcd v3.3.13+incompatible https://github.com/coreos/etcd Apache-2.0
-    github.com-coreos-go-iptables v0.5.0 https://github.com/coreos/go-iptables Apache-2.0
-    github.com-coreos-go-oidc v2.1.0+incompatible https://github.com/coreos/go-oidc Apache-2.0
-    github.com-coreos-go-semver v0.3.0 https://github.com/coreos/go-semver Apache-2.0
-    github.com-coreos-go-systemd v0.0.0 https://github.com/coreos/go-systemd Apache-2.0
-    github.com-coreos-go-systemd-v22 v22.3.2 https://github.com/coreos/go-systemd/v22 Apache-2.0
-    github.com-coreos-pkg v0.0.0 https://github.com/coreos/pkg Apache-2.0
-    github.com-denverdino-aliyungo v0.0.0 https://github.com/denverdino/aliyungo Apache-2.0
-    github.com-docker-distribution v2.7.1+incompatible https://github.com/docker/distribution Apache-2.0
-    github.com-docker-docker v17.12.0 https://github.com/docker/docker Apache-2.0
-    github.com-docker-go-connections v0.4.0 https://github.com/docker/go-connections Apache-2.0
-    github.com-docker-go-events v0.0.0 https://github.com/docker/go-events Apache-2.0
-    github.com-docker-go-metrics v0.0.1 https://github.com/docker/go-metrics Apache-2.0
-    github.com-docker-go-units v0.4.0 https://github.com/docker/go-units Apache-2.0
-    github.com-docker-libtrust v0.0.0 https://github.com/docker/libtrust Apache-2.0
-    github.com-docker-spdystream v0.0.0 https://github.com/docker/spdystream Apache-2.0
-    github.com-envoyproxy-go-control-plane v0.9.10 https://github.com/envoyproxy/go-control-plane Apache-2.0
-    github.com-envoyproxy-protoc-gen-validate v0.1.0 https://github.com/envoyproxy/protoc-gen-validate Apache-2.0
-    github.com-go-ini-ini v1.25.4 https://github.com/go-ini/ini Apache-2.0
-    github.com-go-logr-logr v0.2.0 https://github.com/go-logr/logr Apache-2.0
-    github.com-go-openapi-analysis v0.19.10 https://github.com/go-openapi/analysis Apache-2.0
-    github.com-go-openapi-errors v0.19.4 https://github.com/go-openapi/errors Apache-2.0
-    github.com-go-openapi-jsonpointer v0.19.3 https://github.com/go-openapi/jsonpointer Apache-2.0
-    github.com-go-openapi-jsonreference v0.19.3 https://github.com/go-openapi/jsonreference Apache-2.0
-    github.com-go-openapi-loads v0.19.5 https://github.com/go-openapi/loads Apache-2.0
-    github.com-go-openapi-runtime v0.19.15 https://github.com/go-openapi/runtime Apache-2.0
-    github.com-go-openapi-spec v0.19.8 https://github.com/go-openapi/spec Apache-2.0
-    github.com-go-openapi-strfmt v0.19.5 https://github.com/go-openapi/strfmt Apache-2.0
-    github.com-go-openapi-swag v0.19.9 https://github.com/go-openapi/swag Apache-2.0
-    github.com-go-openapi-validate v0.19.8 https://github.com/go-openapi/validate Apache-2.0
-    github.com-gogo-googleapis v1.4.0 https://github.com/gogo/googleapis Apache-2.0
-    github.com-golang-geo v0.0.0 https://github.com/golang/geo Apache-2.0
-    github.com-golang-glog v0.0.0 https://github.com/golang/glog Apache-2.0
-    github.com-golang-groupcache v0.0.0 https://github.com/golang/groupcache Apache-2.0
-    github.com-golang-mock v1.4.4 https://github.com/golang/mock Apache-2.0
-    github.com-google-btree v1.0.0 https://github.com/google/btree Apache-2.0
-    github.com-google-flatbuffers v1.11.0 https://github.com/google/flatbuffers Apache-2.0
-    github.com-google-gofuzz v1.1.0 https://github.com/google/gofuzz Apache-2.0
-    github.com-google-martian v2.1.0+incompatible https://github.com/google/martian Apache-2.0
-    github.com-google-martian-v3 v3.0.0 https://github.com/google/martian/v3 Apache-2.0
-    github.com-google-pprof v0.0.0 https://github.com/google/pprof Apache-2.0
-    github.com-google-renameio v0.1.0 https://github.com/google/renameio Apache-2.0
-    github.com-googleapis-gnostic v0.4.1 https://github.com/googleapis/gnostic Apache-2.0
-    github.com-gophercloud-gophercloud v0.17.0 https://github.com/gophercloud/gophercloud Apache-2.0
-    github.com-grpc-ecosystem-go-grpc-middleware v1.0.1 https://github.com/grpc-ecosystem/go-grpc-middleware Apache-2.0
-    github.com-grpc-ecosystem-go-grpc-prometheus v1.2.0 https://github.com/grpc-ecosystem/go-grpc-prometheus Apache-2.0
-    github.com-inconshreveable-mousetrap v1.0.0 https://github.com/inconshreveable/mousetrap Apache-2.0
-    github.com-influxdata-promql-v2 v2.12.0 https://github.com/influxdata/promql/v2 Apache-2.0
-    github.com-influxdata-roaring v0.4.13 https://github.com/influxdata/roaring Apache-2.0
-    github.com-influxdata-tdigest v0.0.0 https://github.com/influxdata/tdigest Apache-2.0
-    github.com-jmespath-go-jmespath v0.4.0 https://github.com/jmespath/go-jmespath Apache-2.0
-    github.com-jonboulle-clockwork v0.1.0 https://github.com/jonboulle/clockwork Apache-2.0
-    github.com-kylelemons-godebug v1.1.0 https://github.com/kylelemons/godebug Apache-2.0
-    github.com-lyft-protoc-gen-validate v0.0.13 https://github.com/lyft/protoc-gen-validate Apache-2.0
-    github.com-matttproud-golang_protobuf_extensions v1.0.2 https://github.com/matttproud/golang_protobuf_extensions Apache-2.0
-    github.com-mistifyio-go-zfs v2.1.2 https://github.com/mistifyio/go-zfs Apache-2.0
-    github.com-moby-locker v1.0.1 https://github.com/moby/locker Apache-2.0
-    github.com-moby-sys-mountinfo v0.4.1 https://github.com/moby/sys/mountinfo Apache-2.0
-    github.com-moby-sys-symlink v0.1.0 https://github.com/moby/sys/symlink Apache-2.0
-    github.com-moby-term v0.0.0 https://github.com/moby/term Apache-2.0
-    github.com-modern-go-concurrent v0.0.0 https://github.com/modern-go/concurrent Apache-2.0
-    github.com-modern-go-reflect2 v1.0.1 https://github.com/modern-go/reflect2 Apache-2.0
-    github.com-mrunalp-fileutils v0.5.0 https://github.com/mrunalp/fileutils Apache-2.0
-    github.com-mschoch-smat v0.0.0 https://github.com/mschoch/smat Apache-2.0
-    github.com-mwitkow-go-conntrack v0.0.0 https://github.com/mwitkow/go-conntrack Apache-2.0
-    github.com-nats-io-jwt v0.3.2 https://github.com/nats-io/jwt Apache-2.0
-    github.com-nats-io-nats-server-v2 v2.1.2 https://github.com/nats-io/nats-server/v2 Apache-2.0
-    github.com-nats-io-nats.go v1.9.1 https://github.com/nats-io/nats.go Apache-2.0
-    github.com-nats-io-nkeys v0.1.3 https://github.com/nats-io/nkeys Apache-2.0
-    github.com-nats-io-nuid v1.0.1 https://github.com/nats-io/nuid Apache-2.0
-    github.com-oklog-oklog v0.3.2 https://github.com/oklog/oklog Apache-2.0
-    github.com-oklog-run v1.1.0 https://github.com/oklog/run Apache-2.0
-    github.com-oklog-ulid v1.3.1 https://github.com/oklog/ulid Apache-2.0
-    github.com-opencontainers-go-digest v1.0.0 https://github.com/opencontainers/go-digest Apache-2.0
-    github.com-opencontainers-image-spec v1.0.2 https://github.com/opencontainers/image-spec Apache-2.0
-    github.com-opencontainers-runc v1.0.2 https://github.com/opencontainers/runc Apache-2.0
-    github.com-opencontainers-runtime-spec v1.0.3 https://github.com/opencontainers/runtime-spec Apache-2.0
-    github.com-opencontainers-runtime-tools v0.0.0 https://github.com/opencontainers/runtime-tools Apache-2.0
-    github.com-opencontainers-selinux v1.8.2 https://github.com/opencontainers/selinux Apache-2.0
-    github.com-opentracing-contrib-go-observer v0.0.0 https://github.com/opentracing-contrib/go-observer Apache-2.0
-    github.com-opentracing-contrib-go-stdlib v1.0.0 https://github.com/opentracing-contrib/go-stdlib Apache-2.0
-    github.com-opentracing-opentracing-go v1.2.0 https://github.com/opentracing/opentracing-go Apache-2.0
-    github.com-openzipkin-contrib-zipkin-go-opentracing v0.4.5 https://github.com/openzipkin-contrib/zipkin-go-opentracing Apache-2.0
-    github.com-openzipkin-zipkin-go v0.2.2 https://github.com/openzipkin/zipkin-go Apache-2.0
-    github.com-pquerna-cachecontrol v0.0.0 https://github.com/pquerna/cachecontrol Apache-2.0
-    github.com-prometheus-alertmanager v0.21.0 https://github.com/prometheus/alertmanager Apache-2.0
-    github.com-prometheus-client_golang v1.9.0 https://github.com/prometheus/client_golang Apache-2.0
-    github.com-prometheus-client_model v0.2.0 https://github.com/prometheus/client_model Apache-2.0
-    github.com-prometheus-common v0.15.0 https://github.com/prometheus/common Apache-2.0
-    github.com-prometheus-procfs v0.6.0 https://github.com/prometheus/procfs Apache-2.0
-    github.com-prometheus-prometheus v1.8.2 https://github.com/prometheus/prometheus Apache-2.0
-    github.com-prometheus-tsdb v0.7.1 https://github.com/prometheus/tsdb Apache-2.0
-    github.com-safchain-ethtool v0.0.0 https://github.com/safchain/ethtool Apache-2.0
-    github.com-soheilhy-cmux v0.1.4 https://github.com/soheilhy/cmux Apache-2.0
-    github.com-spf13-afero v1.2.2 https://github.com/spf13/afero Apache-2.0
-    github.com-spf13-cobra v1.0.0 https://github.com/spf13/cobra Apache-2.0
-    github.com-stefanberger-go-pkcs11uri v0.0.0 https://github.com/stefanberger/go-pkcs11uri Apache-2.0
-    github.com-tklauser-numcpus v0.3.0 https://github.com/tklauser/numcpus Apache-2.0
-    github.com-uber-jaeger-client-go v2.25.0+incompatible https://github.com/uber/jaeger-client-go Apache-2.0
-    github.com-uber-jaeger-lib v2.4.0+incompatible https://github.com/uber/jaeger-lib Apache-2.0
-    github.com-vishvananda-netlink v1.1.1 https://github.com/vishvananda/netlink Apache-2.0
-    github.com-vishvananda-netns v0.0.0 https://github.com/vishvananda/netns Apache-2.0
-    github.com-xdg-scram v0.0.0 https://github.com/xdg/scram Apache-2.0
-    github.com-xdg-stringprep v1.0.0 https://github.com/xdg/stringprep Apache-2.0
-    github.com-xeipuuv-gojsonpointer v0.0.0 https://github.com/xeipuuv/gojsonpointer Apache-2.0
-    github.com-xeipuuv-gojsonreference v0.0.0 https://github.com/xeipuuv/gojsonreference Apache-2.0
-    github.com-xeipuuv-gojsonschema v0.0.0 https://github.com/xeipuuv/gojsonschema Apache-2.0
-    go.etcd.io-etcd v0.5.0 https://go.etcd.io/etcd Apache-2.0
-    go.mongodb.org-mongo-driver v1.3.2 https://go.mongodb.org/mongo-driver Apache-2.0
-    go.opencensus.io v0.23.0 https://go.opencensus.io Apache-2.0
-    go.opentelemetry.io-proto-otlp v0.7.0 https://go.opentelemetry.io/proto/otlp Apache-2.0
-    google.golang.org-appengine v1.6.6 https://google.golang.org/appengine Apache-2.0
-    google.golang.org-cloud v0.0.0 https://google.golang.org/cloud Apache-2.0
-    google.golang.org-genproto v0.0.0 https://google.golang.org/genproto Apache-2.0
-    google.golang.org-grpc v1.44.0 https://google.golang.org/grpc Apache-2.0
-    gopkg.in-ini.v1 v1.51.0 https://gopkg.in/ini.v1 Apache-2.0
-    gopkg.in-jcmturner-aescts.v1 v1.0.1 https://gopkg.in/jcmturner/aescts.v1 Apache-2.0
-    gopkg.in-jcmturner-dnsutils.v1 v1.0.1 https://gopkg.in/jcmturner/dnsutils.v1 Apache-2.0
-    gopkg.in-jcmturner-goidentity.v3 v3.0.0 https://gopkg.in/jcmturner/goidentity.v3 Apache-2.0
-    gopkg.in-jcmturner-gokrb5.v7 v7.5.0 https://gopkg.in/jcmturner/gokrb5.v7 Apache-2.0
-    gopkg.in-jcmturner-rpc.v1 v1.1.0 https://gopkg.in/jcmturner/rpc.v1 Apache-2.0
-    gopkg.in-square-go-jose.v2 v2.5.1 https://gopkg.in/square/go-jose.v2 Apache-2.0
-    gopkg.in-yaml.v2 v2.4.0 https://gopkg.in/yaml.v2 Apache-2.0
-    gotest.tools v2.2.0+incompatible https://gotest.tools Apache-2.0
-    gotest.tools-v3 v3.0.3 https://gotest.tools/v3 Apache-2.0
-    k8s.io-api v0.20.6 https://k8s.io/api Apache-2.0
-    k8s.io-apimachinery v0.20.6 https://k8s.io/apimachinery Apache-2.0
-    k8s.io-apiserver v0.20.6 https://k8s.io/apiserver Apache-2.0
-    k8s.io-client-go v0.20.6 https://k8s.io/client-go Apache-2.0
-    k8s.io-component-base v0.20.6 https://k8s.io/component-base Apache-2.0
-    k8s.io-cri-api v0.20.6 https://k8s.io/cri-api Apache-2.0
-    k8s.io-gengo v0.0.0 https://k8s.io/gengo Apache-2.0
-    k8s.io-klog v1.0.0 https://k8s.io/klog Apache-2.0
-    k8s.io-klog-v2 v2.4.0 https://k8s.io/klog/v2 Apache-2.0
-    k8s.io-kube-openapi v0.0.0 https://k8s.io/kube-openapi Apache-2.0
-    k8s.io-kubernetes v1.13.0 https://k8s.io/kubernetes Apache-2.0
-    k8s.io-utils v0.0.0 https://k8s.io/utils Apache-2.0
-    sigs.k8s.io-apiserver-network-proxy-konnectivity-client v0.0.15 https://sigs.k8s.io/apiserver-network-proxy/konnectivity-client Apache-2.0
-    sigs.k8s.io-structured-merge-diff-v4 v4.0.3 https://sigs.k8s.io/structured-merge-diff/v4 Apache-2.0
-    skywalking.apache.org-repo-goapi v0.0.0 https://skywalking.apache.org/repo/goapi Apache-2.0
-    gopkg.in-yaml.v3 v3.0.0 https://gopkg.in/yaml.v3 Apache-2.0
-    github.com-apache-arrow-go-arrow v0.0.0 github.com/apache/arrow/go/arrow Apache-2.0
-
-========================================================================
-BSD licenses
-========================================================================
-
-The following components are provided under a BSD license. See project link for details.
+The following components are provided under the CC-BY-3.0 License. See project link for details.
 The text of each license is also included at licenses/license-[project].txt.
 
-    bazil.org-fuse v0.0.0 https://bazil.org/fuse BSD-3-Clause
-    dmitri.shuralyov.com-gpu-mtl v0.0.0 https://dmitri.shuralyov.com/gpu/mtl BSD-3-Clause
-    github.com-BurntSushi-xgb v0.0.0 https://github.com/BurntSushi/xgb BSD-3-Clause
-    github.com-DATA-DOG-go-sqlmock v1.3.3 https://github.com/DATA-DOG/go-sqlmock BSD-3-Clause
-    github.com-PuerkitoBio-purell v1.1.1 https://github.com/PuerkitoBio/purell BSD-3-Clause
-    github.com-PuerkitoBio-urlesc v0.0.0 https://github.com/PuerkitoBio/urlesc BSD-3-Clause
-    github.com-alecthomas-template v0.0.0 https://github.com/alecthomas/template BSD-3-Clause
-    github.com-bits-and-blooms-bitset v1.2.0 https://github.com/bits-and-blooms/bitset BSD-3-Clause
-    github.com-circonus-labs-circonus-gometrics v2.3.1+incompatible https://github.com/circonus-labs/circonus-gometrics BSD-3-Clause
-    github.com-circonus-labs-circonusllhist v0.1.3 https://github.com/circonus-labs/circonusllhist BSD-3-Clause
-    github.com-clbanning-x2j v0.0.0 https://github.com/clbanning/x2j BSD-3-Clause
-    github.com-cyphar-filepath-securejoin v0.2.2 https://github.com/cyphar/filepath-securejoin BSD-3-Clause
-    github.com-d2g-dhcp4 v0.0.0 https://github.com/d2g/dhcp4 BSD-3-Clause
-    github.com-edsrzf-mmap-go v1.0.0 https://github.com/edsrzf/mmap-go BSD-3-Clause
-    github.com-elazarl-goproxy v0.0.0 https://github.com/elazarl/goproxy BSD-3-Clause
-    github.com-evanphx-json-patch v4.9.0+incompatible https://github.com/evanphx/json-patch BSD-3-Clause
-    github.com-fortytw2-leaktest v1.3.0 https://github.com/fortytw2/leaktest BSD-3-Clause
-    github.com-fsnotify-fsnotify v1.4.9 https://github.com/fsnotify/fsnotify BSD-3-Clause
-    github.com-go-gl-glfw v0.0.0 https://github.com/go-gl/glfw BSD-3-Clause
-    github.com-go-gl-glfw-v3.3-glfw v0.0.0 https://github.com/go-gl/glfw/v3.3/glfw BSD-3-Clause
-    github.com-godbus-dbus v0.0.0 https://github.com/godbus/dbus BSD-2-Clause
-    github.com-godbus-dbus-v5 v5.0.4 https://github.com/godbus/dbus/v5 BSD-2-Clause
-    github.com-golang-protobuf v1.5.2 https://github.com/golang/protobuf BSD-3-Clause
-    github.com-golang-snappy v0.0.2 https://github.com/golang/snappy BSD-3-Clause
-    github.com-google-go-cmp v0.5.6 https://github.com/google/go-cmp BSD-3-Clause
-    github.com-google-go-querystring v1.0.0 https://github.com/google/go-querystring BSD-3-Clause
-    github.com-google-uuid v1.3.0 https://github.com/google/uuid BSD-3-Clause
-    github.com-googleapis-gax-go-v2 v2.0.5 https://github.com/googleapis/gax-go/v2 BSD-3-Clause
-    github.com-gopherjs-gopherjs v0.0.0 https://github.com/gopherjs/gopherjs BSD-2-Clause
-    github.com-gorilla-context v1.1.1 https://github.com/gorilla/context BSD-3-Clause
-    github.com-gorilla-handlers v0.0.0 https://github.com/gorilla/handlers BSD-2-Clause
-    github.com-gorilla-mux v1.7.3 https://github.com/gorilla/mux BSD-3-Clause
-    github.com-gorilla-websocket v1.4.2 https://github.com/gorilla/websocket BSD-2-Clause
-    github.com-grpc-ecosystem-grpc-gateway v1.16.0 https://github.com/grpc-ecosystem/grpc-gateway BSD-3-Clause
-    github.com-hashicorp-go-msgpack v0.5.3 https://github.com/hashicorp/go-msgpack BSD-3-Clause
-    github.com-hashicorp-go.net v0.0.1 https://github.com/hashicorp/go.net BSD-3-Clause
-    github.com-ianlancetaylor-demangle v0.0.0 https://github.com/ianlancetaylor/demangle BSD-3-Clause
-    github.com-imdario-mergo v0.3.12 https://github.com/imdario/mergo BSD-3-Clause
-    github.com-jcmturner-gofork v1.0.0 https://github.com/jcmturner/gofork BSD-3-Clause
-    github.com-jessevdk-go-flags v1.4.0 https://github.com/jessevdk/go-flags BSD-3-Clause
-    github.com-julienschmidt-httprouter v1.3.0 https://github.com/julienschmidt/httprouter BSD-3-Clause
-    github.com-karrick-godirwalk v1.10.3 https://github.com/karrick/godirwalk BSD-2-Clause
-    github.com-klauspost-compress v1.14.2 https://github.com/klauspost/compress BSD-3-Clause
-    github.com-klauspost-crc32 v0.0.0 https://github.com/klauspost/crc32 BSD-3-Clause
-    github.com-miekg-dns v1.1.31 https://github.com/miekg/dns BSD-3-Clause
-    github.com-miekg-pkcs11 v1.0.3 https://github.com/miekg/pkcs11 BSD-3-Clause
-    github.com-munnerz-goautoneg v0.0.0 https://github.com/munnerz/goautoneg BSD-3-Clause
-    github.com-mxk-go-flowrate v0.0.0 https://github.com/mxk/go-flowrate BSD-3-Clause
-    github.com-op-go-logging v0.0.0 https://github.com/op/go-logging BSD-3-Clause
-    github.com-pborman-uuid v1.2.0 https://github.com/pborman/uuid BSD-3-Clause
-    github.com-pierrec-lz4 v2.5.2+incompatible https://github.com/pierrec/lz4 BSD-3-Clause
-    github.com-pkg-errors v0.9.1 https://github.com/pkg/errors BSD-2-Clause
-    github.com-pkg-profile v1.2.1 https://github.com/pkg/profile BSD-2-Clause
-    github.com-pkg-term v0.0.0 https://github.com/pkg/term BSD-2-Clause
-    github.com-pmezard-go-difflib v1.0.0 https://github.com/pmezard/go-difflib BSD-3-Clause
-    github.com-rcrowley-go-metrics v0.0.0 https://github.com/rcrowley/go-metrics BSD-2-Clause
-    github.com-retailnext-hllpp v1.0.1 https://github.com/retailnext/hllpp BSD-3-Clause
-    github.com-rogpeppe-fastuuid v1.2.0 https://github.com/rogpeppe/fastuuid BSD-3-Clause
-    github.com-rogpeppe-go-internal v1.3.0 https://github.com/rogpeppe/go-internal BSD-3-Clause
-    github.com-russross-blackfriday-v2 v2.0.1 https://github.com/russross/blackfriday/v2 BSD-2-Clause
-    github.com-samuel-go-zookeeper v0.0.0 https://github.com/samuel/go-zookeeper BSD-3-Clause
-    github.com-spaolacci-murmur3 v0.0.0 https://github.com/spaolacci/murmur3 BSD-3-Clause
-    github.com-spf13-pflag v1.0.5 https://github.com/spf13/pflag BSD-3-Clause
-    github.com-streadway-amqp v0.0.0 https://github.com/streadway/amqp BSD-2-Clause
-    github.com-syndtr-gocapability v0.0.0 https://github.com/syndtr/gocapability BSD-2-Clause
-    github.com-tklauser-go-sysconf v0.3.9 https://github.com/tklauser/go-sysconf BSD-3-Clause
-    github.com-willf-bitset v1.1.11 https://github.com/willf/bitset BSD-3-Clause
-    github.com-yvasiyarov-go-metrics v0.0.0 https://github.com/yvasiyarov/go-metrics BSD-2-Clause
-    github.com-yvasiyarov-gorelic v0.0.0 https://github.com/yvasiyarov/gorelic BSD-2-Clause
-    github.com-yvasiyarov-newrelic_platform_go v0.0.0 https://github.com/yvasiyarov/newrelic_platform_go BSD-2-Clause
-    golang.org-x-crypto v0.0.0 https://golang.org/x/crypto BSD-3-Clause
-    golang.org-x-exp v0.0.0 https://golang.org/x/exp BSD-3-Clause
-    golang.org-x-image v0.0.0 https://golang.org/x/image BSD-3-Clause
-    golang.org-x-lint v0.0.0 https://golang.org/x/lint BSD-3-Clause
-    golang.org-x-mobile v0.0.0 https://golang.org/x/mobile BSD-3-Clause
-    golang.org-x-mod v0.4.2 https://golang.org/x/mod BSD-3-Clause
-    golang.org-x-net v0.0.0 https://golang.org/x/net BSD-3-Clause
-    golang.org-x-oauth2 v0.0.0 https://golang.org/x/oauth2 BSD-3-Clause
-    golang.org-x-sync v0.0.0 https://golang.org/x/sync BSD-3-Clause
-    golang.org-x-sys v0.0.0 https://golang.org/x/sys BSD-3-Clause
-    golang.org-x-term v0.0.0 https://golang.org/x/term BSD-3-Clause
-    golang.org-x-text v0.3.7 https://golang.org/x/text BSD-3-Clause
-    golang.org-x-time v0.0.0 https://golang.org/x/time BSD-3-Clause
-    golang.org-x-tools v0.1.6 https://golang.org/x/tools BSD-3-Clause
-    golang.org-x-xerrors v0.0.0 https://golang.org/x/xerrors BSD-3-Clause
-    gonum.org-v1-gonum v0.6.0 https://gonum.org/v1/gonum BSD-3-Clause
-    gonum.org-v1-netlib v0.0.0 https://gonum.org/v1/netlib BSD-3-Clause
-    google.golang.org-api v0.32.0 https://google.golang.org/api BSD-3-Clause
-    google.golang.org-protobuf v1.28.0 https://google.golang.org/protobuf BSD-3-Clause
-    gopkg.in-airbrake-gobrake.v2 v2.0.9 https://gopkg.in/airbrake/gobrake.v2 BSD-3-Clause
-    gopkg.in-cheggaaa-pb.v1 v1.0.25 https://gopkg.in/cheggaaa/pb.v1 BSD-3-Clause
-    gopkg.in-errgo.v2 v2.1.0 https://gopkg.in/errgo.v2 BSD-3-Clause
-    gopkg.in-fsnotify.v1 v1.4.7 https://gopkg.in/fsnotify.v1 BSD-3-Clause
-    gopkg.in-fsnotify-fsnotify.v1 v1.4.7 https://gopkg.in/fsnotify/fsnotify.v1 BSD-3-Clause
-    gopkg.in-warnings.v0 v0.1.2 https://gopkg.in/warnings.v0 BSD-2-Clause
-    rsc.io-binaryregexp v0.2.0 https://rsc.io/binaryregexp BSD-3-Clause
-    rsc.io-pdf v0.1.1 https://rsc.io/pdf BSD-3-Clause
-    rsc.io-quote-v3 v3.1.0 https://rsc.io/quote/v3 BSD-3-Clause
-    rsc.io-sampler v1.3.0 https://rsc.io/sampler BSD-3-Clause
-    github.com-globalsign-mgo v0.0.0 https://github.com/globalsign/mgo BSD-2-Clause
-    github.com-gogo-protobuf v1.3.2 https://github.com/gogo/protobuf BSD-3-Clause
-    github.com-golang-freetype v0.0.0 https://github.com/golang/freetype BSD-3-Clause-And-GPL-2
-    github.com-magiconair-properties v1.8.1 https://github.com/magiconair/properties BSD-2-Clause
-    github.com-shirou-gopsutil v3.21.11+incompatible https://github.com/shirou/gopsutil BSD-3-Clause
-    github.com-streadway-handy v0.0.0 https://github.com/streadway/handy BSD-2-Clause
-    gonum.org-v1-plot v0.0.0 https://gonum.org/v1/plot BSD-3-Clause
-    gopkg.in-check.v1 v1.0.0 https://gopkg.in/check.v1 BSD-2-Clause
-    gopkg.in-gcfg.v1 v1.2.3 https://gopkg.in/gcfg.v1 BSD-3-Clause
-    gopkg.in-inf.v0 v0.9.1 https://gopkg.in/inf.v0 BSD-3-Clause
-    gopkg.in-tomb.v1 v1.0.0 https://gopkg.in/tomb.v1 BSD-3-Clause
+    github.com/ajstarks/svgo v0.0.0-20180226025133-644b8db467af CC-BY-3.0
+
+========================================================================
+Zlib licenses
+========================================================================
+
+The following components are provided under the Zlib License. See project link for details.
+The text of each license is also included at licenses/license-[project].txt.
+
+    github.com/bugsnag/osext v0.0.0-20130617224835-0dd3f918b21b Zlib
+    github.com/mitchellh/osext v0.0.0-20151018003038-5e2d6d41470f Zlib
+
+========================================================================
+BSD-2-Clause licenses
+========================================================================
+
+The following components are provided under the BSD-2-Clause License. See project link for details.
+The text of each license is also included at licenses/license-[project].txt.
+
+    github.com/dnaeon/go-vcr v1.0.1 BSD-2-Clause
+    github.com/globalsign/mgo v0.0.0-20181015135952-eeefdecb41b8 BSD-2-Clause
+    github.com/godbus/dbus v0.0.0-20190422162347-ade71ed3457e BSD-2-Clause
+    github.com/godbus/dbus/v5 v5.0.4 BSD-2-Clause
+    github.com/gopherjs/gopherjs v0.0.0-20181017120253-0766667cb4d1 BSD-2-Clause
+    github.com/gorilla/handlers v0.0.0-20150720190736-60c7bfde3e33 BSD-2-Clause
+    github.com/gorilla/websocket v1.4.2 BSD-2-Clause
+    github.com/karrick/godirwalk v1.10.3 BSD-2-Clause
+    github.com/magiconair/properties v1.8.1 BSD-2-Clause
+    github.com/pkg/errors v0.9.1 BSD-2-Clause
+    github.com/pkg/profile v1.2.1 BSD-2-Clause
+    github.com/pkg/term v0.0.0-20180730021639-bffc007b7fd5 BSD-2-Clause
+    github.com/rcrowley/go-metrics v0.0.0-20200313005456-10cdbea86bc0 BSD-2-Clause
+    github.com/russross/blackfriday/v2 v2.0.1 BSD-2-Clause
+    github.com/seccomp/libseccomp-golang v0.9.1 BSD-2-Clause
+    github.com/streadway/amqp v0.0.0-20190827072141-edfb9018d271 BSD-2-Clause
+    github.com/syndtr/gocapability v0.0.0-20200815063812-42c35b437635 BSD-2-Clause
+    github.com/yvasiyarov/go-metrics v0.0.0-20140926110328-57bccd1ccd43 BSD-2-Clause
+    github.com/yvasiyarov/gorelic v0.0.0-20141212073537-a9bba5b9ab50 BSD-2-Clause
+    github.com/yvasiyarov/newrelic_platform_go v0.0.0-20140908184405-b21fdbd4370f BSD-2-Clause
+    gopkg.in/check.v1 v1.0.0-20200902074654-038fdea0a05b BSD-2-Clause
+    gopkg.in/warnings.v0 v0.1.2 BSD-2-Clause
+
+========================================================================
+CC0-1.0 licenses
+========================================================================
+
+The following components are provided under the CC0-1.0 License. See project link for details.
+The text of each license is also included at licenses/license-[project].txt.
+
+    github.com/pascaldekloe/goe v0.1.0 CC0-1.0
 
 ========================================================================
 MIT licenses
@@ -530,275 +273,575 @@ MIT licenses
 The following components are provided under the MIT License. See project link for details.
 The text of each license is also included at licenses/license-[project].txt.
 
-    github.com-Azure-go-ansiterm v0.0.0 https://github.com/Azure/go-ansiterm MIT
-    github.com-BurntSushi-toml v0.3.1 https://github.com/BurntSushi/toml MIT
-    github.com-DataDog-datadog-go v3.2.0+incompatible https://github.com/DataDog/datadog-go MIT
-    github.com-HdrHistogram-hdrhistogram-go v0.9.0 https://github.com/HdrHistogram/hdrhistogram-go MIT
-    github.com-Knetic-govaluate v3.0.1 https://github.com/Knetic/govaluate MIT
-    github.com-Microsoft-go-winio v0.5.1 https://github.com/Microsoft/go-winio MIT
-    github.com-Microsoft-hcsshim v0.8.23 https://github.com/Microsoft/hcsshim MIT
-    github.com-Microsoft-hcsshim-test v0.0.0 https://github.com/Microsoft/hcsshim/test MIT
-    github.com-Shopify-logrus-bugsnag v0.0.0 https://github.com/Shopify/logrus-bugsnag MIT
-    github.com-Shopify-sarama v1.27.2 https://github.com/Shopify/sarama MIT
-    github.com-Shopify-toxiproxy v2.1.4+incompatible https://github.com/Shopify/toxiproxy MIT
-    github.com-VividCortex-gohistogram v1.0.0 https://github.com/VividCortex/gohistogram MIT
-    github.com-afex-hystrix-go v0.0.0 https://github.com/afex/hystrix-go MIT
-    github.com-agnivade-levenshtein v1.0.1 https://github.com/agnivade/levenshtein MIT
-    github.com-alecthomas-units v0.0.0 https://github.com/alecthomas/units MIT
-    github.com-alexflint-go-filemutex v0.0.0 https://github.com/alexflint/go-filemutex MIT
-    github.com-andreyvit-diff v0.0.0 https://github.com/andreyvit/diff MIT
-    github.com-antihax-optional v1.0.0 https://github.com/antihax/optional MIT
-    github.com-armon-circbuf v0.0.0 https://github.com/armon/circbuf MIT
-    github.com-armon-go-metrics v0.3.3 https://github.com/armon/go-metrics MIT
-    github.com-armon-go-radix v1.0.0 https://github.com/armon/go-radix MIT
-    github.com-aryann-difflib v0.0.0 https://github.com/aryann/difflib MIT
-    github.com-asaskevich-govalidator v0.0.0 https://github.com/asaskevich/govalidator MIT
-    github.com-beorn7-perks v1.0.1 https://github.com/beorn7/perks MIT
-    github.com-bgentry-speakeasy v0.1.0 https://github.com/bgentry/speakeasy MIT
-    github.com-bitly-go-simplejson v0.5.0 https://github.com/bitly/go-simplejson MIT
-    github.com-bketelsen-crypt v0.0.3 https://github.com/bketelsen/crypt MIT
-    github.com-blang-semver v3.5.1+incompatible https://github.com/blang/semver MIT
-    github.com-boltdb-bolt v1.3.1 https://github.com/boltdb/bolt MIT
-    github.com-bshuster-repo-logrus-logstash-hook v0.4.1 https://github.com/bshuster-repo/logrus-logstash-hook MIT
-    github.com-buger-jsonparser v0.0.0 https://github.com/buger/jsonparser MIT
-    github.com-bugsnag-bugsnag-go v0.0.0 https://github.com/bugsnag/bugsnag-go MIT
-    github.com-bugsnag-panicwrap v0.0.0 https://github.com/bugsnag/panicwrap MIT
-    github.com-c-bata-go-prompt v0.2.2 https://github.com/c-bata/go-prompt MIT
-    github.com-cenkalti-backoff v2.2.1+incompatible https://github.com/cenkalti/backoff MIT
-    github.com-cenkalti-backoff-v4 v4.1.1 https://github.com/cenkalti/backoff/v4 MIT
-    github.com-cespare-xxhash v1.1.0 https://github.com/cespare/xxhash MIT
-    github.com-cespare-xxhash-v2 v2.1.1 https://github.com/cespare/xxhash/v2 MIT
-    github.com-chzyer-readline v0.0.0 https://github.com/chzyer/readline MIT
-    github.com-chzyer-test v0.0.0 https://github.com/chzyer/test MIT
-    github.com-cilium-ebpf v0.6.2 https://github.com/cilium/ebpf MIT
-    github.com-client9-misspell v0.3.4 https://github.com/client9/misspell MIT
-    github.com-codahale-hdrhistogram v0.0.0 https://github.com/codahale/hdrhistogram MIT
-    github.com-coreos-bbolt v1.3.2 https://github.com/coreos/bbolt MIT
-    github.com-cpuguy83-go-md2man-v2 v2.0.0 https://github.com/cpuguy83/go-md2man/v2 MIT
-    github.com-creack-pty v1.1.9 https://github.com/creack/pty MIT
-    github.com-dave-jennifer v1.2.0 https://github.com/dave/jennifer MIT
-    github.com-dgrijalva-jwt-go v3.2.0+incompatible https://github.com/dgrijalva/jwt-go MIT
-    github.com-dgryski-go-bitstream v0.0.0 https://github.com/dgryski/go-bitstream MIT
-    github.com-dgryski-go-sip13 v0.0.0 https://github.com/dgryski/go-sip13 MIT
-    github.com-digitalocean-godo v1.46.0 https://github.com/digitalocean/godo MIT
-    github.com-docopt-docopt-go v0.0.0 https://github.com/docopt/docopt-go MIT
-    github.com-dustin-go-humanize v1.0.0 https://github.com/dustin/go-humanize MIT
-    github.com-eapache-go-resiliency v1.2.0 https://github.com/eapache/go-resiliency MIT
-    github.com-eapache-go-xerial-snappy v0.0.0 https://github.com/eapache/go-xerial-snappy MIT
-    github.com-eapache-queue v1.1.0 https://github.com/eapache/queue MIT
-    github.com-emicklei-go-restful v2.9.5+incompatible https://github.com/emicklei/go-restful MIT
-    github.com-enriquebris-goconcurrentqueue v0.6.0 https://github.com/enriquebris/goconcurrentqueue MIT
-    github.com-fatih-color v1.9.0 https://github.com/fatih/color MIT
-    github.com-fogleman-gg v1.2.1 https://github.com/fogleman/gg MIT
-    github.com-form3tech-oss-jwt-go v3.2.2+incompatible https://github.com/form3tech-oss/jwt-go MIT
-    github.com-franela-goblin v0.0.0 https://github.com/franela/goblin MIT
-    github.com-franela-goreq v0.0.0 https://github.com/franela/goreq MIT
-    github.com-frankban-quicktest v1.11.3 https://github.com/frankban/quicktest MIT
-    github.com-fullsailor-pkcs7 v0.0.0 https://github.com/fullsailor/pkcs7 MIT
-    github.com-ghodss-yaml v1.0.0 https://github.com/ghodss/yaml MIT
-    github.com-glycerine-goconvey v0.0.0 https://github.com/glycerine/goconvey MIT
-    github.com-go-kit-kit v0.10.0 https://github.com/go-kit/kit MIT
-    github.com-go-logfmt-logfmt v0.5.0 https://github.com/go-logfmt/logfmt MIT
-    github.com-go-ole-go-ole v1.2.6 https://github.com/go-ole/go-ole MIT
-    github.com-go-stack-stack v1.8.0 https://github.com/go-stack/stack MIT
-    github.com-gobuffalo-attrs v0.0.0 https://github.com/gobuffalo/attrs MIT
-    github.com-gobuffalo-depgen v0.1.0 https://github.com/gobuffalo/depgen MIT
-    github.com-gobuffalo-envy v1.7.0 https://github.com/gobuffalo/envy MIT
-    github.com-gobuffalo-flect v0.1.3 https://github.com/gobuffalo/flect MIT
-    github.com-gobuffalo-genny v0.1.1 https://github.com/gobuffalo/genny MIT
-    github.com-gobuffalo-gitgen v0.0.0 https://github.com/gobuffalo/gitgen MIT
-    github.com-gobuffalo-gogen v0.1.1 https://github.com/gobuffalo/gogen MIT
-    github.com-gobuffalo-logger v0.0.0 https://github.com/gobuffalo/logger MIT
-    github.com-gobuffalo-mapi v1.0.2 https://github.com/gobuffalo/mapi MIT
-    github.com-gobuffalo-packd v0.1.0 https://github.com/gobuffalo/packd MIT
-    github.com-gobuffalo-packr-v2 v2.2.0 https://github.com/gobuffalo/packr/v2 MIT
-    github.com-gobuffalo-syncx v0.0.0 https://github.com/gobuffalo/syncx MIT
-    github.com-gofrs-uuid v3.3.0+incompatible https://github.com/gofrs/uuid MIT
-    github.com-grandecola-mmap v0.6.0 https://github.com/grandecola/mmap MIT
-    github.com-gregjones-httpcache v0.0.0 https://github.com/gregjones/httpcache MIT
-    github.com-hashicorp-go-hclog v0.12.2 https://github.com/hashicorp/go-hclog MIT
-    github.com-hashicorp-go-syslog v1.0.0 https://github.com/hashicorp/go-syslog MIT
-    github.com-hashicorp-mdns v1.0.1 https://github.com/hashicorp/mdns MIT
-    github.com-hetznercloud-hcloud-go v1.22.0 https://github.com/hetznercloud/hcloud-go MIT
-    github.com-hpcloud-tail v1.0.0 https://github.com/hpcloud/tail MIT
-    github.com-influxdata-flux v0.65.1 https://github.com/influxdata/flux MIT
-    github.com-influxdata-influxdb v1.8.3 https://github.com/influxdata/influxdb MIT
-    github.com-influxdata-influxdb1-client v0.0.0 https://github.com/influxdata/influxdb1-client MIT
-    github.com-influxdata-influxql v1.1.1 https://github.com/influxdata/influxql MIT
-    github.com-influxdata-usage-client v0.0.0 https://github.com/influxdata/usage-client MIT
-    github.com-j-keck-arping v0.0.0 https://github.com/j-keck/arping MIT
-    github.com-jmespath-go-jmespath-internal-testify v1.5.1 https://github.com/jmespath/go-jmespath/internal/testify MIT
-    github.com-joho-godotenv v1.3.0 https://github.com/joho/godotenv MIT
-    github.com-jpillora-backoff v1.0.0 https://github.com/jpillora/backoff MIT
-    github.com-json-iterator-go v1.1.10 https://github.com/json-iterator/go MIT
-    github.com-jstemmer-go-junit-report v0.9.1 https://github.com/jstemmer/go-junit-report MIT
-    github.com-jsternberg-zap-logfmt v1.0.0 https://github.com/jsternberg/zap-logfmt MIT
-    github.com-jtolds-gls v4.20.0+incompatible https://github.com/jtolds/gls MIT
-    github.com-jung-kurt-gofpdf v1.0.3 https://github.com/jung-kurt/gofpdf MIT
-    github.com-jwilder-encoding v0.0.0 https://github.com/jwilder/encoding MIT
-    github.com-kisielk-errcheck v1.5.0 https://github.com/kisielk/errcheck MIT
-    github.com-kisielk-gotool v1.0.0 https://github.com/kisielk/gotool MIT
-    github.com-klauspost-cpuid v0.0.0 https://github.com/klauspost/cpuid MIT
-    github.com-klauspost-pgzip v1.0.2 https://github.com/klauspost/pgzip MIT
-    github.com-konsorten-go-windows-terminal-sequences v1.0.3 https://github.com/konsorten/go-windows-terminal-sequences MIT
-    github.com-kr-pretty v0.2.1 https://github.com/kr/pretty MIT
-    github.com-kr-pty v1.1.5 https://github.com/kr/pty MIT
-    github.com-kr-text v0.2.0 https://github.com/kr/text MIT
-    github.com-lib-pq v1.0.0 https://github.com/lib/pq MIT
-    github.com-lightstep-lightstep-tracer-go v0.18.1 https://github.com/lightstep/lightstep-tracer-go MIT
-    github.com-mailru-easyjson v0.7.1 https://github.com/mailru/easyjson MIT
-    github.com-markbates-oncer v0.0.0 https://github.com/markbates/oncer MIT
-    github.com-markbates-safe v1.0.1 https://github.com/markbates/safe MIT
-    github.com-marstr-guid v1.1.0 https://github.com/marstr/guid MIT
-    github.com-mattn-go-colorable v0.1.6 https://github.com/mattn/go-colorable MIT
-    github.com-mattn-go-isatty v0.0.12 https://github.com/mattn/go-isatty MIT
-    github.com-mattn-go-runewidth v0.0.3 https://github.com/mattn/go-runewidth MIT
-    github.com-mattn-go-shellwords v1.0.3 https://github.com/mattn/go-shellwords MIT
-    github.com-mattn-go-sqlite3 v1.11.0 https://github.com/mattn/go-sqlite3 MIT
-    github.com-mattn-go-tty v0.0.0 https://github.com/mattn/go-tty MIT
-    github.com-mitchellh-go-homedir v1.1.0 https://github.com/mitchellh/go-homedir MIT
-    github.com-mitchellh-go-testing-interface v1.0.0 https://github.com/mitchellh/go-testing-interface MIT
-    github.com-mitchellh-go-wordwrap v1.0.0 https://github.com/mitchellh/go-wordwrap MIT
-    github.com-mitchellh-iochan v1.0.0 https://github.com/mitchellh/iochan MIT
-    github.com-mitchellh-mapstructure v1.2.2 https://github.com/mitchellh/mapstructure MIT
-    github.com-montanaflynn-stats v0.0.0 https://github.com/montanaflynn/stats MIT
-    github.com-morikuni-aec v1.0.0 https://github.com/morikuni/aec MIT
-    github.com-ncw-swift v1.0.47 https://github.com/ncw/swift MIT
-    github.com-niemeyer-pretty v0.0.0 https://github.com/niemeyer/pretty MIT
-    github.com-nxadm-tail v1.4.4 https://github.com/nxadm/tail MIT
-    github.com-olekukonko-tablewriter v0.0.0 https://github.com/olekukonko/tablewriter MIT
-    github.com-onsi-ginkgo v1.12.1 https://github.com/onsi/ginkgo MIT
-    github.com-onsi-gomega v1.10.3 https://github.com/onsi/gomega MIT
-    github.com-opentracing-basictracer-go v1.0.0 https://github.com/opentracing/basictracer-go MIT
-    github.com-pact-foundation-pact-go v1.0.4 https://github.com/pact-foundation/pact-go MIT
-    github.com-paulbellamy-ratecounter v0.2.0 https://github.com/paulbellamy/ratecounter MIT
-    github.com-pelletier-go-toml v1.8.1 https://github.com/pelletier/go-toml MIT
-    github.com-performancecopilot-speed v3.0.0+incompatible https://github.com/performancecopilot/speed MIT
-    github.com-peterbourgon-diskv v2.0.1+incompatible https://github.com/peterbourgon/diskv MIT
-    github.com-peterh-liner v1.0.1 https://github.com/peterh/liner MIT
-    github.com-philhofer-fwd v1.0.0 https://github.com/philhofer/fwd MIT
-    github.com-posener-complete v1.2.3 https://github.com/posener/complete MIT
-    github.com-rs-cors v1.7.0 https://github.com/rs/cors MIT
-    github.com-ryanuber-columnize v2.1.0+incompatible https://github.com/ryanuber/columnize MIT
-    github.com-satori-go.uuid v1.2.0 https://github.com/satori/go.uuid MIT
-    github.com-sean--seed v0.0.0 https://github.com/sean-/seed MIT
-    github.com-segmentio-kafka-go v0.2.0 https://github.com/segmentio/kafka-go MIT
-    github.com-sergi-go-diff v1.0.0 https://github.com/sergi/go-diff MIT
-    github.com-shurcooL-httpfs v0.0.0 https://github.com/shurcooL/httpfs MIT
-    github.com-shurcooL-sanitized_anchor_name v1.0.0 https://github.com/shurcooL/sanitized_anchor_name MIT
-    github.com-shurcooL-vfsgen v0.0.0 https://github.com/shurcooL/vfsgen MIT
-    github.com-sirupsen-logrus v1.8.1 https://github.com/sirupsen/logrus MIT
-    github.com-smartystreets-assertions v0.0.0 https://github.com/smartystreets/assertions MIT
-    github.com-smartystreets-goconvey v1.6.4 https://github.com/smartystreets/goconvey MIT
-    github.com-sony-gobreaker v0.4.1 https://github.com/sony/gobreaker MIT
-    github.com-spf13-cast v1.3.0 https://github.com/spf13/cast MIT
-    github.com-spf13-jwalterweatherman v1.0.0 https://github.com/spf13/jwalterweatherman MIT
-    github.com-spf13-viper v1.7.1 https://github.com/spf13/viper MIT
-    github.com-stretchr-objx v0.2.0 https://github.com/stretchr/objx MIT
-    github.com-stretchr-testify v1.7.0 https://github.com/stretchr/testify MIT
-    github.com-subosito-gotenv v1.2.0 https://github.com/subosito/gotenv MIT
-    github.com-tchap-go-patricia v2.2.6+incompatible https://github.com/tchap/go-patricia MIT
-    github.com-tidwall-pretty v1.0.0 https://github.com/tidwall/pretty MIT
-    github.com-tinylib-msgp v1.0.2 https://github.com/tinylib/msgp MIT
-    github.com-tmc-grpc-websocket-proxy v0.0.0 https://github.com/tmc/grpc-websocket-proxy MIT
-    github.com-tv42-httpunix v0.0.0 https://github.com/tv42/httpunix MIT
-    github.com-ugorji-go v1.1.4 https://github.com/ugorji/go MIT
-    github.com-urfave-cli v1.22.2 https://github.com/urfave/cli MIT
-    github.com-urfave-cli-v2 v2.3.0 https://github.com/urfave/cli/v2 MIT
-    github.com-vektah-gqlparser v1.1.2 https://github.com/vektah/gqlparser MIT
-    github.com-xiang90-probing v0.0.0 https://github.com/xiang90/probing MIT
-    github.com-xlab-treeprint v1.0.0 https://github.com/xlab/treeprint MIT
-    github.com-xordataexchange-crypt v0.0.3 https://github.com/xordataexchange/crypt MIT
-    github.com-yuin-goldmark v1.4.0 https://github.com/yuin/goldmark MIT
-    github.com-yusufpapurcu-wmi v1.2.2 https://github.com/yusufpapurcu/wmi MIT
-    go.etcd.io-bbolt v1.3.5 https://go.etcd.io/bbolt MIT
-    go.mozilla.org-pkcs7 v0.0.0 https://go.mozilla.org/pkcs7 MIT
-    go.uber.org-atomic v1.7.0 https://go.uber.org/atomic MIT
-    go.uber.org-automaxprocs v1.4.0 https://go.uber.org/automaxprocs MIT
-    go.uber.org-goleak v1.1.12 https://go.uber.org/goleak MIT
-    go.uber.org-multierr v1.3.0 https://go.uber.org/multierr MIT
-    go.uber.org-tools v0.0.0 https://go.uber.org/tools MIT
-    go.uber.org-zap v1.13.0 https://go.uber.org/zap MIT
-    gopkg.in-alecthomas-kingpin.v2 v2.2.6 https://gopkg.in/alecthomas/kingpin.v2 MIT
-    gopkg.in-gemnasium-logrus-airbrake-hook.v2 v2.1.2 https://gopkg.in/gemnasium/logrus-airbrake-hook.v2 MIT
-    gopkg.in-natefinch-lumberjack.v2 v2.0.0 https://gopkg.in/natefinch/lumberjack.v2 MIT
-    gopkg.in-resty.v1 v1.12.0 https://gopkg.in/resty.v1 MIT
-    honnef.co-go-tools v0.0.1 https://honnef.co/go/tools MIT
-    sigs.k8s.io-yaml v1.2.0 https://sigs.k8s.io/yaml MIT
-    sourcegraph.com-sourcegraph-appdash v0.0.0 https://sourcegraph.com/sourcegraph/appdash MIT
-    gopkg.in-yaml.v3 v3.0.0 https://gopkg.in/yaml.v3 MIT
-    github.com-bmizerany-pat v0.0.0 https://github.com/bmizerany/pat MIT
-    github.com-chzyer-logex v1.1.10 https://github.com/chzyer/logex MIT
-    github.com-glycerine-go-unsnap-stream v0.0.0 https://github.com/glycerine/go-unsnap-stream MIT
-    github.com-hudl-fargo v1.3.0 https://github.com/hudl/fargo MIT
-    github.com-influxdata-line-protocol v0.0.0 https://github.com/influxdata/line-protocol MIT
-    github.com-kr-logfmt v0.0.0 https://github.com/kr/logfmt MIT
-    github.com-lightstep-lightstep-tracer-common-golang-gogo v0.0.0 https://github.com/lightstep/lightstep-tracer-common/golang/gogo MIT
+    github.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 MIT
+    github.com/BurntSushi/toml v0.3.1 MIT
+    github.com/DataDog/datadog-go v3.2.0+incompatible MIT
+    github.com/HdrHistogram/hdrhistogram-go v0.9.0 MIT
+    github.com/Knetic/govaluate v3.0.1-0.20171022003610-9aa49832a739+incompatible MIT
+    github.com/Microsoft/go-winio v0.5.1 MIT
+    github.com/Microsoft/hcsshim v0.8.23 MIT
+    github.com/Microsoft/hcsshim/test v0.0.0-20210227013316-43a75bb4edd3 MIT
+    github.com/Shopify/logrus-bugsnag v0.0.0-20171204204709-577dee27f20d MIT
+    github.com/Shopify/sarama v1.27.2 MIT
+    github.com/Shopify/toxiproxy v2.1.4+incompatible MIT
+    github.com/VividCortex/gohistogram v1.0.0 MIT
+    github.com/afex/hystrix-go v0.0.0-20180502004556-fa1af6a1f4f5 MIT
+    github.com/agnivade/levenshtein v1.0.1 MIT
+    github.com/alecthomas/units v0.0.0-20190924025748-f65c72e2690d MIT
+    github.com/alexflint/go-filemutex v0.0.0-20171022225611-72bdc8eae2ae MIT
+    github.com/andreyvit/diff v0.0.0-20170406064948-c7f18ee00883 MIT
+    github.com/antihax/optional v1.0.0 MIT
+    github.com/armon/circbuf v0.0.0-20150827004946-bbbad097214e MIT
+    github.com/armon/go-metrics v0.3.3 MIT
+    github.com/armon/go-radix v1.0.0 MIT
+    github.com/aryann/difflib v0.0.0-20170710044230-e206f873d14a MIT
+    github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496 MIT
+    github.com/beorn7/perks v1.0.1 MIT
+    github.com/bgentry/speakeasy v0.1.0 MIT
+    github.com/bitly/go-simplejson v0.5.0 MIT
+    github.com/bketelsen/crypt v0.0.3-0.20200106085610-5cbc8cc4026c MIT
+    github.com/blang/semver v3.5.1+incompatible MIT
+    github.com/boltdb/bolt v1.3.1 MIT
+    github.com/bshuster-repo/logrus-logstash-hook v0.4.1 MIT
+    github.com/buger/jsonparser v0.0.0-20180808090653-f4dd9f5a6b44 MIT
+    github.com/bugsnag/bugsnag-go v0.0.0-20141110184014-b1d153021fcd MIT
+    github.com/bugsnag/panicwrap v0.0.0-20151223152923-e2c28503fcd0 MIT
+    github.com/c-bata/go-prompt v0.2.2 MIT
+    github.com/cenkalti/backoff v2.2.1+incompatible MIT
+    github.com/cenkalti/backoff/v4 v4.1.1 MIT
+    github.com/cespare/xxhash v1.1.0 MIT
+    github.com/cespare/xxhash/v2 v2.1.1 MIT
+    github.com/chzyer/readline v0.0.0-20180603132655-2972be24d48e MIT
+    github.com/chzyer/test v0.0.0-20180213035817-a1ea475d72b1 MIT
+    github.com/cilium/ebpf v0.6.2 MIT
+    github.com/client9/misspell v0.3.4 MIT
+    github.com/codahale/hdrhistogram v0.0.0-20161010025455-3a0bb77429bd MIT
+    github.com/coreos/bbolt v1.3.2 MIT
+    github.com/cpuguy83/go-md2man/v2 v2.0.0 MIT
+    github.com/creack/pty v1.1.9 MIT
+    github.com/dave/jennifer v1.2.0 MIT
+    github.com/dgrijalva/jwt-go v3.2.0+incompatible MIT
+    github.com/dgryski/go-bitstream v0.0.0-20180413035011-3522498ce2c8 MIT
+    github.com/dgryski/go-sip13 v0.0.0-20200911182023-62edffca9245 MIT
+    github.com/digitalocean/godo v1.46.0 MIT
+    github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815 MIT
+    github.com/dustin/go-humanize v1.0.0 MIT
+    github.com/eapache/go-resiliency v1.2.0 MIT
+    github.com/eapache/go-xerial-snappy v0.0.0-20180814174437-776d5712da21 MIT
+    github.com/eapache/queue v1.1.0 MIT
+    github.com/emicklei/go-restful v2.9.5+incompatible MIT
+    github.com/enriquebris/goconcurrentqueue v0.6.0 MIT
+    github.com/fatih/color v1.9.0 MIT
+    github.com/fogleman/gg v1.2.1-0.20190220221249-0403632d5b90 MIT
+    github.com/form3tech-oss/jwt-go v3.2.2+incompatible MIT
+    github.com/franela/goblin v0.0.0-20200105215937-c9ffbefa60db MIT
+    github.com/franela/goreq v0.0.0-20171204163338-bcd34c9993f8 MIT
+    github.com/frankban/quicktest v1.11.3 MIT
+    github.com/fullsailor/pkcs7 v0.0.0-20190404230743-d7302db945fa MIT
+    github.com/ghodss/yaml v1.0.0 MIT
+    github.com/glycerine/go-unsnap-stream v0.0.0-20180323001048-9f0cb55181dd MIT
+    github.com/glycerine/goconvey v0.0.0-20190410193231-58a59202ab31 MIT
+    github.com/go-kit/kit v0.10.0 MIT
+    github.com/go-logfmt/logfmt v0.5.0 MIT
+    github.com/go-ole/go-ole v1.2.6 MIT
+    github.com/go-stack/stack v1.8.0 MIT
+    github.com/gobuffalo/attrs v0.0.0-20190224210810-a9411de4debd MIT
+    github.com/gobuffalo/depgen v0.1.0 MIT
+    github.com/gobuffalo/envy v1.7.0 MIT
+    github.com/gobuffalo/flect v0.1.3 MIT
+    github.com/gobuffalo/genny v0.1.1 MIT
+    github.com/gobuffalo/gitgen v0.0.0-20190315122116-cc086187d211 MIT
+    github.com/gobuffalo/gogen v0.1.1 MIT
+    github.com/gobuffalo/logger v0.0.0-20190315122211-86e12af44bc2 MIT
+    github.com/gobuffalo/mapi v1.0.2 MIT
+    github.com/gobuffalo/packd v0.1.0 MIT
+    github.com/gobuffalo/packr/v2 v2.2.0 MIT
+    github.com/gobuffalo/syncx v0.0.0-20190224160051-33c29581e754 MIT
+    github.com/gofrs/uuid v3.3.0+incompatible MIT
+    github.com/grandecola/mmap v0.6.0 MIT
+    github.com/gregjones/httpcache v0.0.0-20180305231024-9cad4c3443a7 MIT
+    github.com/hashicorp/go-hclog v0.12.2 MIT
+    github.com/hashicorp/go-syslog v1.0.0 MIT
+    github.com/hashicorp/mdns v1.0.1 MIT
+    github.com/hetznercloud/hcloud-go v1.22.0 MIT
+    github.com/hpcloud/tail v1.0.0 MIT
+    github.com/influxdata/flux v0.65.1 MIT
+    github.com/influxdata/influxdb v1.8.3 MIT
+    github.com/influxdata/influxdb1-client v0.0.0-20191209144304-8bf82d3c094d MIT
+    github.com/influxdata/influxql v1.1.1-0.20200828144457-65d3ef77d385 MIT
+    github.com/influxdata/usage-client v0.0.0-20160829180054-6d3895376368 MIT
+    github.com/j-keck/arping v0.0.0-20160618110441-2cf9dc699c56 MIT
+    github.com/jmespath/go-jmespath/internal/testify v1.5.1 MIT
+    github.com/joho/godotenv v1.3.0 MIT
+    github.com/jpillora/backoff v1.0.0 MIT
+    github.com/json-iterator/go v1.1.10 MIT
+    github.com/jstemmer/go-junit-report v0.9.1 MIT
+    github.com/jsternberg/zap-logfmt v1.0.0 MIT
+    github.com/jtolds/gls v4.20.0+incompatible MIT
+    github.com/jung-kurt/gofpdf v1.0.3-0.20190309125859-24315acbbda5 MIT
+    github.com/jwilder/encoding v0.0.0-20170811194829-b4e1701a28ef MIT
+    github.com/kisielk/errcheck v1.5.0 MIT
+    github.com/kisielk/gotool v1.0.0 MIT
+    github.com/klauspost/cpuid v0.0.0-20170728055534-ae7887de9fa5 MIT
+    github.com/klauspost/pgzip v1.0.2-0.20170402124221-0bf5dcad4ada MIT
+    github.com/konsorten/go-windows-terminal-sequences v1.0.3 MIT
+    github.com/kr/pretty v0.2.1 MIT
+    github.com/kr/pty v1.1.5 MIT
+    github.com/kr/text v0.2.0 MIT
+    github.com/lib/pq v1.0.0 MIT
+    github.com/lightstep/lightstep-tracer-go v0.18.1 MIT
+    github.com/mailru/easyjson v0.7.1 MIT
+    github.com/markbates/oncer v0.0.0-20181203154359-bf2de49a0be2 MIT
+    github.com/markbates/safe v1.0.1 MIT
+    github.com/marstr/guid v1.1.0 MIT
+    github.com/mattn/go-colorable v0.1.6 MIT
+    github.com/mattn/go-isatty v0.0.12 MIT
+    github.com/mattn/go-runewidth v0.0.3 MIT
+    github.com/mattn/go-shellwords v1.0.3 MIT
+    github.com/mattn/go-sqlite3 v1.11.0 MIT
+    github.com/mattn/go-tty v0.0.0-20180907095812-13ff1204f104 MIT
+    github.com/mitchellh/go-homedir v1.1.0 MIT
+    github.com/mitchellh/go-testing-interface v1.0.0 MIT
+    github.com/mitchellh/go-wordwrap v1.0.0 MIT
+    github.com/mitchellh/iochan v1.0.0 MIT
+    github.com/mitchellh/mapstructure v1.2.2 MIT
+    github.com/montanaflynn/stats v0.0.0-20171201202039-1bf9dbcd8cbe MIT
+    github.com/morikuni/aec v1.0.0 MIT
+    github.com/ncw/swift v1.0.47 MIT
+    github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e MIT
+    github.com/nxadm/tail v1.4.4 MIT
+    github.com/olekukonko/tablewriter v0.0.0-20170122224234-a0225b3f23b5 MIT
+    github.com/onsi/ginkgo v1.12.1 MIT
+    github.com/onsi/gomega v1.10.3 MIT
+    github.com/opentracing/basictracer-go v1.0.0 MIT
+    github.com/pact-foundation/pact-go v1.0.4 MIT
+    github.com/paulbellamy/ratecounter v0.2.0 MIT
+    github.com/pelletier/go-toml v1.8.1 MIT
+    github.com/performancecopilot/speed v3.0.0+incompatible MIT
+    github.com/peterbourgon/diskv v2.0.1+incompatible MIT
+    github.com/peterh/liner v1.0.1-0.20180619022028-8c1271fcf47f MIT
+    github.com/philhofer/fwd v1.0.0 MIT
+    github.com/posener/complete v1.2.3 MIT
+    github.com/rs/cors v1.7.0 MIT
+    github.com/ryanuber/columnize v2.1.0+incompatible MIT
+    github.com/satori/go.uuid v1.2.0 MIT
+    github.com/sean-/seed v0.0.0-20170313163322-e2103e2c3529 MIT
+    github.com/segmentio/kafka-go v0.2.0 MIT
+    github.com/sergi/go-diff v1.0.0 MIT
+    github.com/shurcooL/httpfs v0.0.0-20190707220628-8d4bc4ba7749 MIT
+    github.com/shurcooL/sanitized_anchor_name v1.0.0 MIT
+    github.com/shurcooL/vfsgen v0.0.0-20200824052919-0d455de96546 MIT
+    github.com/sirupsen/logrus v1.8.1 MIT
+    github.com/smartystreets/assertions v0.0.0-20180927180507-b2de0cb4f26d MIT
+    github.com/smartystreets/goconvey v1.6.4 MIT
+    github.com/sony/gobreaker v0.4.1 MIT
+    github.com/spf13/cast v1.3.0 MIT
+    github.com/spf13/jwalterweatherman v1.0.0 MIT
+    github.com/spf13/viper v1.7.1 MIT
+    github.com/stretchr/objx v0.2.0 MIT
+    github.com/stretchr/testify v1.7.0 MIT
+    github.com/subosito/gotenv v1.2.0 MIT
+    github.com/tchap/go-patricia v2.2.6+incompatible MIT
+    github.com/tidwall/pretty v1.0.0 MIT
+    github.com/tinylib/msgp v1.0.2 MIT
+    github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5 MIT
+    github.com/tv42/httpunix v0.0.0-20150427012821-b75d8614f926 MIT
+    github.com/ugorji/go v1.1.4 MIT
+    github.com/urfave/cli v1.22.2 MIT
+    github.com/urfave/cli/v2 v2.3.0 MIT
+    github.com/vektah/gqlparser v1.1.2 MIT
+    github.com/xiang90/probing v0.0.0-20190116061207-43a291ad63a2 MIT
+    github.com/xlab/treeprint v1.0.0 MIT
+    github.com/xordataexchange/crypt v0.0.3-0.20170626215501-b2862e3d0a77 MIT
+    github.com/yuin/goldmark v1.3.5 MIT
+    github.com/yusufpapurcu/wmi v1.2.2 MIT
+    go.etcd.io/bbolt v1.3.5 MIT
+    go.mozilla.org/pkcs7 v0.0.0-20200128120323-432b2356ecb1 MIT
+    go.uber.org/atomic v1.7.0 MIT
+    go.uber.org/automaxprocs v1.4.0 MIT
+    go.uber.org/goleak v1.1.12 MIT
+    go.uber.org/multierr v1.3.0 MIT
+    go.uber.org/tools v0.0.0-20190618225709-2cfd321de3ee MIT
+    go.uber.org/zap v1.13.0 MIT
+    gopkg.in/alecthomas/kingpin.v2 v2.2.6 MIT
+    gopkg.in/gemnasium/logrus-airbrake-hook.v2 v2.1.2 MIT
+    gopkg.in/natefinch/lumberjack.v2 v2.0.0 MIT
+    gopkg.in/resty.v1 v1.12.0 MIT
+    honnef.co/go/tools v0.0.1-2020.1.4 MIT
+    sigs.k8s.io/yaml v1.2.0 MIT
+    sourcegraph.com/sourcegraph/appdash v0.0.0-20190731080439-ebfcffb1b5c0 MIT
 
 ========================================================================
-ISC Licenses
+MPL-2.0 licenses
 ========================================================================
 
-The following components are provided under the zlib license. See project link for details.
+The following components are provided under the MPL-2.0 License. See project link for details.
 The text of each license is also included at licenses/license-[project].txt.
 
-    collectd.org v0.3.0 https://collectd.org ISC
-    github.com-davecgh-go-spew v1.1.1 https://github.com/davecgh/go-spew ISC
+    github.com/d2g/dhcp4client v1.0.0 MPL-2.0
+    github.com/go-sql-driver/mysql v1.4.1 MPL-2.0
+    github.com/hashicorp/consul/api v1.7.0 MPL-2.0
+    github.com/hashicorp/go-cleanhttp v0.5.1 MPL-2.0
+    github.com/hashicorp/go-immutable-radix v1.2.0 MPL-2.0
+    github.com/hashicorp/go-multierror v1.1.0 MPL-2.0
+    github.com/hashicorp/go-retryablehttp v0.5.3 MPL-2.0
+    github.com/hashicorp/go-rootcerts v1.0.2 MPL-2.0
+    github.com/hashicorp/go-sockaddr v1.0.2 MPL-2.0
+    github.com/hashicorp/go-uuid v1.0.2 MPL-2.0
+    github.com/hashicorp/go-version v1.2.0 MPL-2.0
+    github.com/hashicorp/golang-lru v0.5.4 MPL-2.0
+    github.com/hashicorp/hcl v1.0.0 MPL-2.0
+    github.com/hashicorp/logutils v1.0.0 MPL-2.0
+    github.com/hashicorp/serf v0.9.3 MPL-2.0
+    github.com/mitchellh/cli v1.1.0 MPL-2.0
+    github.com/mitchellh/gox v0.4.0 MPL-2.0
 
 ========================================================================
-Mozilla Public Licenses
+ licenses
 ========================================================================
 
-The following components are provided under the Mozilla Public license. See project link for details.
+The following components are provided under the  License. See project link for details.
 The text of each license is also included at licenses/license-[project].txt.
 
-    github.com-armon-consul-api v0.0.0 https://github.com/armon/consul-api MPL-2.0-no-copyleft-exception
-    github.com-d2g-dhcp4client v1.0.0 https://github.com/d2g/dhcp4client MPL-2.0-no-copyleft-exception
-    github.com-d2g-dhcp4server v0.0.0 https://github.com/d2g/dhcp4server MPL-2.0-no-copyleft-exception
-    github.com-go-sql-driver-mysql v1.4.1 https://github.com/go-sql-driver/mysql MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-consul-api v1.7.0 https://github.com/hashicorp/consul/api MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-consul-sdk v0.6.0 https://github.com/hashicorp/consul/sdk MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-errwrap v1.0.0 https://github.com/hashicorp/errwrap MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-go-immutable-radix v1.2.0 https://github.com/hashicorp/go-immutable-radix MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-go-retryablehttp v0.5.3 https://github.com/hashicorp/go-retryablehttp MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-go-rootcerts v1.0.2 https://github.com/hashicorp/go-rootcerts MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-go-sockaddr v1.0.2 https://github.com/hashicorp/go-sockaddr MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-go-uuid v1.0.2 https://github.com/hashicorp/go-uuid MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-golang-lru v0.5.4 https://github.com/hashicorp/golang-lru MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-hcl v1.0.0 https://github.com/hashicorp/hcl MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-logutils v1.0.0 https://github.com/hashicorp/logutils MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-memberlist v0.2.2 https://github.com/hashicorp/memberlist MPL-2.0-no-copyleft-exception
-    github.com-hashicorp-serf v0.9.3 https://github.com/hashicorp/serf MPL-2.0-no-copyleft-exception
-    github.com-mitchellh-cli v1.1.0 https://github.com/mitchellh/cli MPL-2.0-no-copyleft-exception
-    github.com-mitchellh-gox v0.4.0 https://github.com/mitchellh/gox MPL-2.0-no-copyleft-exception
-    github.com-d2g-hardwareaddr v0.0.0 https://github.com/d2g/hardwareaddr MPL-2.0
-    github.com-hashicorp-go-cleanhttp v0.5.1 https://github.com/hashicorp/go-cleanhttp MPL-2.0
-    github.com-hashicorp-go-multierror v1.1.0 https://github.com/hashicorp/go-multierror MPL-2.0
-    github.com-hashicorp-go-version v1.2.0 https://github.com/hashicorp/go-version MPL-2.0
+    github.com/gogo/protobuf v1.3.2 
 
 ========================================================================
-Eclipse Public License
+BSD-3-Clause-And-GPL-2 licenses
 ========================================================================
 
-The following components are provided under the Mozilla Public license. See project link for details.
+The following components are provided under the BSD-3-Clause-And-GPL-2 License. See project link for details.
 The text of each license is also included at licenses/license-[project].txt.
 
-    github.com-eclipse-paho.mqtt.golang v1.2.0 https://github.com/eclipse/paho.mqtt.golang EPL-1.0
+    github.com/golang/freetype v0.0.0-20170609003504-e2365dfdc4a0 BSD-3-Clause-And-GPL-2
 
 ========================================================================
-CC licenses
+MIT and Apache licenses
 ========================================================================
 
-The following components are provided under a BSD license. See project link for details.
+The following components are provided under the MIT and Apache License. See project link for details.
 The text of each license is also included at licenses/license-[project].txt.
 
-    github.com/ajstarks/svgo v0.0.0 github.com/ajstarks/svgo CC-BY-4.0
+    gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b MIT and Apache
 
 ========================================================================
-Creative Commons Zero Universal Licenses
+BSD-3-Clause licenses
 ========================================================================
 
-The following components are provided under the zlib license. See project link for details.
-The text of each license is also included at licenses/LICENSE-[project].txt.
+The following components are provided under the BSD-3-Clause License. See project link for details.
+The text of each license is also included at licenses/license-[project].txt.
 
-    github.com/pascaldekloe/goe v0.1.0 github.com/pascaldekloe/goe CC0-1.0
+    bazil.org/fuse v0.0.0-20160811212531-371fbbdaa898 BSD-3-Clause
+    dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9 BSD-3-Clause
+    github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802 BSD-3-Clause
+    github.com/DATA-DOG/go-sqlmock v1.3.3 BSD-3-Clause
+    github.com/PuerkitoBio/purell v1.1.1 BSD-3-Clause
+    github.com/PuerkitoBio/urlesc v0.0.0-20170810143723-de5bf2ad4578 BSD-3-Clause
+    github.com/alecthomas/template v0.0.0-20190718012654-fb15b899a751 BSD-3-Clause
+    github.com/bits-and-blooms/bitset v1.2.0 BSD-3-Clause
+    github.com/circonus-labs/circonus-gometrics v2.3.1+incompatible BSD-3-Clause
+    github.com/circonus-labs/circonusllhist v0.1.3 BSD-3-Clause
+    github.com/clbanning/x2j v0.0.0-20191024224557-825249438eec BSD-3-Clause
+    github.com/cyphar/filepath-securejoin v0.2.2 BSD-3-Clause
+    github.com/d2g/dhcp4 v0.0.0-20170904100407-a1d1b6c41b1c BSD-3-Clause
+    github.com/edsrzf/mmap-go v1.0.0 BSD-3-Clause
+    github.com/elazarl/goproxy v0.0.0-20180725130230-947c36da3153 BSD-3-Clause
+    github.com/evanphx/json-patch v4.9.0+incompatible BSD-3-Clause
+    github.com/fortytw2/leaktest v1.3.0 BSD-3-Clause
+    github.com/fsnotify/fsnotify v1.4.9 BSD-3-Clause
+    github.com/go-gl/glfw v0.0.0-20190409004039-e6da0acd62b1 BSD-3-Clause
+    github.com/go-gl/glfw/v3.3/glfw v0.0.0-20200222043503-6f7a984d4dc4 BSD-3-Clause
+    github.com/golang/protobuf v1.5.2 BSD-3-Clause
+    github.com/golang/snappy v0.0.2 BSD-3-Clause
+    github.com/google/go-cmp v0.5.6 BSD-3-Clause
+    github.com/google/go-querystring v1.0.0 BSD-3-Clause
+    github.com/google/uuid v1.3.0 BSD-3-Clause
+    github.com/googleapis/gax-go/v2 v2.0.5 BSD-3-Clause
+    github.com/gorilla/context v1.1.1 BSD-3-Clause
+    github.com/gorilla/mux v1.7.3 BSD-3-Clause
+    github.com/grpc-ecosystem/grpc-gateway v1.16.0 BSD-3-Clause
+    github.com/hashicorp/go-msgpack v0.5.3 BSD-3-Clause
+    github.com/hashicorp/go.net v0.0.1 BSD-3-Clause
+    github.com/ianlancetaylor/demangle v0.0.0-20181102032728-5e5cf60278f6 BSD-3-Clause
+    github.com/imdario/mergo v0.3.12 BSD-3-Clause
+    github.com/jcmturner/gofork v1.0.0 BSD-3-Clause
+    github.com/jessevdk/go-flags v1.4.0 BSD-3-Clause
+    github.com/julienschmidt/httprouter v1.3.0 BSD-3-Clause
+    github.com/klauspost/compress v1.14.2 BSD-3-Clause
+    github.com/klauspost/crc32 v0.0.0-20161016154125-cb6bfca970f6 BSD-3-Clause
+    github.com/miekg/dns v1.1.31 BSD-3-Clause
+    github.com/miekg/pkcs11 v1.0.3 BSD-3-Clause
+    github.com/munnerz/goautoneg v0.0.0-20191010083416-a7dc8b61c822 BSD-3-Clause
+    github.com/mxk/go-flowrate v0.0.0-20140419014527-cca7078d478f BSD-3-Clause
+    github.com/op/go-logging v0.0.0-20160315200505-970db520ece7 BSD-3-Clause
+    github.com/pborman/uuid v1.2.0 BSD-3-Clause
+    github.com/pierrec/lz4 v2.5.2+incompatible BSD-3-Clause
+    github.com/pmezard/go-difflib v1.0.0 BSD-3-Clause
+    github.com/retailnext/hllpp v1.0.1-0.20180308014038-101a6d2f8b52 BSD-3-Clause
+    github.com/rogpeppe/fastuuid v1.2.0 BSD-3-Clause
+    github.com/rogpeppe/go-internal v1.3.0 BSD-3-Clause
+    github.com/samuel/go-zookeeper v0.0.0-20200724154423-2164a8ac840e BSD-3-Clause
+    github.com/shirou/gopsutil v3.21.11+incompatible BSD-3-Clause
+    github.com/spaolacci/murmur3 v0.0.0-20180118202830-f09979ecbc72 BSD-3-Clause
+    github.com/spf13/pflag v1.0.5 BSD-3-Clause
+    github.com/tklauser/go-sysconf v0.3.9 BSD-3-Clause
+    github.com/willf/bitset v1.1.11 BSD-3-Clause
+    golang.org/x/crypto v0.0.0-20220315160706-3147a52a75dd BSD-3-Clause
+    golang.org/x/exp v0.0.0-20200224162631-6cc2880d07d6 BSD-3-Clause
+    golang.org/x/image v0.0.0-20190802002840-cff245a6509b BSD-3-Clause
+    golang.org/x/lint v0.0.0-20210508222113-6edffad5e616 BSD-3-Clause
+    golang.org/x/mobile v0.0.0-20190719004257-d2bd2a29d028 BSD-3-Clause
+    golang.org/x/mod v0.4.2 BSD-3-Clause
+    golang.org/x/net v0.0.0-20220127200216-cd36cc0744dd BSD-3-Clause
+    golang.org/x/oauth2 v0.0.0-20200902213428-5d25da1a8d43 BSD-3-Clause
+    golang.org/x/sync v0.0.0-20210220032951-036812b2e83c BSD-3-Clause
+    golang.org/x/sys v0.0.0-20220204135822-1c1b9b1eba6a BSD-3-Clause
+    golang.org/x/term v0.0.0-20210927222741-03fcf44c2211 BSD-3-Clause
+    golang.org/x/text v0.3.7 BSD-3-Clause
+    golang.org/x/time v0.0.0-20200630173020-3af7569d3a1e BSD-3-Clause
+    golang.org/x/tools v0.1.5 BSD-3-Clause
+    golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 BSD-3-Clause
+    gonum.org/v1/gonum v0.6.0 BSD-3-Clause
+    gonum.org/v1/netlib v0.0.0-20190313105609-8cb42192e0e0 BSD-3-Clause
+    gonum.org/v1/plot v0.0.0-20190515093506-e2840ee46a6b BSD-3-Clause
+    google.golang.org/api v0.32.0 BSD-3-Clause
+    google.golang.org/protobuf v1.28.0 BSD-3-Clause
+    gopkg.in/airbrake/gobrake.v2 v2.0.9 BSD-3-Clause
+    gopkg.in/cheggaaa/pb.v1 v1.0.25 BSD-3-Clause
+    gopkg.in/errgo.v2 v2.1.0 BSD-3-Clause
+    gopkg.in/fsnotify.v1 v1.4.7 BSD-3-Clause
+    gopkg.in/fsnotify/fsnotify.v1 v1.4.7 BSD-3-Clause
+    gopkg.in/gcfg.v1 v1.2.3 BSD-3-Clause
+    gopkg.in/inf.v0 v0.9.1 BSD-3-Clause
+    gopkg.in/tomb.v1 v1.0.0-20141024135613-dd632973f1e7 BSD-3-Clause
+    rsc.io/binaryregexp v0.2.0 BSD-3-Clause
+    rsc.io/pdf v0.1.1 BSD-3-Clause
+    rsc.io/quote/v3 v3.1.0 BSD-3-Clause
+    rsc.io/sampler v1.3.0 BSD-3-Clause
+
+========================================================================
+Apache-2.0 licenses
+========================================================================
+
+The following components are provided under the Apache-2.0 License. See project link for details.
+The text of each license is also included at licenses/license-[project].txt.
+
+    cloud.google.com/go v0.65.0 Apache-2.0
+    cloud.google.com/go/bigquery v1.8.0 Apache-2.0
+    cloud.google.com/go/bigtable v1.2.0 Apache-2.0
+    cloud.google.com/go/datastore v1.1.0 Apache-2.0
+    cloud.google.com/go/firestore v1.1.0 Apache-2.0
+    cloud.google.com/go/pubsub v1.3.1 Apache-2.0
+    cloud.google.com/go/storage v1.10.0 Apache-2.0
+    github.com/Azure/azure-sdk-for-go v46.4.0+incompatible Apache-2.0
+    github.com/Azure/go-autorest v14.2.0+incompatible Apache-2.0
+    github.com/Azure/go-autorest/autorest v0.11.18 Apache-2.0
+    github.com/Azure/go-autorest/autorest/adal v0.9.13 Apache-2.0
+    github.com/Azure/go-autorest/autorest/date v0.3.0 Apache-2.0
+    github.com/Azure/go-autorest/autorest/mocks v0.4.1 Apache-2.0
+    github.com/Azure/go-autorest/autorest/to v0.3.0 Apache-2.0
+    github.com/Azure/go-autorest/autorest/validation v0.2.0 Apache-2.0
+    github.com/Azure/go-autorest/logger v0.2.1 Apache-2.0
+    github.com/Azure/go-autorest/tracing v0.6.0 Apache-2.0
+    github.com/NYTimes/gziphandler v0.0.0-20170623195520-56545f4a5d46 Apache-2.0
+    github.com/OneOfOne/xxhash v1.2.2 Apache-2.0
+    github.com/apache/thrift v0.13.0 Apache-2.0
+    github.com/aws/aws-lambda-go v1.13.3 Apache-2.0
+    github.com/aws/aws-sdk-go v1.35.5 Apache-2.0
+    github.com/aws/aws-sdk-go-v2 v0.18.0 Apache-2.0
+    github.com/casbin/casbin/v2 v2.1.2 Apache-2.0
+    github.com/census-instrumentation/opencensus-proto v0.2.1 Apache-2.0
+    github.com/checkpoint-restore/go-criu/v4 v4.1.0 Apache-2.0
+    github.com/checkpoint-restore/go-criu/v5 v5.0.0 Apache-2.0
+    github.com/cncf/udpa/go v0.0.0-20210930031921-04548b0d99d4 Apache-2.0
+    github.com/cncf/xds/go v0.0.0-20211011173535-cb28da3451f1 Apache-2.0
+    github.com/cockroachdb/datadriven v0.0.0-20190809214429-80d97fb3cbaa Apache-2.0
+    github.com/containerd/aufs v1.0.0 Apache-2.0
+    github.com/containerd/btrfs v1.0.0 Apache-2.0
+    github.com/containerd/cgroups v1.0.1 Apache-2.0
+    github.com/containerd/console v1.0.2 Apache-2.0
+    github.com/containerd/containerd v1.5.10 Apache-2.0
+    github.com/containerd/continuity v0.1.0 Apache-2.0
+    github.com/containerd/fifo v1.0.0 Apache-2.0
+    github.com/containerd/go-cni v1.0.2 Apache-2.0
+    github.com/containerd/go-runc v1.0.0 Apache-2.0
+    github.com/containerd/imgcrypt v1.1.1 Apache-2.0
+    github.com/containerd/nri v0.1.0 Apache-2.0
+    github.com/containerd/ttrpc v1.1.0 Apache-2.0
+    github.com/containerd/typeurl v1.0.2 Apache-2.0
+    github.com/containerd/zfs v1.0.0 Apache-2.0
+    github.com/containernetworking/cni v0.8.1 Apache-2.0
+    github.com/containernetworking/plugins v0.9.1 Apache-2.0
+    github.com/containers/ocicrypt v1.1.1 Apache-2.0
+    github.com/coreos/etcd v3.3.13+incompatible Apache-2.0
+    github.com/coreos/go-iptables v0.5.0 Apache-2.0
+    github.com/coreos/go-oidc v2.1.0+incompatible Apache-2.0
+    github.com/coreos/go-semver v0.3.0 Apache-2.0
+    github.com/coreos/go-systemd v0.0.0-20190321100706-95778dfbb74e Apache-2.0
+    github.com/coreos/go-systemd/v22 v22.3.2 Apache-2.0
+    github.com/coreos/pkg v0.0.0-20180928190104-399ea9e2e55f Apache-2.0
+    github.com/denverdino/aliyungo v0.0.0-20190125010748-a747050bb1ba Apache-2.0
+    github.com/docker/distribution v2.7.1+incompatible Apache-2.0
+    github.com/docker/docker v17.12.0-ce-rc1.0.20200706150819-a40b877fbb9e+incompatible Apache-2.0
+    github.com/docker/go-connections v0.4.0 Apache-2.0
+    github.com/docker/go-events v0.0.0-20190806004212-e31b211e4f1c Apache-2.0
+    github.com/docker/go-metrics v0.0.1 Apache-2.0
+    github.com/docker/go-units v0.4.0 Apache-2.0
+    github.com/docker/libtrust v0.0.0-20150114040149-fa567046d9b1 Apache-2.0
+    github.com/docker/spdystream v0.0.0-20160310174837-449fdfce4d96 Apache-2.0
+    github.com/envoyproxy/go-control-plane v0.9.10-0.20210907150352-cf90f659a021 Apache-2.0
+    github.com/envoyproxy/protoc-gen-validate v0.1.0 Apache-2.0
+    github.com/go-ini/ini v1.25.4 Apache-2.0
+    github.com/go-logr/logr v0.2.0 Apache-2.0
+    github.com/go-openapi/analysis v0.19.10 Apache-2.0
+    github.com/go-openapi/errors v0.19.4 Apache-2.0
+    github.com/go-openapi/jsonpointer v0.19.3 Apache-2.0
+    github.com/go-openapi/jsonreference v0.19.3 Apache-2.0
+    github.com/go-openapi/loads v0.19.5 Apache-2.0
+    github.com/go-openapi/runtime v0.19.15 Apache-2.0
+    github.com/go-openapi/spec v0.19.8 Apache-2.0
+    github.com/go-openapi/strfmt v0.19.5 Apache-2.0
+    github.com/go-openapi/swag v0.19.9 Apache-2.0
+    github.com/go-openapi/validate v0.19.8 Apache-2.0
+    github.com/gogo/googleapis v1.4.0 Apache-2.0
+    github.com/golang/geo v0.0.0-20190916061304-5b978397cfec Apache-2.0
+    github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b Apache-2.0
+    github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da Apache-2.0
+    github.com/golang/mock v1.4.4 Apache-2.0
+    github.com/google/btree v1.0.0 Apache-2.0
+    github.com/google/flatbuffers v1.11.0 Apache-2.0
+    github.com/google/gofuzz v1.1.0 Apache-2.0
+    github.com/google/martian v2.1.0+incompatible Apache-2.0
+    github.com/google/martian/v3 v3.0.0 Apache-2.0
+    github.com/google/pprof v0.0.0-20201007051231-1066cbb265c7 Apache-2.0
+    github.com/google/renameio v0.1.0 Apache-2.0
+    github.com/googleapis/gnostic v0.4.1 Apache-2.0
+    github.com/gophercloud/gophercloud v0.17.0 Apache-2.0
+    github.com/grpc-ecosystem/go-grpc-middleware v1.0.1-0.20190118093823-f849b5445de4 Apache-2.0
+    github.com/grpc-ecosystem/go-grpc-prometheus v1.2.0 Apache-2.0
+    github.com/inconshreveable/mousetrap v1.0.0 Apache-2.0
+    github.com/influxdata/promql/v2 v2.12.0 Apache-2.0
+    github.com/influxdata/roaring v0.4.13-0.20180809181101-fc520f41fab6 Apache-2.0
+    github.com/influxdata/tdigest v0.0.0-20181121200506-bf2b5ad3c0a9 Apache-2.0
+    github.com/jmespath/go-jmespath v0.4.0 Apache-2.0
+    github.com/jonboulle/clockwork v0.1.0 Apache-2.0
+    github.com/kylelemons/godebug v1.1.0 Apache-2.0
+    github.com/lyft/protoc-gen-validate v0.0.13 Apache-2.0
+    github.com/matttproud/golang_protobuf_extensions v1.0.2-0.20181231171920-c182affec369 Apache-2.0
+    github.com/mistifyio/go-zfs v2.1.2-0.20190413222219-f784269be439+incompatible Apache-2.0
+    github.com/moby/locker v1.0.1 Apache-2.0
+    github.com/moby/sys/mountinfo v0.4.1 Apache-2.0
+    github.com/moby/sys/symlink v0.1.0 Apache-2.0
+    github.com/moby/term v0.0.0-20200312100748-672ec06f55cd Apache-2.0
+    github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd Apache-2.0
+    github.com/modern-go/reflect2 v1.0.1 Apache-2.0
+    github.com/mrunalp/fileutils v0.5.0 Apache-2.0
+    github.com/mschoch/smat v0.0.0-20160514031455-90eadee771ae Apache-2.0
+    github.com/mwitkow/go-conntrack v0.0.0-20190716064945-2f068394615f Apache-2.0
+    github.com/nats-io/jwt v0.3.2 Apache-2.0
+    github.com/nats-io/nats-server/v2 v2.1.2 Apache-2.0
+    github.com/nats-io/nats.go v1.9.1 Apache-2.0
+    github.com/nats-io/nkeys v0.1.3 Apache-2.0
+    github.com/nats-io/nuid v1.0.1 Apache-2.0
+    github.com/oklog/oklog v0.3.2 Apache-2.0
+    github.com/oklog/run v1.1.0 Apache-2.0
+    github.com/oklog/ulid v1.3.1 Apache-2.0
+    github.com/opencontainers/go-digest v1.0.0 Apache-2.0
+    github.com/opencontainers/image-spec v1.0.2 Apache-2.0
+    github.com/opencontainers/runc v1.0.2 Apache-2.0
+    github.com/opencontainers/runtime-spec v1.0.3-0.20210326190908-1c3f411f0417 Apache-2.0
+    github.com/opencontainers/runtime-tools v0.0.0-20181011054405-1d69bd0f9c39 Apache-2.0
+    github.com/opencontainers/selinux v1.8.2 Apache-2.0
+    github.com/opentracing-contrib/go-observer v0.0.0-20170622124052-a52f23424492 Apache-2.0
+    github.com/opentracing-contrib/go-stdlib v1.0.0 Apache-2.0
+    github.com/opentracing/opentracing-go v1.2.0 Apache-2.0
+    github.com/openzipkin-contrib/zipkin-go-opentracing v0.4.5 Apache-2.0
+    github.com/openzipkin/zipkin-go v0.2.2 Apache-2.0
+    github.com/pquerna/cachecontrol v0.0.0-20171018203845-0dec1b30a021 Apache-2.0
+    github.com/prometheus/alertmanager v0.21.0 Apache-2.0
+    github.com/prometheus/client_golang v1.9.0 Apache-2.0
+    github.com/prometheus/client_model v0.2.0 Apache-2.0
+    github.com/prometheus/common v0.15.0 Apache-2.0
+    github.com/prometheus/procfs v0.6.0 Apache-2.0
+    github.com/prometheus/prometheus v1.8.2-0.20201105135750-00f16d1ac3a4 Apache-2.0
+    github.com/prometheus/tsdb v0.7.1 Apache-2.0
+    github.com/safchain/ethtool v0.0.0-20190326074333-42ed695e3de8 Apache-2.0
+    github.com/soheilhy/cmux v0.1.4 Apache-2.0
+    github.com/spf13/afero v1.2.2 Apache-2.0
+    github.com/spf13/cobra v1.0.0 Apache-2.0
+    github.com/stefanberger/go-pkcs11uri v0.0.0-20201008174630-78d3cae3a980 Apache-2.0
+    github.com/tklauser/numcpus v0.3.0 Apache-2.0
+    github.com/uber/jaeger-client-go v2.25.0+incompatible Apache-2.0
+    github.com/uber/jaeger-lib v2.4.0+incompatible Apache-2.0
+    github.com/vishvananda/netlink v1.1.1-0.20201029203352-d40f9887b852 Apache-2.0
+    github.com/vishvananda/netns v0.0.0-20200728191858-db3c7e526aae Apache-2.0
+    github.com/xdg/scram v0.0.0-20180814205039-7eeb5667e42c Apache-2.0
+    github.com/xdg/stringprep v1.0.0 Apache-2.0
+    github.com/xeipuuv/gojsonpointer v0.0.0-20180127040702-4e3ac2762d5f Apache-2.0
+    github.com/xeipuuv/gojsonreference v0.0.0-20180127040603-bd5ef7bd5415 Apache-2.0
+    github.com/xeipuuv/gojsonschema v0.0.0-20180618132009-1d523034197f Apache-2.0
+    go.etcd.io/etcd v0.5.0-alpha.5.0.20200910180754-dd1b699fc489 Apache-2.0
+    go.mongodb.org/mongo-driver v1.3.2 Apache-2.0
+    go.opencensus.io v0.23.0 Apache-2.0
+    go.opentelemetry.io/proto/otlp v0.7.0 Apache-2.0
+    google.golang.org/appengine v1.6.6 Apache-2.0
+    google.golang.org/cloud v0.0.0-20151119220103-975617b05ea8 Apache-2.0
+    google.golang.org/genproto v0.0.0-20220204002441-d6cc3cc0770e Apache-2.0
+    google.golang.org/grpc v1.44.0 Apache-2.0
+    gopkg.in/ini.v1 v1.51.0 Apache-2.0
+    gopkg.in/jcmturner/aescts.v1 v1.0.1 Apache-2.0
+    gopkg.in/jcmturner/dnsutils.v1 v1.0.1 Apache-2.0
+    gopkg.in/jcmturner/goidentity.v3 v3.0.0 Apache-2.0
+    gopkg.in/jcmturner/gokrb5.v7 v7.5.0 Apache-2.0
+    gopkg.in/jcmturner/rpc.v1 v1.1.0 Apache-2.0
+    gopkg.in/square/go-jose.v2 v2.5.1 Apache-2.0
+    gopkg.in/yaml.v2 v2.4.0 Apache-2.0
+    gotest.tools v2.2.0+incompatible Apache-2.0
+    gotest.tools/v3 v3.0.3 Apache-2.0
+    k8s.io/api v0.20.6 Apache-2.0
+    k8s.io/apimachinery v0.20.6 Apache-2.0
+    k8s.io/apiserver v0.20.6 Apache-2.0
+    k8s.io/client-go v0.20.6 Apache-2.0
+    k8s.io/component-base v0.20.6 Apache-2.0
+    k8s.io/cri-api v0.20.6 Apache-2.0
+    k8s.io/gengo v0.0.0-20200413195148-3a45101e95ac Apache-2.0
+    k8s.io/klog v1.0.0 Apache-2.0
+    k8s.io/klog/v2 v2.4.0 Apache-2.0
+    k8s.io/kube-openapi v0.0.0-20201113171705-d219536bb9fd Apache-2.0
+    k8s.io/kubernetes v1.13.0 Apache-2.0
+    k8s.io/utils v0.0.0-20201110183641-67b214c5f920 Apache-2.0
+    sigs.k8s.io/apiserver-network-proxy/konnectivity-client v0.0.15 Apache-2.0
+    sigs.k8s.io/structured-merge-diff/v4 v4.0.3 Apache-2.0
+    skywalking.apache.org/repo/goapi v0.0.0-20220509071845-6e916aff70cc Apache-2.0
+
+========================================================================
+ISC licenses
+========================================================================
+
+The following components are provided under the ISC License. See project link for details.
+The text of each license is also included at licenses/license-[project].txt.
+
+    collectd.org v0.3.0 ISC
+    github.com/davecgh/go-spew v1.1.1 ISC
+
+========================================================================
+MPL-2.0-no-copyleft-exception licenses
+========================================================================
+
+The following components are provided under the MPL-2.0-no-copyleft-exception License. See project link for details.
+The text of each license is also included at licenses/license-[project].txt.
+
+    github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6 MPL-2.0-no-copyleft-exception
+    github.com/d2g/dhcp4server v0.0.0-20181031114812-7d4a0a7f59a5 MPL-2.0-no-copyleft-exception
+    github.com/d2g/hardwareaddr v0.0.0-20190221164911-e7d9fbe030e4 MPL-2.0-no-copyleft-exception
+    github.com/hashicorp/consul/sdk v0.6.0 MPL-2.0-no-copyleft-exception
+    github.com/hashicorp/errwrap v1.0.0 MPL-2.0-no-copyleft-exception
+    github.com/hashicorp/memberlist v0.2.2 MPL-2.0-no-copyleft-exception
+
+========================================================================
+EPL-1.0 licenses
+========================================================================
+
+The following components are provided under the EPL-1.0 License. See project link for details.
+The text of each license is also included at licenses/license-[project].txt.
+
+    github.com/eclipse/paho.mqtt.golang v1.2.0 EPL-1.0
