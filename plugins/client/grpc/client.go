@@ -171,3 +171,15 @@ type logrusGrpcLoggerV2 struct {
 func (l *logrusGrpcLoggerV2) V(level int) bool {
 	return l.Logger.IsLevelEnabled(logrus.Level(level))
 }
+
+func (l *logrusGrpcLoggerV2) Infof(format string, args ...interface{}) {
+	l.Debugf(format, args)
+}
+
+func (l *logrusGrpcLoggerV2) Info(args ...interface{}) {
+	l.Debug(args)
+}
+
+func (l *logrusGrpcLoggerV2) Infoln(args ...interface{}) {
+	l.Debugln(args)
+}

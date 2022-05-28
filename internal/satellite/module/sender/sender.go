@@ -227,7 +227,7 @@ func (s *Sender) consume(batch *buffer.BatchBuffer) {
 		"pipe":   s.config.PipeName,
 		"offset": batch.Last(),
 		"size":   batch.Len(),
-	}).Info("sender module is flushing a new batch buffer.")
+	}).Debugf("sender module is flushing a new batch buffer.")
 	var events = make(map[v1.SniffType]event.BatchEvents)
 	for i := 0; i < batch.Len(); i++ {
 		eventContext := batch.Buf()[i]
