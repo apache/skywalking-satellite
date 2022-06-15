@@ -36,25 +36,37 @@ type LogReportService struct {
 }
 
 func (s *LogReportService) Collect(stream logging.LogReportService_CollectServer) error {
+	dataList := make([][]byte, 0)
+	originalData := grpc.NewOriginalData(nil)
 	for {
-		originalData := grpc.NewOriginalData(nil)
 		err := stream.RecvMsg(originalData)
 		if err == io.EOF {
+			s.flushLogs(dataList)
 			return stream.SendAndClose(&common.Commands{})
 		}
 		if err != nil {
+			s.flushLogs(dataList)
 			return err
 		}
-		e := &v1.SniffData{
-			Name:      eventName,
-			Timestamp: time.Now().UnixNano() / 1e6,
-			Meta:      nil,
-			Type:      v1.SniffType_Logging,
-			Remote:    true,
-			Data: &v1.SniffData_Log{
-				Log: originalData.Content,
-			},
-		}
-		s.receiveChannel <- e
+		dataList = append(dataList, originalData.Content)
 	}
+}
+
+func (s *LogReportService) flushLogs(dataList [][]byte) {
+	if len(dataList) == 0 {
+		return
+	}
+	e := &v1.SniffData{
+		Name:      eventName,
+		Timestamp: time.Now().UnixNano() / 1e6,
+		Meta:      nil,
+		Type:      v1.SniffType_Logging,
+		Remote:    true,
+		Data: &v1.SniffData_LogList{
+			LogList: &v1.BatchLogList{
+				Logs: dataList,
+			},
+		},
+	}
+	s.receiveChannel <- e
 }

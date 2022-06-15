@@ -22,7 +22,7 @@ require (
 	gopkg.in/yaml.v3 v3.0.0-20210107192922-496545a6307b
 	gotest.tools v2.2.0+incompatible
 	k8s.io/apimachinery v0.20.6
-	skywalking.apache.org/repo/goapi v0.0.0-20220513074115-4af2c2d37d2f
+	skywalking.apache.org/repo/goapi v0.0.0-20220615082501-7d36e7c0c3c9
 )
 
 require (

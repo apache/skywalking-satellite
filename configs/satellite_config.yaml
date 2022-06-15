@@ -155,7 +155,7 @@ pipes:
       # The maximum buffer elements.
       max_buffer_size: ${SATELLITE_LOGPIPE_SENDER_MAX_BUFFER_SIZE:200}
       # The minimum flush elements.
-      min_flush_events: ${SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS:100}
+      min_flush_events: ${SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS:1}
       client_name: grpc-client
       forwarders:
         - plugin_name: native-log-grpc-forwarder

@@ -181,7 +181,7 @@ func pipes() []*PipeConfig {
 				},
 				FlushTime:      1000,
 				MaxBufferSize:  200,
-				MinFlushEvents: 100,
+				MinFlushEvents: 1,
 				ClientName:     "grpc-client",
 				ForwardersConfig: []plugin.Config{
 					{

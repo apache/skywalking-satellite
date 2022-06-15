@@ -99,8 +99,8 @@ func getBatchEvents(count int) []*v1.SniffData {
 			},
 			Type:   v1.SniffType_Logging,
 			Remote: true,
-			Data: &v1.SniffData_Log{
-				Log: logBytes,
+			Data: &v1.SniffData_LogList{
+				LogList: &v1.BatchLogList{Logs: [][]byte{logBytes}},
 			},
 		},
 		)
@@ -149,8 +149,8 @@ func getLargeEvent(n int) *v1.SniffData {
 		},
 		Type:   v1.SniffType_Logging,
 		Remote: true,
-		Data: &v1.SniffData_Log{
-			Log: logBytes,
+		Data: &v1.SniffData_LogList{
+			LogList: &v1.BatchLogList{Logs: [][]byte{logBytes}},
 		},
 	}
 }
@@ -332,7 +332,7 @@ func TestQueue_MemCost(t *testing.T) {
 		}
 	}
 	want := []int32{
-		1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 7, 8, 6, 6, 7, 7, 8, 5,
+		1, 2, 2, 3, 3, 4, 4, 5, 5, 6, 6, 7, 8, 5, 6, 6, 7, 7, 8, 5,
 	}
 	if !cmp.Equal(want, memcost) {
 		t.Fatalf("the memory cost trends are not in line with expectations,\n want: %v,\n but got: %v", want, memcost)

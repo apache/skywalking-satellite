@@ -120,8 +120,10 @@ func (r *Receiver) httpHandler() http.Handler {
 			Meta:      nil,
 			Type:      v1.SniffType_Logging,
 			Remote:    true,
-			Data: &v1.SniffData_Log{
-				Log: b,
+			Data: &v1.SniffData_LogList{
+				LogList: &v1.BatchLogList{
+					Logs: [][]byte{b},
+				},
 			},
 		}
 		r.OutputChannel <- e
