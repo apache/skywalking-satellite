@@ -52,7 +52,7 @@ func TestReceiver_RegisterHandler(t *testing.T) {
 		return data.String()
 	}, func(data *v1.SniffData) string {
 		d := new(logging.LogData)
-		_ = proto.Unmarshal(data.GetLog(), d)
+		_ = proto.Unmarshal(data.GetLogList().Logs[0], d)
 		return d.String()
 	}, t)
 }

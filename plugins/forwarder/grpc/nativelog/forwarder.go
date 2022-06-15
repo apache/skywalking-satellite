@@ -72,35 +72,41 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-	stream, err := f.logClient.Collect(context.Background())
-	if err != nil {
-		log.Logger.Errorf("open grpc stream error %v", err)
-		return err
-	}
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_Log)
+		data, ok := e.GetData().(*v1.SniffData_LogList)
 		if !ok {
 			continue
 		}
-		err := stream.SendMsg(server_grpc.NewOriginalData(data.Log))
+		stream, err := f.logClient.Collect(context.Background())
 		if err != nil {
-			log.Logger.Errorf("%s send log data error: %v", f.Name(), err)
-			err = closeStream(stream)
-			if err != nil {
-				log.Logger.Errorf("%s close stream error: %v", f.Name(), err)
-			}
+			log.Logger.Errorf("open grpc stream error %v", err)
 			return err
 		}
-	}
-	return closeStream(stream)
-}
+		streamClosed := false
+		for _, logData := range data.LogList.Logs {
+			err := stream.SendMsg(server_grpc.NewOriginalData(logData))
+			if err != nil {
+				log.Logger.Errorf("%s send log data error: %v", f.Name(), err)
+				f.closeStream(stream)
+				streamClosed = true
+				break
+			}
+		}
 
-func closeStream(stream logging.LogReportService_CollectClient) error {
-	_, err := stream.CloseAndRecv()
-	if err != nil && err != io.EOF {
-		return err
+		if !streamClosed {
+			f.closeStream(stream)
+		}
 	}
 	return nil
+}
+
+func (f *Forwarder) closeStream(stream logging.LogReportService_CollectClient) {
+	_, err := stream.CloseAndRecv()
+	if err != nil && err != io.EOF {
+		if err != nil {
+			log.Logger.Errorf("%s close stream error: %v", f.Name(), err)
+		}
+	}
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {
