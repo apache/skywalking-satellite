@@ -2,7 +2,7 @@ Changes by Version
 ==================
 Release Notes.
 
-1.1.0
+1.0.2
 ------------------
 #### Features
 
@@ -11,4 +11,4 @@ Release Notes.
 
 #### Issues and PR
 - All issues are [here](https://github.com/apache/skywalking/milestone/143?closed=1)
-- All and pull requests are [here](https://github.com/apache/skywalking-satellite/pulls?q=is%3Apr+milestone%3A1.1.0+is%3Aclosed)
+- All and pull requests are [here](https://github.com/apache/skywalking-satellite/pulls?q=is%3Apr+milestone%3A1.0.2+is%3Aclosed)
