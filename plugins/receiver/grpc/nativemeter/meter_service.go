@@ -70,7 +70,7 @@ func (m *MeterService) CollectBatch(batch meter.MeterReportService_CollectBatchS
 	for {
 		item, err := batch.Recv()
 		if err == io.EOF {
-			return nil
+			return batch.SendAndClose(&common.Commands{})
 		}
 		if err != nil {
 			return err
