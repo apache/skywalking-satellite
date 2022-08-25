@@ -36,6 +36,7 @@ import (
 	grpcnativeprocess "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativeprocess"
 	grpcnativeprofile "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativeprofile"
 	grpcnativetracing "github.com/apache/skywalking-satellite/plugins/receiver/grpc/nativetracing"
+	"github.com/apache/skywalking-satellite/plugins/receiver/grpc/otlpmetricsv1"
 	httpnavtivelog "github.com/apache/skywalking-satellite/plugins/receiver/http/nativcelog"
 )
 
@@ -59,6 +60,7 @@ func RegisterReceiverPlugins() {
 		new(envoyalsv3.Receiver),
 		new(envoymetricsv2.Receiver),
 		new(envoymetricsv3.Receiver),
+		new(otlpmetricsv1.Receiver),
 	}
 	for _, receiver := range receivers {
 		plugin.RegisterPlugin(receiver)

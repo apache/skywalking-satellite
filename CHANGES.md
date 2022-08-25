@@ -5,6 +5,7 @@ Release Notes.
 1.0.2
 ------------------
 #### Features
+* Support transmit the OpenTelemetry Metrics protocol.
 
 #### Bug Fixes
 * Fix the missing return data when receive metrics in batch mode.

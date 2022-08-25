@@ -35,6 +35,13 @@ func WithLoadBalanceConfig(ctx context.Context, routeKey, appointAddr string) co
 	})
 }
 
+func GetAddress(ctx context.Context) string {
+	if config := queryConfig(ctx); config != nil {
+		return config.appointAddr
+	}
+	return ""
+}
+
 func queryConfig(ctx context.Context) *LoadBalancerConfig {
 	value := ctx.Value(ctxKeyInstance)
 	if value == nil {
