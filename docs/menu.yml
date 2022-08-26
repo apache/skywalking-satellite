@@ -117,6 +117,8 @@ catalog:
                   path: /en/setup/plugins/forwarder_native-profile-grpc-forwarder
                 - name: Native Tracing GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-tracing-grpc-forwarder
+                - name: OpenTelemetry Metrics v1 GRPC Forwarder
+                  path: /en/setup/plugins/forwarder_otlp-metrics-v1-grpc-forwarder
             - name: Queue
               catalog:
                 - name: Memory Queue
@@ -155,6 +157,8 @@ catalog:
                   path: /en/setup/plugins/receiver_grpc-native-profile-receiver
                 - name: GRPC Native Tracing Receiver
                   path: /en/setup/plugins/receiver_grpc-native-tracing-receiver
+                - name: GRPC OpenTelemetry Metrics v1 Receiver
+                  path: /en/setup/plugins/receiver_grpc-otlp-metrics-v1-receiver
                 - name: HTTP Native Log Receiver
                   path: /en/setup/plugins/receiver_http-native-log-receiver
             - name: Server

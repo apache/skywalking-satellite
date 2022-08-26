@@ -48,10 +48,13 @@ func (s *satelliteDynamicPickerBuilder) Build(info base.PickerBuildInfo) balance
 	}
 
 	addrToConn := make(map[string]balancer.SubConn)
-	cons := make([]balancer.SubConn, 0)
+	cons := make([]*connectionWrap, 0)
 	for conn, connInfo := range info.ReadySCs {
 		addrToConn[connInfo.Address.Addr] = conn
-		cons = append(cons, conn)
+		cons = append(cons, &connectionWrap{
+			addr: connInfo.Address.Addr,
+			conn: conn,
+		})
 	}
 
 	return &satelliteDynamicPicker{
@@ -62,7 +65,7 @@ func (s *satelliteDynamicPickerBuilder) Build(info base.PickerBuildInfo) balance
 }
 
 type satelliteDynamicPicker struct {
-	cons       []balancer.SubConn
+	cons       []*connectionWrap
 	addrToConn map[string]balancer.SubConn
 	connCount  int
 
@@ -70,10 +73,15 @@ type satelliteDynamicPicker struct {
 	next int
 }
 
+type connectionWrap struct {
+	addr string
+	conn balancer.SubConn
+}
+
 func (s *satelliteDynamicPicker) Pick(info balancer.PickInfo) (balancer.PickResult, error) {
 	// only one connection
 	if s.connCount == 1 {
-		return balancer.PickResult{SubConn: s.cons[0]}, nil
+		return balancer.PickResult{SubConn: s.cons[0].conn}, nil
 	}
 
 	config := queryConfig(info.Ctx)
@@ -91,7 +99,10 @@ func (s *satelliteDynamicPicker) Pick(info balancer.PickInfo) (balancer.PickResu
 
 	// hash the route key
 	routeIndex := hashCode(config.routeKey) % s.connCount
-	return balancer.PickResult{SubConn: s.cons[routeIndex]}, nil
+	connWrap := s.cons[routeIndex]
+	// update the address to the config
+	config.appointAddr = connWrap.addr
+	return balancer.PickResult{SubConn: connWrap.conn}, nil
 }
 
 func (s *satelliteDynamicPicker) roundRobinConnection() balancer.PickResult {
@@ -99,7 +110,7 @@ func (s *satelliteDynamicPicker) roundRobinConnection() balancer.PickResult {
 	sc := s.cons[s.next]
 	s.next = (s.next + 1) % s.connCount
 	s.mu.Unlock()
-	return balancer.PickResult{SubConn: sc}
+	return balancer.PickResult{SubConn: sc.conn}
 }
 
 func hashCode(s string) int {

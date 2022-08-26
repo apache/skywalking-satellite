@@ -24,6 +24,7 @@
 	- [Native Process GRPC Forwarder](./forwarder_native-process-grpc-forwarder.md)
 	- [Native Profile GRPC Forwarder](./forwarder_native-profile-grpc-forwarder.md)
 	- [Native Tracing GRPC Forwarder](./forwarder_native-tracing-grpc-forwarder.md)
+	- [OpenTelemetry Metrics v1 GRPC Forwarder](./forwarder_otlp-metrics-v1-grpc-forwarder.md)
 - Parser
 - Queue
 	- [Memory Queue](./queue_memory-queue.md)
@@ -44,6 +45,7 @@
 	- [GRPC Native Process Receiver](./receiver_grpc-native-process-receiver.md)
 	- [GRPC Native Profile Receiver](./receiver_grpc-native-profile-receiver.md)
 	- [GRPC Native Tracing Receiver](./receiver_grpc-native-tracing-receiver.md)
+	- [GRPC OpenTelemetry Metrics v1 Receiver](./receiver_grpc-otlp-metrics-v1-receiver.md)
 	- [HTTP Native Log Receiver](./receiver_http-native-log-receiver.md)
 - Server
 	- [GRPC Server](./server_grpc-server.md)
