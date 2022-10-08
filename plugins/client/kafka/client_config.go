@@ -22,8 +22,6 @@ import (
 	"os"
 	"time"
 
-	"io/ioutil"
-
 	"crypto/tls"
 	"crypto/x509"
 
@@ -90,7 +88,7 @@ func (c *Client) configTLS() (tc *tls.Config, tlsErr error) {
 	tlsConfig := new(tls.Config)
 	tlsConfig.Renegotiation = tls.RenegotiateNever
 	tlsConfig.InsecureSkipVerify = c.InsecureSkipVerify
-	caPem, err := ioutil.ReadFile(c.CaPemPath)
+	caPem, err := os.ReadFile(c.CaPemPath)
 	if err != nil {
 		return nil, err
 	}

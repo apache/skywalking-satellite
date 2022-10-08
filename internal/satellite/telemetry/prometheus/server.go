@@ -24,6 +24,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/telemetry"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/collectors"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
@@ -66,8 +67,8 @@ func (s *Server) Start(config *telemetry.Config) error {
 
 	s.server = http.NewServeMux()
 	// add go info metrics.
-	s.Register(s.WithMeta("processor_collector", prometheus.NewProcessCollector(prometheus.ProcessCollectorOpts{})),
-		s.WithMeta("go_collector", prometheus.NewGoCollector()))
+	s.Register(s.WithMeta("processor_collector", collectors.NewProcessCollector(collectors.ProcessCollectorOpts{})),
+		s.WithMeta("go_collector", collectors.NewGoCollector()))
 	// register prometheus metrics exporter handler.
 	s.server.Handle(s.Endpoint, promhttp.HandlerFor(s.Gatherer, promhttp.HandlerOpts{ErrorLog: log.Logger}))
 	go func() {

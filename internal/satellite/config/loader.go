@@ -20,11 +20,11 @@ package config
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"reflect"
 	"strings"
 	"sync"
 
-	"io/ioutil"
 	"path/filepath"
 
 	"github.com/spf13/viper"
@@ -56,7 +56,7 @@ func load(configPath string) (*SatelliteConfig, error) {
 	if err != nil {
 		return nil, err
 	}
-	content, err := ioutil.ReadFile(absolutePath)
+	content, err := os.ReadFile(absolutePath)
 	if err != nil {
 		return nil, err
 	}
@@ -66,9 +66,7 @@ func load(configPath string) (*SatelliteConfig, error) {
 	if err := v.ReadConfig(bytes.NewReader(content)); err != nil {
 		return nil, err
 	}
-	if err := overrideConfigByEnv(v); err != nil {
-		return nil, fmt.Errorf("cannot override value by env config: %v", err)
-	}
+	overrideConfigByEnv(v)
 	if err := v.Unmarshal(cfg); err != nil {
 		return nil, err
 	}

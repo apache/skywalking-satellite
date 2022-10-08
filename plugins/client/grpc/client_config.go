@@ -22,7 +22,6 @@ import (
 	"crypto/tls"
 	"crypto/x509"
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"github.com/apache/skywalking-satellite/plugins/client/grpc/lb"
@@ -78,7 +77,7 @@ func (c *Client) loadConfig() (*[]grpc.DialOption, error) {
 	})
 
 	// using self build load balancer
-	options = append(options, grpc.WithDefaultServiceConfig(fmt.Sprintf("{\"loadBalancingPolicy\":\"%s\"}", lb.Name)))
+	options = append(options, grpc.WithDefaultServiceConfig(fmt.Sprintf("{\"loadBalancingPolicy\":%q}", lb.Name)))
 
 	return &options, nil
 }
@@ -91,7 +90,7 @@ func (c *Client) configTLS() (tc *tls.Config, tlsErr error) {
 	tlsConfig := new(tls.Config)
 	tlsConfig.Renegotiation = tls.RenegotiateNever
 	tlsConfig.InsecureSkipVerify = c.InsecureSkipVerify
-	caPem, err := ioutil.ReadFile(c.CaPemPath)
+	caPem, err := os.ReadFile(c.CaPemPath)
 	if err != nil {
 		return nil, err
 	}

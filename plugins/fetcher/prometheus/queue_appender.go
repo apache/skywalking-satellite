@@ -14,6 +14,7 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
 package prometheus
 
 import (
@@ -23,8 +24,11 @@ import (
 	"time"
 
 	"github.com/prometheus/common/model"
-	"github.com/prometheus/prometheus/pkg/labels"
+	"github.com/prometheus/prometheus/model/exemplar"
+	"github.com/prometheus/prometheus/model/labels"
+	"github.com/prometheus/prometheus/model/metadata"
 	"github.com/prometheus/prometheus/storage"
+
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
@@ -66,7 +70,7 @@ func (qa *QueueAppender) initAppender(ls labels.Labels) error {
 var _ storage.Appender = (*QueueAppender)(nil)
 
 // Add always returns 0 to disable label caching
-func (qa *QueueAppender) Add(ls labels.Labels, t int64, v float64) (uint64, error) {
+func (qa *QueueAppender) Append(ref storage.SeriesRef, ls labels.Labels, t int64, v float64) (storage.SeriesRef, error) {
 	if math.IsNaN(v) {
 		return 0, nil
 	}
@@ -81,7 +85,15 @@ func (qa *QueueAppender) Add(ls labels.Labels, t int64, v float64) (uint64, erro
 		}
 	}
 
-	return 0, qa.metricBuilder.AddDataPoint(ls, t, v)
+	return ref, qa.metricBuilder.AddDataPoint(ls, t, v)
+}
+
+func (qa *QueueAppender) AppendExemplar(ref storage.SeriesRef, l labels.Labels, e exemplar.Exemplar) (storage.SeriesRef, error) {
+	return qa.Append(ref, l, e.Ts, e.Value)
+}
+
+func (qa *QueueAppender) UpdateMetadata(ref storage.SeriesRef, l labels.Labels, m metadata.Metadata) (storage.SeriesRef, error) {
+	return ref, nil
 }
 
 // AddFast always returns error since we do not cache

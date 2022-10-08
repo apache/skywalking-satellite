@@ -19,7 +19,6 @@ package tools
 
 import (
 	"fmt"
-	"io/ioutil"
 	"os"
 
 	"gopkg.in/yaml.v3"
@@ -33,7 +32,7 @@ type Catalog struct {
 
 // LoadCatalog data from file
 func LoadCatalog(filename string) (*Catalog, error) {
-	bytes, err := ioutil.ReadFile(filename)
+	bytes, err := os.ReadFile(filename)
 	if err != nil {
 		return nil, fmt.Errorf("cannot read the menu file: %v", err)
 	}
@@ -94,7 +93,7 @@ func (c *Catalog) Save(filename string) error {
 		return err
 	}
 
-	if err := ioutil.WriteFile(filename, append(content, marshal...), os.ModePerm); err != nil {
+	if err := os.WriteFile(filename, append(content, marshal...), os.ModePerm); err != nil {
 		return fmt.Errorf("cannot write catalog: %v", err)
 	}
 	return nil

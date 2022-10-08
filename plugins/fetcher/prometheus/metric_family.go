@@ -14,6 +14,7 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
+
 package prometheus
 
 import (
@@ -26,8 +27,8 @@ import (
 	"github.com/prometheus/common/model"
 	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 
-	"github.com/prometheus/prometheus/pkg/labels"
-	"github.com/prometheus/prometheus/pkg/textparse"
+	"github.com/prometheus/prometheus/model/labels"
+	"github.com/prometheus/prometheus/model/textparse"
 	"github.com/prometheus/prometheus/scrape"
 )
 

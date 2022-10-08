@@ -154,7 +154,7 @@ func (f *Fetcher) ScrapeConfig(ctx context.Context) {
 		log.Logger.Fatal("prometheus fetcher configure failed", err.Error())
 	}
 	log.Logger.Debug(string(configBytes))
-	configStruct, err := promConfig.Load(string(configBytes))
+	configStruct, err := promConfig.Load(string(configBytes), true, &LogWrap{})
 	if err != nil {
 		log.Logger.Fatal("prometheus fetcher configure load failed ", err.Error())
 	}
@@ -189,7 +189,7 @@ func fetch(ctx context.Context, scrapeConfigs []*promConfig.ScrapeConfig, output
 	}()
 	// queue store
 	qs := NewQueueStore(ctx, true, Name, outputChannel)
-	scrapeManager := scrape.NewManager(nil, qs)
+	scrapeManager := scrape.NewManager(nil, &LogWrap{}, qs)
 	qs.SetScrapeManager(scrapeManager)
 	cfg := &promConfig.Config{ScrapeConfigs: scrapeConfigs}
 	if err := scrapeManager.ApplyConfig(cfg); err != nil {
@@ -207,4 +207,12 @@ func (f *Fetcher) SupportForwarders() []forwarder.Forwarder {
 	return []forwarder.Forwarder{
 		new(nativemeter.Forwarder),
 	}
+}
+
+type LogWrap struct {
+}
+
+func (w *LogWrap) Log(keyvals ...interface{}) error {
+	log.Logger.Info(keyvals...)
+	return nil
 }

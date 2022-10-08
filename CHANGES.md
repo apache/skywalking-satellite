@@ -6,9 +6,11 @@ Release Notes.
 ------------------
 #### Features
 * Support transmit the OpenTelemetry Metrics protocol.
+* Upgrade to GO 1.18.
 
 #### Bug Fixes
 * Fix the missing return data when receive metrics in batch mode.
+* Fix [CVE-2022-21698](https://avd.aquasec.com/nvd/cve-2022-21698), [CVE-2022-27664](https://avd.aquasec.com/nvd/cve-2022-27664).
 
 #### Issues and PR
 - All issues are [here](https://github.com/apache/skywalking/milestone/143?closed=1)

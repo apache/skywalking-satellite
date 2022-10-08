@@ -53,7 +53,7 @@ all: deps verify build gen-docs check
 
 .PHONY: tools
 tools:
-	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.39.0
+	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.48.0
 
 deps: tools
 	$(GO_GET) -v -t -d ./...
@@ -64,7 +64,7 @@ gen-docs: build
 
 .PHONY: lint
 lint: tools
-	$(GO_LINT) run -v --timeout 5m ./...
+	$(GO_LINT) run -v --timeout 15m ./...
 
 .PHONY: test
 test: clean
