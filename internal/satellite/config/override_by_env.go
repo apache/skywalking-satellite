@@ -31,13 +31,12 @@ import (
 // If you want to keep it as the string value, please decorate it with `"`.
 const RegularExpression = "${_|[A-Z]+:.*}"
 
-func overrideConfigByEnv(v *viper.Viper) error {
+func overrideConfigByEnv(v *viper.Viper) {
 	regex := regexp.MustCompile(RegularExpression)
 	overrideCfg := overrideMapStringInterface(v.AllSettings(), regex)
 	for key, val := range overrideCfg {
 		v.Set(key, val)
 	}
-	return nil
 }
 
 func overrideMapStringInterface(cfg map[string]interface{}, regex *regexp.Regexp) map[string]interface{} {

@@ -53,7 +53,7 @@ all: deps verify build gen-docs check
 
 .PHONY: tools
 tools:
-	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.46.2
+	$(GO_LINT) version || curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(GO_PATH)/bin v1.48.0
 
 deps: tools
 	$(GO_GET) -v -t -d ./...

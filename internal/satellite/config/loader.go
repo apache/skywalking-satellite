@@ -66,9 +66,7 @@ func load(configPath string) (*SatelliteConfig, error) {
 	if err := v.ReadConfig(bytes.NewReader(content)); err != nil {
 		return nil, err
 	}
-	if err := overrideConfigByEnv(v); err != nil {
-		return nil, fmt.Errorf("cannot override value by env config: %v", err)
-	}
+	overrideConfigByEnv(v)
 	if err := v.Unmarshal(cfg); err != nil {
 		return nil, err
 	}

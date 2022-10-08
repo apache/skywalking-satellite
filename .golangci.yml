@@ -14,10 +14,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-run:
-  tests: false
-  go: "1.18"
-
 linters-settings:
   govet:
     check-shadowing: true

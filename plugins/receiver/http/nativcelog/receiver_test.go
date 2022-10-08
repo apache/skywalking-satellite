@@ -20,7 +20,7 @@ package nativcelog
 import (
 	"bytes"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"reflect"
 	"strconv"
@@ -71,7 +71,7 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 				fmt.Printf("cannot request the http-server , error: %v", err)
 			}
 			defer resp.Body.Close()
-			result, err := ioutil.ReadAll(resp.Body)
+			result, err := io.ReadAll(resp.Body)
 			if err != nil {
 				fmt.Printf("cannot get response from request, error: %v ", err.Error())
 			}
@@ -118,7 +118,7 @@ func TestReceiver_http_RegisterHandler_failed(t *testing.T) {
 		fmt.Printf("cannot request the http-server , error: %v", err)
 	}
 	defer resp.Body.Close()
-	result, err := ioutil.ReadAll(resp.Body)
+	result, err := io.ReadAll(resp.Body)
 	if err != nil {
 		fmt.Printf("cannot get response from request, error: %v ", err.Error())
 	}

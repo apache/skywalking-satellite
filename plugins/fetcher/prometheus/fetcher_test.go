@@ -1,4 +1,3 @@
-//
 // Licensed to the Apache Software Foundation (ASF) under one
 // or more contributor license agreements.  See the NOTICE file
 // distributed with this work for additional information
@@ -7,7 +6,7 @@
 // "License"); you may not use this file except in compliance
 // with the License.  You may obtain a copy of the License at
 //
-//   http://www.apache.org/licenses/LICENSE-2.0
+//	http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
@@ -15,7 +14,6 @@
 // KIND, either express or implied.  See the License for the
 // specific language governing permissions and limitations
 // under the License.
-//
 package prometheus
 
 import (
@@ -321,7 +319,7 @@ func verifyCollection(t *testing.T, svc map[string][]float64, bvc map[string][][
 		for i, e := range v {
 			assert.Equal(t, svc[k][i], e, fmt.Sprintf("%s collection has errors", k))
 		}
-		t.Log(fmt.Sprintf("%s  collection is OK", k))
+		t.Logf("%s  collection is OK", k)
 	}
 
 	for k, v := range bucketValues {
@@ -331,7 +329,7 @@ func verifyCollection(t *testing.T, svc map[string][]float64, bvc map[string][][
 				assert.Equal(t, bvc[k][i][j].Count, f.Count, fmt.Sprintf("%s collection has errors", k))
 			}
 		}
-		t.Log(fmt.Sprintf("%s  collection is OK", k))
+		t.Logf("%s  collection is OK", k)
 	}
 }
 
