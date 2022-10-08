@@ -64,7 +64,7 @@ gen-docs: build
 
 .PHONY: lint
 lint: tools
-	$(GO_LINT) run -v --timeout 10m ./...
+	$(GO_LINT) run -v --timeout 15m ./...
 
 .PHONY: test
 test: clean
