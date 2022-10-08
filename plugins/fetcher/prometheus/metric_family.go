@@ -26,8 +26,8 @@ import (
 	"github.com/prometheus/common/model"
 	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 
-	"github.com/prometheus/prometheus/pkg/labels"
-	"github.com/prometheus/prometheus/pkg/textparse"
+	"github.com/prometheus/prometheus/model/labels"
+	"github.com/prometheus/prometheus/model/textparse"
 	"github.com/prometheus/prometheus/scrape"
 )
 

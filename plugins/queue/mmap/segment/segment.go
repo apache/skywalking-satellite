@@ -39,11 +39,11 @@ func NewSegment(name string, size int) (*mmap.File, error) {
 	}
 	paths, _ := filepath.Split(name)
 	_, err = os.Stat(paths)
-	if err != nil && os.IsNotExist(err) && os.MkdirAll(paths, 0744) != nil {
+	if err != nil && os.IsNotExist(err) && os.MkdirAll(paths, 0o744) != nil {
 		return nil, fmt.Errorf("error in creating the parent dirs of the segment file : %v", err)
 	}
 
-	file, err := os.OpenFile(name, os.O_CREATE|os.O_RDWR, 0744)
+	file, err := os.OpenFile(name, os.O_CREATE|os.O_RDWR, 0o744)
 	if err != nil {
 		return nil, fmt.Errorf("error in opening segment file : %v", err)
 	}

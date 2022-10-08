@@ -154,7 +154,7 @@ func setupMockPrometheus(tds ...*testData) (*mockPrometheus, *promcfg.Config, er
 	// update node value (will use for validation)
 
 	cfgStr := strings.ReplaceAll(string(cfg), srvPlaceHolder, u.Host)
-	pCfg, err := promcfg.Load(cfgStr)
+	pCfg, err := promcfg.Load(cfgStr, true, nil)
 	return mp, pCfg, err
 }
 

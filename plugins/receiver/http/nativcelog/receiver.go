@@ -20,7 +20,7 @@ package nativcelog
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"net/http"
 	"time"
 
@@ -100,7 +100,7 @@ func ResponseWithJSON(rsp http.ResponseWriter, response *Response, code int) {
 func (r *Receiver) httpHandler() http.Handler {
 	h := http.HandlerFunc(func(rsp http.ResponseWriter, req *http.Request) {
 		rsp.Header().Set("Content-Type", "application/json")
-		b, err := ioutil.ReadAll(req.Body)
+		b, err := io.ReadAll(req.Body)
 		if err != nil {
 			log.Logger.Errorf("get http body error: %v", err)
 			response := &Response{Status: failing, Msg: err.Error()}

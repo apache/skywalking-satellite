@@ -32,10 +32,7 @@ import (
 const RegularExpression = "${_|[A-Z]+:.*}"
 
 func overrideConfigByEnv(v *viper.Viper) error {
-	regex, err := regexp.Compile(RegularExpression)
-	if err != nil {
-		return err
-	}
+	regex := regexp.MustCompile(RegularExpression)
 	overrideCfg := overrideMapStringInterface(v.AllSettings(), regex)
 	for key, val := range overrideCfg {
 		v.Set(key, val)

@@ -124,7 +124,7 @@ func (q *Queue) Initialize() error {
 	if q.MaxInMemSegments < minimumSegments {
 		q.MaxInMemSegments = minimumSegments
 	}
-	q.queueName = strings.Join([]string{q.Name(), q.PipeName}, "_")
+	q.queueName = q.Name() + "_" + q.PipeName
 	// load metadata and override the reading or writing offset by the committed or watermark offset.
 	md, err := meta.NewMetaData(q.queueName, q.QueueCapacitySegments)
 	if err != nil {

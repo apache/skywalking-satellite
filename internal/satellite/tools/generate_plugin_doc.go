@@ -23,11 +23,13 @@ import (
 	"go/doc"
 	"go/parser"
 	"go/token"
-	"io/ioutil"
 	"os"
 	"reflect"
 	"sort"
 	"strings"
+
+	"golang.org/x/text/cases"
+	"golang.org/x/text/language"
 
 	"github.com/apache/skywalking-satellite/plugins/queue/partition"
 
@@ -106,7 +108,7 @@ func updateMenuPluginListDoc(outputRootPath, menuFilePath, pluginFilePath string
 		// plugin
 		implements := []*Catalog{}
 		curPlugin := &Catalog{
-			Name: strings.Title(strings.ToLower(category.Name())),
+			Name: cases.Title(language.Und, cases.NoLower).String(strings.ToLower(category.Name())),
 		}
 
 		// all implements
@@ -159,7 +161,7 @@ func generatePluginDoc(docDir string, category reflect.Type, pluginName *pluginN
 }
 
 func GetModuleName() string {
-	goModBytes, err := ioutil.ReadFile("go.mod")
+	goModBytes, err := os.ReadFile("go.mod")
 	if err != nil {
 		return ""
 	}
@@ -377,7 +379,7 @@ func getPluginDocFileName(category reflect.Type, pluginName string) string {
 }
 
 func writeDoc(docBytes []byte, docFileName string) error {
-	if err := ioutil.WriteFile(docFileName, docBytes, os.ModePerm); err != nil {
+	if err := os.WriteFile(docFileName, docBytes, os.ModePerm); err != nil {
 		return fmt.Errorf("cannot init the plugin doc: %v", err)
 	}
 	return nil
