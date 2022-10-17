@@ -7,6 +7,7 @@ Release Notes.
 #### Features
 * Support transmit the OpenTelemetry Metrics protocol.
 * Upgrade to GO 1.18.
+* Add Docker images for arm64 architecture.
 
 #### Bug Fixes
 * Fix the missing return data when receive metrics in batch mode.
