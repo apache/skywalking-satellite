@@ -81,10 +81,6 @@ catalog:
                   path: /en/setup/plugins/fallbacker_none-fallbacker
                 - name: Timer Fallbacker
                   path: /en/setup/plugins/fallbacker_timer-fallbacker
-            - name: Fetcher
-              catalog:
-                - name: Prometheus Metrics Fetcher
-                  path: /en/setup/plugins/fetcher_prometheus-metrics-fetcher
             - name: Forwarder
               catalog:
                 - name: Envoy ALS v2 GRPC Forwarder

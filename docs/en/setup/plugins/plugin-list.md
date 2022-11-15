@@ -6,7 +6,6 @@
 	- [None Fallbacker](./fallbacker_none-fallbacker.md)
 	- [Timer Fallbacker](./fallbacker_timer-fallbacker.md)
 - Fetcher
-	- [Prometheus Metrics Fetcher](./fetcher_prometheus-metrics-fetcher.md)
 - Filter
 - Forwarder
 	- [Envoy ALS v2 GRPC Forwarder](./forwarder_envoy-als-v2-grpc-forwarder.md)
