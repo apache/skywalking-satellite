@@ -37,7 +37,8 @@ const (
 type Receiver struct {
 	config.CommonFields
 	grpc.CommonGRPCReceiverFields
-	service *TraceSegmentReportService
+	traceService           *TraceSegmentReportService
+	spanAttachEventService *SpanAttachedEventReportService
 }
 
 func (r *Receiver) Name() string {
@@ -49,7 +50,7 @@ func (r *Receiver) ShowName() string {
 }
 
 func (r *Receiver) Description() string {
-	return "This is a receiver for SkyWalking native tracing format, " +
+	return "This is a receiver for SkyWalking native tracing and span attached event format, " +
 		"which is defined at https://github.com/apache/skywalking-data-collect-protocol/blob/master/language-agent/Tracing.proto."
 }
 
@@ -59,9 +60,11 @@ func (r *Receiver) DefaultConfig() string {
 
 func (r *Receiver) RegisterHandler(server interface{}) {
 	r.CommonGRPCReceiverFields = *grpc.InitCommonGRPCReceiverFields(server)
-	r.service = &TraceSegmentReportService{receiveChannel: r.OutputChannel}
-	v3.RegisterTraceSegmentReportServiceServer(r.Server, r.service)
-	v3_compat.RegisterTraceSegmentReportServiceServer(r.Server, &TraceSegmentReportServiceCompat{reportService: r.service})
+	r.traceService = &TraceSegmentReportService{receiveChannel: r.OutputChannel}
+	r.spanAttachEventService = &SpanAttachedEventReportService{receiveChannel: r.OutputChannel}
+	v3.RegisterTraceSegmentReportServiceServer(r.Server, r.traceService)
+	v3.RegisterSpanAttachedEventReportServiceServer(r.Server, r.spanAttachEventService)
+	v3_compat.RegisterTraceSegmentReportServiceServer(r.Server, &TraceSegmentReportServiceCompat{reportService: r.traceService})
 }
 
 func (r *Receiver) RegisterSyncInvoker(_ module.SyncInvoker) {

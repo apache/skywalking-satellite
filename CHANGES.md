@@ -8,6 +8,7 @@ Release Notes.
 * Support transmit the OpenTelemetry Metrics protocol.
 * Upgrade to GO 1.18.
 * Add Docker images for arm64 architecture.
+* Support transmit Span Attached Event protocol data.
 
 #### Bug Fixes
 * Fix the missing return data when receive metrics in batch mode.

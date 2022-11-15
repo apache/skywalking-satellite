@@ -23,6 +23,8 @@ import (
 	"io"
 	"reflect"
 
+	"github.com/hashicorp/go-multierror"
+
 	"google.golang.org/grpc"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
@@ -30,6 +32,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	server_grpc "github.com/apache/skywalking-satellite/plugins/server/grpc"
 
+	v3 "skywalking.apache.org/repo/goapi/collect/common/v3"
 	agent "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
@@ -42,7 +45,13 @@ const (
 type Forwarder struct {
 	config.CommonFields
 
-	tracingClient agent.TraceSegmentReportServiceClient
+	tracingClient       agent.TraceSegmentReportServiceClient
+	attachedEventClient agent.SpanAttachedEventReportServiceClient
+}
+
+type streaming interface {
+	SendMsg(m interface{}) error
+	CloseAndRecv() (*v3.Commands, error)
 }
 
 func (f *Forwarder) Name() string {
@@ -68,39 +77,68 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 			f.Name(), reflect.TypeOf(connection).String())
 	}
 	f.tracingClient = agent.NewTraceSegmentReportServiceClient(client)
+	f.attachedEventClient = agent.NewSpanAttachedEventReportServiceClient(client)
 	return nil
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-	stream, err := f.tracingClient.Collect(context.Background())
-	if err != nil {
-		log.Logger.Errorf("open grpc stream error %v", err)
-		return err
-	}
+	var tracingStream agent.TraceSegmentReportService_CollectClient
+	var spanStream agent.SpanAttachedEventReportService_CollectClient
+
+	defer func() {
+		if err := closeStream(tracingStream, spanStream); err != nil {
+			log.Logger.Errorf("%s close stream error: %v", f.Name(), err)
+		}
+	}()
+	var err error
+	var stream streaming
+	var streamData *server_grpc.OriginalData
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_Segment)
-		if !ok {
+		switch data := e.GetData().(type) {
+		case *v1.SniffData_Segment:
+			if tracingStream == nil {
+				tracingStream, err = f.tracingClient.Collect(context.Background())
+				if err != nil {
+					log.Logger.Errorf("open grpc stream error %v", err)
+					return err
+				}
+			}
+			stream = tracingStream
+			streamData = server_grpc.NewOriginalData(data.Segment)
+		case *v1.SniffData_SpanAttachedEvent:
+			if spanStream == nil {
+				spanStream, err = f.attachedEventClient.Collect(context.Background())
+				if err != nil {
+					log.Logger.Errorf("open grpc stream error %v", err)
+					return err
+				}
+			}
+			stream = spanStream
+			streamData = server_grpc.NewOriginalData(data.SpanAttachedEvent)
+		default:
 			continue
 		}
-		err := stream.SendMsg(server_grpc.NewOriginalData(data.Segment))
+
+		err = stream.SendMsg(streamData)
 		if err != nil {
 			log.Logger.Errorf("%s send log data error: %v", f.Name(), err)
-			err = closeStream(stream)
-			if err != nil {
-				log.Logger.Errorf("%s close stream error: %v", f.Name(), err)
-			}
 			return err
 		}
 	}
-	return closeStream(stream)
+	return closeStream(tracingStream, spanStream)
 }
 
-func closeStream(stream agent.TraceSegmentReportService_CollectClient) error {
-	_, err := stream.CloseAndRecv()
-	if err != nil && err != io.EOF {
-		return err
+func closeStream(streams ...streaming) error {
+	var err error
+	for _, s := range streams {
+		if s == nil {
+			continue
+		}
+		if _, e := s.CloseAndRecv(); e != nil && e != io.EOF {
+			err = multierror.Append(err, e)
+		}
 	}
-	return nil
+	return err
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {
