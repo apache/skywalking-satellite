@@ -50,7 +50,7 @@ func (r *Receiver) ShowName() string {
 }
 
 func (r *Receiver) Description() string {
-	return "This is a receiver for SkyWalking native tracing format, " +
+	return "This is a receiver for SkyWalking native tracing and span attached event format, " +
 		"which is defined at https://github.com/apache/skywalking-data-collect-protocol/blob/master/language-agent/Tracing.proto."
 }
 

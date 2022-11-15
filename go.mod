@@ -7,6 +7,7 @@ require (
 	github.com/enriquebris/goconcurrentqueue v0.6.0
 	github.com/google/go-cmp v0.5.8
 	github.com/grandecola/mmap v0.6.0
+	github.com/hashicorp/go-multierror v1.1.1
 	github.com/prometheus/client_golang v1.13.0
 	github.com/prometheus/common v0.37.0
 	github.com/prometheus/prometheus v0.39.1
@@ -52,7 +53,6 @@ require (
 	github.com/google/gofuzz v1.2.0 // indirect
 	github.com/grafana/regexp v0.0.0-20220304095617-2e8d9baf4ac2 // indirect
 	github.com/hashicorp/errwrap v1.0.0 // indirect
-	github.com/hashicorp/go-multierror v1.1.1 // indirect
 	github.com/hashicorp/go-uuid v1.0.2 // indirect
 	github.com/hashicorp/hcl v1.0.0 // indirect
 	github.com/imdario/mergo v0.3.12 // indirect
