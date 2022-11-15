@@ -90,14 +90,6 @@ check: clean
 		exit 1; \
 	fi
 
-.PHONY: docker
-docker:
-	docker build --build-arg VERSION=$(VERSION) -t $(HUB)/skywalking-satellite:v$(VERSION) --no-cache . -f docker/Dockerfile
-
-.PHONY: docker.push
-docker.push:
-	docker push $(HUB)/skywalking-satellite:v$(VERSION)
-
 .PHONY: release
 release:
 	/bin/sh tools/release/create_bin_release.sh
@@ -107,3 +99,22 @@ release:
 $(PLATFORMS):
 	mkdir -p $(OUT_DIR)
 	GOOS=$(os) GOARCH=$(ARCH) $(GO_BUILD) $(GO_BUILD_FLAGS) -ldflags "$(GO_BUILD_LDFLAGS)" -o $(OUT_DIR)/$(BINARY)-$(VERSION)-$(os)-$(ARCH) ./cmd
+
+docker: PLATFORMS =
+docker: LOAD_OR_PUSH = --load
+docker.push: PLATFORMS = --platform linux/amd64,linux/arm64
+docker.push: LOAD_OR_PUSH = --push
+
+.PHONY: docker docker.push
+docker docker.push:
+	$(DOCKER_RULE)
+
+define DOCKER_RULE
+	docker buildx create --use --driver docker-container --name skywalking_satellite > /dev/null 2>&1 || true
+	docker buildx build $(PLATFORMS) $(LOAD_OR_PUSH) \
+		--no-cache --build-arg VERSION=$(VERSION) \
+		-t $(HUB)/skywalking-satellite:v$(VERSION) \
+		-f docker/Dockerfile \
+		.
+	docker buildx rm skywalking_satellite || true
+endef
