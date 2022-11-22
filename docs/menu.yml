@@ -99,6 +99,8 @@ catalog:
                   path: /en/setup/plugins/forwarder_native-event-grpc-forwarder
                 - name: Native JVM GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-jvm-grpc-forwarder
+                - name: Native CLR GRPC Forwarder
+                  path: /en/setup/plugins/forwarder_native-clr-grpc-forwarder
                 - name: Native Log GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-log-grpc-forwarder
                 - name: Native Log Kafka Forwarder
@@ -141,6 +143,8 @@ catalog:
                   path: /en/setup/plugins/receiver_grpc-native-event-receiver
                 - name: GRPC Native JVM Receiver
                   path: /en/setup/plugins/receiver_grpc-native-jvm-receiver
+                - name: GRPC Native CLR Receiver
+                  path: /en/setup/plugins/receiver_grpc-native-clr-receiver
                 - name: GRPC Native Log Receiver
                   path: /en/setup/plugins/receiver_grpc-native-log-receiver
                 - name: GRPC Native Management Receiver
