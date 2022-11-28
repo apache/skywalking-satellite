@@ -25,13 +25,17 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoymetricsv2"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoymetricsv3"
 	grpc_nativecds "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativecds"
+	grpc_nativeclr "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeclr"
+	grpc_nativeebpfprofiling "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeebpfprofiling"
 	grpc_nativeevent "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeevent"
 	grpc_nativejvm "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativejvm"
 	grpc_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativelog"
 	grpc_nativemanagement "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativemanagement"
 	grpc_meter "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativemeter"
+	grpc_nativeprocess "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeprocess"
 	grpc_nativeprofile "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeprofile"
 	grpc_nativetracing "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativetracing"
+	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/otlpmetricsv1"
 	kafka_nativeevent "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativeevent"
 	kafka_nativejvm "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativejvm"
 	kafka_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativelog"
@@ -50,6 +54,12 @@ func RegisterForwarderPlugins() {
 	forwarders := []api.Forwarder{
 		// Please register the forwarder plugins at here.
 		new(kafka_nativelog.Forwarder),
+		new(kafka_nativejvm.Forwarder),
+		new(kafka_nativetracing.Forwarder),
+		new(kafka_nativemeter.Forwarder),
+		new(kafka_nativeprofile.Forwarder),
+		new(kafka_nativeevent.Forwarder),
+		new(kafka_nativemanagement.Forwarder),
 		new(grpc_nativelog.Forwarder),
 		new(grpc_meter.Forwarder),
 		new(grpc_nativemanagement.Forwarder),
@@ -58,16 +68,14 @@ func RegisterForwarderPlugins() {
 		new(grpc_nativecds.Forwarder),
 		new(grpc_nativeevent.Forwarder),
 		new(grpc_nativejvm.Forwarder),
+		new(grpc_nativeclr.Forwarder),
+		new(grpc_nativeprocess.Forwarder),
+		new(grpc_nativeebpfprofiling.Forwarder),
 		new(envoyalsv2.Forwarder),
 		new(envoyalsv3.Forwarder),
 		new(envoymetricsv2.Forwarder),
 		new(envoymetricsv3.Forwarder),
-		new(kafka_nativejvm.Forwarder),
-		new(kafka_nativetracing.Forwarder),
-		new(kafka_nativemeter.Forwarder),
-		new(kafka_nativeprofile.Forwarder),
-		new(kafka_nativeevent.Forwarder),
-		new(kafka_nativemanagement.Forwarder),
+		new(otlpmetricsv1.Forwarder),
 	}
 	for _, forwarder := range forwarders {
 		plugin.RegisterPlugin(forwarder)

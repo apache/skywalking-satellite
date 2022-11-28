@@ -26,7 +26,6 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"google.golang.org/protobuf/proto"
-	management "skywalking.apache.org/repo/goapi/collect/management/v3"
 
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
@@ -37,15 +36,12 @@ const (
 )
 
 // empty struct for set
-type void struct{}
-
-var empty void
 
 type Forwarder struct {
 	config.CommonFields
-	Topic            string `mapstructure:"topic"` // The forwarder topic.
-	producer         sarama.SyncProducer
-	managementClient management.ManagementServiceClient
+	Topic    string `mapstructure:"topic"` // The forwarder topic.
+	producer sarama.SyncProducer
+	// managementClient management.ManagementServiceClient
 }
 
 func (f *Forwarder) Name() string {
