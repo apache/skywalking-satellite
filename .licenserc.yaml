@@ -72,7 +72,7 @@ dependency:
       version: v0.0.0-20151018003038-5e2d6d41470f
       license: Zlib
     - name: github.com/pascaldekloe/goe
-      version: v0.1.0
+      version: v0.0.0-20180627143212-57f6aae5913c
       license: CC0-1.0
     - name: github.com/seccomp/libseccomp-golang
       version: v0.9.1
@@ -95,3 +95,12 @@ dependency:
     - name: gopkg.in/tomb.v1
       version: v1.0.0-20141024135613-dd632973f1e7
       license: BSD-3-Clause
+    - name: github.com/chzyer/logex
+      version: v1.1.10
+      license: MIT
+    - name: github.com/hashicorp/cronexpr
+      version: v1.1.1
+      license: Apache-2.0 and GPL-3.0
+    - name: github.com/kr/logfmt
+      version: v0.0.0-20140226030751-b84e30acd515
+      license: MIT
