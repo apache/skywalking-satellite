@@ -22,9 +22,9 @@ import (
 	"reflect"
 
 	"github.com/Shopify/sarama"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	"google.golang.org/protobuf/proto"
 
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
@@ -78,9 +78,15 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	for _, e := range batch {
 		switch data := e.GetData().(type) {
 		case *v1.SniffData_Segment:
+			segmentObject := &SegmentObject{}
+			err := proto.Unmarshal(data.Segment, segmentObject)
+			if err != nil {
+				return err
+			}
 
 			message = append(message, &sarama.ProducerMessage{
 				Topic: f.Topic,
+				Key:   sarama.StringEncoder(segmentObject.GetTraceSegmentId()),
 				Value: sarama.ByteEncoder(data.Segment),
 			})
 		case *v1.SniffData_SpanAttachedEvent:

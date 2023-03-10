@@ -1,10 +1,8 @@
 syntax = "proto3";
 
-package skywalking.v3;
+package nativetracing;
 
-option go_package = "skywalking.apache.org/repo/goapi/satellite/data/v1";
-
-import  "google/protobuf/any.proto";
+option go_package = "nativetracing";
 
 
 // The segment is a collection of spans. It includes all collected spans in a simple one request context, such as a HTTP request process.
@@ -17,22 +15,4 @@ message SegmentObject {
   string traceId = 1;
   // A unique id represents this segment. Other segments could use this id to reference as a child segment.
   string traceSegmentId = 2;
-  // Span collections included in this segment.
-  repeated google.protobuf.Any spans = 3;
-  // **Service**. Represents a set/group of workloads which provide the same behaviours for incoming requests.
-  //
-  // The logic name represents the service. This would show as a separate node in the topology.
-  // The metrics analyzed from the spans, would be aggregated for this entity as the service level.
-  string service = 4;
-  // **Service Instance**. Each individual workload in the Service group is known as an instance. Like `pods` in Kubernetes, it
-  // doesn't need to be a single OS process, however, if you are using instrument agents, an instance is actually a real OS process.
-  //
-  // The logic name represents the service instance. This would show as a separate node in the instance relationship.
-  // The metrics analyzed from the spans, would be aggregated for this entity as the service instance level.
-  string serviceInstance = 5;
-  // Whether the segment includes all tracked spans.
-  // In the production environment tracked, some tasks could include too many spans for one request context, such as a batch update for a cache, or an async job.
-  // The agent/SDK could optimize or ignore some tracked spans for better performance.
-  // In this case, the value should be flagged as TRUE.
-  bool isSizeLimited = 6;
 }
