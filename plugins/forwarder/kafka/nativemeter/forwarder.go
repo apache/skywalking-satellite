@@ -89,15 +89,20 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
-		data := e.GetData().(*v1.SniffData_Meter)
-		rawdata, ok := proto.Marshal(data.Meter)
-		if ok != nil {
-			return ok
+
+		if data, ok := e.GetData().(*v1.SniffData_MeterCollection); ok {
+			for _, d := range data.MeterCollection.MeterData {
+				rawdata, ok := proto.Marshal(d)
+				if ok != nil {
+					return ok
+				}
+				message = append(message, &sarama.ProducerMessage{
+					Topic: f.Topic,
+					Value: sarama.ByteEncoder(rawdata),
+				})
+			}
 		}
-		message = append(message, &sarama.ProducerMessage{
-			Topic: f.Topic,
-			Value: sarama.ByteEncoder(rawdata),
-		})
+
 	}
 	return f.producer.SendMessages(message)
 }
