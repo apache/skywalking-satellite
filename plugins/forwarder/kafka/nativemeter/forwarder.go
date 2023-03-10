@@ -96,8 +96,10 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 				if ok != nil {
 					return ok
 				}
+
 				message = append(message, &sarama.ProducerMessage{
 					Topic: f.Topic,
+					Key:   sarama.StringEncoder(d.ServiceInstance),
 					Value: sarama.ByteEncoder(rawdata),
 				})
 			}

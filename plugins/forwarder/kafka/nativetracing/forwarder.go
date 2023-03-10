@@ -76,11 +76,27 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
-		data := e.GetData().(*v1.SniffData_Segment)
-		message = append(message, &sarama.ProducerMessage{
-			Topic: f.Topic,
-			Value: sarama.ByteEncoder(data.Segment),
-		})
+		switch data := e.GetData().(type) {
+		case *v1.SniffData_Segment:
+
+			message = append(message, &sarama.ProducerMessage{
+				Topic: f.Topic,
+				Value: sarama.ByteEncoder(data.Segment),
+			})
+		case *v1.SniffData_SpanAttachedEvent:
+			message = append(message, &sarama.ProducerMessage{
+				Topic: f.Topic,
+				Value: sarama.ByteEncoder(data.SpanAttachedEvent),
+			})
+		default:
+			continue
+		}
+		//data := e.GetData().(*v1.SniffData_Segment)
+		//
+		//message = append(message, &sarama.ProducerMessage{
+		//	Topic: f.Topic,
+		//	Value: sarama.ByteEncoder(data.Segment),
+		//})
 	}
 	return f.producer.SendMessages(message)
 }

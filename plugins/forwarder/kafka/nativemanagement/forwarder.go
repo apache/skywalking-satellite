@@ -35,6 +35,10 @@ const (
 	ShowName = "Native Management Kafka Forwarder"
 )
 
+type void struct{}
+
+var empty void
+
 // empty struct for set
 
 type Forwarder struct {
@@ -78,17 +82,46 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
+	pingOnce := make(map[string]void)
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
-		data := e.GetInstance()
-		rawdata, ok := proto.Marshal(data)
-		if ok != nil {
-			return ok
+
+		instanceProperties := e.GetInstance()
+		if instanceProperties != nil {
+			rawdata, err := proto.Marshal(instanceProperties)
+			if err != nil {
+				return err
+			}
+			message = append(message, &sarama.ProducerMessage{
+				Topic: f.Topic,
+				Key:   sarama.StringEncoder("register-" + instanceProperties.ServiceInstance),
+				Value: sarama.ByteEncoder(rawdata),
+			})
+			continue
 		}
-		message = append(message, &sarama.ProducerMessage{
-			Topic: f.Topic,
-			Value: sarama.ByteEncoder(rawdata),
-		})
+
+		// report instance ping
+		instancePing := e.GetInstancePing()
+		if instancePing != nil {
+			// report once
+			instancePingStr := fmt.Sprintf("%s_%s", instancePing.Service, instancePing.ServiceInstance)
+			_, exists := pingOnce[instancePingStr]
+			if !exists {
+				rawdata, err := proto.Marshal(instancePing)
+				if err != nil {
+					return err
+				}
+				pingOnce[instancePingStr] = empty
+
+				message = append(message, &sarama.ProducerMessage{
+					Topic: f.Topic,
+					Key:   sarama.StringEncoder("register-" + instancePing.ServiceInstance),
+					Value: sarama.ByteEncoder(rawdata),
+				})
+			}
+			continue
+		}
+
 	}
 	return f.producer.SendMessages(message)
 }
