@@ -15,7 +15,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package nativelog
+package nativetracing
 
 import (
 	"fmt"
@@ -30,8 +30,8 @@ import (
 )
 
 const (
-	Name     = "native-log-kafka-forwarder"
-	ShowName = "Native Log Kafka Forwarder"
+	Name     = "native-tracing-kafka-forwarder"
+	ShowName = "Native Tracing Kafka Forwarder"
 )
 
 type Forwarder struct {
@@ -55,14 +55,14 @@ func (f *Forwarder) Description() string {
 func (f *Forwarder) DefaultConfig() string {
 	return `
 # The remote topic. 
-topic: "skywalking-logs"
+topic: "skywalking-segments"
 `
 }
 
 func (f *Forwarder) Prepare(connection interface{}) error {
 	client, ok := connection.(sarama.Client)
 	if !ok {
-		return fmt.Errorf("the %s is only accepet the kafka client, but receive a %s",
+		return fmt.Errorf("the %s only accepts a grpc client, but received a %s",
 			f.Name(), reflect.TypeOf(connection).String())
 	}
 	producer, err := sarama.NewSyncProducerFromClient(client)
@@ -76,22 +76,17 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_LogList)
-		if !ok {
-			continue
-		}
-		for _, l := range data.LogList.Logs {
-			message = append(message, &sarama.ProducerMessage{
-				Topic: f.Topic,
-				Value: sarama.ByteEncoder(l),
-			})
-		}
+		data := e.GetData().(*v1.SniffData_Segment)
+		message = append(message, &sarama.ProducerMessage{
+			Topic: f.Topic,
+			Value: sarama.ByteEncoder(data.Segment),
+		})
 	}
 	return f.producer.SendMessages(message)
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {
-	return v1.SniffType_Logging
+	return v1.SniffType_TracingType
 }
 
 func (f *Forwarder) SyncForward(_ *v1.SniffData) (*v1.SniffData, error) {

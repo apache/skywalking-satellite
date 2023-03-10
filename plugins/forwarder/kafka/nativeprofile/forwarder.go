@@ -15,29 +15,32 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package nativelog
+package nativeprofile
 
 import (
 	"fmt"
 	"reflect"
 
 	"github.com/Shopify/sarama"
+	"google.golang.org/protobuf/proto"
+
+	profile "skywalking.apache.org/repo/goapi/collect/language/profile/v3"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
-
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 const (
-	Name     = "native-log-kafka-forwarder"
-	ShowName = "Native Log Kafka Forwarder"
+	Name     = "native-profile-kafka-forwarder"
+	ShowName = "Native Profile Kafka Forwarder"
 )
 
 type Forwarder struct {
 	config.CommonFields
-	Topic    string `mapstructure:"topic"` // The forwarder topic.
-	producer sarama.SyncProducer
+	Topic         string `mapstructure:"topic"` // The forwarder topic.
+	producer      sarama.SyncProducer
+	profileClient profile.ProfileTaskClient
 }
 
 func (f *Forwarder) Name() string {
@@ -49,20 +52,20 @@ func (f *Forwarder) ShowName() string {
 }
 
 func (f *Forwarder) Description() string {
-	return "This is a synchronization Kafka forwarder with the SkyWalking native log protocol."
+	return "This is a synchronization Kafka forwarder with the SkyWalking native kafka protocol."
 }
 
 func (f *Forwarder) DefaultConfig() string {
 	return `
 # The remote topic. 
-topic: "skywalking-logs"
+topic: "skywalking-profilings"
 `
 }
 
 func (f *Forwarder) Prepare(connection interface{}) error {
 	client, ok := connection.(sarama.Client)
 	if !ok {
-		return fmt.Errorf("the %s is only accepet the kafka client, but receive a %s",
+		return fmt.Errorf("the %s is only accepts the kafka client, but receive a %s",
 			f.Name(), reflect.TypeOf(connection).String())
 	}
 	producer, err := sarama.NewSyncProducerFromClient(client)
@@ -76,22 +79,21 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_LogList)
-		if !ok {
-			continue
+		data := e.GetData().(*v1.SniffData_Profile)
+		rawdata, ok := proto.Marshal(data.Profile)
+		if ok != nil {
+			return ok
 		}
-		for _, l := range data.LogList.Logs {
-			message = append(message, &sarama.ProducerMessage{
-				Topic: f.Topic,
-				Value: sarama.ByteEncoder(l),
-			})
-		}
+		message = append(message, &sarama.ProducerMessage{
+			Topic: f.Topic,
+			Value: sarama.ByteEncoder(rawdata),
+		})
 	}
 	return f.producer.SendMessages(message)
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {
-	return v1.SniffType_Logging
+	return v1.SniffType_ProfileType
 }
 
 func (f *Forwarder) SyncForward(_ *v1.SniffData) (*v1.SniffData, error) {

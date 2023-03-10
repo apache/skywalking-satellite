@@ -15,13 +15,14 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package nativelog
+package nativejvm
 
 import (
 	"fmt"
 	"reflect"
 
 	"github.com/Shopify/sarama"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
@@ -30,8 +31,8 @@ import (
 )
 
 const (
-	Name     = "native-log-kafka-forwarder"
-	ShowName = "Native Log Kafka Forwarder"
+	Name     = "native-jvm-kafka-forwarder"
+	ShowName = "Native jvm Kafka Forwarder"
 )
 
 type Forwarder struct {
@@ -55,7 +56,7 @@ func (f *Forwarder) Description() string {
 func (f *Forwarder) DefaultConfig() string {
 	return `
 # The remote topic. 
-topic: "skywalking-logs"
+topic: "skywalking-metrics"
 `
 }
 
@@ -76,22 +77,21 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_LogList)
-		if !ok {
-			continue
+		data := e.GetJvm()
+		rawdata, ok := proto.Marshal(data)
+		if ok != nil {
+			return ok
 		}
-		for _, l := range data.LogList.Logs {
-			message = append(message, &sarama.ProducerMessage{
-				Topic: f.Topic,
-				Value: sarama.ByteEncoder(l),
-			})
-		}
+		message = append(message, &sarama.ProducerMessage{
+			Topic: f.Topic,
+			Value: sarama.ByteEncoder(rawdata),
+		})
 	}
 	return f.producer.SendMessages(message)
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {
-	return v1.SniffType_Logging
+	return v1.SniffType_JVMMetricType
 }
 
 func (f *Forwarder) SyncForward(_ *v1.SniffData) (*v1.SniffData, error) {

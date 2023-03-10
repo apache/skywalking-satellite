@@ -15,29 +15,39 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package nativelog
+package nativemeter
 
 import (
 	"fmt"
 	"reflect"
+	"time"
 
 	"github.com/Shopify/sarama"
+	"google.golang.org/protobuf/proto"
+	"k8s.io/apimachinery/pkg/util/cache"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 
+	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 const (
-	Name     = "native-log-kafka-forwarder"
-	ShowName = "Native Log Kafka Forwarder"
+	Name     = "native-meter-kafka-forwarder"
+	ShowName = "Native Meter Kafka Forwarder"
 )
 
 type Forwarder struct {
 	config.CommonFields
-	Topic    string `mapstructure:"topic"` // The forwarder topic.
-	producer sarama.SyncProducer
+	RoutingRuleLRUCacheSize int `mapstructure:"routing_rule_lru_cache_size"`
+	// The TTL of the LRU cache size for hosting routine rules of service instance.
+	RoutingRuleLRUCacheTTL int    `mapstructure:"routing_rule_lru_cache_ttl"`
+	Topic                  string `mapstructure:"topic"` // The forwarder topic.
+	producer               sarama.SyncProducer
+	meterClient            v3.MeterReportServiceClient
+	upstreamCache          *cache.LRUExpireCache
+	upstreamCacheExpire    time.Duration
 }
 
 func (f *Forwarder) Name() string {
@@ -49,13 +59,13 @@ func (f *Forwarder) ShowName() string {
 }
 
 func (f *Forwarder) Description() string {
-	return "This is a synchronization Kafka forwarder with the SkyWalking native log protocol."
+	return "This is a synchronization Kafka forwarder with the SkyWalking native meter protocol."
 }
 
 func (f *Forwarder) DefaultConfig() string {
 	return `
 # The remote topic. 
-topic: "skywalking-logs"
+topic: "skywalking-meters"
 `
 }
 
@@ -66,6 +76,9 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 			f.Name(), reflect.TypeOf(connection).String())
 	}
 	producer, err := sarama.NewSyncProducerFromClient(client)
+	f.upstreamCache = cache.NewLRUExpireCache(f.RoutingRuleLRUCacheSize)
+	f.upstreamCacheExpire = time.Second * time.Duration(f.RoutingRuleLRUCacheTTL)
+
 	if err != nil {
 		return err
 	}
@@ -76,22 +89,21 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_LogList)
-		if !ok {
-			continue
+		data := e.GetData().(*v1.SniffData_Meter)
+		rawdata, ok := proto.Marshal(data.Meter)
+		if ok != nil {
+			return ok
 		}
-		for _, l := range data.LogList.Logs {
-			message = append(message, &sarama.ProducerMessage{
-				Topic: f.Topic,
-				Value: sarama.ByteEncoder(l),
-			})
-		}
+		message = append(message, &sarama.ProducerMessage{
+			Topic: f.Topic,
+			Value: sarama.ByteEncoder(rawdata),
+		})
 	}
 	return f.producer.SendMessages(message)
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {
-	return v1.SniffType_Logging
+	return v1.SniffType_MeterType
 }
 
 func (f *Forwarder) SyncForward(_ *v1.SniffData) (*v1.SniffData, error) {

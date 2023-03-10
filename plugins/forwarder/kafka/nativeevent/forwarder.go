@@ -22,22 +22,24 @@ import (
 	"reflect"
 
 	"github.com/Shopify/sarama"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	"google.golang.org/protobuf/proto"
+	nativeevent "skywalking.apache.org/repo/goapi/collect/event/v3"
 
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 const (
-	Name     = "native-log-kafka-forwarder"
-	ShowName = "Native Log Kafka Forwarder"
+	Name     = "native-event-kafka-forwarder"
+	ShowName = "Native Event Kafka Forwarder"
 )
 
 type Forwarder struct {
 	config.CommonFields
 	Topic    string `mapstructure:"topic"` // The forwarder topic.
 	producer sarama.SyncProducer
+	client   nativeevent.EventServiceClient
 }
 
 func (f *Forwarder) Name() string {
@@ -55,7 +57,7 @@ func (f *Forwarder) Description() string {
 func (f *Forwarder) DefaultConfig() string {
 	return `
 # The remote topic. 
-topic: "skywalking-logs"
+topic: "log-topic"
 `
 }
 
@@ -76,22 +78,23 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_LogList)
-		if !ok {
-			continue
+		data := e.GetData().(*v1.SniffData_Event)
+
+		rawdata, ok := proto.Marshal(data.Event)
+		if ok != nil {
+			return ok
 		}
-		for _, l := range data.LogList.Logs {
-			message = append(message, &sarama.ProducerMessage{
-				Topic: f.Topic,
-				Value: sarama.ByteEncoder(l),
-			})
-		}
+
+		message = append(message, &sarama.ProducerMessage{
+			Topic: f.Topic,
+			Value: sarama.ByteEncoder(rawdata),
+		})
 	}
 	return f.producer.SendMessages(message)
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {
-	return v1.SniffType_Logging
+	return v1.SniffType_EventType
 }
 
 func (f *Forwarder) SyncForward(_ *v1.SniffData) (*v1.SniffData, error) {
