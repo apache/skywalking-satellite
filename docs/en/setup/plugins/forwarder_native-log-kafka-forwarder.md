@@ -4,7 +4,7 @@ This is a synchronization Kafka forwarder with the SkyWalking native log protoco
 ## DefaultConfig
 ```yaml
 # The remote topic. 
-topic: "log-topic"
+topic: "skywalking-logs"
 ```
 ## Configuration
 |Name|Type|Description|
