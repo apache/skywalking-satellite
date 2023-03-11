@@ -84,6 +84,7 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		}
 		message = append(message, &sarama.ProducerMessage{
 			Topic: f.Topic,
+			Key:   sarama.StringEncoder(data.ServiceInstance),
 			Value: sarama.ByteEncoder(rawdata),
 		})
 	}
