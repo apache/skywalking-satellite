@@ -19,6 +19,7 @@ package nativelog
 
 import (
 	"fmt"
+	"google.golang.org/protobuf/proto"
 	"reflect"
 
 	"github.com/Shopify/sarama"
@@ -80,9 +81,19 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		if !ok {
 			continue
 		}
+		//for (LogData data : dataList) {
+		//  producer.send(new ProducerRecord<>(topic, data.getService(), Bytes.wrap(data.toByteArray())));
+		//}
 		for _, l := range data.LogList.Logs {
+			//Get the value of GetService() using compatible mode.
+			logdata := &LogData{}
+			err := proto.Unmarshal(l, logdata)
+			if err != nil {
+				return err
+			}
 			message = append(message, &sarama.ProducerMessage{
 				Topic: f.Topic,
+				Key:   sarama.StringEncoder(logdata.GetService()),
 				Value: sarama.ByteEncoder(l),
 			})
 		}
