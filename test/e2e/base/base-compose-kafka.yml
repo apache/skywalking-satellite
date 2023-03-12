@@ -149,7 +149,6 @@ services:
       - e2e
     healthcheck:
       test: [ "CMD", "sh", "-c", "nc -zn 127.0.0.1 9092" ]
-    depends_on:
-      - zookeeper
+
 networks:
   e2e:
