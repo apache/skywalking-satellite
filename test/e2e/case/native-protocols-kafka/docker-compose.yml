@@ -68,6 +68,8 @@ services:
     depends_on:
       oap:
         condition: service_healthy
+      kafka:
+        condition: service_healthy
 
   provider:
     extends:
@@ -89,6 +91,26 @@ services:
       satellite:
         condition: service_healthy
       provider:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+
+  zookeeper:
+    extends:
+      file: ../../base/base-compose-kafka.yml
+      service: zookeeper
+    ports:
+      - 2181
+
+  kafka:
+    extends:
+      file: ../../base/base-compose-kafka.yml
+      service: kafka
+    ports:
+      - 9092
+      - 9999
+    depends_on:
+      zookeeper:
         condition: service_healthy
 
 networks:
