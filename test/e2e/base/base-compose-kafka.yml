@@ -44,9 +44,6 @@ services:
       interval: 5s
       timeout: 60s
       retries: 120
-#    depends_on:
-#      - kafka
-#      - satellite
 
   provider:
     build:
@@ -134,11 +131,13 @@ services:
       test: [ "CMD", "sh", "-c", "nc -zn 127.0.0.1 2181" ]
   # 该镜像具体配置参考 https://github.com/bitnami/bitnami-docker-kafka/blob/master/README.md
   kafka:
-    image: docker.io/bitnami/kafka:3.4
+    image: wurstmeister/kafka:2.13-2.7.0
     expose:
       - 9092
       - 9999
     environment:
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_LISTENERS=PLAINTEXT://:9092
       - KAFKA_BROKER_ID=1
       - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092
       # 客户端访问地址，更换成自己的
@@ -156,26 +155,6 @@ services:
       - e2e
     healthcheck:
       test: [ "CMD", "sh", "-c", "nc -zn 127.0.0.1 9092" ]
-#    command:
-#      - /opt/bitnami/kafka/bin/kafka-topics.sh --create --topic skywalking-metrics     --partitions 1 --replication-factor 1     --if-not-exists --zookeeper zookeeper:2181
-#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-logs \
-#        --partitions 1 --replication-factor 1 \
-#        --if-not-exists --zookeeper zookeeper:2181"
-#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-logs-json \
-#        --partitions 1 --replication-factor 1 \
-#        --if-not-exists --zookeeper zookeeper:2181"
-#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-managements \
-#        --partitions 1 --replication-factor 1 \
-#        --if-not-exists --zookeeper zookeeper:2181"
-#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-profilings \
-#        --partitions 1 --replication-factor 1 \
-#        --if-not-exists --zookeeper zookeeper:2181"
-#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-segments \
-#        --partitions 1 --replication-factor 1 \
-#        --if-not-exists --zookeeper zookeeper:2181"
-#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-meters \
-#        --partitions 1 --replication-factor 1 \
-#        --if-not-exists --zookeeper zookeeper:2181"
 
 networks:
   e2e:
