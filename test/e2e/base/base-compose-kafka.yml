@@ -38,14 +38,15 @@ services:
       SW_CONFIG_ETCD_ENDPOINTS: http://etcd:2379
       SW_KAFKA_FETCHER: default
       SW_KAFKA_FETCHER_SERVERS: kafka:9092
+      SW_KAFKA_FETCHER_PARTITIONS_FACTOR: 1
     healthcheck:
       test: ["CMD", "bash", "-c", "cat < /dev/null > /dev/tcp/127.0.0.1/11800"]
       interval: 5s
       timeout: 60s
       retries: 120
-    depends_on:
-      - kafka
-      - satellite
+#    depends_on:
+#      - kafka
+#      - satellite
 
   provider:
     build:
@@ -117,11 +118,11 @@ services:
       interval: 5s
       timeout: 60s
       retries: 120
-    depends_on:
-      - kafka
+#    depends_on:
+#      - kafka
 
   zookeeper:
-    image: docker.io/bitnami/zookeeper:3.8
+    image: bitnami/zookeeper:latest
     expose:
       - 2181
     environment:
