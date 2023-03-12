@@ -53,15 +53,12 @@ services:
     depends_on:
       etcd:
         condition: service_healthy
-      kafka:
-        condition: service_healthy
 
   satellite:
     extends:
       file: ../../base/base-compose-kafka.yml
       service: satellite
     environment:
-      GOPROXY: https://goproxy.cn
       SATELLITE_GRPC_CLIENT_FINDER: static
       SATELLITE_GRPC_CLIENT: oap:11800
       SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS: 1
