@@ -24,7 +24,7 @@ services:
       - 12800
     networks:
       - e2e
-    restart: on-failure
+#    restart: on-failure
     environment:
       SW_STORAGE: h2
       SW_CLUSTER_ZK_HOST_PORT: zk:2181
@@ -43,6 +43,9 @@ services:
       interval: 5s
       timeout: 60s
       retries: 120
+    depends_on:
+      - kafka
+      - satellite
 
   provider:
     build:
@@ -114,9 +117,11 @@ services:
       interval: 5s
       timeout: 60s
       retries: 120
+    depends_on:
+      - kafka
 
   zookeeper:
-    image: 'bitnami/zookeeper:latest'
+    image: docker.io/bitnami/zookeeper:3.8
     expose:
       - 2181
     environment:
@@ -128,7 +133,7 @@ services:
       test: [ "CMD", "sh", "-c", "nc -zn 127.0.0.1 2181" ]
   # 该镜像具体配置参考 https://github.com/bitnami/bitnami-docker-kafka/blob/master/README.md
   kafka:
-    image: 'bitnami/kafka:2.8.0'
+    image: docker.io/bitnami/kafka:3.4
     expose:
       - 9092
       - 9999
@@ -141,7 +146,7 @@ services:
       # 允许使用PLAINTEXT协议(镜像中默认为关闭,需要手动开启)
       - ALLOW_PLAINTEXT_LISTENER=yes
       # 关闭自动创建 topic 功能
-      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=false
+      - KAFKA_CFG_AUTO_CREATE_TOPICS_ENABLE=true
       # 全局消息过期时间 6 小时(测试时可以设置短一点)
       - KAFKA_CFG_LOG_RETENTION_HOURS=6
       # 开启JMX监控
@@ -150,6 +155,26 @@ services:
       - e2e
     healthcheck:
       test: [ "CMD", "sh", "-c", "nc -zn 127.0.0.1 9092" ]
+#    command:
+#      - /opt/bitnami/kafka/bin/kafka-topics.sh --create --topic skywalking-metrics     --partitions 1 --replication-factor 1     --if-not-exists --zookeeper zookeeper:2181
+#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-logs \
+#        --partitions 1 --replication-factor 1 \
+#        --if-not-exists --zookeeper zookeeper:2181"
+#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-logs-json \
+#        --partitions 1 --replication-factor 1 \
+#        --if-not-exists --zookeeper zookeeper:2181"
+#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-managements \
+#        --partitions 1 --replication-factor 1 \
+#        --if-not-exists --zookeeper zookeeper:2181"
+#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-profilings \
+#        --partitions 1 --replication-factor 1 \
+#        --if-not-exists --zookeeper zookeeper:2181"
+#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-segments \
+#        --partitions 1 --replication-factor 1 \
+#        --if-not-exists --zookeeper zookeeper:2181"
+#      - bash -c "/opt/kafka/bin/kafka-topics.sh --create --topic skywalking-meters \
+#        --partitions 1 --replication-factor 1 \
+#        --if-not-exists --zookeeper zookeeper:2181"
 
 networks:
   e2e:
