@@ -199,13 +199,13 @@ pipes:
       max_buffer_size: ${SATELLITE_LOGMANAGEMENT_SENDER_MAX_BUFFER_SIZE:20}
       # The minimum flush elements.
       min_flush_events: ${SATELLITE_LOGMANAGEMENT_SENDER_MIN_FLUSH_EVENTS:1}
-#      client_name: grpc-client
-#      forwarders:
-#        - plugin_name: native-management-grpc-forwarder
-      client_name: kafka-client
+      client_name: grpc-client
       forwarders:
-        - plugin_name: native-management-kafka-forwarder
-          topic: ${SATELLITE_FORWARDER_KAFKA_TOPIC_MANAGEMENT:skywalking-managements}
+        - plugin_name: native-management-grpc-forwarder
+#      client_name: kafka-client
+#      forwarders:
+#        - plugin_name: native-management-kafka-forwarder
+#          topic: ${SATELLITE_FORWARDER_KAFKA_TOPIC_MANAGEMENT:skywalking-managements}
   - common_config:
       pipe_name: tracingpipe
     gatherer:
@@ -331,7 +331,6 @@ pipes:
 #      client_name: grpc-client
 #      forwarders:
 #        - plugin_name: native-jvm-grpc-forwarder
-#          topic: ${SATELLITE_FORWARDER_KAFKA_TOPIC_METRICS:skywalking-metrics}
       client_name: kafka-client
       forwarders:
         - plugin_name: native-jvm-kafka-forwarder
