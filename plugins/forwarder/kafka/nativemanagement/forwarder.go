@@ -99,7 +99,7 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 			}
 			message = append(message, &sarama.ProducerMessage{
 				Topic: f.Topic,
-				Key:   sarama.StringEncoder("register-" + instanceProperties.ServiceInstance),
+				Key:   sarama.StringEncoder("register-" + instanceProperties.GetServiceInstance()),
 				Value: sarama.ByteEncoder(rawdata),
 			})
 			continue
@@ -117,10 +117,9 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 					return err
 				}
 				pingOnce[instancePingStr] = empty
-
 				message = append(message, &sarama.ProducerMessage{
 					Topic: f.Topic,
-					Key:   sarama.StringEncoder(instancePing.ServiceInstance),
+					Key:   sarama.StringEncoder(instancePing.GetServiceInstance()),
 					Value: sarama.ByteEncoder(rawdata),
 				})
 			}
