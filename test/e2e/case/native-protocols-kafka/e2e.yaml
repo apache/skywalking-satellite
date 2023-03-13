@@ -115,9 +115,9 @@ verify:
                e2e-service-provider:
                  agent.span_limit_per_segment: 1' | yq e '{"message": .}' -
       expected: expected/etcd-put.yml
-#    - query: |
-#        sleep 5;
-#        curl -X POST http://${provider_host}:${provider_9090}/users > /dev/null;
-#        sleep 5;
-#        swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace $(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace list --step=SECOND --service-name e2e-service-provider |grep -A 5 "/users"|head -n 6|tail -n1|awk -F ' ' '{print $2}')
-#      expected: expected/trace-users-detail.yml
+    - query: |
+        sleep 5;
+        curl -X POST http://${provider_host}:${provider_9090}/users > /dev/null;
+        sleep 5;
+        swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace $(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace list --step=SECOND --service-name e2e-service-provider |grep -A 5 "/users"|head -n 6|tail -n1|awk -F ' ' '{print $2}')
+      expected: expected/trace-users-detail.yml
