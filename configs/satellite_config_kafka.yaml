@@ -169,10 +169,14 @@ pipes:
       max_buffer_size: ${SATELLITE_LOGPIPE_SENDER_MAX_BUFFER_SIZE:200}
       # The minimum flush elements.
       min_flush_events: ${SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS:1}
-      client_name: kafka-client
+      client_name: grpc-client
       forwarders:
-        - plugin_name: native-log-kafka-forwarder
+        - plugin_name: native-log-grpc-forwarder
           topic: ${SW_PLUGIN_KAFKA_TOPIC_LOGGING:skywalking-logs}
+#      client_name: kafka-client
+#      forwarders:
+#        - plugin_name: native-log-kafka-forwarder
+#          topic: ${SW_PLUGIN_KAFKA_TOPIC_LOGGING:skywalking-logs}
   - common_config:
       pipe_name: managementpipe
     gatherer:
@@ -382,14 +386,22 @@ pipes:
       max_buffer_size: ${SATELLITE_METERPIPE_SENDER_MAX_BUFFER_SIZE:200}
       # The minimum flush elements.
       min_flush_events: ${SATELLITE_METERPIPE_SENDER_MIN_FLUSH_EVENTS:1}
-      client_name: kafka-client
+      client_name: grpc-client
       forwarders:
-        - plugin_name: native-meter-kafka-forwarder
+        - plugin_name: native-grpc-kafka-forwarder
           # The LRU policy cache size for hosting routine rules of service instance.
           routing_rule_lru_cache_size: ${SATELLITE_METERPIPE_FORWARD_ROUTING_RULE_LRU_CACHE_SIZE:5000}
           # The TTL of the LRU cache size for hosting routine rules of service instance.
           routing_rule_lru_cache_ttl: ${SATELLITE_METERPIPE_FORWARD_ROUTING_RULE_LRU_CACHE_TTL:180}
           topic: ${SW_PLUGIN_KAFKA_TOPIC_METER:skywalking-meters}
+#      client_name: kafka-client
+#      forwarders:
+#        - plugin_name: native-meter-kafka-forwarder
+#          # The LRU policy cache size for hosting routine rules of service instance.
+#          routing_rule_lru_cache_size: ${SATELLITE_METERPIPE_FORWARD_ROUTING_RULE_LRU_CACHE_SIZE:5000}
+#          # The TTL of the LRU cache size for hosting routine rules of service instance.
+#          routing_rule_lru_cache_ttl: ${SATELLITE_METERPIPE_FORWARD_ROUTING_RULE_LRU_CACHE_TTL:180}
+#          topic: ${SW_PLUGIN_KAFKA_TOPIC_METER:skywalking-meters}
   - common_config:
       pipe_name: envoy-als-v2
     gatherer:
