@@ -18,6 +18,7 @@
 package forwarder
 
 import (
+	kafka_nativemanagement "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativemanagement"
 	"reflect"
 
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoyalsv2"
@@ -39,7 +40,6 @@ import (
 	kafka_nativejvm "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativejvm"
 	kafka_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativelog"
 	kafka_nativemeter "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativemeter"
-	kafka_nativeprofile "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativeprofile"
 	kafka_nativetracing "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativetracing"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
@@ -55,8 +55,8 @@ func RegisterForwarderPlugins() {
 		new(kafka_nativejvm.Forwarder),
 		new(kafka_nativetracing.Forwarder),
 		new(kafka_nativemeter.Forwarder),
-		new(kafka_nativeprofile.Forwarder),
-		//new(kafka_nativemanagement.Forwarder),
+		//new(kafka_nativeprofile.Forwarder),
+		new(kafka_nativemanagement.Forwarder),
 
 		new(grpc_nativelog.Forwarder),
 		new(grpc_meter.Forwarder),
