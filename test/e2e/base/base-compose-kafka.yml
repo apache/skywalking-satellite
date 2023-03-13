@@ -103,7 +103,6 @@ services:
     expose:
       - 11800
     environment:
-      GOPROXY: https://goproxy.cn
       SATELLITE_GRPC_CLIENT_FINDER: static
       SATELLITE_GRPC_CLIENT: oap:11800
       SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS: 1

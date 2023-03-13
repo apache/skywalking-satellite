@@ -18,7 +18,6 @@ FROM golang:1.18
 
 ADD . /satellite_code
 WORKDIR /satellite_code
-ENV GOPROXY=https://goproxy.cn
 RUN set -ex; \
     apt-get update; \
     apt-get install -y netcat; \

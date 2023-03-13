@@ -19,9 +19,7 @@ package nativelog
 
 import (
 	"fmt"
-	"google.golang.org/protobuf/proto"
 	"reflect"
-	v3 "skywalking.apache.org/repo/goapi/collect/logging/v3"
 
 	"github.com/Shopify/sarama"
 
@@ -57,7 +55,7 @@ func (f *Forwarder) Description() string {
 func (f *Forwarder) DefaultConfig() string {
 	return `
 # The remote topic. 
-topic: "skywalking-logs"
+topic: "log-topic"
 `
 }
 
@@ -82,19 +80,10 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		if !ok {
 			continue
 		}
-		//for (LogData data : dataList) {
-		//  producer.send(new ProducerRecord<>(topic, data.getService(), Bytes.wrap(data.toByteArray())));
-		//}
-		for _, logData := range data.LogList.Logs {
-			logdata := &v3.LogData{}
-			err := proto.Unmarshal(logData, logdata)
-			if err != nil {
-				return err
-			}
+		for _, l := range data.LogList.Logs {
 			message = append(message, &sarama.ProducerMessage{
 				Topic: f.Topic,
-				Key:   sarama.StringEncoder(logdata.GetService()),
-				Value: sarama.ByteEncoder(logData),
+				Value: sarama.ByteEncoder(l),
 			})
 		}
 	}
