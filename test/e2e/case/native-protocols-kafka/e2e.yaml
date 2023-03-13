@@ -108,13 +108,13 @@ verify:
         end=$(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql profiling trace profiled-segment --segment-id=$segmentid|yq e '.spans.[0].endtime' -);
         swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql profiling trace analysis --segment-id=$segmentid --time-ranges=$(echo $start"-"$end)
       expected: expected/profile-segment-analyze.yml
-#
-#    # native CDS: using etcdctl to update trace span limit, "/users" should have more than one span because it need DB save
-#    - query: |
-#        etcdctl --endpoints http://${etcd_host}:${etcd_2379}/ put /skywalking/configuration-discovery.default.agentConfigurations 'configurations:
-#               e2e-service-provider:
-#                 agent.span_limit_per_segment: 1' | yq e '{"message": .}' -
-#      expected: expected/etcd-put.yml
+
+    # native CDS: using etcdctl to update trace span limit, "/users" should have more than one span because it need DB save
+    - query: |
+        etcdctl --endpoints http://${etcd_host}:${etcd_2379}/ put /skywalking/configuration-discovery.default.agentConfigurations 'configurations:
+               e2e-service-provider:
+                 agent.span_limit_per_segment: 1' | yq e '{"message": .}' -
+      expected: expected/etcd-put.yml
 #    - query: |
 #        sleep 5;
 #        curl -X POST http://${provider_host}:${provider_9090}/users > /dev/null;
