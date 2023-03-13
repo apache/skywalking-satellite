@@ -55,11 +55,11 @@ verify:
     # basic check: service endpoint metrics
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name endpoint_cpm --endpoint-name POST:/info --service-name e2e-service-provider |yq e 'to_entries' -
       expected: expected/metrics-has-value.yml
-#
-#    # native management: service instance list
-#    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql instance list --service-name e2e-service-provider
-#      expected: expected/service-instance.yml
-#
+
+    # native management: service instance list
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql instance list --service-name e2e-service-provider
+      expected: expected/service-instance.yml
+
     # native jvm: service instance jvm metrics
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name instance_jvm_thread_live_count --service-name e2e-service-provider --instance-name provider1 |yq e 'to_entries' -
       expected: expected/metrics-has-value.yml
