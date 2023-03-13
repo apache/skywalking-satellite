@@ -325,10 +325,14 @@ pipes:
       max_buffer_size: ${SATELLITE_JVMPIPE_SENDER_MAX_BUFFER_SIZE:200}
       # The minimum flush elements.
       min_flush_events: ${SATELLITE_JVMPIPE_SENDER_MIN_FLUSH_EVENTS:1}
-      client_name: kafka-client
+      client_name: grpc-client
       forwarders:
-        - plugin_name: native-jvm-kafka-forwarder
+        - plugin_name: native-jvm-grpc-forwarder
           topic: ${SW_PLUGIN_KAFKA_TOPIC_METRICS:skywalking-metrics}
+#      client_name: kafka-client
+#      forwarders:
+#        - plugin_name: native-jvm-kafka-forwarder
+#          topic: ${SW_PLUGIN_KAFKA_TOPIC_METRICS:skywalking-metrics}
   - common_config:
       pipe_name: clrpipe
     gatherer:

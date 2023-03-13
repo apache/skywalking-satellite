@@ -86,6 +86,11 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
 
+		// here a bug ..
+		//
+		//ipv4
+		//172.17.0.2
+		// can't pass ipv4s
 		instanceProperties := e.GetInstance()
 		if instanceProperties != nil {
 			rawdata, err := proto.Marshal(instanceProperties)
