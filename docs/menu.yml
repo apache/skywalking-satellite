@@ -99,8 +99,6 @@ catalog:
                   path: /en/setup/plugins/forwarder_native-ebpf-profiling-grpc-forwarder
                 - name: Native Event GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-event-grpc-forwarder
-                - name: Native Event Kafka Forwarder
-                  path: /en/setup/plugins/forwarder_native-event-kafka-forwarder
                 - name: Native JVM GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-jvm-grpc-forwarder
                 - name: Native jvm Kafka Forwarder
@@ -121,8 +119,6 @@ catalog:
                   path: /en/setup/plugins/forwarder_native-process-grpc-forwarder
                 - name: Native Profile GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-profile-grpc-forwarder
-                - name: Native Profile Kafka Forwarder
-                  path: /en/setup/plugins/forwarder_native-profile-kafka-forwarder
                 - name: Native Tracing GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-tracing-grpc-forwarder
                 - name: Native Tracing Kafka Forwarder
