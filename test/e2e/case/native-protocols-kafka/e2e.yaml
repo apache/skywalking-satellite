@@ -79,9 +79,9 @@ verify:
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql event list --service-name e2e-service-provider --instance-name provider1
       expected: expected/event-list.yml
 
-#    # native log: logs list
-#    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql logs list --service-name e2e-service-provider --trace-id=$(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace ls|grep -A 5 '/info'|tail -n1|awk -F ' ' '{print $2}')
-#      expected: expected/logs-list.yml
+    # native log: logs list
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql logs list --service-name e2e-service-provider --trace-id=$(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace ls|grep -A 5 '/info'|tail -n1|awk -F ' ' '{print $2}')
+      expected: expected/logs-list.yml
 #
 #    # native profile: create task
 #    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql profiling trace create --service-name e2e-service-provider --endpoint-name POST:/info --start-time=$((($(date +%s)+5)*1000)) --duration=1 --min-duration-threshold=0 --dump-period=10 --max-sampling-count=9
