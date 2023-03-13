@@ -38,7 +38,6 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/otlpmetricsv1"
 	kafka_nativejvm "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativejvm"
 	kafka_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativelog"
-	kafka_nativemanagement "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativemanagement"
 	kafka_nativemeter "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativemeter"
 	kafka_nativeprofile "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativeprofile"
 	kafka_nativetracing "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativetracing"
@@ -57,7 +56,7 @@ func RegisterForwarderPlugins() {
 		new(kafka_nativetracing.Forwarder),
 		new(kafka_nativemeter.Forwarder),
 		new(kafka_nativeprofile.Forwarder),
-		new(kafka_nativemanagement.Forwarder),
+		//new(kafka_nativemanagement.Forwarder),
 
 		new(grpc_nativelog.Forwarder),
 		new(grpc_meter.Forwarder),
