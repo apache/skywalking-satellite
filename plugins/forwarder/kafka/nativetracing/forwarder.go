@@ -20,6 +20,7 @@ package nativetracing
 import (
 	"fmt"
 	"reflect"
+	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 
 	"github.com/Shopify/sarama"
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
@@ -78,7 +79,7 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	for _, e := range batch {
 		switch data := e.GetData().(type) {
 		case *v1.SniffData_Segment:
-			segmentObject := &SegmentObject{}
+			segmentObject := &v3.SegmentObject{}
 			err := proto.Unmarshal(data.Segment, segmentObject)
 			if err != nil {
 				return err
