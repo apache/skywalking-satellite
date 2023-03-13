@@ -82,10 +82,10 @@ verify:
     # native log: logs list
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql logs list --service-name e2e-service-provider --trace-id=$(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql trace ls|grep -A 5 '/info'|tail -n1|awk -F ' ' '{print $2}')
       expected: expected/logs-list.yml
-#
-#    # native profile: create task
-#    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql profiling trace create --service-name e2e-service-provider --endpoint-name POST:/info --start-time=$((($(date +%s)+5)*1000)) --duration=1 --min-duration-threshold=0 --dump-period=10 --max-sampling-count=9
-#      expected: expected/profile-create.yml
+
+    # native profile: create task
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql profiling trace create --service-name e2e-service-provider --endpoint-name POST:/info --start-time=$((($(date +%s)+5)*1000)) --duration=1 --min-duration-threshold=0 --dump-period=10 --max-sampling-count=9
+      expected: expected/profile-create.yml
 #    # native profile: sleep to wait agent notices and query profile list
 #    - query: sleep 10 && swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql profiling trace list --service-name e2e-service-provider --endpoint-name POST:/info
 #      expected: expected/profile-list.yml
