@@ -205,7 +205,7 @@ pipes:
       client_name: kafka-client
       forwarders:
         - plugin_name: native-management-kafka-forwarder
-          topic: ${SW_PLUGIN_KAFKA_TOPIC_MANAGEMENT:skywalking-managements}
+          topic: ${SATELLITE_FORWARDER_KAFKA_TOPIC_MANAGEMENT:skywalking-managements}
   - common_config:
       pipe_name: tracingpipe
     gatherer:
@@ -232,7 +232,7 @@ pipes:
       client_name: kafka-client
       forwarders:
         - plugin_name: native-tracing-kafka-forwarder
-          topic: ${SW_PLUGIN_KAFKA_TOPIC_SEGMENT:skywalking-segments}
+          topic: ${SATELLITE_FORWARDER_KAFKA_TOPIC_SEGMENT:skywalking-segments}
   - common_config:
       pipe_name: profilepipe
     gatherer:
@@ -262,7 +262,7 @@ pipes:
       client_name: kafka-client
       forwarders:
         - plugin_name: native-profile-kafka-forwarder
-          topic: ${SW_PLUGIN_KAFKA_TOPIC_SEGMENT:skywalking-profilings}
+          topic: ${SATELLITE_FORWARDER_KAFKA_TOPIC_SEGMENT:skywalking-profilings}
   - common_config:
       pipe_name: cdspipe
     gatherer:
@@ -331,11 +331,11 @@ pipes:
 #      client_name: grpc-client
 #      forwarders:
 #        - plugin_name: native-jvm-grpc-forwarder
-#          topic: ${SW_PLUGIN_KAFKA_TOPIC_METRICS:skywalking-metrics}
+#          topic: ${SATELLITE_FORWARDER_KAFKA_TOPIC_METRICS:skywalking-metrics}
       client_name: kafka-client
       forwarders:
         - plugin_name: native-jvm-kafka-forwarder
-          topic: ${SW_PLUGIN_KAFKA_TOPIC_METRICS:skywalking-metrics}
+          topic: ${SATELLITE_FORWARDER_KAFKA_TOPIC_METRICS:skywalking-metrics}
   - common_config:
       pipe_name: clrpipe
     gatherer:
@@ -399,7 +399,7 @@ pipes:
           routing_rule_lru_cache_size: ${SATELLITE_METERPIPE_FORWARD_ROUTING_RULE_LRU_CACHE_SIZE:5000}
           # The TTL of the LRU cache size for hosting routine rules of service instance.
           routing_rule_lru_cache_ttl: ${SATELLITE_METERPIPE_FORWARD_ROUTING_RULE_LRU_CACHE_TTL:180}
-          topic: ${SW_PLUGIN_KAFKA_TOPIC_METER:skywalking-meters}
+          topic: ${SATELLITE_FORWARDER_KAFKA_TOPIC_METER:skywalking-meters}
   - common_config:
       pipe_name: envoy-als-v2
     gatherer:
