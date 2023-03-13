@@ -21,6 +21,7 @@ import (
 	"fmt"
 	"google.golang.org/protobuf/proto"
 	"reflect"
+	v3 "skywalking.apache.org/repo/goapi/collect/logging/v3"
 
 	"github.com/Shopify/sarama"
 
@@ -84,17 +85,16 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		//for (LogData data : dataList) {
 		//  producer.send(new ProducerRecord<>(topic, data.getService(), Bytes.wrap(data.toByteArray())));
 		//}
-		for _, l := range data.LogList.Logs {
-			//Get the value of GetService() using compatible mode.
-			logdata := &LogData{}
-			err := proto.Unmarshal(l, logdata)
+		for _, logData := range data.LogList.Logs {
+			logdata := &v3.LogData{}
+			err := proto.Unmarshal(logData, logdata)
 			if err != nil {
 				return err
 			}
 			message = append(message, &sarama.ProducerMessage{
 				Topic: f.Topic,
 				Key:   sarama.StringEncoder(logdata.GetService()),
-				Value: sarama.ByteEncoder(l),
+				Value: sarama.ByteEncoder(logData),
 			})
 		}
 	}
