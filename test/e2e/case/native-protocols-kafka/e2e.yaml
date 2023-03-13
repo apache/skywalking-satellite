@@ -46,15 +46,15 @@ verify:
     # basic check: service list
     - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql service ls
       expected: expected/service.yml
-#    # basic check: service metrics
-#    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name service_sla --service-name e2e-service-provider |yq e 'to_entries' -
-#      expected: expected/metrics-has-value.yml
-#    # basic check: service endpoint
-#    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql endpoint list --keyword=info --service-name e2e-service-provider
-#      expected: expected/service-endpoint.yml
-#    # basic check: service endpoint metrics
-#    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name endpoint_cpm --endpoint-name POST:/info --service-name e2e-service-provider |yq e 'to_entries' -
-#      expected: expected/metrics-has-value.yml
+    # basic check: service metrics
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name service_sla --service-name e2e-service-provider |yq e 'to_entries' -
+      expected: expected/metrics-has-value.yml
+    # basic check: service endpoint
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql endpoint list --keyword=info --service-name e2e-service-provider
+      expected: expected/service-endpoint.yml
+    # basic check: service endpoint metrics
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql metrics linear --name endpoint_cpm --endpoint-name POST:/info --service-name e2e-service-provider |yq e 'to_entries' -
+      expected: expected/metrics-has-value.yml
 #
 #    # native management: service instance list
 #    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql instance list --service-name e2e-service-provider
