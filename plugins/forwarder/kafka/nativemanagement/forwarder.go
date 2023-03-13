@@ -115,7 +115,7 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 
 				message = append(message, &sarama.ProducerMessage{
 					Topic: f.Topic,
-					Key:   sarama.StringEncoder("register-" + instancePing.ServiceInstance),
+					Key:   sarama.StringEncoder(instancePing.ServiceInstance),
 					Value: sarama.ByteEncoder(rawdata),
 				})
 			}
