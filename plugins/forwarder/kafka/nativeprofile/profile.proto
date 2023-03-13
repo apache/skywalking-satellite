@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+
+package  nativeprofile;
+//option go_package = "nativeprofile";
+message ThreadSnapshot {
+  // profile task id
+  string taskId = 1;
+  // dumped segment id
+  string traceSegmentId = 2;
+  // dump timestamp
+  int64 time = 3;
+  // snapshot dump sequence, start with zero
+  int32 sequence = 4;
+  //  // snapshot stack
+  //  ThreadStack stack = 5;
+}

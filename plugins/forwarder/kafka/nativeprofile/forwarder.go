@@ -19,10 +19,9 @@ package nativeprofile
 
 import (
 	"fmt"
-	"reflect"
-
 	"github.com/Shopify/sarama"
 	"google.golang.org/protobuf/proto"
+	"reflect"
 
 	profile "skywalking.apache.org/repo/goapi/collect/language/profile/v3"
 
@@ -81,11 +80,18 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 	for _, e := range batch {
 		data := e.GetData().(*v1.SniffData_Profile)
 		rawdata, ok := proto.Marshal(data.Profile)
+
 		if ok != nil {
 			return ok
 		}
+		//producer.send(new ProducerRecord<>(
+		//                topic,
+		//                object.getTaskId() + object.getSequence(),
+		//                Bytes.wrap(object.toByteArray())
+		//            ));
 		message = append(message, &sarama.ProducerMessage{
 			Topic: f.Topic,
+			Key:   sarama.StringEncoder(data.Profile.GetTaskId() + fmt.Sprint(data.Profile.GetSequence())),
 			Value: sarama.ByteEncoder(rawdata),
 		})
 	}
@@ -96,7 +102,7 @@ func (f *Forwarder) ForwardType() v1.SniffType {
 	return v1.SniffType_ProfileType
 }
 
-func (f *Forwarder) SyncForward(_ *v1.SniffData) (*v1.SniffData, error) {
+func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, error) {
 	return nil, fmt.Errorf("unsupport sync forward")
 }
 
