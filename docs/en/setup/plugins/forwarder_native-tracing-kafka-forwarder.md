@@ -1,10 +1,10 @@
-# Forwarder/native-log-kafka-forwarder
+# Forwarder/native-tracing-kafka-forwarder
 ## Description
 This is a synchronization Kafka forwarder with the SkyWalking native log protocol.
 ## DefaultConfig
 ```yaml
 # The remote topic. 
-topic: "skywalking-logs"
+topic: "skywalking-segments"
 ```
 ## Configuration
 |Name|Type|Description|
