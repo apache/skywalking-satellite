@@ -20,6 +20,8 @@ package forwarder
 import (
 	"reflect"
 
+	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
+	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoyalsv2"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoyalsv3"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoymetricsv2"
@@ -36,10 +38,11 @@ import (
 	grpc_nativeprofile "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeprofile"
 	grpc_nativetracing "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativetracing"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/otlpmetricsv1"
+	kafka_nativejvm "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativejvm"
 	kafka_nativelog "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativelog"
-
-	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
-	"github.com/apache/skywalking-satellite/plugins/forwarder/api"
+	kafka_nativemanagement "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativemanagement"
+	kafka_nativemeter "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativemeter"
+	kafka_nativetracing "github.com/apache/skywalking-satellite/plugins/forwarder/kafka/nativetracing"
 )
 
 // RegisterForwarderPlugins register the used filter plugins.
@@ -48,6 +51,13 @@ func RegisterForwarderPlugins() {
 	forwarders := []api.Forwarder{
 		// Please register the forwarder plugins at here.
 		new(kafka_nativelog.Forwarder),
+		new(kafka_nativelog.Forwarder),
+		new(kafka_nativejvm.Forwarder),
+		new(kafka_nativetracing.Forwarder),
+		new(kafka_nativemeter.Forwarder),
+		//new(kafka_nativeprofile.Forwarder),
+		new(kafka_nativemanagement.Forwarder),
+
 		new(grpc_nativelog.Forwarder),
 		new(grpc_meter.Forwarder),
 		new(grpc_nativemanagement.Forwarder),

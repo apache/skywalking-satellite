@@ -1,0 +1,59 @@
+# Licensed to the Apache Software Foundation (ASF) under one
+# or more contributor license agreements.  See the NOTICE file
+# distributed with this work for additional information
+# regarding copyright ownership.  The ASF licenses this file
+# to you under the Apache License, Version 2.0 (the
+# "License"); you may not use this file except in compliance
+# with the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+name: E2E
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - kafka
+
+jobs:
+  NativeProtocolsE2E:
+    strategy:
+      matrix:
+        test:
+          - name: Native Management Kafka/JVM/Tracing/Meter/Event/Log/Profile/CDS
+            config: test/e2e/case/native-protocols-kafka/e2e.yaml
+      fail-fast: true
+    name: Native E2E test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Go 1.17
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.17
+        id: go
+      - uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Build Test Service
+        shell: bash
+        run: |
+          cd test/e2e/base
+          ./mvnw --batch-mode -f provider/pom.xml clean package -Dsw.version=8.7.0
+          ./mvnw --batch-mode -f consumer/pom.xml clean package -Dsw.version=8.7.0
+      - name: ${{ matrix.test.name }}
+        uses: apache/skywalking-infra-e2e@45584853d6f660102c523b1e9cb5815d12ae55d3
+        with:
+          e2e-file: $GITHUB_WORKSPACE/${{ matrix.test.config }}
+      - uses: actions/upload-artifact@v2
+        if: ${{ failure() }}
+        name: Upload Logs
+        with:
+          name: logs
+          path: "${{ env.SW_INFRA_E2E_LOG_DIR }}"

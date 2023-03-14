@@ -6,7 +6,7 @@
 // not use this file except in compliance with the License.
 // You may obtain a copy of the License at
 //
-//     http://www.apache.org/licenses/LICENSE-2.0
+//	http://www.apache.org/licenses/LICENSE-2.0
 //
 // Unless required by applicable law or agreed to in writing,
 // software distributed under the License is distributed on an
@@ -15,26 +15,31 @@
 // specific language governing permissions and limitations
 // under the License.
 
-package nativelog
+package nativemanagement
 
 import (
 	"fmt"
-	"google.golang.org/protobuf/proto"
 	"reflect"
-	v3 "skywalking.apache.org/repo/goapi/collect/logging/v3"
 
 	"github.com/Shopify/sarama"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	"google.golang.org/protobuf/proto"
 
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 const (
-	Name     = "native-log-kafka-forwarder"
-	ShowName = "Native Log Kafka Forwarder"
+	Name     = "native-management-kafka-forwarder"
+	ShowName = "Native Management Kafka Forwarder"
 )
+
+type void struct{}
+
+var empty void
+
+// empty struct for set
 
 type Forwarder struct {
 	config.CommonFields
@@ -51,20 +56,20 @@ func (f *Forwarder) ShowName() string {
 }
 
 func (f *Forwarder) Description() string {
-	return "This is a synchronization Kafka forwarder with the SkyWalking native log protocol."
+	return "This is a synchronization Kafka forwarder with the SkyWalking native management protocol."
 }
 
 func (f *Forwarder) DefaultConfig() string {
 	return `
-# The remote topic. 
-topic: "skywalking-logs"
+# The remote topic.
+topic: "skywalking-managements"
 `
 }
 
 func (f *Forwarder) Prepare(connection interface{}) error {
 	client, ok := connection.(sarama.Client)
 	if !ok {
-		return fmt.Errorf("the %s is only accepet the kafka client, but receive a %s",
+		return fmt.Errorf("the %s is only accept the kafka client, but receive a %s",
 			f.Name(), reflect.TypeOf(connection).String())
 	}
 	producer, err := sarama.NewSyncProducerFromClient(client)
@@ -76,33 +81,51 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
+
+	pingOnce := make(map[string]void)
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
-		data, ok := e.GetData().(*v1.SniffData_LogList)
-		if !ok {
-			continue
-		}
-		//for (LogData data : dataList) {
-		//  producer.send(new ProducerRecord<>(topic, data.getService(), Bytes.wrap(data.toByteArray())));
-		//}
-		for _, logData := range data.LogList.Logs {
-			logdata := &v3.LogData{}
-			err := proto.Unmarshal(logData, logdata)
+		instanceProperties := e.GetInstance()
+		if instanceProperties != nil {
+			rawdata, err := proto.Marshal(instanceProperties)
 			if err != nil {
 				return err
 			}
 			message = append(message, &sarama.ProducerMessage{
 				Topic: f.Topic,
-				Key:   sarama.StringEncoder(logdata.GetService()),
-				Value: sarama.ByteEncoder(logData),
+				Key:   sarama.StringEncoder("register-" + instanceProperties.GetServiceInstance()),
+				Value: sarama.ByteEncoder(rawdata),
 			})
+			continue
 		}
+
+		// report instance ping
+		instancePing := e.GetInstancePing()
+		if instancePing != nil {
+			// report once
+			instancePingStr := fmt.Sprintf("%s_%s", instancePing.Service, instancePing.ServiceInstance)
+			_, exists := pingOnce[instancePingStr]
+			if !exists {
+				rawdata, err := proto.Marshal(instancePing)
+				if err != nil {
+					return err
+				}
+				pingOnce[instancePingStr] = empty
+				message = append(message, &sarama.ProducerMessage{
+					Topic: f.Topic,
+					Key:   sarama.StringEncoder(instancePing.GetServiceInstance()),
+					Value: sarama.ByteEncoder(rawdata),
+				})
+			}
+			continue
+		}
+
 	}
 	return f.producer.SendMessages(message)
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {
-	return v1.SniffType_Logging
+	return v1.SniffType_ManagementType
 }
 
 func (f *Forwarder) SyncForward(_ *v1.SniffData) (*v1.SniffData, error) {
