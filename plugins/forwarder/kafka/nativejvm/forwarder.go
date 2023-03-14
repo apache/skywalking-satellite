@@ -32,7 +32,7 @@ import (
 
 const (
 	Name     = "native-jvm-kafka-forwarder"
-	ShowName = "Native jvm Kafka Forwarder"
+	ShowName = "Native JVM Kafka Forwarder"
 )
 
 type Forwarder struct {
