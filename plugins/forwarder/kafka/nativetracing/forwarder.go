@@ -20,13 +20,14 @@ package nativetracing
 import (
 	"fmt"
 	"reflect"
-	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 
 	"github.com/Shopify/sarama"
-	"github.com/apache/skywalking-satellite/internal/pkg/config"
-	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"google.golang.org/protobuf/proto"
 
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
+
+	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
@@ -98,12 +99,6 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		default:
 			continue
 		}
-		//data := e.GetData().(*v1.SniffData_Segment)
-		//
-		//message = append(message, &sarama.ProducerMessage{
-		//	Topic: f.Topic,
-		//	Value: sarama.ByteEncoder(data.Segment),
-		//})
 	}
 	return f.producer.SendMessages(message)
 }

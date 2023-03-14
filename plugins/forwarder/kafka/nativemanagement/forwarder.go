@@ -22,10 +22,10 @@ import (
 	"reflect"
 
 	"github.com/Shopify/sarama"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
-	"google.golang.org/protobuf/proto"
 
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
@@ -81,7 +81,6 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-
 	pingOnce := make(map[string]void)
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
@@ -119,7 +118,6 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 			}
 			continue
 		}
-
 	}
 	return f.producer.SendMessages(message)
 }

@@ -21,6 +21,7 @@ on:
   push:
     branches:
       - main
+      - kafka-forwards
 
 concurrency:
   group: e2e-istio-${{ github.event.pull_request.number || github.ref }}

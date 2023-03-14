@@ -19,15 +19,15 @@ package nativelog
 
 import (
 	"fmt"
-	"google.golang.org/protobuf/proto"
 	"reflect"
-	v3 "skywalking.apache.org/repo/goapi/collect/logging/v3"
 
 	"github.com/Shopify/sarama"
+	"google.golang.org/protobuf/proto"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 
+	v3 "skywalking.apache.org/repo/goapi/collect/logging/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
@@ -82,9 +82,6 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		if !ok {
 			continue
 		}
-		//for (LogData data : dataList) {
-		//  producer.send(new ProducerRecord<>(topic, data.getService(), Bytes.wrap(data.toByteArray())));
-		//}
 		for _, logData := range data.LogList.Logs {
 			logdata := &v3.LogData{}
 			err := proto.Unmarshal(logData, logdata)

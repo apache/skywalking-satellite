@@ -20,6 +20,7 @@ on:
   push:
     branches:
       - main
+      - kafka-forwards
 
 jobs:
   NativeProtocolsE2E:
@@ -30,6 +31,8 @@ jobs:
             config: test/e2e/case/native-protocols/e2e.yaml
           - name: Native Process/EBPF Profiling
             config: test/e2e/case/native-ebpf/e2e.yaml
+          - name: Native Kafka Management/JVM/Tracing/Meter/Log
+            config: test/e2e/case/native-protocols-kafka/e2e.yaml
       fail-fast: true
     name: Native E2E test
     runs-on: ubuntu-latest

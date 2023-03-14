@@ -29,7 +29,6 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 
-	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
@@ -45,7 +44,6 @@ type Forwarder struct {
 	RoutingRuleLRUCacheTTL int    `mapstructure:"routing_rule_lru_cache_ttl"`
 	Topic                  string `mapstructure:"topic"` // The forwarder topic.
 	producer               sarama.SyncProducer
-	meterClient            v3.MeterReportServiceClient
 	upstreamCache          *cache.LRUExpireCache
 	upstreamCacheExpire    time.Duration
 }
@@ -87,28 +85,28 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-
 	var message []*sarama.ProducerMessage
 	for _, e := range batch {
-		if data, ok := e.GetData().(*v1.SniffData_MeterCollection); ok {
-			if len(data.MeterCollection.MeterData) == 0 {
-				continue
-			}
-			firstMeter := data.MeterCollection.MeterData[0]
-
-			rawdata, err := proto.Marshal(data.MeterCollection)
-			if err != nil {
-				return err
-			}
-			message = append(message, &sarama.ProducerMessage{
-				Topic: f.Topic,
-				Key:   sarama.StringEncoder(firstMeter.ServiceInstance),
-				Value: sarama.ByteEncoder(rawdata),
-			})
-
+		data, ok := e.GetData().(*v1.SniffData_MeterCollection)
+		if !ok {
+			continue
 		}
+		if len(data.MeterCollection.MeterData) == 0 {
+			continue
+		}
+		firstMeter := data.MeterCollection.MeterData[0]
 
+		rawdata, err := proto.Marshal(data.MeterCollection)
+		if err != nil {
+			return err
+		}
+		message = append(message, &sarama.ProducerMessage{
+			Topic: f.Topic,
+			Key:   sarama.StringEncoder(firstMeter.ServiceInstance),
+			Value: sarama.ByteEncoder(rawdata),
+		})
 	}
+
 	return f.producer.SendMessages(message)
 }
 

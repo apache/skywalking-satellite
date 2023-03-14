@@ -55,7 +55,6 @@ func RegisterForwarderPlugins() {
 		new(kafka_nativejvm.Forwarder),
 		new(kafka_nativetracing.Forwarder),
 		new(kafka_nativemeter.Forwarder),
-		//new(kafka_nativeprofile.Forwarder),
 		new(kafka_nativemanagement.Forwarder),
 
 		new(grpc_nativelog.Forwarder),
