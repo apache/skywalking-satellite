@@ -19,15 +19,11 @@ package nativemeter
 
 import (
 	"fmt"
-	"reflect"
-	"time"
-
 	"github.com/Shopify/sarama"
-	"google.golang.org/protobuf/proto"
-	"k8s.io/apimachinery/pkg/util/cache"
-
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
+	"google.golang.org/protobuf/proto"
+	"reflect"
 
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
@@ -39,10 +35,8 @@ const (
 
 type Forwarder struct {
 	config.CommonFields
-	Topic               string `mapstructure:"topic"` // The forwarder topic.
-	producer            sarama.SyncProducer
-	upstreamCache       *cache.LRUExpireCache
-	upstreamCacheExpire time.Duration
+	Topic    string `mapstructure:"topic"` // The forwarder topic.
+	producer sarama.SyncProducer
 }
 
 func (f *Forwarder) Name() string {
