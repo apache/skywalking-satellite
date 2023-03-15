@@ -25,6 +25,7 @@ import (
 	"google.golang.org/protobuf/proto"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 
 	v3 "skywalking.apache.org/repo/goapi/collect/language/agent/v3"
@@ -92,10 +93,10 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 				Value: sarama.ByteEncoder(data.Segment),
 			})
 		case *v1.SniffData_SpanAttachedEvent:
-			message = append(message, &sarama.ProducerMessage{
-				Topic: f.Topic,
-				Value: sarama.ByteEncoder(data.SpanAttachedEvent),
-			})
+			// SniffData_SpanAttachedEvent is from ebpf agent, skywalking-rover project.
+			//You could find it here, https://github.com/apache/skywalking-data-collect-protocol/blob/0da9c8b3e111fb51c9f8854cae16d4519462ecfe/language-agent/Tracing.proto#L244
+			//ref: https://github.com/apache/skywalking-satellite/pull/128#discussion_r1136909393
+			log.Logger.WithField("pipe", f.PipeName).Warnf("native-tracing-kafka-forwarder does not support messages of type SpanAttachedEvent and has discarded them. Please choose native-tracing-grpc-forwarder as a replacement.")
 		default:
 			continue
 		}
