@@ -39,13 +39,10 @@ const (
 
 type Forwarder struct {
 	config.CommonFields
-	RoutingRuleLRUCacheSize int `mapstructure:"routing_rule_lru_cache_size"`
-	// The TTL of the LRU cache size for hosting routine rules of service instance.
-	RoutingRuleLRUCacheTTL int    `mapstructure:"routing_rule_lru_cache_ttl"`
-	Topic                  string `mapstructure:"topic"` // The forwarder topic.
-	producer               sarama.SyncProducer
-	upstreamCache          *cache.LRUExpireCache
-	upstreamCacheExpire    time.Duration
+	Topic               string `mapstructure:"topic"` // The forwarder topic.
+	producer            sarama.SyncProducer
+	upstreamCache       *cache.LRUExpireCache
+	upstreamCacheExpire time.Duration
 }
 
 func (f *Forwarder) Name() string {
@@ -74,8 +71,6 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 			f.Name(), reflect.TypeOf(connection).String())
 	}
 	producer, err := sarama.NewSyncProducerFromClient(client)
-	f.upstreamCache = cache.NewLRUExpireCache(f.RoutingRuleLRUCacheSize)
-	f.upstreamCacheExpire = time.Second * time.Duration(f.RoutingRuleLRUCacheTTL)
 
 	if err != nil {
 		return err
