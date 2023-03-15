@@ -390,10 +390,6 @@ pipes:
       client_name: kafka-client
       forwarders:
         - plugin_name: native-meter-kafka-forwarder
-          # The LRU policy cache size for hosting routine rules of service instance.
-          routing_rule_lru_cache_size: ${SATELLITE_METERPIPE_FORWARD_ROUTING_RULE_LRU_CACHE_SIZE:5000}
-          # The TTL of the LRU cache size for hosting routine rules of service instance.
-          routing_rule_lru_cache_ttl: ${SATELLITE_METERPIPE_FORWARD_ROUTING_RULE_LRU_CACHE_TTL:180}
           topic: ${SATELLITE_FORWARDER_KAFKA_TOPIC_METER:skywalking-meters}
   - common_config:
       pipe_name: envoy-als-v2
