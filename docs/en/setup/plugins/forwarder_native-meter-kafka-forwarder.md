@@ -9,7 +9,5 @@ topic: "skywalking-meters"
 ## Configuration
 |Name|Type|Description|
 |----|----|-----------|
-| routing_rule_lru_cache_size | int |  |
-| routing_rule_lru_cache_ttl | int | The TTL of the LRU cache size for hosting routine rules of service instance. |
 | topic | string | The forwarder topic. |
 

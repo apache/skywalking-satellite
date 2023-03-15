@@ -101,7 +101,7 @@ catalog:
                   path: /en/setup/plugins/forwarder_native-event-grpc-forwarder
                 - name: Native JVM GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-jvm-grpc-forwarder
-                - name: Native jvm Kafka Forwarder
+                - name: Native JVM Kafka Forwarder
                   path: /en/setup/plugins/forwarder_native-jvm-kafka-forwarder
                 - name: Native Log GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-log-grpc-forwarder

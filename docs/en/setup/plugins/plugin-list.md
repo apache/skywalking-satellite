@@ -17,7 +17,7 @@
 	- [Native EBPF Profiling GRPC Forwarder](./forwarder_native-ebpf-profiling-grpc-forwarder.md)
 	- [Native Event GRPC Forwarder](./forwarder_native-event-grpc-forwarder.md)
 	- [Native JVM GRPC Forwarder](./forwarder_native-jvm-grpc-forwarder.md)
-	- [Native jvm Kafka Forwarder](./forwarder_native-jvm-kafka-forwarder.md)
+	- [Native JVM Kafka Forwarder](./forwarder_native-jvm-kafka-forwarder.md)
 	- [Native Log GRPC Forwarder](./forwarder_native-log-grpc-forwarder.md)
 	- [Native Log Kafka Forwarder](./forwarder_native-log-kafka-forwarder.md)
 	- [Native Management GRPC Forwarder](./forwarder_native-management-grpc-forwarder.md)
