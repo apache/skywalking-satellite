@@ -33,14 +33,14 @@ services:
       ETCD_NAME: s1
       ETCD_DATA_DIR: /etcd-data
     healthcheck:
-      test: ["CMD", "sh", "-c", "etcdctl endpoint health" ]
+      test: [ "CMD", "sh", "-c", "etcdctl endpoint health" ]
       interval: 5s
       timeout: 60s
       retries: 120
 
   oap:
     extends:
-      file: ../../base/base-compose-kafka.yml
+      file: ../../base/base-compose.yml
       service: oap
     environment:
       SW_LOG_LAL_FILES: test
@@ -62,7 +62,7 @@ services:
 
   satellite:
     extends:
-      file: ../../base/base-compose-kafka.yml
+      file: ../../base/base-compose.yml
       service: satellite
     environment:
       SATELLITE_GRPC_CLIENT_FINDER: static
@@ -70,6 +70,8 @@ services:
       SATELLITE_LOGPIPE_SENDER_MIN_FLUSH_EVENTS: 1
       SATELLITE_GRPC_ACCEPT_LIMIT_CPU_UTILIZATION: 100
       SATELLITE_KAFKA_CLIENT_BROKERS: broker-a:9092,broker-b:9092
+    volumes:
+      - ./satellite_config_kafka.yaml:/skywalking-satellite/configs/satellite_config.yaml
     ports:
       - 11800
     depends_on:
@@ -78,7 +80,7 @@ services:
 
   provider:
     extends:
-      file: ../../base/base-compose-kafka.yml
+      file: ../../base/base-compose.yml
       service: provider
     ports:
       - 9090
@@ -88,7 +90,7 @@ services:
 
   consumer:
     extends:
-      file: ../../base/base-compose-kafka.yml
+      file: ../../base/base-compose.yml
       service: consumer
     ports:
       - 9090
@@ -105,14 +107,14 @@ services:
   zookeeper:
     image: zookeeper:3.4
     hostname: zookeeper
-    expose:
+    ports:
       - 2181
     networks:
       - e2e
     environment:
       - ALLOW_ANONYMOUS_LOGIN=yes
     healthcheck:
-      test: ["CMD", "sh", "-c", "nc -nz 127.0.0.1 2181"]
+      test: [ "CMD", "sh", "-c", "nc -nz 127.0.0.1 2181" ]
       interval: 5s
       timeout: 60s
       retries: 120
@@ -120,7 +122,7 @@ services:
   broker-a:
     image: bitnami/kafka:2.4.1
     hostname: broker-a
-    expose:
+    ports:
       - 9092
     networks:
       - e2e
@@ -132,7 +134,7 @@ services:
       zookeeper:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "kafka-topics.sh", "--list", "--zookeeper", "zookeeper:2181"]
+      test: [ "CMD", "kafka-topics.sh", "--list", "--zookeeper", "zookeeper:2181" ]
       interval: 5s
       timeout: 60s
       retries: 120
@@ -140,7 +142,7 @@ services:
   broker-b:
     image: bitnami/kafka:2.4.1
     hostname: broker-b
-    expose:
+    ports:
       - 9092
     networks:
       - e2e
@@ -152,7 +154,7 @@ services:
       zookeeper:
         condition: service_healthy
     healthcheck:
-      test: ["CMD", "kafka-topics.sh", "--list", "--zookeeper", "zookeeper:2181"]
+      test: [ "CMD", "kafka-topics.sh", "--list", "--zookeeper", "zookeeper:2181" ]
       interval: 5s
       timeout: 60s
       retries: 12
