@@ -19,11 +19,13 @@ package nativemeter
 
 import (
 	"fmt"
+	"reflect"
+
 	"github.com/Shopify/sarama"
+	"google.golang.org/protobuf/proto"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
-	"google.golang.org/protobuf/proto"
-	"reflect"
 
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
