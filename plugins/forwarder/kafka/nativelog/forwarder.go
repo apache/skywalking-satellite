@@ -82,15 +82,15 @@ func (f *Forwarder) Forward(batch event.BatchEvents) error {
 		if !ok {
 			continue
 		}
+		firstLog := &v3.LogData{}
+		err := proto.Unmarshal(data.LogList.Logs[0], firstLog)
+		if err != nil {
+			return err
+		}
 		for _, logData := range data.LogList.Logs {
-			logdata := &v3.LogData{}
-			err := proto.Unmarshal(logData, logdata)
-			if err != nil {
-				return err
-			}
 			message = append(message, &sarama.ProducerMessage{
 				Topic: f.Topic,
-				Key:   sarama.StringEncoder(logdata.GetService()),
+				Key:   sarama.StringEncoder(firstLog.GetService()),
 				Value: sarama.ByteEncoder(logData),
 			})
 		}
