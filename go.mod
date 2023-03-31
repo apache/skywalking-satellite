@@ -19,7 +19,7 @@ require (
 	golang.org/x/mod v0.9.0
 	golang.org/x/text v0.8.0
 	google.golang.org/grpc v1.53.0
-	google.golang.org/protobuf v1.29.0
+	google.golang.org/protobuf v1.29.1
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.26.2
 	skywalking.apache.org/repo/goapi v0.0.0-20221115073815-1d2a7c96c0b1
