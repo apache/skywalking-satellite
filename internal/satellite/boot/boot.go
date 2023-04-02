@@ -43,6 +43,7 @@ import (
 	// import the telemetry implements
 	_ "github.com/apache/skywalking-satellite/internal/satellite/telemetry/metricservice"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/telemetry/none"
+	_ "github.com/apache/skywalking-satellite/internal/satellite/telemetry/pprof"
 	_ "github.com/apache/skywalking-satellite/internal/satellite/telemetry/prometheus"
 )
 

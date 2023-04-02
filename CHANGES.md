@@ -5,6 +5,9 @@ Release Notes.
 1.2.0
 ------------------
 #### Features
+* Introduce `pprof` module.
+* Support export multiple `telemetry` service.
+* Update the base docker image.
 
 #### Bug Fixes
 * Fix [CVE-2022-41721](https://avd.aquasec.com/nvd/cve-2022-41721).

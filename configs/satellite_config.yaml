@@ -32,8 +32,8 @@ telemetry:
   service: ${SATELLITE_TELEMETRY_SERVICE:satellite-service}
   # The minimum running unit, such as the pod concept in the Kubernetes.
   instance: ${SATELLITE_TELEMETRY_INSTANCE:satellite-instance}
-  # Telemetry export type, support "prometheus", "metrics_service" or "none"
-  export_type: ${SATELLITE_TELEMETRY_EXPORT_TYPE:prometheus}
+  # Telemetry export type, support "prometheus", "metrics_service", "pprof" or "none", multiple split by ","
+  export_type: ${SATELLITE_TELEMETRY_EXPORT_TYPE:prometheus,pprof}
   # Export telemetry data through Prometheus server, only works on "export_type=prometheus".
   prometheus:
     # The prometheus server address.
@@ -48,6 +48,10 @@ telemetry:
     interval: ${SATELLITE_TELEMETRY_METRICS_SERVICE_INTERVAL:10}
     # The prefix of telemetry metric name
     metric_prefix: ${SATELLITE_TELEMETRY_METRICS_SERVICE_METRIC_PREFIX:sw_stl_}
+  # Export pprof service for detect performance issue
+  pprof:
+    # The pprof server address.
+    address: ${SATELLITE_TELEMETRY_PPROF_ADDRESS::6060}
 
 # The sharing plugins referenced by the specific plugins in the different pipes.
 sharing:

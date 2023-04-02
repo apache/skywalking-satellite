@@ -119,6 +119,8 @@ func (s *Sender) store(ctx context.Context, partition int, wg *sync.WaitGroup) {
 		// blocking output when disconnecting.
 		if atomic.LoadInt32(&s.blocking) == 1 {
 			time.Sleep(100 * time.Millisecond)
+			log.Logger.WithField("pipe", s.config.PipeName).
+				Debugf("the client connection is disconnect, blocking the buffer")
 			continue
 		}
 		select {
@@ -245,6 +247,12 @@ func (s *Sender) consume(batch *buffer.BatchBuffer) {
 			if err := f.Forward(batchEvents); err == nil {
 				s.sendCounter.Add(float64(len(batchEvents)), s.config.PipeName, "success", f.ForwardType().String())
 				continue
+			} else {
+				log.Logger.WithFields(logrus.Fields{
+					"pipe":   s.config.PipeName,
+					"offset": batch.Last(),
+					"size":   len(batchEvents),
+				}).Warnf("forward event failure: %v", err)
 			}
 			if !s.runningFallbacker.FallBack(batchEvents, f.Forward) {
 				s.sendCounter.Add(float64(len(batchEvents)), s.config.PipeName, "failure", f.ForwardType().String())
