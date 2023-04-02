@@ -27,7 +27,7 @@ COPY . .
 RUN VERSION=$VERSION make linux
 RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-amd64 /src/bin/skywalking-satellite
 
-FROM scratch
+FROM debian
 
 VOLUME /skywalking/configs
 

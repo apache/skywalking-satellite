@@ -21,14 +21,13 @@ import (
 	"hash/crc32"
 	"sync"
 
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
+
 	"google.golang.org/grpc/balancer"
 	"google.golang.org/grpc/balancer/base"
-	"google.golang.org/grpc/grpclog"
 )
 
 const Name = "satellite_lb"
-
-var logger = grpclog.Component(Name)
 
 func newBuilder() balancer.Builder {
 	return base.NewBalancerBuilder(Name, &satelliteDynamicPickerBuilder{}, base.Config{HealthCheck: true})
@@ -42,7 +41,6 @@ type satelliteDynamicPickerBuilder struct {
 }
 
 func (s *satelliteDynamicPickerBuilder) Build(info base.PickerBuildInfo) balancer.Picker {
-	logger.Infof("ready to build a new picker: %v", info)
 	if len(info.ReadySCs) == 0 {
 		return base.NewErrPicker(balancer.ErrNoSubConnAvailable)
 	}
@@ -81,6 +79,7 @@ type connectionWrap struct {
 func (s *satelliteDynamicPicker) Pick(info balancer.PickInfo) (balancer.PickResult, error) {
 	// only one connection
 	if s.connCount == 1 {
+		log.Logger.Debugf("pick the connection: %s", s.cons[0].addr)
 		return balancer.PickResult{SubConn: s.cons[0].conn}, nil
 	}
 
@@ -93,6 +92,7 @@ func (s *satelliteDynamicPicker) Pick(info balancer.PickInfo) (balancer.PickResu
 	// check exists appoint address
 	if config.appointAddr != "" {
 		if con := s.addrToConn[config.appointAddr]; con != nil {
+			log.Logger.Debugf("use the appoint connection: %s", config.appointAddr)
 			return balancer.PickResult{SubConn: con}, nil
 		}
 	}
@@ -102,6 +102,7 @@ func (s *satelliteDynamicPicker) Pick(info balancer.PickInfo) (balancer.PickResu
 	connWrap := s.cons[routeIndex]
 	// update the address to the config
 	config.appointAddr = connWrap.addr
+	log.Logger.Debugf("pick the connection: %s", connWrap.addr)
 	return balancer.PickResult{SubConn: connWrap.conn}, nil
 }
 
@@ -110,6 +111,7 @@ func (s *satelliteDynamicPicker) roundRobinConnection() balancer.PickResult {
 	sc := s.cons[s.next]
 	s.next = (s.next + 1) % s.connCount
 	s.mu.Unlock()
+	log.Logger.Debugf("pick the connection: %s", sc.addr)
 	return balancer.PickResult{SubConn: sc.conn}
 }
 

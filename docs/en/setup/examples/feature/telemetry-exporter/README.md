@@ -1,6 +1,8 @@
 # Telemetry Exporter
 
-Satellite supports two ways to export its own telemetry data, `prometheus` or `metrics-service`.
+Satellite supports three ways to export its own telemetry data, `prometheus`, `metrics-service` or `pprof`.
+
+Multiple export methods are supported simultaneously, separated by commas.
 
 ## Prometheus
 
@@ -18,7 +20,7 @@ telemetry:
   service: ${SATELLITE_TELEMETRY_SERVICE:satellite-service}
   # The minimum running unit, such as the pod concept in the Kubernetes.
   instance: ${SATELLITE_TELEMETRY_SERVICE:satellite-instance}
-  # Telemetry export type, support "prometheus", "metrics_service" or "none"
+  # Telemetry export type, support "prometheus", "metrics_service", "pprof" or "none"
   export_type: ${SATELLITE_TELEMETRY_EXPORT_TYPE:prometheus}
   # Export telemetry data through Prometheus server, only works on "export_type=prometheus".
   prometheus:
@@ -45,7 +47,7 @@ telemetry:
   service: ${SATELLITE_TELEMETRY_SERVICE:satellite-service}
   # The minimum running unit, such as the pod concept in the Kubernetes.
   instance: ${SATELLITE_TELEMETRY_SERVICE:satellite-instance}
-  # Telemetry export type, support "prometheus", "metrics_service" or "none"
+  # Telemetry export type, support "prometheus", "metrics_service", "pprof" or "none"
   export_type: ${SATELLITE_TELEMETRY_EXPORT_TYPE:metrics_service}
   # Export telemetry data through native meter format to OAP backend, only works on "export_type=metrics_service".
   metrics_service:
@@ -55,4 +57,20 @@ telemetry:
     interval: ${SATELLITE_TELEMETRY_METRICS_SERVICE_INTERVAL:10}
     # The prefix of telemetry metric name
     metric_prefix: ${SATELLITE_TELEMETRY_METRICS_SERVICE_METRIC_PREFIX:sw_stl_}
+```
+
+## pprof
+
+pprof can provide HTTP services to allow remote viewing of service execution status, helping you discover performance issues.
+
+```xml
+
+# The Satellite self telemetry configuration.
+telemetry:
+  # Telemetry export type, support "prometheus", "metrics_service", "pprof" or "none"
+  export_type: ${SATELLITE_TELEMETRY_EXPORT_TYPE:pprof}
+  # Export pprof service for detect performance issue
+  pprof:
+    # The pprof server address.
+    address: ${SATELLITE_TELEMETRY_PPROF_ADDRESS::6060}
 ```
