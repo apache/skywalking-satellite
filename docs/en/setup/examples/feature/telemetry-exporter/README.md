@@ -59,7 +59,7 @@ telemetry:
     metric_prefix: ${SATELLITE_TELEMETRY_METRICS_SERVICE_METRIC_PREFIX:sw_stl_}
 ```
 
-## Pprof
+## pprof
 
 pprof can provide HTTP services to allow remote viewing of service execution status, helping you discover performance issues.
 
