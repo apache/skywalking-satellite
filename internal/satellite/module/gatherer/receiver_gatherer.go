@@ -39,6 +39,8 @@ import (
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
+var enqueueErrorPrintInterval = 20 * time.Second
+
 type ReceiverGatherer struct {
 	// config
 	config *api.GathererConfig
@@ -56,6 +58,9 @@ type ReceiverGatherer struct {
 
 	// sync invoker
 	processor processor.Processor
+
+	lastEnqueueErrorPrintTime time.Time
+	enqueueErrorCounter       map[string]int
 }
 
 func (r *ReceiverGatherer) Prepare() error {
@@ -71,6 +76,8 @@ func (r *ReceiverGatherer) Prepare() error {
 	}
 	r.receiveCounter = telemetry.NewCounter("gatherer_receive_count", "Total number of the receiving count in the Gatherer.", "pipe", "status")
 	r.queueOutputCounter = telemetry.NewCounter("queue_output_count", "Total number of the output count in the Queue of Gatherer.", "pipe", "status")
+	r.lastEnqueueErrorPrintTime = time.Now()
+	r.enqueueErrorCounter = make(map[string]int)
 	return nil
 }
 
@@ -88,11 +95,7 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 				r.receiveCounter.Inc(r.config.PipeName, "all")
 				err := r.runningQueue.Enqueue(e)
 				if err != nil {
-					r.receiveCounter.Inc(r.config.PipeName, "abandoned")
-					log.Logger.WithFields(logrus.Fields{
-						"pipe":  r.config.PipeName,
-						"queue": r.runningQueue.Name(),
-					}).Errorf("error in enqueue: %v", err)
+					r.recordEnqueueError(err)
 				}
 			case <-childCtx.Done():
 				cancel()
@@ -105,6 +108,23 @@ func (r *ReceiverGatherer) Boot(ctx context.Context) {
 		r.consumeQueue(ctx, p, &wg)
 	}
 	wg.Wait()
+}
+
+func (r *ReceiverGatherer) recordEnqueueError(err error) {
+	r.receiveCounter.Inc(r.config.PipeName, "abandoned")
+	r.enqueueErrorCounter[err.Error()]++
+	if time.Now().After(r.lastEnqueueErrorPrintTime.Add(enqueueErrorPrintInterval)) {
+		for e, count := range r.enqueueErrorCounter {
+			log.Logger.WithFields(logrus.Fields{
+				"pipe":  r.config.PipeName,
+				"queue": r.runningQueue.Name(),
+				"count": count,
+			}).Errorf("error in enqueue: %v", e)
+		}
+
+		r.lastEnqueueErrorPrintTime = time.Now()
+		r.enqueueErrorCounter = make(map[string]int)
+	}
 }
 
 func (r *ReceiverGatherer) consumeQueue(ctx context.Context, p int, wg *sync.WaitGroup) {

@@ -49,12 +49,19 @@ type Client struct {
 	Authentication     string `mapstructure:"authentication"`       // The auth value when send request
 	CheckPeriod        int    `mapstructure:"check_period"`         // How frequently to check the connection(second)
 
+	Timeout TimeoutConfig `mapstructure:"timeout"` // The gRPC send request timeout
+
 	// components
 	status    api.ClientStatus
 	client    *grpc.ClientConn
 	listeners []chan<- api.ClientStatus
 	ctx       context.Context    // Parent ctx
 	cancel    context.CancelFunc // Parent ctx cancel function
+}
+
+type TimeoutConfig struct {
+	Unary  string `mapstructure:"unary"`  // The timeout for unary single request
+	Stream string `mapstructure:"stream"` // The timeout for unary stream request
 }
 
 func (c *Client) Name() string {
@@ -109,6 +116,13 @@ authentication: ""
 
 # How frequently to check the connection(second)
 check_period: 5
+
+# The gRPC send request timeout
+timeout:
+  # The timeout for unary single request
+  unary: 5s
+  # The timeout for unary stream request
+  stream: 20s
 `
 }
 

@@ -25,6 +25,7 @@ import (
 	"google.golang.org/grpc/connectivity"
 	"google.golang.org/grpc/status"
 
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/plugins/client/api"
 )
 
@@ -37,6 +38,7 @@ func (c *Client) snifferChannelStatus() {
 		select {
 		case <-timeTicker.C:
 			state := c.client.GetState()
+			log.Logger.Debugf("current grpc client state: %s", state)
 			if state == connectivity.Shutdown || state == connectivity.TransientFailure {
 				c.updateStatus(api.Disconnect)
 			} else if state == connectivity.Ready || state == connectivity.Idle {

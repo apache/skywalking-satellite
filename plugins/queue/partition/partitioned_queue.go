@@ -149,7 +149,7 @@ func (p *PartitionedQueue) findPartition(_ *v1.SniffData) (int, error) {
 			return checkPartition, nil
 		}
 	}
-	return 0, fmt.Errorf("the queue is full")
+	return 0, api.ErrFull
 }
 
 func (p *PartitionedQueue) registerQueueTelemetry(pipeline string) {
