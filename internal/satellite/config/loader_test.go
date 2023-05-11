@@ -98,6 +98,10 @@ func sharing() *SharingConfig {
 				"check_period":           5,
 				"authentication":         "",
 				"finder_type":            "static",
+				"timeout": map[string]interface{}{
+					"unary":  "5s",
+					"stream": "20s",
+				},
 				"kubernetes_config": map[string]interface{}{
 					"api_server": "",
 					"basic_auth": map[string]interface{}{

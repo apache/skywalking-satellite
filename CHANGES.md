@@ -8,6 +8,8 @@ Release Notes.
 * Introduce `pprof` module.
 * Support export multiple `telemetry` service.
 * Update the base docker image.
+* Add timeout configuration for gRPC client.
+* Reduce log print when the enqueue data to the pipeline error.
 
 #### Bug Fixes
 * Fix [CVE-2022-41721](https://avd.aquasec.com/nvd/cve-2022-41721).

@@ -41,6 +41,13 @@ authentication: ""
 
 # How frequently to check the connection(second)
 check_period: 5
+
+# The gRPC send request timeout
+timeout:
+  # The timeout for unary single request
+  unary: 5s
+  # The timeout for unary stream request
+  stream: 20s
 ```
 ## Configuration
 |Name|Type|Description|
@@ -68,4 +75,5 @@ check_period: 5
 | insecure_skip_verify | bool | Controls whether a client verifies the server's certificate chain and host name. |
 | authentication | string | The auth value when send request |
 | check_period | int | How frequently to check the connection(second) |
+| timeout | grpc.TimeoutConfig | The gRPC send request timeout |
 

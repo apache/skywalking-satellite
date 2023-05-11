@@ -120,6 +120,12 @@ sharing:
       check_period: ${SATELLITE_GRPC_CHECK_PERIOD:5}
       # The auth value when send request
       authentication: ${SATELLITE_GRPC_AUTHENTICATION:""}
+      # The gRPC send request timeout
+      timeout:
+        # The timeout for unary single request
+        unary: ${SATELLITE_GRPC_TIMEOUT_UNARY:5s}
+        # The timeout for unary stream request
+        stream: ${SATELLITE_GRPC_TIMEOUT_STREAM:20s}
   servers:
     - plugin_name: "grpc-server"
       # The address of grpc server.
