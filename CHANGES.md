@@ -13,6 +13,7 @@ Release Notes.
 
 #### Bug Fixes
 * Fix [CVE-2022-41721](https://avd.aquasec.com/nvd/cve-2022-41721).
+* Use Go 19 to build the Docker image to fix CVEs.
 
 #### Issues and PR
 - All issues are [here](https://github.com/apache/skywalking/milestone/170?closed=1)
