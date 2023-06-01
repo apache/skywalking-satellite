@@ -29,6 +29,8 @@ RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-amd64 /src/bin/skywalking-
 
 FROM debian
 
+RUN apt update && apt install -y libssl-dev
+
 VOLUME /skywalking/configs
 
 WORKDIR /skywalking
