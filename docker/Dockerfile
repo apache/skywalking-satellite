@@ -29,6 +29,8 @@ RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-amd64 /src/bin/skywalking-
 
 FROM alpine:3
 
+RUN apk -U upgrade
+
 VOLUME /skywalking/configs
 
 WORKDIR /skywalking
