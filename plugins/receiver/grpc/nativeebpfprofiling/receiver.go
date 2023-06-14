@@ -36,7 +36,9 @@ const (
 type Receiver struct {
 	config.CommonFields
 	grpcreceiver.CommonGRPCReceiverFields
-	service *ProfilingReportService // The gRPC request handler for profiling data.
+
+	profilingService  *ProfilingReportService
+	continuousService *ContinuousProfilingReportService
 }
 
 func (r *Receiver) Name() string {
@@ -58,12 +60,15 @@ func (r *Receiver) DefaultConfig() string {
 
 func (r *Receiver) RegisterHandler(server interface{}) {
 	r.CommonGRPCReceiverFields = *grpcreceiver.InitCommonGRPCReceiverFields(server)
-	r.service = &ProfilingReportService{receiveChannel: r.OutputChannel}
-	v3.RegisterEBPFProfilingServiceServer(r.Server, r.service)
+	r.profilingService = &ProfilingReportService{receiveChannel: r.OutputChannel}
+	r.continuousService = &ContinuousProfilingReportService{}
+	v3.RegisterEBPFProfilingServiceServer(r.Server, r.profilingService)
+	v3.RegisterContinuousProfilingServiceServer(r.Server, r.continuousService)
 }
 
 func (r *Receiver) RegisterSyncInvoker(invoker module.SyncInvoker) {
-	r.service.SyncInvoker = invoker
+	r.profilingService.SyncInvoker = invoker
+	r.continuousService.SyncInvoker = invoker
 }
 
 func (r *Receiver) Channel() <-chan *v1.SniffData {
