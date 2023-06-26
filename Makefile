@@ -115,6 +115,7 @@ define DOCKER_RULE
 		--no-cache --build-arg VERSION=$(VERSION) \
 		-t $(HUB)/skywalking-satellite:v$(VERSION) \
 		-f docker/Dockerfile \
+                --provenance=false \
 		.
 	docker buildx rm skywalking_satellite || true
 endef
