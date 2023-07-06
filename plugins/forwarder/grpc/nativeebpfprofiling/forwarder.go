@@ -41,7 +41,8 @@ const (
 type Forwarder struct {
 	config.CommonFields
 
-	profilingClient profiling.EBPFProfilingServiceClient
+	profilingClient  profiling.EBPFProfilingServiceClient
+	continuousClient profiling.ContinuousProfilingServiceClient
 }
 
 func (f *Forwarder) Name() string {
@@ -67,6 +68,7 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 			f.Name(), reflect.TypeOf(connection).String())
 	}
 	f.profilingClient = profiling.NewEBPFProfilingServiceClient(client)
+	f.continuousClient = profiling.NewContinuousProfilingServiceClient(client)
 	return nil
 }
 
@@ -108,15 +110,27 @@ func (f *Forwarder) ForwardType() v1.SniffType {
 }
 
 func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, error) {
-	query := e.GetEBPFProfilingTaskQuery()
-	if query == nil {
-		return nil, fmt.Errorf("unsupport data")
+	switch data := e.GetData().(type) {
+	case *v1.SniffData_EBPFProfilingTaskQuery:
+		commands, err := f.profilingClient.QueryTasks(context.Background(), data.EBPFProfilingTaskQuery)
+		if err != nil {
+			return nil, err
+		}
+		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil
+	case *v1.SniffData_ContinuousProfilingPolicyQuery:
+		commands, err := f.continuousClient.QueryPolicies(context.Background(), data.ContinuousProfilingPolicyQuery)
+		if err != nil {
+			return nil, err
+		}
+		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil
+	case *v1.SniffData_ContinuousProfilingReport:
+		commands, err := f.continuousClient.ReportProfilingTask(context.Background(), data.ContinuousProfilingReport)
+		if err != nil {
+			return nil, err
+		}
+		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil
 	}
-	commands, err := f.profilingClient.QueryTasks(context.Background(), query)
-	if err != nil {
-		return nil, err
-	}
-	return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil
+	return nil, fmt.Errorf("unsupported data type %T", e.GetData())
 }
 
 func (f *Forwarder) SupportedSyncInvoke() bool {

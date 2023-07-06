@@ -27,7 +27,9 @@ COPY . .
 RUN VERSION=$VERSION make linux
 RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-amd64 /src/bin/skywalking-satellite
 
-FROM debian
+FROM alpine:3
+
+RUN apk -U upgrade
 
 VOLUME /skywalking/configs
 

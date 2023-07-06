@@ -10,6 +10,7 @@ Release Notes.
 * Update the base docker image.
 * Add timeout configuration for gRPC client.
 * Reduce log print when the enqueue data to the pipeline error.
+* Support transmit the Continuous Profiling protocol.
 
 #### Bug Fixes
 * Fix [CVE-2022-41721](https://avd.aquasec.com/nvd/cve-2022-41721).
