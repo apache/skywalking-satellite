@@ -17,6 +17,7 @@
 FROM golang:1.19 as build
 
 ARG VERSION="latest"
+ARG TARGETARCH
 
 ENV CGO_ENABLED=0
 
@@ -24,8 +25,8 @@ WORKDIR /src
 
 COPY . .
 
-RUN VERSION=$VERSION make linux
-RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-amd64 /src/bin/skywalking-satellite
+RUN VERSION=$VERSION make ARCH=${TARGETARCH} linux
+RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-${TARGETARCH} /src/bin/skywalking-satellite
 
 FROM alpine:3
 
