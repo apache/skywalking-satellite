@@ -78,7 +78,9 @@ setup:
                        --set satellite.enabled=true \
                        --set satellite.image.repository=apache/skywalking-satellite \
                        --set satellite.image.tag=vlatest \
-                       --set satellite.env.SATELLITE_GRPC_ACCEPT_LIMIT_CPU_UTILIZATION=100
+                       --set satellite.env.SATELLITE_GRPC_ACCEPT_LIMIT_CPU_UTILIZATION=100 \
+                       -f ../../test/e2e/case/istio/values.yaml
+
       wait:
         - namespace: istio-system
           resource: deployments/skywalking-oap
