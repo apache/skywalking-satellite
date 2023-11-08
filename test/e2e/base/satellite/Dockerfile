@@ -21,7 +21,7 @@ WORKDIR /satellite_code
 
 RUN set -ex; \
     apt-get update; \
-    apt-get install -y netcat; \
+    apt-get install -y netcat-traditional; \
     make linux; \
     mkdir -p /skywalking-satellite/configs; \
     cp configs/satellite_config.yaml /skywalking-satellite/configs/satellite_config.yaml; \
