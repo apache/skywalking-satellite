@@ -62,7 +62,7 @@ func (s *Server) Prepare() error {
 func (s *Server) Start() error {
 	log.Logger.WithField("address", s.Address).Info("http server is starting...")
 	go func() {
-		err := http.ListenAndServe(s.Address, s.Server)
+		err := http.ListenAndServe(s.Address, s.Server) // #nosec G114 -- consider what is the best timeout to set
 		if err != nil {
 			log.Logger.WithField("address", s.Address).Infof("http server has failure when starting: %v", err)
 		}
