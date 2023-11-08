@@ -73,7 +73,7 @@ func (s *Server) Start(config *telemetry.Config) error {
 	s.server.Handle(s.Endpoint, promhttp.HandlerFor(s.Gatherer, promhttp.HandlerOpts{ErrorLog: log.Logger}))
 	go func() {
 		log.Logger.WithField("address", s.Address).Info("prometheus server is starting...")
-		err := http.ListenAndServe(s.Address, s.server)
+		err := http.ListenAndServe(s.Address, s.server) // #nosec G114 -- consider what is the best timeout to set
 		if err != nil {
 			log.Logger.WithField("address", s.Address).Infof("prometheus server has failure when starting: %v", err)
 		}
