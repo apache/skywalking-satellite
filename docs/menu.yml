@@ -93,14 +93,16 @@ catalog:
                   path: /en/setup/plugins/forwarder_envoy-metrics-v3-grpc-forwarder
                 - name: Native CDS GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-cds-grpc-forwarder
+                - name: Native CLR GRPC Forwarder
+                  path: /en/setup/plugins/forwarder_native-clr-grpc-forwarder
+                - name: GRPC Native EBFP Access Log Forwarder
+                  path: /en/setup/plugins/forwarder_native-ebpf-accesslog-grpc-forwarder
                 - name: Native EBPF Profiling GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-ebpf-profiling-grpc-forwarder
                 - name: Native Event GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-event-grpc-forwarder
                 - name: Native JVM GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-jvm-grpc-forwarder
-                - name: Native CLR GRPC Forwarder
-                  path: /en/setup/plugins/forwarder_native-clr-grpc-forwarder
                 - name: Native Log GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-log-grpc-forwarder
                 - name: Native Log Kafka Forwarder
@@ -137,14 +139,16 @@ catalog:
                   path: /en/setup/plugins/receiver_grpc-envoy-metrics-v3-receiver
                 - name: GRPC Native CDS Receiver
                   path: /en/setup/plugins/receiver_grpc-native-cds-receiver
+                - name: GRPC Native CLR Receiver
+                  path: /en/setup/plugins/receiver_grpc-native-clr-receiver
+                - name: GRPC Native EBFP Accesslog Receiver
+                  path: /en/setup/plugins/receiver_grpc-native-ebpf-accesslog-receiver
                 - name: GRPC Native EBFP Profiling Receiver
                   path: /en/setup/plugins/receiver_grpc-native-ebpf-profiling-receiver
                 - name: GRPC Native Event Receiver
                   path: /en/setup/plugins/receiver_grpc-native-event-receiver
                 - name: GRPC Native JVM Receiver
                   path: /en/setup/plugins/receiver_grpc-native-jvm-receiver
-                - name: GRPC Native CLR Receiver
-                  path: /en/setup/plugins/receiver_grpc-native-clr-receiver
                 - name: GRPC Native Log Receiver
                   path: /en/setup/plugins/receiver_grpc-native-log-receiver
                 - name: GRPC Native Management Receiver
