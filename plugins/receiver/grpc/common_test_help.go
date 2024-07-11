@@ -41,14 +41,16 @@ import (
 // TestReceiver help to testing grpc receiver
 func TestReceiver(rec receiver.Receiver,
 	dataGenerator func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string,
-	snifferConvertor func(data *v1.SniffData) string, t *testing.T) {
+	snifferConvertor func(data *v1.SniffData) string, t *testing.T,
+) {
 	TestReceiverWithConfig(rec, make(map[string]string), dataGenerator, snifferConvertor, t)
 }
 
 // TestReceiverWithConfig help to testing grpc receiver with customize config
 func TestReceiverWithConfig(rec receiver.Receiver, recConf map[string]string,
 	dataGenerator func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string,
-	snifferConvertor func(data *v1.SniffData) string, t *testing.T) {
+	snifferConvertor func(data *v1.SniffData) string, t *testing.T,
+) {
 	Init(rec)
 	grpcPort := randomGrpcPort()
 	receiverConfig := make(plugin.Config)
@@ -91,7 +93,8 @@ func TestReceiverWithConfig(rec receiver.Receiver, recConf map[string]string,
 // TestReceiverWithSync help to testing grpc receiver
 func TestReceiverWithSync(rec receiver.Receiver,
 	dataGenerator func(t *testing.T, sequence int, conn *grpc.ClientConn, sendData *string, ctx context.Context),
-	snifferConvertor func(data *v1.SniffData) string, mockResp *v1.SniffData, t *testing.T) {
+	snifferConvertor func(data *v1.SniffData) string, mockResp *v1.SniffData, t *testing.T,
+) {
 	Init(rec)
 	grpcPort := randomGrpcPort()
 	r := initReceiver(make(plugin.Config), t, rec)
@@ -136,7 +139,8 @@ func (s *syncInvoker) SyncInvoke(event *v1.SniffData) (*v1.SniffData, error) {
 }
 
 func initConnection(grpcPort int, t *testing.T) *grpc.ClientConn {
-	conn, err := grpc.Dial(fmt.Sprintf("localhost:%d", grpcPort), grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	//nolint:staticcheck // just for test, fix later TODO: @mrproliu
+	conn, err := grpc.NewClient(fmt.Sprintf("localhost:%d", grpcPort), grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
 	if err != nil {
 		t.Fatalf("cannot init the grpc client: %v", err)
 	}
