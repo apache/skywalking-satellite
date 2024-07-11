@@ -38,17 +38,22 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+const TestWrongReceiveData = "the sent data is not equal to the received data\n, " +
+	"want data %s\n, but got %s\n"
+
 // TestReceiver help to testing grpc receiver
 func TestReceiver(rec receiver.Receiver,
 	dataGenerator func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string,
-	snifferConvertor func(data *v1.SniffData) string, t *testing.T) {
+	snifferConvertor func(data *v1.SniffData) string, t *testing.T,
+) {
 	TestReceiverWithConfig(rec, make(map[string]string), dataGenerator, snifferConvertor, t)
 }
 
 // TestReceiverWithConfig help to testing grpc receiver with customize config
 func TestReceiverWithConfig(rec receiver.Receiver, recConf map[string]string,
 	dataGenerator func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string,
-	snifferConvertor func(data *v1.SniffData) string, t *testing.T) {
+	snifferConvertor func(data *v1.SniffData) string, t *testing.T,
+) {
 	Init(rec)
 	grpcPort := randomGrpcPort()
 	receiverConfig := make(plugin.Config)
@@ -75,8 +80,7 @@ func TestReceiverWithConfig(rec receiver.Receiver, recConf map[string]string,
 			// await data content
 			time.Sleep(time.Millisecond * 100)
 			if !cmp.Equal(snifferConvertor(newData), data) {
-				errorMsg = fmt.Sprintf("the sent data is not equal to the received data\n, "+
-					"want data %s\n, but got %s\n", data, newData.String())
+				errorMsg = fmt.Sprintf(TestWrongReceiveData, data, newData.String())
 			}
 			cancel()
 		}()
@@ -91,7 +95,8 @@ func TestReceiverWithConfig(rec receiver.Receiver, recConf map[string]string,
 // TestReceiverWithSync help to testing grpc receiver
 func TestReceiverWithSync(rec receiver.Receiver,
 	dataGenerator func(t *testing.T, sequence int, conn *grpc.ClientConn, sendData *string, ctx context.Context),
-	snifferConvertor func(data *v1.SniffData) string, mockResp *v1.SniffData, t *testing.T) {
+	snifferConvertor func(data *v1.SniffData) string, mockResp *v1.SniffData, t *testing.T,
+) {
 	Init(rec)
 	grpcPort := randomGrpcPort()
 	r := initReceiver(make(plugin.Config), t, rec)
@@ -128,15 +133,14 @@ func (s *syncInvoker) SyncInvoke(event *v1.SniffData) (*v1.SniffData, error) {
 	// await data content
 	time.Sleep(time.Millisecond * 100)
 	if !cmp.Equal(s.snifferConvertor(event), *s.data) {
-		s.errorMsg = fmt.Sprintf("the sent data is not equal to the received data\n, "+
-			"want data %s\n, but got %s\n", *s.data, event.String())
+		s.errorMsg = fmt.Sprintf(TestWrongReceiveData, *s.data, event.String())
 		return nil, nil
 	}
 	return s.mockResp, nil
 }
 
 func initConnection(grpcPort int, t *testing.T) *grpc.ClientConn {
-	conn, err := grpc.Dial(fmt.Sprintf("localhost:%d", grpcPort), grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	conn, err := grpc.NewClient(fmt.Sprintf("localhost:%d", grpcPort), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		t.Fatalf("cannot init the grpc client: %v", err)
 	}

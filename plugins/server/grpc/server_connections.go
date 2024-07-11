@@ -79,7 +79,6 @@ func (c *ConnectionWrapper) CloseNotify() {
 }
 
 type outOfLimit struct {
-	error
 }
 
 func (o *outOfLimit) Temporary() bool {

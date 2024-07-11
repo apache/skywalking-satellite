@@ -146,7 +146,7 @@ func (c *Client) Prepare() error {
 	if err != nil {
 		return fmt.Errorf("cannot build grpc target: %v", err)
 	}
-	client, err := grpc.Dial(target, *cfg...)
+	client, err := grpc.NewClient(target, *cfg...)
 	if err != nil {
 		return fmt.Errorf("cannot connect to grpc server: %v", err)
 	}

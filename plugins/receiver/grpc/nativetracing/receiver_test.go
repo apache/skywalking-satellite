@@ -35,6 +35,8 @@ import (
 	receiver_grpc "github.com/apache/skywalking-satellite/plugins/receiver/grpc"
 )
 
+const traceStr = "trace"
+
 func TestReceiver_RegisterHandlerStream(t *testing.T) {
 	receiver_grpc.TestReceiver(new(Receiver), func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string {
 		client := agent.NewTraceSegmentReportServiceClient(conn)
@@ -80,8 +82,9 @@ func TestReceiver_RegisterHandlerSync(t *testing.T) {
 
 func initData(sequence int) *agent.SegmentObject {
 	seq := strconv.Itoa(sequence)
+	parentStr := "parent"
 	return &agent.SegmentObject{
-		TraceId:         "trace" + seq,
+		TraceId:         traceStr + seq,
 		TraceSegmentId:  "trace-segment" + seq,
 		Service:         "demo-service" + seq,
 		ServiceInstance: "demo-instance" + seq,
@@ -119,12 +122,12 @@ func initData(sequence int) *agent.SegmentObject {
 				Refs: []*agent.SegmentReference{
 					{
 						RefType:                  agent.RefType_CrossThread,
-						TraceId:                  "trace" + seq,
+						TraceId:                  traceStr + seq,
 						ParentTraceSegmentId:     "parent-trace-segment" + seq,
 						ParentSpanId:             0,
-						ParentService:            "parent" + seq,
-						ParentServiceInstance:    "parent" + seq,
-						ParentEndpoint:           "parent" + seq,
+						ParentService:            parentStr + seq,
+						ParentServiceInstance:    parentStr + seq,
+						ParentEndpoint:           parentStr + seq,
 						NetworkAddressUsedAtPeer: "127.0.0.1:6666",
 					},
 				},
