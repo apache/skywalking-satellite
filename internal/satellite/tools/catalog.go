@@ -93,7 +93,7 @@ func (c *Catalog) Save(filename string) error {
 		return err
 	}
 
-	if err := os.WriteFile(filename, append(content, marshal...), os.ModePerm); err != nil {
+	if err := os.WriteFile(filename, append(content, marshal...), 0o600); err != nil {
 		return fmt.Errorf("cannot write catalog: %v", err)
 	}
 	return nil

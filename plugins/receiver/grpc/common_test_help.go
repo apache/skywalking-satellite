@@ -139,8 +139,7 @@ func (s *syncInvoker) SyncInvoke(event *v1.SniffData) (*v1.SniffData, error) {
 }
 
 func initConnection(grpcPort int, t *testing.T) *grpc.ClientConn {
-	//nolint:staticcheck // just for test, fix later TODO: @mrproliu
-	conn, err := grpc.NewClient(fmt.Sprintf("localhost:%d", grpcPort), grpc.WithTransportCredentials(insecure.NewCredentials()), grpc.WithBlock())
+	conn, err := grpc.NewClient(fmt.Sprintf("localhost:%d", grpcPort), grpc.WithTransportCredentials(insecure.NewCredentials()))
 	if err != nil {
 		t.Fatalf("cannot init the grpc client: %v", err)
 	}

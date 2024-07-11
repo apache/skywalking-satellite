@@ -28,13 +28,6 @@ linters-settings:
   goconst:
     min-len: 2
     min-occurrences: 2
-  depguard:
-    list-type: blacklist
-    packages:
-      -
-    include-go-root: true
-    packages-with-error-messages:
-      fmt: "logging is allowed only by logutils.Log"
   misspell:
     locale: US
   lll:
@@ -61,7 +54,6 @@ linters:
   enable:
     - bodyclose
     - deadcode
-    - depguard
     - dogsled
     - dupl
     - errcheck

@@ -301,7 +301,7 @@ func parsePluginConfigurationItem(field *ast.Field, pType reflect.Type) (*plugin
 			return nil, nil
 		}
 		confName = mapStructureValue[:index]
-	} else if len(mapStructureValue) > 0 {
+	} else if mapStructureValue != "" {
 		confName = mapStructureValue
 	} else {
 		confName = fieldName
@@ -379,7 +379,7 @@ func getPluginDocFileName(category reflect.Type, pluginName string) string {
 }
 
 func writeDoc(docBytes []byte, docFileName string) error {
-	if err := os.WriteFile(docFileName, docBytes, os.ModePerm); err != nil {
+	if err := os.WriteFile(docFileName, docBytes, 0o600); err != nil {
 		return fmt.Errorf("cannot init the plugin doc: %v", err)
 	}
 	return nil

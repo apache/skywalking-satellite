@@ -80,7 +80,7 @@ func TestStaticServer(t *testing.T) {
 
 	// send request
 	jvmClient := agent.NewJVMMetricReportServiceClient(c.GetConnectedClient().(*grpc.ClientConn))
-	for inx := 0; inx < serverCount; inx++ {
+	for inx := 0; inx < serverCount*3; inx++ { // the lb connection will be connected with async, so we need to send more request
 		if _, err := jvmClient.Collect(context.Background(), &agent.JVMMetricCollection{}); err != nil {
 			t.Errorf("send request error: %v", err)
 		}
