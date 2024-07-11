@@ -38,6 +38,9 @@ import (
 	"google.golang.org/grpc/credentials/insecure"
 )
 
+const TestWrongReceiveData = "the sent data is not equal to the received data\n, " +
+	"want data %s\n, but got %s\n"
+
 // TestReceiver help to testing grpc receiver
 func TestReceiver(rec receiver.Receiver,
 	dataGenerator func(t *testing.T, sequence int, conn *grpc.ClientConn, ctx context.Context) string,
@@ -77,8 +80,7 @@ func TestReceiverWithConfig(rec receiver.Receiver, recConf map[string]string,
 			// await data content
 			time.Sleep(time.Millisecond * 100)
 			if !cmp.Equal(snifferConvertor(newData), data) {
-				errorMsg = fmt.Sprintf("the sent data is not equal to the received data\n, "+
-					"want data %s\n, but got %s\n", data, newData.String())
+				errorMsg = fmt.Sprintf(TestWrongReceiveData, data, newData.String())
 			}
 			cancel()
 		}()
@@ -131,8 +133,7 @@ func (s *syncInvoker) SyncInvoke(event *v1.SniffData) (*v1.SniffData, error) {
 	// await data content
 	time.Sleep(time.Millisecond * 100)
 	if !cmp.Equal(s.snifferConvertor(event), *s.data) {
-		s.errorMsg = fmt.Sprintf("the sent data is not equal to the received data\n, "+
-			"want data %s\n, but got %s\n", *s.data, event.String())
+		s.errorMsg = fmt.Sprintf(TestWrongReceiveData, *s.data, event.String())
 		return nil, nil
 	}
 	return s.mockResp, nil
