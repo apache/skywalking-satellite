@@ -41,7 +41,7 @@ jobs:
       ALS_ANALYZER: ${{ matrix.analyzer }}
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
           go-version: 1.21
         id: go
@@ -67,7 +67,7 @@ jobs:
       ISTIO_VERSION: ${{ matrix.istio_version }}
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v5
         with:
           go-version: 1.21
         id: go
@@ -86,4 +86,3 @@ jobs:
         with:
           name: logs
           path: "${{ env.SW_INFRA_E2E_LOG_DIR }}"
-
