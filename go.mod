@@ -22,7 +22,7 @@ require (
 	google.golang.org/protobuf v1.34.2
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.26.2
-	skywalking.apache.org/repo/goapi v0.0.0-20240118085825-a7fa70cc38b7
+	skywalking.apache.org/repo/goapi v0.0.0-20241106011455-ef3dbfac3128
 )
 
 require (
