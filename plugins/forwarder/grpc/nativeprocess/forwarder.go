@@ -86,16 +86,16 @@ func (f *Forwarder) ForwardType() v1.SniffType {
 	return v1.SniffType_EBPFProcessType
 }
 
-func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, error) {
+func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error) {
 	report := e.GetEBPFProcessReportList()
 	if report == nil {
-		return nil, fmt.Errorf("unsupport data")
+		return nil, nil, fmt.Errorf("unsupport data")
 	}
 	processes, err := f.processClient.ReportProcesses(context.Background(), report)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
-	return &v1.SniffData{Data: &v1.SniffData_EBPFReportProcessDownstream{EBPFReportProcessDownstream: processes}}, nil
+	return &v1.SniffData{Data: &v1.SniffData_EBPFReportProcessDownstream{EBPFReportProcessDownstream: processes}}, nil, nil
 }
 
 func (f *Forwarder) SupportedSyncInvoke() bool {

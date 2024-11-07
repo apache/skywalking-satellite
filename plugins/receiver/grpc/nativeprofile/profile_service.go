@@ -45,7 +45,7 @@ func (p *ProfileService) GetProfileTaskCommands(_ context.Context, q *profile.Pr
 			ProfileTaskQuery: q,
 		},
 	}
-	data, err := p.SyncInvoker.SyncInvoke(event)
+	data, _, err := p.SyncInvoker.SyncInvoke(event)
 	if err != nil {
 		return nil, err
 	}
@@ -80,7 +80,7 @@ func (p *ProfileService) ReportTaskFinish(_ context.Context, report *profile.Pro
 			ProfileTaskFinish: report,
 		},
 	}
-	data, err := p.SyncInvoker.SyncInvoke(event)
+	data, _, err := p.SyncInvoker.SyncInvoke(event)
 	if err != nil {
 		return nil, err
 	}

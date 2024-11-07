@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"reflect"
 
-	"github.com/apache/skywalking-satellite/internal/data"
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
@@ -52,44 +51,24 @@ func (f *Forwarder) Prepare(connection interface{}) error {
 }
 
 func (f *Forwarder) Forward(batch event.BatchEvents) error {
-	for _, e := range batch {
-		jfrContent, ok := e.GetData().(*v1.SniffData_AsyncProfilerData)
-		stream := e.ClientStream
-		if !ok || stream == nil {
-			continue
-		}
-
-		err := stream.SendMsg(jfrContent)
-		if err != nil {
-			log.Logger.Errorf("%s send log data error: %v", f.Name(), err)
-			err = closeStream(stream)
-			if err != nil {
-				log.Logger.Errorf("%s close stream error: %v", f.Name(), err)
-			}
-			return err
-		}
-		stream.CloseSend()
-	}
+	return fmt.Errorf("unsupport forward")
 }
 
-func (f *Forwarder) SyncForward(e *data.SniffData) (*data.SniffData, error) {
+func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error) {
 	switch requestData := e.GetData().(type) {
 	case *v1.SniffData_AsyncProfilerTaskCommandQuery:
 		query := requestData.AsyncProfilerTaskCommandQuery
 		commands, err := f.profilingClient.GetAsyncProfilerTaskCommands(context.Background(), query)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
-		command := &data.SniffData{
-			SniffData: &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}},
-		}
-		return command, nil
+		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil, nil
 	case *v1.SniffData_AsyncProfilerData:
 		// metadata
 		stream, err := f.profilingClient.Collect(context.Background())
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
 
 		err = stream.SendMsg(requestData.AsyncProfilerData)
@@ -99,7 +78,7 @@ func (f *Forwarder) SyncForward(e *data.SniffData) (*data.SniffData, error) {
 			if err != nil {
 				log.Logger.Errorf("%s close stream error: %v", f.Name(), err)
 			}
-			return nil, err
+			return nil, nil, err
 		}
 
 		canUpload, err := stream.Recv()
@@ -109,22 +88,17 @@ func (f *Forwarder) SyncForward(e *data.SniffData) (*data.SniffData, error) {
 			if err != nil {
 				log.Logger.Errorf("%s close stream error: %v", f.Name(), err)
 			}
-			return nil, err
+			return nil, nil, err
 		}
 
-		resp := &data.SniffData{
-			SniffData: v1.SniffData{
-				Data: &v1.SniffData_AsyncProfilerCollectionResponse{
-					AsyncProfilerCollectionResponse: canUpload,
-				},
+		return &v1.SniffData{
+			Data: &v1.SniffData_AsyncProfilerCollectionResponse{
+				AsyncProfilerCollectionResponse: canUpload,
 			},
-			ClientStream: stream,
-		}
-
-		return resp, nil
+		}, stream, nil
 	}
 
-	return nil, fmt.Errorf("unsupport data")
+	return nil, nil, fmt.Errorf("unsupport data")
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {

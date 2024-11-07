@@ -106,26 +106,26 @@ func (f *Forwarder) ForwardType() v1.SniffType {
 	return v1.SniffType_ProfileType
 }
 
-func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, error) {
+func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error) {
 	query := e.GetProfileTaskQuery()
 	if query != nil {
 		commands, err := f.profileClient.GetProfileTaskCommands(context.Background(), query)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
-		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil
+		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil, nil
 	}
 
 	finish := e.GetProfileTaskFinish()
 	if finish != nil {
 		commands, err := f.profileClient.ReportTaskFinish(context.Background(), finish)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
-		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil
+		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil, nil
 	}
 
-	return nil, fmt.Errorf("unsupport data")
+	return nil, nil, fmt.Errorf("unsupport data")
 }
 
 func (f *Forwarder) SupportedSyncInvoke() bool {

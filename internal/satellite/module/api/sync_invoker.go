@@ -17,9 +17,12 @@
 
 package api
 
-import "github.com/apache/skywalking-satellite/internal/data"
+import (
+	"google.golang.org/grpc"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+)
 
 type SyncInvoker interface {
 	// SyncInvoke means synchronized process event
-	SyncInvoke(d *data.SniffData) (*data.SniffData, error)
+	SyncInvoke(d *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error)
 }
