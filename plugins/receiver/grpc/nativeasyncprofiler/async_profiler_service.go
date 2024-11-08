@@ -3,6 +3,7 @@ package nativeasyncprofiler
 import (
 	"context"
 	"fmt"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"io"
 
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
@@ -68,6 +69,9 @@ func (p *AsyncProfilerService) Collect(clientStream asyncprofiler.AsyncProfilerT
 		jfrContent := grpc.NewOriginalData(nil)
 		err := clientStream.RecvMsg(jfrContent)
 		if err == io.EOF {
+			if err = serverStream.CloseSend(); err != nil {
+				log.Logger.Errorf("async profiler service close server stream error: %s", err)
+			}
 			return nil
 		}
 		if err != nil {

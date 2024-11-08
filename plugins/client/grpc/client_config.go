@@ -104,7 +104,7 @@ type timeoutClientStream struct {
 }
 
 func (t *timeoutClientStream) RecvMsg(m interface{}) error {
-	defer t.timeoutFunc()
+	//defer t.timeoutFunc()
 	return t.ClientStream.RecvMsg(m)
 }
 
