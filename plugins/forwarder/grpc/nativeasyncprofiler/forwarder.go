@@ -67,7 +67,8 @@ func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, grpc.ClientStre
 		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil, nil
 	case *v1.SniffData_AsyncProfilerData:
 		// metadata
-		stream, err := f.profilingClient.Collect(context.WithoutCancel(context.Background()))
+		ctx := context.WithValue(context.Background(), "BidirectionalStream", true)
+		stream, err := f.profilingClient.Collect(ctx)
 		if err != nil {
 			log.Logger.Errorf("%s open collect stream error: %v", f.Name(), err)
 			return nil, nil, err
