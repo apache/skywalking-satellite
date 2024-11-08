@@ -13,11 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-SW_AGENT_JAVA_COMMIT=f0245864e4388a388fe7445b56b6ce7cedc94aaf
-SW_OAP_COMMIT=df7450b4b4744257012c2f1608b634f44fbe7d66
-SW_UI_COMMIT=1acba5d2467f6d905a6261e999f85464d5432562
-SW_KUBERNETES_COMMIT_SHA=1ae3f6c22137a279dce328b202b1f2d59492f9e1
-SW_AGENT_JDK_VERSION=8
-SW_ROVER_COMMIT=a58b40e01c670003c211fc9d498a58c70098c364
-
-SW_CTL_COMMIT=bce7faaabbd57ed1f40156af8a8eb6c3eccea4ae
+tree:
+  type: EXECUTION_SAMPLE
+  elements:
+  {{- contains .tree.elements }}
+  - id: {{ notEmpty .id }}
+    parentid: {{ notEmpty .parentid }}
+    codesignature: {{ notEmpty .codesignature }}
+    total: {{ ge .total -1 }}
+    self: {{ ge .self -1 }}
+  {{- end }}
