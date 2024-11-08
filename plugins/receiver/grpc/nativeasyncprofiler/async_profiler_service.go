@@ -2,6 +2,7 @@ package nativeasyncprofiler
 
 import (
 	"context"
+	"fmt"
 	"io"
 
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
@@ -36,6 +37,9 @@ func (p *AsyncProfilerService) GetAsyncProfilerTaskCommands(_ context.Context, q
 func (p *AsyncProfilerService) Collect(clientStream asyncprofiler.AsyncProfilerTask_CollectServer) error {
 	metaData := grpc.NewOriginalData(nil)
 	err := clientStream.RecvMsg(metaData)
+	if err == io.EOF {
+		return nil
+	}
 	if err != nil {
 		return err
 	}
@@ -44,13 +48,13 @@ func (p *AsyncProfilerService) Collect(clientStream asyncprofiler.AsyncProfilerT
 			AsyncProfilerData: metaData.Content,
 		},
 	}
-
+	// send metadata to server
 	serverStreamAndResp, serverStream, err := p.SyncInvoker.SyncInvoke(event)
 	if err != nil {
-		return err
+		return fmt.Errorf("satellite send metadata to server but get err: %s", err)
 	}
 	data := serverStreamAndResp.GetData().(*v1.SniffData_AsyncProfilerCollectionResponse)
-
+	// send response to client
 	err = clientStream.Send(data.AsyncProfilerCollectionResponse)
 	if err == io.EOF {
 		return nil
@@ -59,20 +63,18 @@ func (p *AsyncProfilerService) Collect(clientStream asyncprofiler.AsyncProfilerT
 		return err
 	}
 
+	// receive jfr content and send
 	for {
 		jfrContent := grpc.NewOriginalData(nil)
 		err := clientStream.RecvMsg(jfrContent)
-		if err != nil {
-			serverStream.CloseSend()
-			if err == io.EOF {
-				return nil
-			} else {
-				return err
-			}
+		if err == io.EOF {
+			return nil
 		}
-
-		if err = serverStream.SendMsg(jfrContent); err != nil {
+		if err != nil {
 			return err
+		}
+		if err = serverStream.SendMsg(jfrContent); err != nil {
+			return fmt.Errorf("satellite send jfr content to server but get err: %s ", err)
 		}
 	}
 }
