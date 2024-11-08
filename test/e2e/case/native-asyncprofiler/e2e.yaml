@@ -19,14 +19,14 @@ setup:
   env: compose
   file: docker-compose.yml
   timeout: 20m
-  init-system-environment: ../../../../script/env
+  init-system-environment: ../../base/env
   steps:
     - name: set PATH
       command: export PATH=/tmp/skywalking-infra-e2e/bin:$PATH
     - name: install yq
-      command: bash test/e2e-v2/script/prepare/setup-e2e-shell/install.sh yq
+      command: bash test/e2e/base/scripts/prepare/setup-e2e-shell/install.sh yq
     - name: install swctl
-      command: bash test/e2e-v2/script/prepare/setup-e2e-shell/install.sh swctl
+      command: bash test/e2e/base/scripts/prepare/setup-e2e-shell/install.sh swctl
 
 verify:
   retry:
@@ -64,4 +64,3 @@ verify:
           --instance-name-list=provider1 \
           --task-id=$(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql profiling async list --service-name=e2e-service-provider | yq e '.tasks[0].id')
       expected: expected/analysis.yml
-

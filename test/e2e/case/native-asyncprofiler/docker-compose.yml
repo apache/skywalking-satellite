@@ -46,8 +46,6 @@ services:
       SW_LOG_LAL_FILES: test
       SW_CLUSTER: etcd
       SW_CONFIGURATION: etcd
-    volumes:
-      - ./lal.yaml:/skywalking/config/lal/test.yaml
     ports:
       - 12800
     depends_on:
@@ -73,22 +71,9 @@ services:
     extends:
       file: ../../base/base-compose.yml
       service: provider
-    ports:
-      - 9090
+    privileged: true
     depends_on:
       satellite:
-        condition: service_healthy
-
-  consumer:
-    extends:
-      file: ../../base/base-compose.yml
-      service: consumer
-    ports:
-      - 9090
-    depends_on:
-      satellite:
-        condition: service_healthy
-      provider:
         condition: service_healthy
 
 networks:

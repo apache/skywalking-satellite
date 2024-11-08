@@ -1,8 +1,26 @@
+// Licensed to Apache Software Foundation (ASF) under one or more contributor
+// license agreements. See the NOTICE file distributed with
+// this work for additional information regarding copyright
+// ownership. Apache Software Foundation (ASF) licenses this file to you under
+// the Apache License, Version 2.0 (the "License"); you may
+// not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied.  See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
 package nativeasyncprofiler
 
 import (
 	"context"
 	"fmt"
+	client_grpc "github.com/apache/skywalking-satellite/plugins/client/grpc"
 	server_grpc "github.com/apache/skywalking-satellite/plugins/server/grpc"
 	"reflect"
 
@@ -67,7 +85,7 @@ func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, grpc.ClientStre
 		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil, nil
 	case *v1.SniffData_AsyncProfilerData:
 		// metadata
-		ctx := context.WithValue(context.Background(), "BidirectionalStream", true)
+		ctx := context.WithValue(context.Background(), client_grpc.BidirectionalStreamKey, true)
 		stream, err := f.profilingClient.Collect(ctx)
 		if err != nil {
 			log.Logger.Errorf("%s open collect stream error: %v", f.Name(), err)

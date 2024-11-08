@@ -23,6 +23,6 @@ import (
 )
 
 type SyncInvoker interface {
-	// SyncInvoke means synchronized process event
+	// SyncInvoke means synchronized process event. The returned result grpc.ClientStream is the stream initiated by satellite to oap server, which is used to provide bidirectional stream support
 	SyncInvoke(d *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error)
 }
