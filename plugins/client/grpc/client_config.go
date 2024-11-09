@@ -34,7 +34,9 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-const CtxBidirectionalStreamKey = iota
+type ctxKey struct{}
+
+var CtxBidirectionalStreamKey = ctxKey{}
 
 // loadConfig use the client params to build the grpc client config.
 func (c *Client) loadConfig() (*[]grpc.DialOption, error) {

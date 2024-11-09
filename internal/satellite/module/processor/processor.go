@@ -22,6 +22,8 @@ import (
 	"errors"
 	"sync"
 
+	"google.golang.org/grpc"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
@@ -29,7 +31,6 @@ import (
 	processor "github.com/apache/skywalking-satellite/internal/satellite/module/processor/api"
 	sender "github.com/apache/skywalking-satellite/internal/satellite/module/sender/api"
 	filter "github.com/apache/skywalking-satellite/plugins/filter/api"
-	"google.golang.org/grpc"
 
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )

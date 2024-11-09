@@ -24,11 +24,12 @@ import (
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 
-	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
-	"github.com/apache/skywalking-satellite/plugins/server/grpc"
 	common "skywalking.apache.org/repo/goapi/collect/common/v3"
 	asyncprofiler "skywalking.apache.org/repo/goapi/collect/language/asyncprofiler/v10"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+
+	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
+	"github.com/apache/skywalking-satellite/plugins/server/grpc"
 )
 
 type AsyncProfilerService struct {
@@ -38,7 +39,8 @@ type AsyncProfilerService struct {
 	asyncprofiler.UnimplementedAsyncProfilerTaskServer
 }
 
-func (p *AsyncProfilerService) GetAsyncProfilerTaskCommands(_ context.Context, query *asyncprofiler.AsyncProfilerTaskCommandQuery) (*common.Commands, error) {
+func (p *AsyncProfilerService) GetAsyncProfilerTaskCommands(_ context.Context,
+	query *asyncprofiler.AsyncProfilerTaskCommandQuery) (*common.Commands, error) {
 	event := &v1.SniffData{
 		Data: &v1.SniffData_AsyncProfilerTaskCommandQuery{
 			AsyncProfilerTaskCommandQuery: query,

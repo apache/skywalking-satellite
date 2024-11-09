@@ -25,12 +25,13 @@ import (
 	client_grpc "github.com/apache/skywalking-satellite/plugins/client/grpc"
 	server_grpc "github.com/apache/skywalking-satellite/plugins/server/grpc"
 
-	"github.com/apache/skywalking-satellite/internal/pkg/config"
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
-	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"google.golang.org/grpc"
 	asyncprofiler "skywalking.apache.org/repo/goapi/collect/language/asyncprofiler/v10"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/config"
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
+	"github.com/apache/skywalking-satellite/internal/satellite/event"
 )
 
 const (

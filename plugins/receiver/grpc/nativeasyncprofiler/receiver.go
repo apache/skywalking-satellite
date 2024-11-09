@@ -18,13 +18,14 @@
 package nativeasyncprofiler
 
 import (
+	v10 "skywalking.apache.org/repo/goapi/collect/language/asyncprofiler/v10"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	forwarder "github.com/apache/skywalking-satellite/plugins/forwarder/api"
 	forwarder_nativeasyncprofiler "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeasyncprofiler"
 	"github.com/apache/skywalking-satellite/plugins/receiver/grpc"
-	v10 "skywalking.apache.org/repo/goapi/collect/language/asyncprofiler/v10"
-	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 )
 
 const (
