@@ -20,9 +20,10 @@ package nativeasyncprofiler
 import (
 	"context"
 	"fmt"
+	"reflect"
+
 	client_grpc "github.com/apache/skywalking-satellite/plugins/client/grpc"
 	server_grpc "github.com/apache/skywalking-satellite/plugins/server/grpc"
-	"reflect"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/config"
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
@@ -85,7 +86,7 @@ func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, grpc.ClientStre
 		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil, nil
 	case *v1.SniffData_AsyncProfilerData:
 		// metadata
-		ctx := context.WithValue(context.Background(), client_grpc.BidirectionalStreamKey, true)
+		ctx := context.WithValue(context.Background(), client_grpc.CtxBidirectionalStreamKey, true)
 		stream, err := f.profilingClient.Collect(ctx)
 		if err != nil {
 			log.Logger.Errorf("%s open collect stream error: %v", f.Name(), err)
@@ -93,16 +94,21 @@ func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, grpc.ClientStre
 		}
 		metaData := server_grpc.NewOriginalData(requestData.AsyncProfilerData)
 		err = stream.SendMsg(metaData)
-		canUpload, err := stream.Recv()
 		if err != nil {
 			log.Logger.Errorf("%s send meta data error: %v", f.Name(), err)
+			f.closeStream(stream)
+			return nil, nil, err
+		}
+		asyncProfilerCollectionResponse, err := stream.Recv()
+		if err != nil {
+			log.Logger.Errorf("%s receive meta data error: %v", f.Name(), err)
 			f.closeStream(stream)
 			return nil, nil, err
 		}
 
 		return &v1.SniffData{
 			Data: &v1.SniffData_AsyncProfilerCollectionResponse{
-				AsyncProfilerCollectionResponse: canUpload,
+				AsyncProfilerCollectionResponse: asyncProfilerCollectionResponse,
 			},
 		}, stream, nil
 	}

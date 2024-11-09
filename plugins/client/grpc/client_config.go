@@ -34,7 +34,7 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
-const BidirectionalStreamKey = "BidirectionalStream"
+const CtxBidirectionalStreamKey = iota
 
 // loadConfig use the client params to build the grpc client config.
 func (c *Client) loadConfig() (*[]grpc.DialOption, error) {
@@ -71,7 +71,7 @@ func (c *Client) loadConfig() (*[]grpc.DialOption, error) {
 			ctx = metadata.NewOutgoingContext(ctx, authHeader)
 		}
 		supportBidirectionalStream := false
-		if b := ctx.Value(BidirectionalStreamKey); b != nil {
+		if b := ctx.Value(CtxBidirectionalStreamKey); b != nil {
 			supportBidirectionalStream = b.(bool)
 		}
 		timeout, timeoutFunc := context.WithTimeout(ctx, streamRequestTimeout)

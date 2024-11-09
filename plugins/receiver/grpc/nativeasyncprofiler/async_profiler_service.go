@@ -20,8 +20,9 @@ package nativeasyncprofiler
 import (
 	"context"
 	"fmt"
-	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"io"
+
+	"github.com/apache/skywalking-satellite/internal/pkg/log"
 
 	module "github.com/apache/skywalking-satellite/internal/satellite/module/api"
 	"github.com/apache/skywalking-satellite/plugins/server/grpc"
