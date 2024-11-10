@@ -13,35 +13,52 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+debuggingtrace: null
 nodes:
 {{- contains .nodes }}
 - id: {{ b64enc "e2e::reviews"}}.1
   name: e2e::reviews
   type: http
   isreal: true
+  layers:
+    - MESH
 - id: {{ b64enc "e2e::ratings"}}.1
   name: e2e::ratings
   type: http
   isreal: true
+  layers:
+    - MESH
 - id: {{ b64enc "e2e::productpage" }}.1
   name: e2e::productpage
   type: http
   isreal: true
-{{- end }}
+  layers:
+    - MESH
+  {{- end }}
 calls:
-{{- contains .calls }}
+  {{- contains .calls }}
 - source: {{ b64enc "e2e::productpage"}}.1
-  sourcecomponents: []
+  sourcecomponents:
+    - http
   target: {{ b64enc "e2e::reviews"}}.1
-  targetcomponents: []
+  targetcomponents:
+  {{- contains .targetcomponents }}
+  - http
+  - mtls
+  {{- end }}
   id: {{ b64enc "e2e::productpage"}}.1-{{ b64enc "e2e::reviews"}}.1
   detectpoints:
     - CLIENT
     - SERVER
 - source: {{ b64enc "e2e::reviews" }}.1
-  sourcecomponents: []
+  sourcecomponents:
+    - http
   target: {{ b64enc "e2e::ratings"}}.1
-  targetcomponents: []
+  targetcomponents:
+  {{- contains .targetcomponents }}
+  - http
+  - mtls
+  {{- end }}
   id: {{ b64enc "e2e::reviews" }}.1-{{ b64enc "e2e::ratings"}}.1
   detectpoints:
     - CLIENT
