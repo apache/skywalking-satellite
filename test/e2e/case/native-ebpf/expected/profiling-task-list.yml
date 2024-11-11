@@ -17,6 +17,11 @@
 - taskid: {{ notEmpty .taskid }}
   serviceid: {{ b64enc "sqrt" }}.1
   servicename: sqrt
+  serviceinstanceid: null
+  serviceinstancename: null
+  continuousprofilingcauses: []
+  processid: null
+  processname: null
   processlabels:
     {{- contains .processlabels }}
     - e2e-label1
