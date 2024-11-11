@@ -91,6 +91,8 @@ catalog:
                   path: /en/setup/plugins/forwarder_envoy-metrics-v2-grpc-forwarder
                 - name: Envoy Metrics v3 GRPC Forwarder
                   path: /en/setup/plugins/forwarder_envoy-metrics-v3-grpc-forwarder
+                - name: Native Async Profiler GRPC Forwarder
+                  path: /en/setup/plugins/forwarder_native-async-profiler-grpc-forwarder
                 - name: Native CDS GRPC Forwarder
                   path: /en/setup/plugins/forwarder_native-cds-grpc-forwarder
                 - name: Native CLR GRPC Forwarder
@@ -137,6 +139,8 @@ catalog:
                   path: /en/setup/plugins/receiver_grpc-envoy-metrics-v2-receiver
                 - name: GRPC Envoy Metrics v3 Receiver
                   path: /en/setup/plugins/receiver_grpc-envoy-metrics-v3-receiver
+                - name: GRPC Native Async Profiler Receiver
+                  path: /en/setup/plugins/receiver_grpc-native-async-profiler-receiver
                 - name: GRPC Native CDS Receiver
                   path: /en/setup/plugins/receiver_grpc-native-cds-receiver
                 - name: GRPC Native CLR Receiver

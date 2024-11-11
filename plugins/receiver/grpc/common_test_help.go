@@ -129,14 +129,14 @@ type syncInvoker struct {
 	errorMsg         string
 }
 
-func (s *syncInvoker) SyncInvoke(event *v1.SniffData) (*v1.SniffData, error) {
+func (s *syncInvoker) SyncInvoke(event *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error) {
 	// await data content
 	time.Sleep(time.Millisecond * 100)
 	if !cmp.Equal(s.snifferConvertor(event), *s.data) {
 		s.errorMsg = fmt.Sprintf(TestWrongReceiveData, *s.data, event.String())
-		return nil, nil
+		return nil, nil, nil
 	}
-	return s.mockResp, nil
+	return s.mockResp, nil, nil
 }
 
 func initConnection(grpcPort int, t *testing.T) *grpc.ClientConn {

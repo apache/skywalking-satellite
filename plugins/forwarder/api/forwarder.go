@@ -20,6 +20,7 @@ package api
 import (
 	"reflect"
 
+	"google.golang.org/grpc"
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
@@ -34,7 +35,9 @@ type Forwarder interface {
 	// Forward the batch events to the external services, such as Kafka MQ and SkyWalking OAP cluster.
 	Forward(batch event.BatchEvents) error
 	// SyncForward the single event to the external service with sync forward
-	SyncForward(event *v1.SniffData) (*v1.SniffData, error)
+	// The returned result grpc.ClientStream is the stream initiated by satellite to oap server,
+	// which is used to provide bidirectional stream support
+	SyncForward(event *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error)
 	// ForwardType returns the supported event type.
 	ForwardType() v1.SniffType
 	// SupportedSyncInvoke return is support SyncForward

@@ -22,6 +22,8 @@ import (
 	"errors"
 	"sync"
 
+	"google.golang.org/grpc"
+
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
 	"github.com/apache/skywalking-satellite/internal/satellite/module/api"
@@ -92,7 +94,7 @@ func (p *Processor) processPerPartition(ctx context.Context, partition int, wg *
 func (p *Processor) Shutdown() {
 }
 
-func (p *Processor) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
+func (p *Processor) SyncInvoke(d *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error) {
 	// direct send data to sender
 	return p.sender.SyncInvoke(d)
 }

@@ -24,6 +24,7 @@ import (
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoyalsv3"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoymetricsv2"
 	"github.com/apache/skywalking-satellite/plugins/forwarder/grpc/envoymetricsv3"
+	grpc_asyncprofiler "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeasyncprofiler"
 	grpc_nativecds "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativecds"
 	grpc_nativeclr "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeclr"
 	grpc_nativeebpfaccesslog "github.com/apache/skywalking-satellite/plugins/forwarder/grpc/nativeebpfaccesslog"
@@ -66,6 +67,7 @@ func RegisterForwarderPlugins() {
 		new(envoymetricsv3.Forwarder),
 		new(otlpmetricsv1.Forwarder),
 		new(grpc_nativeebpfaccesslog.Forwarder),
+		new(grpc_asyncprofiler.Forwarder),
 	}
 	for _, forwarder := range forwarders {
 		plugin.RegisterPlugin(forwarder)

@@ -13,11 +13,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- contains . }}
+  {{- contains . }}
 - id: {{ notEmpty .id }}
   name: {{ notEmpty .name }}
   attributes: []
   language: UNKNOWN
   instanceuuid: {{ notEmpty .instanceuuid }}
-  layer: MESH_DP
-{{- end }}
+  {{- end }}

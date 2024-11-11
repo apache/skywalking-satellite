@@ -26,6 +26,7 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
 
 	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
 
@@ -266,7 +267,7 @@ func (s *Sender) InputDataChannel(partition int) chan<- *event.OutputEventContex
 	return s.inputs[partition]
 }
 
-func (s *Sender) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
+func (s *Sender) SyncInvoke(d *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error) {
 	supportSyncInvoke := make([]forwarder.Forwarder, 0)
 	for inx := range s.runningForwarders {
 		if s.runningForwarders[inx].SupportedSyncInvoke() {
@@ -274,9 +275,9 @@ func (s *Sender) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
 		}
 	}
 	if len(supportSyncInvoke) > 1 {
-		return nil, fmt.Errorf("only support single forwarder")
+		return nil, nil, fmt.Errorf("only support single forwarder")
 	} else if len(supportSyncInvoke) == 0 {
-		return nil, fmt.Errorf("could not found forwarder")
+		return nil, nil, fmt.Errorf("could not found forwarder")
 	}
 	return supportSyncInvoke[0].SyncForward(d)
 }

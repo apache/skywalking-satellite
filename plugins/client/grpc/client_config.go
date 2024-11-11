@@ -34,6 +34,10 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
+type ctxKey struct{}
+
+var CtxBidirectionalStreamKey = ctxKey{}
+
 // loadConfig use the client params to build the grpc client config.
 func (c *Client) loadConfig() (*[]grpc.DialOption, error) {
 	options := make([]grpc.DialOption, 0)
@@ -68,6 +72,10 @@ func (c *Client) loadConfig() (*[]grpc.DialOption, error) {
 		if authHeader != nil {
 			ctx = metadata.NewOutgoingContext(ctx, authHeader)
 		}
+		supportBidirectionalStream := false
+		if b := ctx.Value(CtxBidirectionalStreamKey); b != nil {
+			supportBidirectionalStream = b.(bool)
+		}
 		timeout, timeoutFunc := context.WithTimeout(ctx, streamRequestTimeout)
 		clientStream, err := streamer(timeout, desc, cc, method, opts...)
 		if err != nil {
@@ -75,7 +83,7 @@ func (c *Client) loadConfig() (*[]grpc.DialOption, error) {
 			c.reportError(err)
 			return nil, err
 		}
-		streamWrapper := &timeoutClientStream{clientStream, timeoutFunc}
+		streamWrapper := &timeoutClientStream{clientStream, supportBidirectionalStream, timeoutFunc}
 		return streamWrapper, err
 	}))
 	grpc.WithUnaryInterceptor(func(ctx context.Context, method string, req, reply interface{},
@@ -100,11 +108,15 @@ func (c *Client) loadConfig() (*[]grpc.DialOption, error) {
 
 type timeoutClientStream struct {
 	grpc.ClientStream
-	timeoutFunc context.CancelFunc
+	bidirectionalStream bool
+	timeoutFunc         context.CancelFunc
 }
 
 func (t *timeoutClientStream) RecvMsg(m interface{}) error {
-	defer t.timeoutFunc()
+	if !t.bidirectionalStream {
+		defer t.timeoutFunc()
+	}
+
 	return t.ClientStream.RecvMsg(m)
 }
 

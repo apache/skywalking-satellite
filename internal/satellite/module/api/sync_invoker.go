@@ -17,9 +17,14 @@
 
 package api
 
-import v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+import (
+	"google.golang.org/grpc"
+	v1 "skywalking.apache.org/repo/goapi/satellite/data/v1"
+)
 
 type SyncInvoker interface {
-	// SyncInvoke means synchronized process event
-	SyncInvoke(d *v1.SniffData) (*v1.SniffData, error)
+	// SyncInvoke means synchronized process event.
+	// The returned result grpc.ClientStream is the stream initiated by satellite to oap server,
+	// which is used to provide bidirectional stream support
+	SyncInvoke(d *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error)
 }

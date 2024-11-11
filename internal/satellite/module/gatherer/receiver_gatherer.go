@@ -24,6 +24,7 @@ import (
 	"time"
 
 	"github.com/sirupsen/logrus"
+	"google.golang.org/grpc"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
 	"github.com/apache/skywalking-satellite/internal/satellite/event"
@@ -178,7 +179,7 @@ func (r *ReceiverGatherer) Ack(lastOffset *event.Offset) {
 	r.runningQueue.Ack(lastOffset)
 }
 
-func (r *ReceiverGatherer) SyncInvoke(d *v1.SniffData) (*v1.SniffData, error) {
+func (r *ReceiverGatherer) SyncInvoke(d *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error) {
 	return r.processor.SyncInvoke(d)
 }
 

@@ -34,7 +34,7 @@ jobs:
       fail-fast: true
       matrix:
         analyzer: [k8s-mesh, mx-mesh]
-        istio_version: [1.7.1, 1.8.2, 1.9.1]
+        istio_version: [ 1.15.0, 1.16.0, 1.17.0, 1.18.0 ]
     name: Istio(${{ matrix.istio_version }})+ALS(${{ matrix.analyzer }})
     env:
       ISTIO_VERSION: ${{ matrix.istio_version }}
@@ -54,6 +54,12 @@ jobs:
       - uses: apache/skywalking-infra-e2e@cf589b4a0b9f8e6f436f78e9cfd94a1ee5494180
         with:
           e2e-file: test/e2e/case/istio/als/e2e.yaml
+      - uses: actions/upload-artifact@v4
+        if: ${{ failure() }}
+        name: Upload Logs
+        with:
+          name: logs-${{ matrix.istio_version }}
+          path: "${{ env.SW_INFRA_E2E_LOG_DIR }}"
 
   metrics-service:
     runs-on: ubuntu-latest
@@ -62,7 +68,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        istio_version: [1.8.2, 1.9.1]
+        istio_version: [1.15.0, 1.16.0, 1.17.0, 1.18.0]
     env:
       ISTIO_VERSION: ${{ matrix.istio_version }}
     steps:
@@ -80,9 +86,9 @@ jobs:
       - uses: apache/skywalking-infra-e2e@cf589b4a0b9f8e6f436f78e9cfd94a1ee5494180
         with:
           e2e-file: test/e2e/case/istio/metrics/e2e.yaml
-      - uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@v4
         if: ${{ failure() }}
         name: Upload Logs
         with:
-          name: logs
+          name: logs-${{ matrix.istio_version }}
           path: "${{ env.SW_INFRA_E2E_LOG_DIR }}"

@@ -109,28 +109,28 @@ func (f *Forwarder) ForwardType() v1.SniffType {
 	return v1.SniffType_EBPFProfilingType
 }
 
-func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, error) {
+func (f *Forwarder) SyncForward(e *v1.SniffData) (*v1.SniffData, grpc.ClientStream, error) {
 	switch data := e.GetData().(type) {
 	case *v1.SniffData_EBPFProfilingTaskQuery:
 		commands, err := f.profilingClient.QueryTasks(context.Background(), data.EBPFProfilingTaskQuery)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
-		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil
+		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil, nil
 	case *v1.SniffData_ContinuousProfilingPolicyQuery:
 		commands, err := f.continuousClient.QueryPolicies(context.Background(), data.ContinuousProfilingPolicyQuery)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
-		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil
+		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil, nil
 	case *v1.SniffData_ContinuousProfilingReport:
 		commands, err := f.continuousClient.ReportProfilingTask(context.Background(), data.ContinuousProfilingReport)
 		if err != nil {
-			return nil, err
+			return nil, nil, err
 		}
-		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil
+		return &v1.SniffData{Data: &v1.SniffData_Commands{Commands: commands}}, nil, nil
 	}
-	return nil, fmt.Errorf("unsupported data type %T", e.GetData())
+	return nil, nil, fmt.Errorf("unsupported data type %T", e.GetData())
 }
 
 func (f *Forwarder) SupportedSyncInvoke() bool {

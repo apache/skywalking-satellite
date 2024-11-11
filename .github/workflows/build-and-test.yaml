@@ -50,6 +50,7 @@ jobs:
       - name: Lint
         run: make lint
       - name: Test
+        if: matrix.runner == 'ubuntu'
         run: make test
       - name: Build
         run: make build

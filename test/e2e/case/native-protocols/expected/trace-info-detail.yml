@@ -13,42 +13,44 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+debuggingtrace: null
 spans:
   {{- contains .spans}}
   - traceid: {{ notEmpty .traceid }}
+    attachedevents: []
     segmentid: {{ notEmpty .segmentid }}
     spanid: {{ .spanid }}
     parentspanid: {{ .parentspanid }}
     refs:
       {{- if eq .servicecode "e2e-service-provider" }}
-      {{- contains .refs }}
+        {{- contains .refs }}
         - traceid: {{ notEmpty .traceid }}
           parentsegmentid: {{ notEmpty .parentsegmentid }}
           parentspanid: 1
           type: CROSS_PROCESS
-      {{- end }}
-      {{- end }}
-      {{- if eq .servicecode "e2e-service-consumer" }}
+        {{- end }}
+        {{- end }}
+        {{- if eq .servicecode "e2e-service-consumer" }}
         []
-      {{- end }}
+        {{- end }}
     servicecode: {{ notEmpty .servicecode }}
     serviceinstancename: {{ notEmpty .serviceinstancename }}
     starttime: {{ gt .starttime 0 }}
     endtime: {{ gt .endtime 0 }}
-    endpointname: /info
+    endpointname: POST:/info
     type: {{ notEmpty .type }}
     peer:
     {{- if eq .type "Exit" }}
-      provider:9090
+    provider:9090
     {{ else }}
-      ""
+    ""
     {{- end }}
     component:
     {{- if eq .type "Exit" }}
-      SpringRestTemplate
+    SpringRestTemplate
     {{- end }}
     {{- if eq .type "Entry" }}
-      Tomcat
+    Tomcat
     {{- end }}
     iserror: false
     layer: Http

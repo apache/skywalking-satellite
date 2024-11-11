@@ -109,8 +109,8 @@ func (f *Forwarder) ForwardType() v1.SniffType {
 	return v1.SniffType_ManagementType
 }
 
-func (f *Forwarder) SyncForward(*v1.SniffData) (*v1.SniffData, error) {
-	return nil, fmt.Errorf("unsupport sync forward")
+func (f *Forwarder) SyncForward(*v1.SniffData) (*v1.SniffData, grpc.ClientStream, error) {
+	return nil, nil, fmt.Errorf("unsupport sync forward")
 }
 
 func (f *Forwarder) SupportedSyncInvoke() bool {
