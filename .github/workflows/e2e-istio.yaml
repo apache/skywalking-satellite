@@ -84,5 +84,5 @@ jobs:
         if: ${{ failure() }}
         name: Upload Logs
         with:
-          name: logs
+          name: logs-${{ matrix.istio_version }}
           path: "${{ env.SW_INFRA_E2E_LOG_DIR }}"
