@@ -13,16 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-tip: null
-trees:
-  {{- contains .trees }}
-  - elements:
-    {{- contains .elements }}
-    - id: "{{ notEmpty .id }}"
-      parentid: "{{ notEmpty .parentid }}"
-      codesignature: java.lang.Thread.sleep:-2
-      duration: {{ gt .duration 0 }}
-      durationchildexcluded: {{ gt .durationchildexcluded 0 }}
-      count: {{ gt .count 0 }}
-    {{- end }}
-  {{- end }}
+{{- contains . }}
+- key: {{ notEmpty .key }}
+  value:
+    {{ if .value.isemptyvalue }}
+    isemptyvalue: true
+    value: 0
+    {{ else }}
+    isemptyvalue: false
+    value: {{ ge .value.value 0 }}
+    {{ end }}
+{{- end }}
