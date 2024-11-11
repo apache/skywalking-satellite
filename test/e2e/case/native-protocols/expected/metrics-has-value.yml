@@ -13,7 +13,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- contains . }}
-- key: {{ notEmpty .key }}
-  value: {{ ge .value 1 }}
-{{- end }}
+tip: null
+trees:
+  {{- contains .trees }}
+  - elements:
+    {{- contains .elements }}
+    - id: "{{ notEmpty .id }}"
+      parentid: "{{ notEmpty .parentid }}"
+      codesignature: java.lang.Thread.sleep:-2
+      duration: {{ gt .duration 0 }}
+      durationchildexcluded: {{ gt .durationchildexcluded 0 }}
+      count: {{ gt .count 0 }}
+    {{- end }}
+  {{- end }}

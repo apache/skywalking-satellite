@@ -14,7 +14,7 @@
 # limitations under the License.
 
 events:
-{{- contains .events }}
+  {{- contains .events }}
 - uuid: {{ notEmpty .uuid }}
   source:
     service: e2e-service-provider
@@ -25,11 +25,10 @@ events:
   message: Start Java Application
   parameters:
   {{- contains .parameters }}
-    - key: OPTS
-      value: {{ notEmpty .value }}
+  - key: OPTS
+    value: {{ notEmpty .value }}
   {{- end }}
   starttime: {{ gt .starttime 0 }}
   endtime: {{ gt .endtime 0 }}
   layer: GENERAL
-{{- end }}
-total: {{ gt .total 0 }}
+  {{- end }}
