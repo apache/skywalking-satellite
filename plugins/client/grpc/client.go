@@ -20,6 +20,7 @@ package grpc
 import (
 	"context"
 	"fmt"
+	"math"
 
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -183,5 +184,12 @@ type logrusGrpcLoggerV2 struct {
 }
 
 func (l *logrusGrpcLoggerV2) V(level int) bool {
-	return l.Logger.IsLevelEnabled(logrus.Level(level))
+	return l.Logger.IsLevelEnabled(logrus.Level(intToUint32(level)))
+}
+
+func intToUint32(value int) uint32 {
+	if value < 0 || value > math.MaxUint32 {
+		return 0
+	}
+	return uint32(value)
 }

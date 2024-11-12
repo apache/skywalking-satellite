@@ -112,7 +112,7 @@ func (w *KindCache) watchAndUpdate(ctx context.Context, discoverer discovery.Dis
 			select {
 			case tgs := <-ch:
 				for _, tg := range tgs {
-					if tg.Targets == nil || len(tg.Targets) == 0 {
+					if len(tg.Targets) == 0 {
 						delete(w.cache, tg.Source)
 						continue
 					}

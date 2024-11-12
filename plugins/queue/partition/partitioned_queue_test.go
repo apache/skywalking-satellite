@@ -19,6 +19,7 @@ package partition
 
 import (
 	"fmt"
+	"math"
 	"reflect"
 	"strconv"
 	"testing"
@@ -134,7 +135,7 @@ func TestPartitionQueue(t *testing.T) {
 				}
 			}
 
-			queue.loadBalancerIndex = int32(tt.loadBalancerIndex)
+			queue.loadBalancerIndex = intToInt32(tt.loadBalancerIndex)
 
 			testDates := initData(tt.testCount)
 			for _, d := range testDates {
@@ -147,4 +148,11 @@ func TestPartitionQueue(t *testing.T) {
 			}
 		})
 	}
+}
+
+func intToInt32(value int) int32 {
+	if value > math.MaxInt32 || value < math.MinInt32 {
+		return 0
+	}
+	return int32(value)
 }

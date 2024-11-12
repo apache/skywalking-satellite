@@ -20,6 +20,7 @@ package nativeprofile
 import (
 	"context"
 	"fmt"
+	"math"
 	"testing"
 	"time"
 
@@ -41,7 +42,7 @@ func TestReceiver_RegisterHandler_ThreadSnapshot(t *testing.T) {
 			TaskId:         fmt.Sprintf("task-%d", sequence),
 			TraceSegmentId: fmt.Sprintf("segment-%d", sequence),
 			Time:           time.Now().Unix(),
-			Sequence:       int32(sequence),
+			Sequence:       intToInt32(sequence),
 			Stack: &profile.ThreadStack{
 				CodeSignatures: []string{
 					"code",
@@ -106,4 +107,11 @@ func TestReceiver_RegisterHandler_ReportTaskFinish(t *testing.T) {
 			Commands: &common.Commands{},
 		},
 	}, t)
+}
+
+func intToInt32(value int) int32 {
+	if value > math.MaxInt32 || value < math.MinInt32 {
+		return 0
+	}
+	return int32(value)
 }

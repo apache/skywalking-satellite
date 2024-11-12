@@ -21,6 +21,7 @@ package meta
 
 import (
 	"fmt"
+	"math"
 	"path/filepath"
 	"sync"
 	"syscall"
@@ -96,88 +97,88 @@ func NewMetaData(metaDir string, capacity int) (*Metadata, error) {
 func (m *Metadata) GetVersion() int {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
-	return int(m.metaFile.ReadUint64At(versionPos))
+	return uint64ToInt(m.metaFile.ReadUint64At(versionPos))
 }
 
 // PutVersion put the version into the memory mapped file.
 func (m *Metadata) PutVersion(version int64) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
-	m.metaFile.WriteUint64At(uint64(version), versionPos)
+	m.metaFile.WriteUint64At(int64ToUint64(version), versionPos)
 }
 
 // GetWritingOffset returns the writing offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetWritingOffset() (segmentID, offset int64) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
-	return int64(m.metaFile.ReadUint64At(widPos)), int64(m.metaFile.ReadUint64At(woffsetPos))
+	return uint64ToInt64(m.metaFile.ReadUint64At(widPos)), uint64ToInt64(m.metaFile.ReadUint64At(woffsetPos))
 }
 
 // PutWritingOffset put the segment ID and the offset of the segment into the writing offset.
 func (m *Metadata) PutWritingOffset(segmentID, offset int64) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
-	m.metaFile.WriteUint64At(uint64(segmentID), widPos)
-	m.metaFile.WriteUint64At(uint64(offset), woffsetPos)
+	m.metaFile.WriteUint64At(int64ToUint64(segmentID), widPos)
+	m.metaFile.WriteUint64At(int64ToUint64(offset), woffsetPos)
 }
 
 // GetWatermarkOffset returns the watermark offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetWatermarkOffset() (segmentID, offset int64) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
-	return int64(m.metaFile.ReadUint64At(wmidPos)), int64(m.metaFile.ReadUint64At(wmoffsetPos))
+	return uint64ToInt64(m.metaFile.ReadUint64At(wmidPos)), uint64ToInt64(m.metaFile.ReadUint64At(wmoffsetPos))
 }
 
 // PutWatermarkOffset put the segment ID and the offset of the segment into the watermark offset.
 func (m *Metadata) PutWatermarkOffset(segmentID, offset int64) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
-	m.metaFile.WriteUint64At(uint64(segmentID), wmidPos)
-	m.metaFile.WriteUint64At(uint64(offset), wmoffsetPos)
+	m.metaFile.WriteUint64At(int64ToUint64(segmentID), wmidPos)
+	m.metaFile.WriteUint64At(int64ToUint64(offset), wmoffsetPos)
 }
 
 // GetCommittedOffset returns the committed offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetCommittedOffset() (segmentID, offset int64) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
-	return int64(m.metaFile.ReadUint64At(cidPos)), int64(m.metaFile.ReadUint64At(coffsetPos))
+	return uint64ToInt64(m.metaFile.ReadUint64At(cidPos)), uint64ToInt64(m.metaFile.ReadUint64At(coffsetPos))
 }
 
 // PutCommittedOffset put the segment ID and the offset of the segment into the committed offset.
 func (m *Metadata) PutCommittedOffset(segmentID, offset int64) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
-	m.metaFile.WriteUint64At(uint64(segmentID), cidPos)
-	m.metaFile.WriteUint64At(uint64(offset), coffsetPos)
+	m.metaFile.WriteUint64At(int64ToUint64(segmentID), cidPos)
+	m.metaFile.WriteUint64At(int64ToUint64(offset), coffsetPos)
 }
 
 // GetReadingOffset returns the reading offset, which contains the segment ID and the offset of the segment.
 func (m *Metadata) GetReadingOffset() (segmentID, offset int64) {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
-	return int64(m.metaFile.ReadUint64At(ridPos)), int64(m.metaFile.ReadUint64At(roffsetPos))
+	return uint64ToInt64(m.metaFile.ReadUint64At(ridPos)), uint64ToInt64(m.metaFile.ReadUint64At(roffsetPos))
 }
 
 // PutReadingOffset put the segment ID and the offset of the segment into the reading offset.
 func (m *Metadata) PutReadingOffset(segmentID, offset int64) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
-	m.metaFile.WriteUint64At(uint64(segmentID), ridPos)
-	m.metaFile.WriteUint64At(uint64(offset), roffsetPos)
+	m.metaFile.WriteUint64At(int64ToUint64(segmentID), ridPos)
+	m.metaFile.WriteUint64At(int64ToUint64(offset), roffsetPos)
 }
 
 // GetCapacity returns the capacity of the queue.
 func (m *Metadata) GetCapacity() int {
 	m.lock.RLock()
 	defer m.lock.RUnlock()
-	return int(m.metaFile.ReadUint64At(capacityPos))
+	return uint64ToInt(m.metaFile.ReadUint64At(capacityPos))
 }
 
 // PutCapacity put the capacity into the memory mapped file.
 func (m *Metadata) PutCapacity(version int64) {
 	m.lock.Lock()
 	defer m.lock.Unlock()
-	m.metaFile.WriteUint64At(uint64(version), capacityPos)
+	m.metaFile.WriteUint64At(int64ToUint64(version), capacityPos)
 }
 
 // Flush the memory mapped file to the disk.
@@ -195,4 +196,25 @@ func (m *Metadata) Close() error {
 		return err
 	}
 	return m.metaFile.Unmap()
+}
+
+func uint64ToInt(value uint64) int {
+	if value > math.MaxInt {
+		return 0
+	}
+	return int(value)
+}
+
+func int64ToUint64(value int64) uint64 {
+	if value < 0 {
+		return 0
+	}
+	return uint64(value)
+}
+
+func uint64ToInt64(value uint64) int64 {
+	if value > math.MaxInt64 {
+		return 0
+	}
+	return int64(value)
 }

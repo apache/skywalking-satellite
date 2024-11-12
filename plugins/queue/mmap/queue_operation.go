@@ -25,6 +25,7 @@
 package mmap
 
 import (
+	"math"
 	"sync/atomic"
 
 	"github.com/apache/skywalking-satellite/plugins/queue/api"
@@ -134,7 +135,7 @@ func (q *Queue) readLength(id, offset int64) (newID, newOffset int64, length int
 	if offset == int64(q.SegmentSize) {
 		id, offset = id+1, 0
 	}
-	return id, offset, int(num), nil
+	return id, offset, uint64ToInt(num), nil
 }
 
 // writeLength write the data length with 8 Bits spaces.
@@ -147,7 +148,7 @@ func (q *Queue) writeLength(length int, id, offset int64) (newID, newOffset int6
 	if err != nil {
 		return 0, 0, err
 	}
-	segment.WriteUint64At(uint64(length), offset)
+	segment.WriteUint64At(intToUint64(length), offset)
 	q.unlock(id)
 	offset += uInt64Size
 	if offset == int64(q.SegmentSize) {
@@ -181,4 +182,18 @@ func (q *Queue) writeBytes(bytes []byte, id, offset int64) (newID, newOffset int
 		}
 	}
 	return id, offset, nil
+}
+
+func uint64ToInt(value uint64) int {
+	if value > math.MaxInt {
+		return 0
+	}
+	return int(value)
+}
+
+func intToUint64(value int) uint64 {
+	if value < 0 {
+		return 0
+	}
+	return uint64(value)
 }

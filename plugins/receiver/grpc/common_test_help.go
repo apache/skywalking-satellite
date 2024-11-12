@@ -87,7 +87,7 @@ func TestReceiverWithConfig(rec receiver.Receiver, recConf map[string]string,
 		data = dataGenerator(t, i, conn, ctx)
 		<-ctx.Done()
 		if errorMsg != "" {
-			t.Fatalf(errorMsg)
+			t.Fatalf("%s", errorMsg)
 		}
 	}
 }
@@ -117,7 +117,7 @@ func TestReceiverWithSync(rec receiver.Receiver,
 	for i := 0; i < 10; i++ {
 		dataGenerator(t, i, conn, &data, context.Background())
 		if invoker.errorMsg != "" {
-			t.Fatalf(invoker.errorMsg)
+			t.Fatalf("%s", invoker.errorMsg)
 		}
 	}
 }
