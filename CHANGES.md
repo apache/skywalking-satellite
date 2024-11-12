@@ -6,6 +6,7 @@ Release Notes.
 ------------------
 #### Features
 * Support native eBPF Access Log protocol.
+* Update go library to `1.23`.
 
 #### Bug Fixes
 
