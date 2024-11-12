@@ -64,6 +64,10 @@ setup:
                        --set oap.image.tag=$SW_OAP_COMMIT \
                        --set oap.image.repository=ghcr.io/apache/skywalking/oap \
                        --set oap.storageType=elasticsearch \
+                       --set oap.startupProbe.failureThreshold=60 \
+                       --set oap.startupProbe.tcpSocket.port=12800 \
+                       --set oap.startupProbe.initialDelaySeconds=120 \
+                       --set oap.startupProbe.periodSeconds=10 \
                        --set satellite.enabled=true \
                        --set satellite.image.repository=apache/skywalking-satellite \
                        --set satellite.image.tag=vlatest \
