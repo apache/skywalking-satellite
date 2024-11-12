@@ -50,7 +50,7 @@ func TestReceiver_http_RegisterHandler(t *testing.T) {
 	r.RegisterHandler(s.GetServer())
 	err := s.Start()
 	if err != nil {
-		t.Fatalf(err.Error())
+		t.Fatalf("%s", err.Error())
 	}
 	time.Sleep(time.Second)
 	defer func() {
@@ -99,7 +99,7 @@ func TestReceiver_http_RegisterHandler_failed(t *testing.T) {
 	r.RegisterHandler(s.GetServer())
 	err := s.Start()
 	if err != nil {
-		t.Fatalf(err.Error())
+		t.Fatalf("%s", err.Error())
 	}
 	time.Sleep(time.Second)
 	defer func() {

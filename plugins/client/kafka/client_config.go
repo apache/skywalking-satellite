@@ -19,6 +19,7 @@ package kafka
 
 import (
 	"fmt"
+	"math"
 	"os"
 	"time"
 
@@ -37,7 +38,7 @@ func (c *Client) loadConfig() (*sarama.Config, error) {
 	cfg.Producer.Return.Errors = true
 	cfg.Producer.Idempotent = c.IdempotentWrites
 	cfg.Producer.RequiredAcks = sarama.RequiredAcks(c.RequiredAcks)
-	cfg.Producer.Compression = sarama.CompressionCodec(c.CompressionCodec)
+	cfg.Producer.Compression = sarama.CompressionCodec(intToInt8(c.CompressionCodec))
 	if c.ProducerMaxRetry > 0 {
 		cfg.Producer.Retry.Max = c.ProducerMaxRetry
 	}
@@ -118,4 +119,11 @@ func checkTLSFile(path string) error {
 		return fmt.Errorf("the TLS file is illegal: %s", path)
 	}
 	return nil
+}
+
+func intToInt8(value int) int8 {
+	if value < math.MinInt8 || value > math.MaxInt8 {
+		return 0
+	}
+	return int8(value)
 }
