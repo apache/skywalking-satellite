@@ -22,7 +22,7 @@ kubernetes_config:
     port: 11800
 
 # The TLS switch (default false).
-enable_TLS: false
+enable_tls: false
 
 # The file path of client.pem. The config only works when opening the TLS switch.
 client_pem_path: ""
@@ -68,7 +68,7 @@ timeout:
 | kubernetes_config.kind | string | The kind of api |
 | kubernetes_config.selector | resolvers.Selector | The kind selector |
 | kubernetes_config.extra_port | resolvers.ExtraPort | How to get the address exported port |
-| enable_TLS | bool | Enable TLS connect to server |
+| enable_tls | bool | Enable TLS connect to server |
 | client_pem_path | string | The file path of client.pem. The config only works when opening the TLS switch. |
 | client_key_path | string | The file path of client.key. The config only works when opening the TLS switch. |
 | ca_pem_path | string | The file path oca.pem. The config only works when opening the TLS switch. |

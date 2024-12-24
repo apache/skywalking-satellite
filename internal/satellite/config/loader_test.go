@@ -93,7 +93,7 @@ func sharing() *SharingConfig {
 				"ca_pem_path":            "ca.pem",
 				"client_key_path":        "client.key",
 				"client_pem_path":        "client.pem",
-				"enable_TLS":             false,
+				"enable_tls":             false,
 				"insecure_skip_verify":   false,
 				"check_period":           5,
 				"authentication":         "",

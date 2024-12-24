@@ -29,7 +29,7 @@ sharing:
       # The gRPC server address (default localhost:11800).
       server_addr: ${SATELLITE_GRPC_CLIENT:127.0.0.1:11800,127.0.0.2:11800}
       # The TLS switch
-      enable_TLS: ${SATELLITE_GRPC_ENABLE_TLS:false}
+      enable_tls: ${SATELLITE_GRPC_ENABLE_TLS:false}
       # The file path of client.pem. The config only works when opening the TLS switch.
       client_pem_path: ${SATELLITE_GRPC_CLIENT_PEM_PATH:"client.pem"}
       # The file path of client.key. The config only works when opening the TLS switch.
@@ -70,7 +70,7 @@ sharing:
         extra_port:
           port: 9080
       # The TLS switch
-      enable_TLS: ${SATELLITE_GRPC_ENABLE_TLS:false}
+      enable_tls: ${SATELLITE_GRPC_ENABLE_TLS:false}
       # The file path of client.pem. The config only works when opening the TLS switch.
       client_pem_path: ${SATELLITE_GRPC_CLIENT_PEM_PATH:"client.pem"}
       # The file path of client.key. The config only works when opening the TLS switch.
