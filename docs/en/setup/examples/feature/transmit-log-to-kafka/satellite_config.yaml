@@ -42,7 +42,7 @@ sharing:
       # The Kakfa version should follow this pattern, which is major_minor_veryMinor_patch.
       version: ${SATELLITE_KAFKA_VERSION:"2.1.1"}
       # The TLS switch
-      enable_TLS: ${SATELLITE_KAFKA_ENABLE_TLS:false}
+      enable_tls: ${SATELLITE_KAFKA_ENABLE_TLS:false}
       # The file path of client.pem. The config only works when opening the TLS switch.
       client_pem_path: ${SATELLITE_KAFKA_CLIENT_PEM_PATH:"client.pem"}
       # The file path of client.key. The config only works when opening the TLS switch.

@@ -38,7 +38,7 @@ type Client struct {
 	config.CommonFields
 	Brokers            string `mapstructure:"brokers"`              // The Kafka broker addresses (default `localhost:9092`).
 	Version            string `mapstructure:"version"`              // The version should follow this pattern, which is `major.minor.veryMinor.patch`.
-	EnableTLS          bool   `mapstructure:"enable_TLS"`           // The TLS switch (default false).
+	EnableTLS          bool   `mapstructure:"enable_tls"`           // The TLS switch (default false).
 	ClientPemPath      string `mapstructure:"client_pem_path"`      // The file path of client.pem. The config only works when opening the TLS switch.
 	ClientKeyPath      string `mapstructure:"client_key_path"`      // The file path of client.key. The config only works when opening the TLS switch.
 	CaPemPath          string `mapstructure:"ca_pem_path"`          // The file path oca.pem. The config only works when opening the TLS switch.
@@ -82,7 +82,7 @@ brokers: localhost:9092
 version: 1.0.0.0
 
 # The TLS switch (default false).
-enable_TLS: false
+enable_tls: false
 
 # The file path of client.pem. The config only works when opening the TLS switch.
 client_pem_path: ""

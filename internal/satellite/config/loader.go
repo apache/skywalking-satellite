@@ -21,11 +21,10 @@ import (
 	"bytes"
 	"fmt"
 	"os"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"sync"
-
-	"path/filepath"
 
 	"github.com/spf13/viper"
 
@@ -33,9 +32,7 @@ import (
 	"github.com/apache/skywalking-satellite/internal/pkg/plugin"
 )
 
-var (
-	cfgLock sync.Mutex
-)
+var cfgLock sync.Mutex
 
 // Load SatelliteConfig. The func could not use global logger of Satellite, because it is executed before logger initialization.
 func Load(configPath string) *SatelliteConfig {

@@ -10,7 +10,7 @@ brokers: localhost:9092
 version: 1.0.0.0
 
 # The TLS switch (default false).
-enable_TLS: false
+enable_tls: false
 
 # The file path of client.pem. The config only works when opening the TLS switch.
 client_pem_path: ""
@@ -56,7 +56,7 @@ insecure_skip_verify: true
 |----|----|-----------|
 | brokers | string | The Kafka broker addresses (default `localhost:9092`). |
 | version | string | The version should follow this pattern, which is `major.minor.veryMinor.patch`. |
-| enable_TLS | bool | The TLS switch (default false). |
+| enable_tls | bool | The TLS switch (default false). |
 | client_pem_path | string | The file path of client.pem. The config only works when opening the TLS switch. |
 | client_key_path | string | The file path of client.key. The config only works when opening the TLS switch. |
 | ca_pem_path | string | The file path oca.pem. The config only works when opening the TLS switch. |

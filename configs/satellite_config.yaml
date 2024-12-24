@@ -107,7 +107,7 @@ sharing:
           # Resource target port
           port: ${SATELLITE_GRPC_CLIENT_KUBERNETES_EXTRA_PORT:11800}
       # The TLS switch
-      enable_TLS: ${SATELLITE_GRPC_ENABLE_TLS:false}
+      enable_tls: ${SATELLITE_GRPC_ENABLE_TLS:false}
       # The file path of client.pem. The config only works when opening the TLS switch.
       client_pem_path: ${SATELLITE_GRPC_CLIENT_PEM_PATH:"client.pem"}
       # The file path of client.key. The config only works when opening the TLS switch.
@@ -627,3 +627,4 @@ pipes:
           routing_rule_lru_cache_ttl: ${SATELLITE_METERPIPE_FORWARD_ROUTING_RULE_LRU_CACHE_TTL:180}
           # The label key of the routing data, multiple keys are split by ","
           routing_label_keys: net.host.name,host.name,job,service.name
+

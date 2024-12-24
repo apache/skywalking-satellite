@@ -42,7 +42,7 @@ type Client struct {
 	// server finder config
 	ServerFinderConfig resolvers.ServerFinderConfig `mapstructure:",squash"`
 
-	EnableTLS          bool   `mapstructure:"enable_TLS"`           // Enable TLS connect to server
+	EnableTLS          bool   `mapstructure:"enable_tls"`           // Enable TLS connect to server
 	ClientPemPath      string `mapstructure:"client_pem_path"`      // The file path of client.pem. The config only works when opening the TLS switch.
 	ClientKeyPath      string `mapstructure:"client_key_path"`      // The file path of client.key. The config only works when opening the TLS switch.
 	CaPemPath          string `mapstructure:"ca_pem_path"`          // The file path oca.pem. The config only works when opening the TLS switch.
@@ -98,7 +98,7 @@ kubernetes_config:
     port: 11800
 
 # The TLS switch (default false).
-enable_TLS: false
+enable_tls: false
 
 # The file path of client.pem. The config only works when opening the TLS switch.
 client_pem_path: ""
