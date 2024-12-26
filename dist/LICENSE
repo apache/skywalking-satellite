@@ -306,7 +306,7 @@ The text of each license is also included at licenses/license-[project].txt.
     golang.org/x/term v0.27.0 BSD-3-Clause
     golang.org/x/text v0.21.0 BSD-3-Clause
     golang.org/x/time v0.5.0 BSD-3-Clause
-    google.golang.org/protobuf v1.35.2 BSD-3-Clause
+    google.golang.org/protobuf v1.36.1 BSD-3-Clause
     gopkg.in/inf.v0 v0.9.1 BSD-3-Clause
 
 ========================================================================
