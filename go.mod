@@ -9,7 +9,7 @@ require (
 	github.com/grandecola/mmap v0.6.0
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/prometheus/client_golang v1.20.5
-	github.com/prometheus/common v0.61.0
+	github.com/prometheus/common v0.62.0
 	github.com/prometheus/prometheus v0.43.0
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/sirupsen/logrus v1.9.3
@@ -19,7 +19,7 @@ require (
 	golang.org/x/mod v0.22.0
 	golang.org/x/text v0.21.0
 	google.golang.org/grpc v1.69.4
-	google.golang.org/protobuf v1.36.2
+	google.golang.org/protobuf v1.36.3
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.26.2
 	skywalking.apache.org/repo/goapi v0.0.0-20241106011455-ef3dbfac3128
