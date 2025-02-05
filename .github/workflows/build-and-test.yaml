@@ -32,19 +32,26 @@ jobs:
         runner: [ ubuntu, windows ]
       fail-fast: true
     steps:
-      - name: Set up Go ${{ matrix.go-version }}
-        uses: actions/setup-go@v2
-        with:
-          go-version: ${{ matrix.go-version }}
       - name: Check out code into the Go module directory
         uses: actions/checkout@v2
         with:
           submodules: true
       - name: Check License
         if: matrix.runner == 'ubuntu'
-        uses: apache/skywalking-eyes@9bd5feb86b5817aa6072b008f9866a2c3bbc8587
+        uses: apache/skywalking-eyes/header@69f34abb75ec4e414b593ac3f34228b60e33f97b
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Check Dependencies License
+        if: matrix.runner == 'ubuntu'
+        uses: apache/skywalking-eyes/dependency@69f34abb75ec4e414b593ac3f34228b60e33f97b
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          flags: -w
+      - name: Set up Go ${{ matrix.go-version }}
+        uses: actions/setup-go@v2
+        with:
+          go-version: ${{ matrix.go-version }}
       - name: Get dependencies
         run: make deps
       - name: Lint
