@@ -6,7 +6,12 @@ This documentation guides the release manager to release the SkyWalking Satellit
 
 1. Close(if finished, or move to next milestone otherwise) all issues in the current milestone from [skywalking-satellite](https://github.com/apache/skywalking-satellite/milestones) and [skywalking](https://github.com/apache/skywalking/milestones), create a new milestone if needed.
 2. Update [CHANGES.md](../../../../CHANGES.md).
-
+3. Generate LICENSE file in [`dist/LICENSE`](../../../../dist/LICENSE) and copy dependencies' licneses to [`dist/licenses`](../../../../dist/licenses/) folder, this can be done by running the following command in the project root:
+```shell
+# Install license-eye
+go install github.com/apache/skywalking-eyes/cmd/license-eye@69f34abb75ec4e414b593ac3f34228b60e33f97b
+license-eye dep resolve --summary dist/LICENSE.tpl -o dist/licenses
+```
 
 ## Add your GPG public key to Apache svn
 
