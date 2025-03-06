@@ -1,6 +1,8 @@
 module github.com/apache/skywalking-satellite
 
-go 1.23
+go 1.23.0
+
+toolchain go1.23.6
 
 require (
 	github.com/Shopify/sarama v1.27.2
@@ -14,10 +16,10 @@ require (
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/sirupsen/logrus v1.9.3
 	github.com/spf13/viper v1.19.0
-	github.com/urfave/cli/v2 v2.27.5
+	github.com/urfave/cli/v2 v2.27.6
 	go.uber.org/automaxprocs v1.6.0
-	golang.org/x/mod v0.23.0
-	golang.org/x/text v0.22.0
+	golang.org/x/mod v0.24.0
+	golang.org/x/text v0.23.0
 	google.golang.org/grpc v1.71.0
 	google.golang.org/protobuf v1.36.5
 	gopkg.in/yaml.v3 v3.0.1
