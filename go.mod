@@ -1,6 +1,9 @@
 module github.com/apache/skywalking-satellite
 
-go 1.23
+go 1.23.0
+
+toolchain go1.23.6
+
 require (
 	github.com/Shopify/sarama v1.27.2
 	github.com/enriquebris/goconcurrentqueue v0.7.0
