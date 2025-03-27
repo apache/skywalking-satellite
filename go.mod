@@ -15,7 +15,7 @@ require (
 	github.com/prometheus/prometheus v0.43.0
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/sirupsen/logrus v1.9.3
-	github.com/spf13/viper v1.20.0
+	github.com/spf13/viper v1.20.1
 	github.com/urfave/cli/v2 v2.27.6
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/mod v0.24.0
