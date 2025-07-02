@@ -8,7 +8,7 @@ require (
 	github.com/Shopify/sarama v1.27.2
 	github.com/enriquebris/goconcurrentqueue v0.7.0
 	github.com/google/go-cmp v0.7.0
-	github.com/grandecola/mmap v0.6.0
+	github.com/grandecola/mmap v0.7.0
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/prometheus/client_golang v1.22.0
 	github.com/prometheus/common v0.65.0
