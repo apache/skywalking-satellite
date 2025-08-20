@@ -20,7 +20,7 @@ require (
 	go.uber.org/automaxprocs v1.6.0
 	golang.org/x/mod v0.27.0
 	golang.org/x/text v0.28.0
-	google.golang.org/grpc v1.74.2
+	google.golang.org/grpc v1.75.0
 	google.golang.org/protobuf v1.36.7
 	gopkg.in/yaml.v3 v3.0.1
 	k8s.io/apimachinery v0.26.2
@@ -82,13 +82,13 @@ require (
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.uber.org/atomic v1.10.0 // indirect
 	go.uber.org/multierr v1.9.0 // indirect
-	golang.org/x/crypto v0.38.0 // indirect
-	golang.org/x/net v0.40.0 // indirect
+	golang.org/x/crypto v0.39.0 // indirect
+	golang.org/x/net v0.41.0 // indirect
 	golang.org/x/oauth2 v0.30.0 // indirect
 	golang.org/x/sys v0.33.0 // indirect
 	golang.org/x/term v0.32.0 // indirect
 	golang.org/x/time v0.8.0 // indirect
-	google.golang.org/genproto/googleapis/rpc v0.0.0-20250528174236-200df99c418a // indirect
+	google.golang.org/genproto/googleapis/rpc v0.0.0-20250707201910-8d1bb00bc6a7 // indirect
 	gopkg.in/inf.v0 v0.9.1 // indirect
 	gopkg.in/jcmturner/aescts.v1 v1.0.1 // indirect
 	gopkg.in/jcmturner/dnsutils.v1 v1.0.1 // indirect
