@@ -43,7 +43,7 @@ func (p *ProcessReportService) ReportProcesses(ctx context.Context, d *v3.EBPFPr
 			EBPFProcessReportList: d,
 		},
 	}
-	data, _, err := p.SyncInvoker.SyncInvoke(event)
+	data, _, err := p.SyncInvoke(event)
 	if err != nil {
 		return nil, err
 	}

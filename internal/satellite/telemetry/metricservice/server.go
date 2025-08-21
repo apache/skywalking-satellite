@@ -64,9 +64,9 @@ func (s *Server) Start(config *telemetry.Config) error {
 }
 
 func (s *Server) AfterSharingStart() error {
-	plugin := sharing.Manager[s.MetricsServiceConfig.ClientName]
+	plugin := sharing.Manager[s.ClientName]
 	if plugin == nil {
-		return fmt.Errorf("could not fould client %s", s.MetricsServiceConfig.ClientName)
+		return fmt.Errorf("could not fould client %s", s.ClientName)
 	}
 	grpcClient, ok := plugin.(client.Client)
 	if !ok {

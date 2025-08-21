@@ -44,7 +44,7 @@ func (p *ProfilingReportService) QueryTasks(ctx context.Context, d *v3.EBPFProfi
 			EBPFProfilingTaskQuery: d,
 		},
 	}
-	data, _, err := p.SyncInvoker.SyncInvoke(event)
+	data, _, err := p.SyncInvoke(event)
 	if err != nil {
 		return nil, err
 	}
