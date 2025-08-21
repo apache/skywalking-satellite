@@ -40,13 +40,14 @@ type AsyncProfilerService struct {
 }
 
 func (p *AsyncProfilerService) GetAsyncProfilerTaskCommands(_ context.Context,
-	query *asyncprofiler.AsyncProfilerTaskCommandQuery) (*common.Commands, error) {
+	query *asyncprofiler.AsyncProfilerTaskCommandQuery,
+) (*common.Commands, error) {
 	event := &v1.SniffData{
 		Data: &v1.SniffData_AsyncProfilerTaskCommandQuery{
 			AsyncProfilerTaskCommandQuery: query,
 		},
 	}
-	data, _, err := p.SyncInvoker.SyncInvoke(event)
+	data, _, err := p.SyncInvoke(event)
 	if err != nil {
 		return nil, err
 	}
@@ -68,7 +69,7 @@ func (p *AsyncProfilerService) Collect(clientStream asyncprofiler.AsyncProfilerT
 		},
 	}
 	// send metadata to server
-	serverStreamAndResp, serverStream, err := p.SyncInvoker.SyncInvoke(event)
+	serverStreamAndResp, serverStream, err := p.SyncInvoke(event)
 	if err != nil {
 		return fmt.Errorf("satellite send metadata to server but get err: %s", err)
 	}

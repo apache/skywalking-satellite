@@ -2,7 +2,7 @@
 
 ## Go version
 
-Go version `1.23` is required for compilation.
+Go version `1.24` is required for compilation.
 
 ## Platform
 Linux, MacOS and Windows are supported in SkyWalking Satellite. However, some components don't fit the Windows platform, including:

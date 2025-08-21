@@ -42,7 +42,7 @@ func (p *CDSService) FetchConfigurations(_ context.Context, req *v3.Configuratio
 			ConfigurationSyncRequest: req,
 		},
 	}
-	data, _, err := p.SyncInvoker.SyncInvoke(event)
+	data, _, err := p.SyncInvoke(event)
 	if err != nil {
 		return nil, err
 	}

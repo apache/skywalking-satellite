@@ -39,9 +39,10 @@ func (c *Client) snifferChannelStatus() {
 		case <-timeTicker.C:
 			state := c.client.GetState()
 			log.Logger.Debugf("current grpc client state: %s", state)
-			if state == connectivity.Shutdown || state == connectivity.TransientFailure {
+			switch state {
+			case connectivity.Shutdown, connectivity.TransientFailure:
 				c.updateStatus(api.Disconnect)
-			} else if state == connectivity.Ready || state == connectivity.Idle {
+			case connectivity.Ready, connectivity.Idle:
 				c.updateStatus(api.Connected)
 			}
 		case <-ctx.Done():

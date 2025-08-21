@@ -39,7 +39,7 @@ func (c *ContinuousProfilingReportService) QueryPolicies(ctx context.Context, qu
 			ContinuousProfilingPolicyQuery: query,
 		},
 	}
-	data, _, err := c.SyncInvoker.SyncInvoke(event)
+	data, _, err := c.SyncInvoke(event)
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +53,7 @@ func (c *ContinuousProfilingReportService) ReportProfilingTask(ctx context.Conte
 			ContinuousProfilingReport: report,
 		},
 	}
-	data, _, err := c.SyncInvoker.SyncInvoke(event)
+	data, _, err := c.SyncInvoke(event)
 	if err != nil {
 		return nil, err
 	}
