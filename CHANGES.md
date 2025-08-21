@@ -6,7 +6,7 @@ Release Notes.
 ------------------
 #### Features
 * Support native eBPF Access Log protocol.
-* Update go library to `1.23`.
+* Update go library to `1.24`.
 * Support async profiler protocol.
 
 #### Bug Fixes
