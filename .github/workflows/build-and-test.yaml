@@ -64,9 +64,6 @@ jobs:
       - name: Check CI Consistency
         if: matrix.runner == 'ubuntu'
         run: make check
-      - name: Build Docker
-        if: matrix.runner == 'ubuntu'
-        run: make docker
 
   result:
     runs-on: ubuntu-latest
