@@ -139,7 +139,7 @@ func initClient(ports []int, t *testing.T) client.Client {
 		if inx > 0 {
 			serverList += ","
 		}
-		serverList += fmt.Sprintf("%s%d", "0.0.0.0:", ports[inx])
+		serverList += fmt.Sprintf("%s%d", "127.0.0.1:", ports[inx])
 	}
 	cfg["server_addr"] = serverList
 	q := client.GetClient(cfg)

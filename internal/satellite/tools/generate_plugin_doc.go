@@ -222,7 +222,7 @@ func getConfigurations(category, p reflect.Type) []*pluginConfigurationItem {
 	pluginDir := strings.TrimPrefix(p.PkgPath(), GetModuleName())
 	fset := token.NewFileSet()
 
-	d, err := parser.ParseDir(fset, "."+pluginDir, nil, parser.ParseComments)
+	d, err := parser.ParseDir(fset, "."+pluginDir, nil, parser.ParseComments) //nolint:staticcheck // deprecated; no replacement dep justified
 	if err != nil {
 		log.Logger.Warnf("failed to generate plugin [%s] configuration, error: %v", category.Name()+"/"+p.Name(), err)
 		return make([]*pluginConfigurationItem, 0)

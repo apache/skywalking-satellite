@@ -86,6 +86,7 @@ func TestReceiverWithConfig(rec receiver.Receiver, recConf map[string]string,
 		}()
 		data = dataGenerator(t, i, conn, ctx)
 		<-ctx.Done()
+		cancel() // ensure resources are released even if goroutine did not call it
 		if errorMsg != "" {
 			t.Fatalf("%s", errorMsg)
 		}

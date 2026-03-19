@@ -88,7 +88,7 @@ type ExtraPort struct {
 
 // convert config data
 func (c *HTTPClientConfig) convertHTTPConfig() (*config.HTTPClientConfig, error) {
-	marshal, err := yaml.Marshal(c)
+	marshal, err := yaml.Marshal(c) //nolint:gosec // intentional: marshaling user-provided credentials required for conversion to prometheus config
 	if err != nil {
 		return nil, fmt.Errorf("could not identity the http client config: %v", err)
 	}

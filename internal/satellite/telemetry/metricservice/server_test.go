@@ -85,7 +85,7 @@ func initGRPCClient(port int) error {
 		Clients: []plugin.Config{
 			map[string]interface{}{
 				"plugin_name": grpc_client.Name,
-				"server_addr": fmt.Sprintf("%s%d", "0.0.0.0:", port),
+				"server_addr": fmt.Sprintf("%s%d", "127.0.0.1:", port),
 			},
 		},
 	})
