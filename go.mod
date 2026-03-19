@@ -1,6 +1,6 @@
 module github.com/apache/skywalking-satellite
 
-go 1.25
+go 1.26
 
 require (
 	github.com/Shopify/sarama v1.27.2
