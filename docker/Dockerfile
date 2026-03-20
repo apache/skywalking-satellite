@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.25 AS build
+FROM golang:1.25.8 AS build
 
 ARG VERSION="latest"
 ARG TARGETARCH
@@ -28,7 +28,7 @@ COPY . .
 RUN VERSION=$VERSION make ARCH=${TARGETARCH} linux
 RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-${TARGETARCH} /src/bin/skywalking-satellite
 
-FROM alpine:3.19
+FROM alpine:3.21
 
 RUN apk add --no-cache ca-certificates && \
     apk -U upgrade

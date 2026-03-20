@@ -75,15 +75,27 @@ func TestStaticServer(t *testing.T) {
 	// init client
 	c := initClient(ports, t)
 
-	// wait all channel being connected (connect by async)
-	time.Sleep(time.Second * 1)
-
-	// send request
+	// send requests and retry until all receivers have received data,
+	// since grpc.NewClient connects lazily and connections may become READY at different times.
 	jvmClient := agent.NewJVMMetricReportServiceClient(c.GetConnectedClient().(*grpc.ClientConn))
-	for inx := 0; inx < serverCount*3; inx++ { // the lb connection will be connected with async, so we need to send more request
-		if _, err := jvmClient.Collect(context.Background(), &agent.JVMMetricCollection{}); err != nil {
-			t.Errorf("send request error: %v", err)
+	deadline := time.Now().Add(30 * time.Second)
+	for time.Now().Before(deadline) {
+		for inx := 0; inx < serverCount; inx++ {
+			if _, err := jvmClient.Collect(context.Background(), &agent.JVMMetricCollection{}); err != nil {
+				t.Logf("send request error (may be transient): %v", err)
+			}
 		}
+		allReceived := true
+		for _, r := range receivers {
+			if r.receiveCount <= 0 {
+				allReceived = false
+				break
+			}
+		}
+		if allReceived {
+			break
+		}
+		time.Sleep(200 * time.Millisecond)
 	}
 
 	// check all receiver must have received data
