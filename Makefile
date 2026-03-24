@@ -19,6 +19,8 @@ VERSION ?= latest
 HUB ?= apache
 OUT_DIR = bin
 BINARY = skywalking-satellite
+USE_INSECURE_REGISTRY ?=
+INSECURE_REGISTRY_ARG = "--output=type=registry,registry.insecure=true"
 
 RELEASE_BIN = skywalking-satellite-$(VERSION)-bin
 RELEASE_SRC = skywalking-satellite-$(VERSION)-src
@@ -110,12 +112,18 @@ docker docker.push:
 	$(DOCKER_RULE)
 
 define DOCKER_RULE
-	docker buildx create --use --driver docker-container --name skywalking_satellite > /dev/null 2>&1 || true
-	docker buildx build $(PLATFORMS) $(LOAD_OR_PUSH) \
+	docker buildx create --use \
+		--driver docker-container \
+		--driver-opt network=host \
+		--buildkitd-flags '--allow-insecure-entitlement network.host' \
+		--name skywalking_satellite > /dev/null 2>&1 || true
+	docker buildx build \
+		$(if $(USE_INSECURE_REGISTRY),$(INSECURE_REGISTRY_ARG),)  \
+		$(PLATFORMS) $(LOAD_OR_PUSH) \
 		--no-cache --build-arg VERSION=$(VERSION) \
 		-t $(HUB)/skywalking-satellite:v$(VERSION) \
 		-f docker/Dockerfile \
-                --provenance=false \
+    --provenance=false \
 		.
 	docker buildx rm skywalking_satellite || true
 endef

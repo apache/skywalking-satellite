@@ -15,16 +15,14 @@
 # limitations under the License.
 
 name: publish-docker
-
 on:
   push:
     branches:
       - main
+  pull_request:
   workflow_dispatch:
-
 env:
   HUB: ghcr.io/apache/skywalking-satellite
-
 jobs:
   build:
     if: github.repository == 'apache/skywalking-satellite'
@@ -33,6 +31,11 @@ jobs:
       contents: read
       packages: write
     timeout-minutes: 90
+    services:
+      registry:
+        image: registry:3
+        ports:
+          - 5000:5000
     env:
       VERSION: ${{ github.sha }}
     steps:
@@ -40,12 +43,21 @@ jobs:
         with:
           submodules: true
       - name: Log in to the Container registry
+        if: github.event_name != 'pull_request'
         uses: docker/login-action@v1.10.0
         with:
           registry: ${{ env.HUB }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-      - name: Build docker image
+      - name: Build and push docker image
         run: |
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            export HUB=localhost:5000/skywalking-satellite
+            export USE_INSECURE_REGISTRY=true
+          fi
           make docker || make docker
           make docker.push || make docker.push
+      - name: Verify image in local registry
+        if: github.event_name == 'pull_request'
+        run: |
+          docker pull localhost:5000/skywalking-satellite/skywalking-satellite:v${{ github.sha }}
