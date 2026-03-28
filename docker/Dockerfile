@@ -28,7 +28,7 @@ COPY . .
 RUN VERSION=$VERSION make ARCH=${TARGETARCH} linux
 RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-${TARGETARCH} /src/bin/skywalking-satellite
 
-FROM alpine:3.21
+FROM alpine:3.23
 
 RUN apk add --no-cache ca-certificates && \
     apk -U upgrade
