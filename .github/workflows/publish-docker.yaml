@@ -33,7 +33,7 @@ jobs:
     timeout-minutes: 90
     services:
       registry:
-        image: registry:3
+        image: registry:2
         ports:
           - 5000:5000
     env:
