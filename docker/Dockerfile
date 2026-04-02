@@ -30,8 +30,9 @@ RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-${TARGETARCH} /src/bin/sky
 
 FROM alpine:3.23
 
-RUN apk add --no-cache ca-certificates && \
-    apk -U upgrade
+RUN apk update --no-cache && \
+    apk upgrade --no-cache && \
+    apk add --no-cache ca-certificates
 
 VOLUME /skywalking/configs
 
