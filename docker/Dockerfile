@@ -30,6 +30,9 @@ RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-${TARGETARCH} /src/bin/sky
 
 FROM alpine:3.23
 
+# Upgrade all packages to pick up latest security fixes, including:
+# - CVE-2026-6042: musl iconv GB18030 algorithmic inefficiency
+# - CVE-2026-40200: musl stack-based memory corruption in sorting
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
     apk add --no-cache ca-certificates
