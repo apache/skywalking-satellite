@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.25.8 AS build
+FROM golang:1.25.9 AS build
 
 ARG VERSION="latest"
 ARG TARGETARCH
@@ -32,7 +32,7 @@ FROM alpine:3.23
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache ca-certificates
+    apk add --no-cache ca-certificates libssl3>=3.3.7-r0 libcrypto3>=3.3.7-r0
 
 VOLUME /skywalking/configs
 
