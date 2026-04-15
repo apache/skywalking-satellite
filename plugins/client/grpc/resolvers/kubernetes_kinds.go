@@ -20,8 +20,10 @@ package resolvers
 import (
 	"context"
 	"fmt"
+	"log/slog"
 	"net/url"
 
+	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/prometheus/discovery"
 
 	"github.com/apache/skywalking-satellite/internal/pkg/log"
@@ -80,7 +82,16 @@ func NewKindCache(ctx context.Context, c *KubernetesConfig, cc resolver.ClientCo
 	}
 
 	// build discovery
-	discoverer, err := kubernetes.New(&logAdapt{}, conf)
+	reg := prometheus.NewRegistry()
+	refreshMetrics := discovery.NewRefreshMetrics(reg)
+	metrics := conf.NewDiscovererMetrics(reg, refreshMetrics)
+	if err := metrics.Register(); err != nil {
+		return nil, err
+	}
+	discoverer, err := conf.NewDiscoverer(discovery.DiscovererOptions{
+		Logger:  slog.Default(),
+		Metrics: metrics,
+	})
 	if err != nil {
 		return nil, err
 	}
@@ -143,10 +154,3 @@ func (w *KindCache) UpdateAddresses() error {
 	return nil
 }
 
-type logAdapt struct {
-}
-
-func (l *logAdapt) Log(keyvals ...interface{}) error {
-	log.Logger.Print(keyvals...)
-	return nil
-}
