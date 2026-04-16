@@ -32,7 +32,7 @@ FROM alpine:3.23
 
 RUN apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache ca-certificates
+    apk add --no-cache ca-certificates "libssl3>=3.3.7-r0" "libcrypto3>=3.3.7-r0" "musl>=1.2.5-r11"
 
 VOLUME /skywalking/configs
 
