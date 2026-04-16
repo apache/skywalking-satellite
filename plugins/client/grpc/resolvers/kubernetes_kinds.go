@@ -153,4 +153,3 @@ func (w *KindCache) UpdateAddresses() error {
 	log.Logger.Infof("update grpc client addresses: %v", addresses)
 	return nil
 }
-
