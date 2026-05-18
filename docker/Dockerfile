@@ -30,9 +30,11 @@ RUN mv /src/bin/skywalking-satellite-${VERSION}-linux-${TARGETARCH} /src/bin/sky
 
 FROM alpine:3.23
 
-RUN apk update --no-cache && \
+RUN echo '@edge https://dl-cdn.alpinelinux.org/alpine/edge/main' >> /etc/apk/repositories && \
+    apk update --no-cache && \
     apk upgrade --no-cache && \
-    apk add --no-cache ca-certificates "libssl3>=3.3.7-r0" "libcrypto3>=3.3.7-r0" "musl>=1.2.5-r11"
+    apk add --no-cache ca-certificates "libssl3>=3.3.7-r0" "libcrypto3>=3.3.7-r0" "musl>=1.2.5-r11" \
+        "busybox@edge>=1.37.0-r31" "busybox-binsh@edge>=1.37.0-r31" "ssl_client@edge>=1.37.0-r31"
 
 VOLUME /skywalking/configs
 
