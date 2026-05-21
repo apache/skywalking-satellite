@@ -32,6 +32,8 @@ jobs:
             config: test/e2e/case/native-ebpf/e2e.yaml
           - name: Native Process/Async Profiler
             config: test/e2e/case/native-asyncprofiler/e2e.yaml
+          - name: Native Process/Pprof Profiler
+            config: test/e2e/case/native-pprof/e2e.yaml
       fail-fast: true
     name: Native E2E test
     runs-on: ubuntu-latest

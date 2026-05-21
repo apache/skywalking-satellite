@@ -26,18 +26,36 @@ services:
       - e2e
     restart: on-failure
     environment:
-      SW_STORAGE: h2
+      SW_STORAGE: banyandb
+      SW_STORAGE_BANYANDB_TARGETS: banyandb:17912
       SW_CLUSTER_ZK_HOST_PORT: zk:2181
       SW_STORAGE_ES_CLUSTER_NODES: es:9200
       SW_JDBC_URL: jdbc:mysql://mysql:3306/swtest
       SW_STORAGE_INFLUXDB_URL: http://influxdb:8086
-      SW_METER_ANALYZER_ACTIVE_FILES: spring-sleuth
+      SW_METER_ANALYZER_ACTIVE_FILES: datasource,threadpool,satellite,go-runtime,python-runtime,continuous-profiling,java-agent,go-agent,ruby-runtime,spring-sleuth
       SW_CLUSTER_ETCD_ENDPOINTS: http://etcd:2379
       SW_SCLUSTER_ETCD_ERVICE_NAME: s1
       SW_CONFIG_ETCD_PERIOD: 1
       SW_CONFIG_ETCD_ENDPOINTS: http://etcd:2379
     healthcheck:
       test: ["CMD", "bash", "-c", "cat < /dev/null > /dev/tcp/127.0.0.1/11800"]
+      interval: 5s
+      timeout: 60s
+      retries: 120
+    depends_on:
+      banyandb:
+        condition: service_healthy
+
+  banyandb:
+    image: "ghcr.io/apache/skywalking-banyandb:${SW_BANYANDB_COMMIT}"
+    networks:
+      - e2e
+    expose:
+      - 17912
+      - 17913
+    command: standalone --measure-metadata-cache-wait-duration 1m --stream-metadata-cache-wait-duration 1m
+    healthcheck:
+      test: ["CMD", "sh", "-c", "nc -nz 127.0.0.1 17912"]
       interval: 5s
       timeout: 60s
       retries: 120
