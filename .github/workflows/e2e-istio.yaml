@@ -34,7 +34,7 @@ jobs:
       fail-fast: true
       matrix:
         analyzer: [k8s-mesh, mx-mesh]
-        istio_version: [ 1.15.0, 1.16.0, 1.17.0, 1.18.0 ]
+        istio_version: [ 1.21.0, 1.22.0, 1.23.0, 1.24.0, 1.25.0, 1.26.0, 1.27.0, 1.28.0, 1.29.0 ]
     name: Istio(${{ matrix.istio_version }})+ALS(${{ matrix.analyzer }})
     env:
       ISTIO_VERSION: ${{ matrix.istio_version }}
@@ -68,7 +68,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        istio_version: [1.15.0, 1.16.0, 1.17.0, 1.18.0]
+        istio_version: [ 1.21.0, 1.22.0, 1.23.0, 1.24.0, 1.25.0, 1.26.0, 1.27.0, 1.28.0, 1.29.0 ]
     env:
       ISTIO_VERSION: ${{ matrix.istio_version }}
     steps:
