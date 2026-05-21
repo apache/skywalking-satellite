@@ -1,0 +1,64 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+setup:
+  env: compose
+  file: docker-compose.yml
+  timeout: 20m
+  init-system-environment: ../../base/env
+  steps:
+    - name: set PATH
+      command: export PATH=/tmp/skywalking-infra-e2e/bin:$PATH
+    - name: install yq
+      command: bash test/e2e/base/scripts/prepare/setup-e2e-shell/install.sh yq
+    - name: install swctl
+      command: bash test/e2e/base/scripts/prepare/setup-e2e-shell/install.sh swctl
+
+verify:
+  retry:
+    count: 20
+    interval: 10s
+  cases:
+    # service list
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql service ls
+      expected: expected/service.yml
+    # service instance list
+    - query: swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql instance list --service-name=go-service
+      expected: expected/service-instance.yml
+    # create task
+    - query: |
+        swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql \
+          profiling pprof create --service-name=go-service \
+          --duration=1 --events=CPU \
+          --instance-name-list=provider1
+      expected: expected/create.yml
+    # list task
+    - query: |
+        swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql \
+          profiling pprof list --service-name=go-service
+      expected: expected/list.yml
+    # task progress (CPU sampling lasts duration minutes + agent upload latency)
+    - query: |
+        sleep 75 && swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql \
+          profiling pprof progress \
+          --task-id=$(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql profiling pprof list --service-name=go-service | yq e '.tasks[0].id')
+      expected: expected/progress.yml
+    # task analysis
+    - query: |
+        swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql \
+          profiling pprof analysis --service-name=go-service \
+          --instance-name-list=provider1 \
+          --task-id=$(swctl --display yaml --base-url=http://${oap_host}:${oap_12800}/graphql profiling pprof list --service-name=go-service | yq e '.tasks[0].id')
+      expected: expected/analysis.yml

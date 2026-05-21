@@ -13,24 +13,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-debuggingtrace: null
-type: TIME_SERIES_VALUES
-results:
-  {{- contains .results }}
-  - metric:
-      labels:
-        - key: cluster_name
-          value: e2e::details
-    values:
-      {{- contains .values }}
-      - id: {{ notEmpty .id }}
-        value: {{ notEmpty .value }}
-        owner: null
-        traceid: null
-      - id: {{ notEmpty .id }}
-        value: null
-        owner: null
-        traceid: null
-      {{- end}}
-  {{- end}}
-error: null
+logs:
+  {{- contains .logs }}
+- id: {{ notEmpty .id}}
+  instanceid: {{ b64enc "go-service" }}.1_{{ b64enc "provider1" }}
+  instancename: provider1
+  operationtype: EXECUTION_FINISHED
+  operationtime: {{ ge .operationtime 0 }}
+  {{- end }}
+errorinstanceids: []
+successinstanceids:
+  - {{ b64enc "go-service" }}.1_{{ b64enc "provider1" }}

@@ -13,24 +13,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-debuggingtrace: null
-type: TIME_SERIES_VALUES
-results:
-  {{- contains .results }}
-  - metric:
-      labels:
-        - key: cluster_name
-          value: e2e::details
-    values:
-      {{- contains .values }}
-      - id: {{ notEmpty .id }}
-        value: {{ notEmpty .value }}
-        owner: null
-        traceid: null
-      - id: {{ notEmpty .id }}
-        value: null
-        owner: null
-        traceid: null
-      {{- end}}
-  {{- end}}
-error: null
+{{- contains . }}
+- id: {{ b64enc "go-service" }}.1
+  name: go-service
+  group: ""
+  shortname: go-service
+  normal: true
+  layers:
+    - GENERAL
+    - SO11Y_GO_AGENT
+{{- end }}

@@ -25,8 +25,24 @@ events:
   message: Start Java Application
   parameters:
   {{- contains .parameters }}
-  - key: OPTS
-    value: {{ notEmpty .value }}
+    - key: OPTS
+      value: {{ notEmpty .value }}
+  {{- end }}
+  starttime: {{ gt .starttime 0 }}
+  endtime: {{ gt .endtime 0 }}
+  layer: GENERAL
+- uuid: {{ notEmpty .uuid }}
+  source:
+    service: e2e-service-consumer
+    serviceinstance: consumer1
+    endpoint: ""
+  name: Start
+  type: Normal
+  message: Start Java Application
+  parameters:
+  {{- contains .parameters }}
+    - key: OPTS
+      value: {{ notEmpty .value }}
   {{- end }}
   starttime: {{ gt .starttime 0 }}
   endtime: {{ gt .endtime 0 }}

@@ -18,15 +18,9 @@ type: TIME_SERIES_VALUES
 results:
   {{- contains .results }}
   - metric:
-      labels:
-        - key: cluster_name
-          value: e2e::details
+      labels: []
     values:
       {{- contains .values }}
-      - id: {{ notEmpty .id }}
-        value: {{ notEmpty .value }}
-        owner: null
-        traceid: null
       - id: {{ notEmpty .id }}
         value: null
         owner: null

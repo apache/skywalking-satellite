@@ -32,6 +32,8 @@ jobs:
             config: test/e2e/case/native-ebpf/e2e.yaml
           - name: Native Process/Async Profiler
             config: test/e2e/case/native-asyncprofiler/e2e.yaml
+          - name: Native Process/Pprof Profiler
+            config: test/e2e/case/native-pprof/e2e.yaml
       fail-fast: true
     name: Native E2E test
     runs-on: ubuntu-latest
@@ -39,6 +41,9 @@ jobs:
       - uses: actions/checkout@v2
         with:
           submodules: true
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 1.26
       - name: Build Test Service
         shell: bash
         run: |
@@ -46,7 +51,7 @@ jobs:
           ./mvnw --batch-mode -f provider/pom.xml clean package -Dsw.version=8.7.0
           ./mvnw --batch-mode -f consumer/pom.xml clean package -Dsw.version=8.7.0
       - name: ${{ matrix.test.name }}
-        uses: apache/skywalking-infra-e2e@cf589b4a0b9f8e6f436f78e9cfd94a1ee5494180
+        uses: apache/skywalking-infra-e2e@0d91769411db83f6329633df810a36c6ea1a9b02
         with:
           e2e-file: $GITHUB_WORKSPACE/${{ matrix.test.config }}
       - uses: actions/upload-artifact@v4

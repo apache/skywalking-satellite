@@ -13,14 +13,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-{{- contains . }}
-- key: {{ notEmpty .key }}
-  value:
-    {{ if .value.isemptyvalue }}
-    isemptyvalue: true
-    value: 0
-    {{ else }}
-    isemptyvalue: false
-    value: {{ ge .value.value 0 }}
-    {{ end }}
-{{- end }}
+debuggingtrace: null
+type: TIME_SERIES_VALUES
+results:
+  {{- contains .results }}
+  - metric:
+      labels: []
+    values:
+      {{- contains .values }}
+      - id: {{ notEmpty .id }}
+        value: {{ notEmpty .value }}
+        owner: null
+        traceid: null
+      - id: {{ notEmpty .id }}
+        value: null
+        owner: null
+        traceid: null
+      {{- end}}
+  {{- end}}
+error: null
