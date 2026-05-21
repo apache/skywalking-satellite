@@ -14,23 +14,31 @@
 # limitations under the License.
 
 debuggingtrace: null
-type: TIME_SERIES_VALUES
-results:
-  {{- contains .results }}
-  - metric:
-      labels:
-        - key: cluster_name
-          value: e2e::details
-    values:
-      {{- contains .values }}
-      - id: {{ notEmpty .id }}
-        value: {{ notEmpty .value }}
-        owner: null
-        traceid: null
-      - id: {{ notEmpty .id }}
-        value: null
-        owner: null
-        traceid: null
-      {{- end}}
-  {{- end}}
-error: null
+nodes:
+{{- contains .nodes }}
+- id: {{ b64enc "e2e-service-provider"}}.1
+  name: e2e-service-provider
+  type: Tomcat
+  isreal: true
+  layers:
+    - GENERAL
+- id: {{ b64enc "e2e-service-consumer"}}.1
+  name: e2e-service-consumer
+  type: Tomcat
+  isreal: true
+  layers:
+    - GENERAL
+{{- end }}
+calls:
+{{- contains .calls }}
+- source: {{ b64enc "e2e-service-consumer"}}.1
+  sourcecomponents:
+    - SpringRestTemplate
+  target: {{ b64enc "e2e-service-provider"}}.1
+  targetcomponents:
+    - Tomcat
+  id: {{ b64enc "e2e-service-consumer"}}.1-{{ b64enc "e2e-service-provider"}}.1
+  detectpoints:
+    - CLIENT
+    - SERVER
+{{- end }}
