@@ -38,6 +38,11 @@ services:
       timeout: 60s
       retries: 120
 
+  banyandb:
+    extends:
+      file: ../../base/base-compose.yml
+      service: banyandb
+
   oap:
     extends:
       file: ../../base/base-compose.yml
@@ -50,6 +55,8 @@ services:
       - 12800
     depends_on:
       etcd:
+        condition: service_healthy
+      banyandb:
         condition: service_healthy
 
   satellite:

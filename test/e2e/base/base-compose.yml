@@ -42,9 +42,6 @@ services:
       interval: 5s
       timeout: 60s
       retries: 120
-    depends_on:
-      banyandb:
-        condition: service_healthy
 
   banyandb:
     image: "ghcr.io/apache/skywalking-banyandb:${SW_BANYANDB_COMMIT}"

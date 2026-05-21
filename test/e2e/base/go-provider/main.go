@@ -27,11 +27,17 @@ import (
 )
 
 func main() {
-	// Keep the runtime busy so CPU profile sampling captures observable stacks.
+	// Produce light, recurring CPU work so the pprof CPU profile captures
+	// observable stacks without saturating the CI runner (~20% duty cycle).
 	go func() {
 		for {
-			doWork()
-			time.Sleep(50 * time.Millisecond)
+			start := time.Now()
+			for time.Since(start) < 100*time.Millisecond {
+				for i := 0; i < 1e5; i++ {
+					_ = i * i
+				}
+			}
+			time.Sleep(400 * time.Millisecond)
 		}
 	}()
 

@@ -16,12 +16,20 @@
 version: '2.1'
 
 services:
+  banyandb:
+    extends:
+      file: ../../base/base-compose.yml
+      service: banyandb
+
   oap:
     extends:
       file: ../../base/base-compose.yml
       service: oap
     ports:
       - 12800:12800
+    depends_on:
+      banyandb:
+        condition: service_healthy
 
   satellite:
     extends:
