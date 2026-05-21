@@ -51,6 +51,14 @@ jobs:
       - name: Build Docker Image
         shell: bash
         run: make docker
+      - name: Pre-install swctl with host Go
+        shell: bash
+        run: |
+          set -ex
+          set -o allexport
+          source test/e2e/base/env
+          set +o allexport
+          bash test/e2e/base/scripts/prepare/setup-e2e-shell/install.sh swctl
       - uses: apache/skywalking-infra-e2e@cf589b4a0b9f8e6f436f78e9cfd94a1ee5494180
         with:
           e2e-file: test/e2e/case/istio/als/e2e.yaml
@@ -83,6 +91,14 @@ jobs:
       - name: Build Docker Image
         shell: bash
         run: make docker
+      - name: Pre-install swctl with host Go
+        shell: bash
+        run: |
+          set -ex
+          set -o allexport
+          source test/e2e/base/env
+          set +o allexport
+          bash test/e2e/base/scripts/prepare/setup-e2e-shell/install.sh swctl
       - uses: apache/skywalking-infra-e2e@cf589b4a0b9f8e6f436f78e9cfd94a1ee5494180
         with:
           e2e-file: test/e2e/case/istio/metrics/e2e.yaml
