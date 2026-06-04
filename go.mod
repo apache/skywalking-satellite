@@ -2,7 +2,7 @@ module github.com/apache/skywalking-satellite
 
 go 1.25.0
 
-toolchain go1.26.3
+toolchain go1.26.4
 
 require (
 	github.com/Shopify/sarama v1.27.2
