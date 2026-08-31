@@ -14,7 +14,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-FROM golang:1.26.6 AS build
+FROM golang:1.26.7 AS build
 
 ARG VERSION="latest"
 ARG TARGETARCH
