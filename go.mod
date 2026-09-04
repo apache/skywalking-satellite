@@ -11,7 +11,7 @@ require (
 	github.com/grandecola/mmap v0.7.0
 	github.com/hashicorp/go-multierror v1.1.1
 	github.com/prometheus/client_golang v1.24.1
-	github.com/prometheus/common v0.70.1
+	github.com/prometheus/common v0.71.0
 	github.com/prometheus/prometheus v0.311.3
 	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/sirupsen/logrus v1.10.2
