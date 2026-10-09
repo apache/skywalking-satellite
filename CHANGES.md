@@ -9,7 +9,8 @@ Release Notes.
 * Update Go to `1.26`.
 
 #### Bug Fixes
-* Bump the Go toolchain, gRPC, `golang.org/x/*`, Prometheus libraries and the Alpine base image packages to fix CVEs
+* Upgrade the base image to `alpine:3.23` and pin openssl/musl packages to fix CVEs.
+* Bump Go toolchain, gRPC, `golang.org/x/*` and Prometheus libraries to fix CVEs.
   (e.g. CVE-2026-33186, CVE-2026-42505, CVE-2026-39822, CVE-2026-33814).
 
 #### Issues and PR
