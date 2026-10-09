@@ -11,7 +11,6 @@ Release Notes.
 #### Bug Fixes
 * Upgrade the base image to `alpine:3.23` and pin openssl/musl packages to fix CVEs.
 * Bump Go toolchain, gRPC, `golang.org/x/*` and Prometheus libraries to fix CVEs.
-  (e.g. CVE-2026-33186, CVE-2026-42505, CVE-2026-39822, CVE-2026-33814).
 
 #### Issues and PR
 - All issues are [here](https://github.com/apache/skywalking/milestone/268?closed=1)
