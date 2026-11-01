@@ -147,12 +147,19 @@ func (f *Forwarder) generateRoutingKey(data *metrics.ExportMetricsServiceRequest
 			continue
 		}
 		lastKVs = m.Resource.Attributes
-		result := ""
+		// Index the first value of each attribute key, then build the key
+		// in metadataKeys order, so the routing key does not depend on the
+		// arrival order of the attributes.
+		values := make(map[string]string, len(m.Resource.Attributes))
 		for _, kv := range m.Resource.Attributes {
-			for _, key := range f.metadataKeys {
-				if kv.GetKey() == key {
-					result += fmt.Sprintf(",%s", kv.GetValue().GetStringValue())
-				}
+			if _, ok := values[kv.GetKey()]; !ok {
+				values[kv.GetKey()] = kv.GetValue().GetStringValue()
+			}
+		}
+		result := ""
+		for _, key := range f.metadataKeys {
+			if value, ok := values[key]; ok {
+				result += fmt.Sprintf(",%s", value)
 			}
 		}
 		if result != "" {
@@ -170,7 +177,7 @@ func (f *Forwarder) generateRoutingKey(data *metrics.ExportMetricsServiceRequest
 		}
 		keys += k.GetKey()
 	}
-	return "", fmt.Errorf("could not found anly routing key, existing keys sample: %s", keys)
+	return "", fmt.Errorf("could not found only routing key, existing keys sample: %s", keys)
 }
 
 func (f *Forwarder) ForwardType() v1.SniffType {
