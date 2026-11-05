@@ -28,7 +28,7 @@ concurrency:
 
 jobs:
   als:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     strategy:
       fail-fast: true
@@ -62,7 +62,7 @@ jobs:
           path: "${{ env.SW_INFRA_E2E_LOG_DIR }}"
 
   metrics-service:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     name: Istio(${{ matrix.istio_version }})+MetricsService
     strategy:
