@@ -36,7 +36,7 @@ jobs:
             config: test/e2e/case/native-pprof/e2e.yaml
       fail-fast: true
     name: Native E2E test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v7
         with:
