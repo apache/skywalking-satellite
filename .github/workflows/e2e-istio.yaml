@@ -28,7 +28,7 @@ concurrency:
 
 jobs:
   als:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     strategy:
       fail-fast: true
@@ -41,20 +41,20 @@ jobs:
       ALS_ANALYZER: ${{ matrix.analyzer }}
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v7
         with:
           go-version: 1.26
         id: go
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - name: Build Docker Image
         shell: bash
         run: make docker
-      - uses: apache/skywalking-infra-e2e@0d91769411db83f6329633df810a36c6ea1a9b02
+      - uses: apache/skywalking-infra-e2e@56ac8befeb5f910f2dc9339e65d07cd18953f90e
         with:
           e2e-file: test/e2e/case/istio/als/e2e.yaml
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ failure() }}
         name: Upload Logs
         with:
@@ -62,7 +62,7 @@ jobs:
           path: "${{ env.SW_INFRA_E2E_LOG_DIR }}"
 
   metrics-service:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     timeout-minutes: 60
     name: Istio(${{ matrix.istio_version }})+MetricsService
     strategy:
@@ -73,20 +73,20 @@ jobs:
       ISTIO_VERSION: ${{ matrix.istio_version }}
     steps:
       - name: Set up Go
-        uses: actions/setup-go@v5
+        uses: actions/setup-go@v7
         with:
           go-version: 1.26
         id: go
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
         with:
           submodules: true
       - name: Build Docker Image
         shell: bash
         run: make docker
-      - uses: apache/skywalking-infra-e2e@0d91769411db83f6329633df810a36c6ea1a9b02
+      - uses: apache/skywalking-infra-e2e@56ac8befeb5f910f2dc9339e65d07cd18953f90e
         with:
           e2e-file: test/e2e/case/istio/metrics/e2e.yaml
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ failure() }}
         name: Upload Logs
         with:

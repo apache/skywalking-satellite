@@ -36,14 +36,18 @@ jobs:
             config: test/e2e/case/native-pprof/e2e.yaml
       fail-fast: true
     name: Native E2E test
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v7
         with:
           submodules: true
-      - uses: actions/setup-go@v5
+      - uses: actions/setup-go@v7
         with:
           go-version: 1.26
+      - uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 8
       - name: Build Test Service
         shell: bash
         run: |
@@ -51,10 +55,10 @@ jobs:
           ./mvnw --batch-mode -f provider/pom.xml clean package -Dsw.version=8.7.0
           ./mvnw --batch-mode -f consumer/pom.xml clean package -Dsw.version=8.7.0
       - name: ${{ matrix.test.name }}
-        uses: apache/skywalking-infra-e2e@0d91769411db83f6329633df810a36c6ea1a9b02
+        uses: apache/skywalking-infra-e2e@56ac8befeb5f910f2dc9339e65d07cd18953f90e
         with:
           e2e-file: $GITHUB_WORKSPACE/${{ matrix.test.config }}
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         if: ${{ failure() }}
         name: Upload Logs
         with:
