@@ -7,6 +7,7 @@ Release Notes.
 #### Features
 
 #### Bug Fixes
+* Bump Go toolchain to `1.26.11` and `github.com/klauspost/compress` to `v1.20.2` to fix CVEs.
 
 #### Issues and PR
 - All issues are [here](https://github.com/apache/skywalking/milestone/272?closed=1)

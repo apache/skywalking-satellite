@@ -51,7 +51,7 @@ jobs:
       - name: Build Docker Image
         shell: bash
         run: make docker
-      - uses: apache/skywalking-infra-e2e@56ac8befeb5f910f2dc9339e65d07cd18953f90e
+      - uses: apache/skywalking-infra-e2e@7268db19f49b0b88554ba2c255361b9fc1d7d7bc
         with:
           e2e-file: test/e2e/case/istio/als/e2e.yaml
       - uses: actions/upload-artifact@v7
@@ -83,7 +83,7 @@ jobs:
       - name: Build Docker Image
         shell: bash
         run: make docker
-      - uses: apache/skywalking-infra-e2e@56ac8befeb5f910f2dc9339e65d07cd18953f90e
+      - uses: apache/skywalking-infra-e2e@7268db19f49b0b88554ba2c255361b9fc1d7d7bc
         with:
           e2e-file: test/e2e/case/istio/metrics/e2e.yaml
       - uses: actions/upload-artifact@v7
