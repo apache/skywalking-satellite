@@ -55,7 +55,7 @@ jobs:
           ./mvnw --batch-mode -f provider/pom.xml clean package -Dsw.version=8.7.0
           ./mvnw --batch-mode -f consumer/pom.xml clean package -Dsw.version=8.7.0
       - name: ${{ matrix.test.name }}
-        uses: apache/skywalking-infra-e2e@56ac8befeb5f910f2dc9339e65d07cd18953f90e
+        uses: apache/skywalking-infra-e2e@7268db19f49b0b88554ba2c255361b9fc1d7d7bc
         with:
           e2e-file: $GITHUB_WORKSPACE/${{ matrix.test.config }}
       - uses: actions/upload-artifact@v7
